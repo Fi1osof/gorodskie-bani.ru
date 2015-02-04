@@ -87,7 +87,7 @@ ul {
 	padding: 0 0 0 12px;
 	list-style-image: none;
 	list-style-type: none;
-	line-height: 150%;
+	line-height: 15px;
 	margin-left: 20px;
 }
 .kol1 {
@@ -161,7 +161,7 @@ ul {
 }
 #sidebar li{
 	background: none;
-	margin: 0 15px;
+	margin: 7px 15px
 }
 #sidebar .category {
 	font: 1.5em Georgia, "Times New Roman", Times, serif;

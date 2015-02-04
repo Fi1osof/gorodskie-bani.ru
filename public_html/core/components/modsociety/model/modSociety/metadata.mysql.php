@@ -38,6 +38,14 @@ $this->map['modUser']['composites']['Comments'] = array(
     'foreign' => 'createdby',
     'cardinality' => 'many',
     'owner' => 'local',
+); 
+
+$this->map['modUser']['composites']['Votes'] = array(
+    'class' => 'SocietyVote',
+    'local' => 'id',
+    'foreign' => 'user_id',
+    'cardinality' => 'many',
+    'owner' => 'local',
 );
 
 $this->map['modUser']['composites']['EmailMessages'] = array(

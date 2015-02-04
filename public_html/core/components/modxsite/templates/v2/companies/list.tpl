@@ -5,7 +5,12 @@
 {block name=params}
 
     {$params = [
-        "getPage"   => 1
+        "getPage"   => 1,
+        "page"      => $smarty.get.page,
+        "limit"     => 10,
+        "parent"    => 1197,
+        "sort"      => "modResource.publishedon",
+        "dir"       => "DESC"
     ]}
     
 {/block}

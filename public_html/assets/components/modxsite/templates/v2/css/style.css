@@ -27,6 +27,10 @@ img{
     border:none;
 }
 
+li {
+    list-style: inside none disc;
+}
+
 .aside
 ,.aside a {
     font-size: 11px;
@@ -241,6 +245,11 @@ table.border td
 
 /* Eof Карточка компании */
 
+.gallery .thumb img {
+    margin: 20px 27px 0 0;
+}
 
-
+.outer-tpl .outer-tpl {
+    margin-left: 20px;
+}
 

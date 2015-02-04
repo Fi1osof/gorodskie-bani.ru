@@ -15,6 +15,7 @@
     
     {if $result.success && $result.object}
         
+        <a name="review"></a>
         <h2 class="title overviews">Обзоры заведения</h2>
         
         {$smarty.block.parent}

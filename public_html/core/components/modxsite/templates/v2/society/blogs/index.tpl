@@ -7,8 +7,11 @@
         "limit" => 10,
         "getPage"   => 1,
         "page"  => $smarty.get.page,
-        "sort"  => "id",
-        "dir"   => "ASC"
+        "sort"  => "menuindex",
+        "dir"   => "ASC",
+        "where" => [
+            "template" => 14
+        ]
     ]}
 {/block}
 

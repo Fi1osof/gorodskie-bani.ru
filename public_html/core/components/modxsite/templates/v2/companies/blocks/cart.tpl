@@ -15,33 +15,33 @@
 {$address = $object.tvs.address.value}
 {$phones = $object.tvs.phones.value} 
 
-<div class="company-cart">
+<div class="company-cart" itemscope itemtype="http://schema.org/Organization">
     
     <div class="head">
-        <a href="{$image}" onclick="return vz.expand(this)">
-            <img alt="{$title}" src="{$src}" title="{$title}">
+        <a href="images/resized/big{$image}" rel="prettyPhoto[_company{$object.id}_]">
+            <img alt="{$title}" src="images/resized/thumb{$image}" title="{$title}">
         </a>
     </div>
     
     <div class="description">
-    
+        {$title = "<h1 class=\"company-title\" itemprop=\"name\">{$object.pagetitle}</h1>"}
         {if $object.id != $modx->resource->id}
-            <a href="{$object.uri}">
-                <h1 class="company-title">{$object.pagetitle}</h1>
-            </a>
+            <a href="{$object.uri}">{$title}</a>
         {else}
-            <h1 class="company-title">{$object.pagetitle}</h1>
-        {/if}
-         
+            {$title}
+        {/if} 
         
         {if $metro}
             <p class="params"><strong class="p-title">Метро: </strong>{$metro}</p>
         {/if}
-         
-        <p class="params"><strong class="p-title">Адрес: </strong><a href="{$object.city_uri}" title="{$city}">{$city}</a>{if $address}, {$address}{/if}</p> 
+        
+        <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+            <p class="params"><strong class="p-title">Адрес: </strong><a href="{$object.city_uri}" title="{$city}">{if !strstr($address, 'город')}<span itemprop="addressLocality">{$city}</span>{else}{$city}{/if}</a>{if $address}, <span itemprop="streetAddress">{$address}{/if}</span></p> 
+        </div>
+        
         
         {if $phones}
-            <p class="params"><strong class="p-title">Телефон: </strong>{$phones}</p>
+            <p class="params"><strong class="p-title">Телефон: </strong><span itemprop="telephone">{$phones}</span></p>
         {/if}
     </div>
     

@@ -52,15 +52,38 @@
                 {/if}
                 
                 {if $object.tvs.ya_map.value}
-                    <br /><br />
-                    {$object.tvs.ya_map.value}
+                    
+                    <div style="margin: 20px 0;">
+                        {$object.tvs.ya_map.value}
+                    </div>
                     
                 {/if}
                 
             
-        </div>
+        </div> 
         
         {block name=overviews}
+        
+            {if $object.content}
+                <div style="margin: 20px 0;">
+                    {$object.content}
+                </div>
+            {/if}
+            
+            {if $object.gallery} 
+                
+                <ul class="gallery">
+                    {foreach $object.gallery as $gal_item}
+                        {$image = $gal_item.image}
+                        <a class="highslide thumb" href="images/resized/big{$image}" rel="prettyPhoto[_company{$object.id}_]">
+                            <img class="" src="images/resized/thumb{$image}" title="{$gal_item.title}" alt="{$gal_item.title}">
+                        </a>
+                    {/foreach}
+                </ul>
+                
+            {/if}
+            
+            
             [[!smarty?tpl=`companies/topics/list.tpl`]]
         {/block}
         

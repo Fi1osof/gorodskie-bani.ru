@@ -7,6 +7,11 @@ $properties = $modx->resource->getOne('Template')->getProperties();
 if ($modx->resource->cacheable != '1') {
     $modx->smarty->caching = false;
 }
+
+if(!empty($properties['phptemplates.non-cached'])){
+    $modx->smarty->compile_check = false;
+    $modx->smarty->force_compile = true;
+}
         
 if(!empty($properties['view'])){
     $path = $properties['view'];

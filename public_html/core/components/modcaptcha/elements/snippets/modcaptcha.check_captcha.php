@@ -1,4 +1,7 @@
 <?php
+
+$result = false;
+
 if(empty($scriptProperties['captcha_key'])){
     $scriptProperties['captcha_key'] = $modx->getOption('modcaptcha.session_id', null, 'php_captcha');
 }
@@ -27,8 +30,12 @@ if(!$response = $modx->runProcessor('modcaptcha/web/check', $scriptProperties, a
 }
 
 if($response->isError()){
-    return '';
+    $result = $response->getMessage();
+}
+else{
+    $result = 'true';
 }
 
-// else
-return 'true';
+$modx->error->reset();
+
+return $result;

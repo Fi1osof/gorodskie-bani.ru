@@ -1,13 +1,18 @@
 <?php
 
-ini_set('display_errors', 1);
-
 define('MODX_API_MODE', true);
 
 // initialize $modx
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/index.php';
 
-define('CAPTCHA_SESSION_ID', $modx->getOption('modcaptcha.session_id', null, 'php_captcha'));
+if(!empty($_REQUEST['captcha_key'])){
+    $captcha_key = $_REQUEST['captcha_key'];
+}
+else{
+    $captcha_key = $modx->getOption('modcaptcha.session_id', null, 'php_captcha');
+}
+
+define('CAPTCHA_SESSION_ID', $captcha_key);
 
 // include captcha class
 require MODX_CORE_PATH.'components/modcaptcha/php-captcha.inc.php';

@@ -43,40 +43,66 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
         
         $this->setProperty('raw_text', $content);
         
-        $content = str_replace(array(
-            "<?"
-        ), array(
-            "&lt;"
-        ), $content);
+        # $content = str_replace(array(
+        #     "<?"
+        # ), array(
+        #     "&lt;"
+        # ), $content);
+        # 
+        # $content = strip_tags($content, '<strong><composite><composite><model><object><field><code><pre><cut><p><a><h4><h5><h6><img><b><em><i><s><u><hr><blockquote><table><tr><th><td><ul><li><ol>');
+        # 
+        # // Реплейсим переносы
+        # $content = preg_replace("/[\r\n]{3,}/", "<br /><br />", $content);
+        # $content = preg_replace("/\r/", "<br />", $content);
+        # 
+        # $content = preg_replace('/<code>(.+?)<\/code>/sim', "<pre class=\"prettyprint\"><code>$1</code></pre>", $content);
+        # 
+        # $this->setProperty('text', $content);
         
-        $content = strip_tags($content, '<strong><composite><composite><model><object><field><code><pre><cut><p><a><h4><h5><h6><img><b><em><i><s><u><hr><blockquote><table><tr><th><td><ul><li><ol>');
+        $jevix = $this->modx->getService('modJevix','modJevix', MODX_CORE_PATH . 'components/modjevix/model/modJevix/');
         
-        // Реплейсим переносы
-        $content = preg_replace("/[\r\n]{3,}/", "<br /><br />", $content);
-        $content = preg_replace("/\r/", "<br />", $content);
+        if($this->modx->hasPermission('modxclub.post_indexed_links')){
+            $rel = "follow";
+        }
+        else{
+            $rel = "nofollow";
+        } 
         
-        $content = preg_replace('/<code>(.+?)<\/code>/sim', "<pre class=\"prettyprint\"><code>$1</code></pre>", $content);
+        $jevix->cfgSetTagParamDefault('a','rel',$rel,true);
+        
+        $errors = '';
+        $content = $jevix->parse($content, $errors);
         
         $this->setProperty('text', $content);
         
-        
         return parent::beforeSet();
     }
-      
+    
+     
     
     public function afterSave(){
         $use_delayed_emails = $this->modx->getOption('modsociety.use_delayed_emails', null, false);
         
+        
         # ini_set('display_errors', 1);
         $comment = $this->modx->getObject('SocietyComment', $this->object->comment_id);
         $topic = $this->modx->getObject($this->object->target_class, $this->object->target_id);
-         
         
         if(empty($this->modx->smarty)){
             $this->modx->invokeEvent('OnHandleRequest');
         }
         $this->modx->smarty->assign('topic', $topic->toArray());
         $this->modx->smarty->assign('comment', $comment->toArray());
+        
+        if($author = $this->modx->user){
+            $this->modx->smarty->assign('author', $author->toArray());
+            
+            if($author_profile = $author->Profile){
+                $this->modx->smarty->assign('author_profile', $author_profile->toArray());
+            }
+            
+        }
+        
         # $this->modx->smarty->assign('topic_url', $this->modx->makeUrl($topic->id, '', '', 'full'));
         /*
             Рассылаем емейл-уведомления.
@@ -134,12 +160,14 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
                     $message = $this->modx->smarty->fetch('messages/society/new_comment/comment_reply.tpl');
                     $this->modx->smarty->assign('auth_user_id', false);
                     
+                    # $this->modx->log(1, $message);
+                    
                     # print $message;
                     # 
                     # exit;
                     
                     $user->sendEmail($message, array(
-                        "subject"   => "Новый ответ на ваш комментарий",
+                        "subject"   => "Новый ответ в топике «{$topic->pagetitle}»",
                     ));
                     $this->modx->mail->reset();
                     $sended_to[] = $parent->createdby; 
@@ -193,7 +221,7 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
             $message = $this->modx->smarty->fetch('messages/society/new_comment/topic_author.tpl');
             $this->modx->smarty->assign('auth_user_id', false);
             $user->sendEmail($message, array(
-                "subject"   => "В вашем топике добавлен новый комментарий",
+                "subject"   => "Новый комментарий в вашем топике «{$topic->pagetitle}»",
             ));
             $sended_to[] = $user->id;
             $this->modx->mail->reset();
@@ -220,7 +248,8 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
                 if($topic->checkPolicy('view', null, $user)){
                     $this->modx->smarty->assign('auth_user_id', $user->id);
                     $message = $this->modx->smarty->fetch('messages/society/new_comment/participants.tpl');
-                    $subject = "В топике добавлен новый комментарий";
+                    # $subject = "В топике добавлен новый комментарий";
+                    $subject = "Новый комментарий в топике «{$topic->pagetitle}»";
                     /*
                         Пытаемся записать в отложенную рассылку
                     */
@@ -270,7 +299,7 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
                 $this->modx->smarty->assign('auth_user_id', $user->id);
                 $message = $this->modx->smarty->fetch('messages/society/new_comment/administration.tpl');
                 $user->sendEmail($message, array(
-                    "subject"   => "В топике добавлен новый комментарий",
+                    "subject"   => "Новый комментарий в топике «{$topic->pagetitle}»",
                 ));
                 $sended_to[] = $user->id;
                 $this->modx->mail->reset();
@@ -314,7 +343,8 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
         }
         
         
-        return $this->success('Комментарий успешно опубликован', array(
+        # return $this->success('Комментарий успешно опубликован', array(
+        return $this->success($this->modx->lexicon('comment_post.success'), array(
             "comment_id"    => $comment_id,
             "comment_html"  => $comment_html,
         ));

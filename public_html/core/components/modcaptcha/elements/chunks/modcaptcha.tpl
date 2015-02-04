@@ -1,2 +1,1 @@
-<img src="[[+src]]" onclick="this.src = '[[+src]]?'+Math.random();" style="cursor:pointer">
-                        
+<img src="[[+src]]?captcha_key=[[+captcha_key]]" onclick="this.src = '[[+src]]?'+Math.random();" style="cursor:pointer">

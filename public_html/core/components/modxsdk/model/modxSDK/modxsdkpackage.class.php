@@ -27,17 +27,27 @@ class ModxsdkPackage extends xPDOSimpleObject {
             );
         }
         
+        $classes = 'modxsdk-package-icon';
+        
         $node = array(
             'id'    => "n_package_". $this->get('id'),
             'text'  => $this->get('name')."-{$version}",
             'leaf'  => false,
-            'cls'   => 'modxsdk-package-icon',
             'type'  => 'package',
             'allowDrop' => false,
             'menu'  => array(
                 'items' => $menus,
             ),
         );
+        
+        $VersionData = $this->xpdo->getVersionData();
+        if(version_compare($VersionData['full_version'], "2.3")){
+            $node['iconCls'] = $classes;
+        }
+        else{
+            $node['cls'] = $classes;
+        }
+        
         return $node;
     }
     

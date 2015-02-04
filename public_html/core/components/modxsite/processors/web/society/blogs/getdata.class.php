@@ -9,6 +9,7 @@ class modWebSocietyBlogsGetdataProcessor extends modSocietyWebBlogsGetdataProces
         $this->setDefaultProperties(array(
             "blogs"     => array(),         // Массив дополнительных 
             "check_for_post"   => 0,       // Проверка блогов, в которые можно публиковать топики
+            "sort"      => "pagetitle",
         ));
         
         return parent::initialize();
@@ -32,7 +33,7 @@ class modWebSocietyBlogsGetdataProcessor extends modSocietyWebBlogsGetdataProces
         }*/
         
         $where = array(
-            "template"  => 14,  // Получаем только публичные блоги
+            "template:in"  => array(14, 27),  // Получаем только публичные блоги и заведения
         );
         
         $can_view_ids = array();

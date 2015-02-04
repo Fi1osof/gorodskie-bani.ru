@@ -76,9 +76,7 @@
             
             {$params=[
                 "check_for_post"    => 1,
-                "limit" => 0,
-                "sort"  => "id",
-                "dir"   => "ASC"
+                "limit" => 0
             ]}
             
             {if $blog = current($topic->TopicBlogs)}

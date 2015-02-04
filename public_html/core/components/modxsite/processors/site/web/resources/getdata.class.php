@@ -7,13 +7,12 @@
 require_once dirname(dirname(__FILE__)).'/getdata.class.php';
 
 class modSiteWebResourcesGetdataProcessor extends modSiteWebGetdataProcessor{
-
-    
+ 
     
     public function initialize(){
         
         $this->setDefaultProperties(array(
-            'includeTVs'  => true,  
+            'includeTVs'        => true,  
             'sort'              => "{$this->classKey}.menuindex",
             'dir'               => 'ASC',
             'showhidden'        => false,
@@ -21,7 +20,16 @@ class modSiteWebResourcesGetdataProcessor extends modSiteWebGetdataProcessor{
             'limit'             => 15,
             'summary'           => false,
             "makeLinks"         => false,   // Создает ссылки. Надо только для modWebLink
-            'image_url_schema'      => 'base',  
+            
+            
+            /*
+                Схема ссылки на картинку.  
+                - false : Отсутствуе. Будет выдано значение TV-параметра как есть
+                - base  : Будет сформировано с учетом УРЛ-а на медиасурс от корня сайта
+                - full  : Будет сформирован полный путь, включая http://
+                
+            */
+            'image_url_schema'      => 'base',     
         ));
         
         return parent::initialize();
@@ -94,13 +102,23 @@ class modSiteWebResourcesGetdataProcessor extends modSiteWebGetdataProcessor{
                 
             case 'full':
                 $images_base_url = $this->modx->getOption('site_url');
-                $images_base_url .= preg_replace("/^\//", "", $this->getSourcePath());
+                $images_base_url .= preg_replace("/^\/*/", "", $this->getSourcePath());
                 break;
                 
             default: $images_base_url = '';
         }
         
         foreach($list as & $l){  
+            
+            // Картинка
+            $l['image'] = '';
+            if(!empty($l['tvs']['image']['value'])){
+                $l['image'] = $images_base_url . $l['tvs']['image']['value'];
+            }
+            else{
+                $l['imageDefault'] = $images_base_url . 'products/No-Photo.jpg';
+            }
+            
             // Ссылки
             if($makeLinks){
                 if($l['class_key'] == "modWebLink"){
@@ -121,19 +139,10 @@ class modSiteWebResourcesGetdataProcessor extends modSiteWebGetdataProcessor{
                     $l['summary'] = $response->getResponse();
                 } 
             }
-            
-            $l['image'] = '';
-            if(!empty($l['tvs']['image']['value'])){
-                $l['image'] = $images_base_url . $l['tvs']['image']['value'];
-            }
-            else{
-                $l['imageDefault'] = $images_base_url . 'products/No-Photo.jpg';
-            }
         }   
                 
         return $list;
     }
-      
     
     public function makeUrl($content) {
         $url = '';
@@ -150,7 +159,6 @@ class modSiteWebResourcesGetdataProcessor extends modSiteWebGetdataProcessor{
         }
         return $url;
     }    
-
     
 }
 

@@ -25,12 +25,9 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
     public function initialize(){
         
         $this->setProperties(array(
-            "show_in_tree"  => 1,
-        ));
-        
-        $this->setDefaultProperties(array(
             "parent" => 309,
             "template"  => 15,
+            "tv23"       => $this->modx->hasPermission('society.approve_topics') ? '1' : '',
         ));
         
         return parent::initialize();
@@ -93,6 +90,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
             }
         }
         
+        
         return parent::beforeSet();
     }
     
@@ -148,7 +146,28 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
         }
         
         
-        # return "Debug";
+        /*
+            Ниже все изменено
+        */
+         
+        
+        
+        /*
+            Если указан блог компании, то меняем родителя и шаблон
+        */
+        foreach($topic->TopicBlogs as $TopicBlog){
+            
+            $blog = $TopicBlog->Blog;
+            
+            if($blog->template == 27){
+                $topic->fromArray(array(
+                    "parent"    => $blog->id,
+                    "template"  => 28,
+                    
+                ));
+            } 
+        }
+        
         
         return !$this->hasErrors();
     }
@@ -156,12 +175,13 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
     
     public function afterSave(){
         $topic = & $this->object;
+        $can_send_notices = $this->modx->hasPermission('modxclub.send_notices');
         $site_name = $this->modx->getOption('site_name');
         $use_delayed_emails = $this->modx->getOption('modsociety.use_delayed_emails', null, false);
         
         // Обновляем псевдоним
-        # $topic->alias .= " " . $topic->id;
-        # $topic->save();
+        $topic->alias .= " " . $topic->id;
+        $topic->save();
         
         $this->modx->cacheManager->refresh();
         
@@ -174,24 +194,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
         
         $this->modx->smarty->assign('topic', $topic->toArray());
         
-        # // 1. Администрации
-        # $q = $this->modx->newQuery('modUser');
-        # $q->innerJoin('modUserGroupMember', 'UserGroupMembers');
-        # $q->where(array(
-        #     "id:!=" => $this->modx->user->id,
-        #     "UserGroupMembers.user_group"    => 20,
-        # ));
-        # 
-        # if($users = $this->modx->getCollection('modUser', $q)){
-        #     $message = $this->modx->smarty->fetch('messages/society/new_topic/administration.tpl');
-        #      
-        #     foreach($users as $user){
-        #         $user->sendEmail($message, array(
-        #             "subject"   => "Новый топик на сайте {$site_name}",
-        #         ));
-        #         $this->modx->mail->reset();
-        #     }
-        # }
+        
         
         
         // Кому уже отправлялось, чтобы не отправлять повторно
@@ -217,50 +220,75 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
         
         
         // Отправляем всем, кто подписан на топики
-        $sended_to = array_unique($sended_to);
-        $q = clone($users_query);
-        
-        if($sended_to){
+        if($can_send_notices){
+            $sended_to = array_unique($sended_to);
+            $q = clone($users_query);
+            
+            if($sended_to){
+                $q->where(array(
+                    "id:not in"    => $sended_to,
+                ));
+            }
             $q->where(array(
-                "id:not in"    => $sended_to,
+                "NoticeType.type"   => "new_topic",
             ));
+            
+            # if($users = $this->modx->getCollection('modUser', $q)){
+                # foreach($users as $user){
+                foreach($this->modx->getIterator('modUser', $q) as $user){
+                    if($topic->checkPolicy('view', null, $user)){
+                        $this->modx->smarty->assign('auth_user_id', $user->id);
+                        $message = $this->modx->smarty->fetch('messages/society/new_topic/subscribers.tpl');
+                        $subject = "Новый топик на сайте MODX-Клуба";
+                        /*
+                            Пытаемся записать в отложенную рассылку
+                        */
+                        if(
+                            !$use_delayed_emails
+                            OR !$emailmessage = $this->modx->newObject('SocietyEmailMessage', array(
+                                "user_id"   => $user->id,
+                                "subject"   => $subject,
+                                "message"   => $message,
+                            ))
+                            OR !$emailmessage->save()
+                        ){
+                            $user->sendEmail($message, array(
+                                "subject"   => $subject,
+                            ));
+                            $this->modx->mail->reset();
+                        }
+                        
+                        $sended_to[] = $user->id;
+                    }
+                    # else{
+                    #     // Если нет права на топик, сразу добавляем в исключения
+                    #     $sended_to[] = $user->id;
+                    # }
+                }
+                $this->modx->smarty->assign('auth_user_id', false);
+            # }
         }
+        
+        // 1. Администрации
+        $q = $this->modx->newQuery('modUser');
+        $q->innerJoin('modUserProfile', 'Profile');
+        $q->innerJoin('modUserGroupMember', 'UserGroupMembers');
         $q->where(array(
-            "NoticeType.type"   => "new_topic",
+            "active"    => 1,
+            "Profile.blocked"   => 0,
+            "UserGroupMembers.user_group"    => 20,
+            "id:not in" => $sended_to,
         ));
         
         if($users = $this->modx->getCollection('modUser', $q)){
+            $message = $this->modx->smarty->fetch('messages/society/new_topic/administration.tpl');
+             
             foreach($users as $user){
-                if($topic->checkPolicy('view', null, $user)){
-                    $this->modx->smarty->assign('auth_user_id', $user->id);
-                    $message = $this->modx->smarty->fetch('messages/society/new_topic/subscribers.tpl');
-                    $subject = "Новый топик на сайте MODX-Клуба";
-                    /*
-                        Пытаемся записать в отложенную рассылку
-                    */
-                    if(
-                        !$use_delayed_emails
-                        OR !$emailmessage = $this->modx->newObject('SocietyEmailMessage', array(
-                            "user_id"   => $user->id,
-                            "subject"   => $subject,
-                            "message"   => $message,
-                        ))
-                        OR !$emailmessage->save()
-                    ){
-                        $user->sendEmail($message, array(
-                            "subject"   => $subject,
-                        ));
-                        $this->modx->mail->reset();
-                    }
-                    
-                    $sended_to[] = $user->id;
-                }
-                # else{
-                #     // Если нет права на топик, сразу добавляем в исключения
-                #     $sended_to[] = $user->id;
-                # }
+                $user->sendEmail($message, array(
+                    "subject"   => "Новый топик на сайте {$site_name}",
+                ));
+                $this->modx->mail->reset();
             }
-            $this->modx->smarty->assign('auth_user_id', false);
         }
         
         return parent::afterSave();
@@ -268,7 +296,8 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
     
     public function cleanup(){
         
-        return $this->success('Топик успешно создан', array(
+        # return $this->success('Топик успешно создан', array(
+        return $this->success($this->modx->lexicon('topic_post.success'), array(
             "id"    => $this->object->id,
         ));
     }

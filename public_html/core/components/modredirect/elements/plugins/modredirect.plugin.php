@@ -1,5 +1,4 @@
 <?php
-
 // container_suffix
 
 if($modx->getOption('friendly_urls')){
@@ -45,20 +44,20 @@ if($modx->getOption('friendly_urls')){
             
             $data = $scriptProperties['data'];
             // Пытаемся получить объект документа
-            if(
-                !empty($scriptProperties['resource']) 
-                AND $object = & $scriptProperties['resource']
-                AND $original = $modx->getObject('modResource', $object->id)
-            ){ 
-                
-                // Проверяем совпадает ли УРЛ 
-                
-                if($original->uri != $object->getAliasPath($object->alias)){
-                    _write_redirect($original);
-                } 
-                
-            }
             
+            $resource = null;
+            foreach($scriptProperties as & $object){
+                if(
+                    is_object($object) 
+                    AND $object instanceof modResource
+                    AND $original = $modx->getObject('modResource', $object->id)
+                ){
+                    if($original->uri != $object->getAliasPath($object->alias)){
+                        _write_redirect($original);
+                    } 
+                    break;
+                }
+            }
             
             break;
         

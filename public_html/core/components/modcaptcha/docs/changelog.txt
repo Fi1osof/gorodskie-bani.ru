@@ -1,3 +1,13 @@
+modCaptcha-1.0.3-beta
+==============================================
+1. Reset MODX errors after processor execution
+
+
+modCaptcha-1.0.2-beta
+==============================================
+1. Added captcha_key
+
+
 modCaptcha-1.0.1-beta
 ==============================================
 1. Minor session bugfix

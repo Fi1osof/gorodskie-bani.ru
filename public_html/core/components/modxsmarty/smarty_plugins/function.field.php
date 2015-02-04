@@ -15,6 +15,7 @@ function smarty_function_field($params, & $smarty) {
         $assign = (string)$params['assign'];
     }
     $output = '';
+    $tagPropString = (isset($params['tagPropString']) ? $params['tagPropString'] : "");
     $modx = & $smarty->modx;
     $modx->getParser();
     $nextToken = substr($tagName, 0, 1);
@@ -32,8 +33,14 @@ function smarty_function_field($params, & $smarty) {
         $element->setCacheable($cacheable);
         $output = $element->process($tagPropString);
     }
-
-    return !empty($assign) ? $smarty->assign($assign, $output) : $output;
+    
+    if(!empty($assign)){
+        $smarty->assign($assign, $output);
+        return;
+    }
+    
+    // else
+    return $output;
 }
 
 ?>

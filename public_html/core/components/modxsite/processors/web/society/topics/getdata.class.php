@@ -20,6 +20,8 @@ class modWebSocietyTopicsGetdataProcessor extends modSocietyWebTopicsGetdataProc
         
         //$q->innerJoin('modUser', 'CreatedBy');
         
+        $q->innerJoin('SocietyBlogTopic', 'bt', "bt.topicid = {$this->classKey}.id");
+        
         return $q;
     }
     
@@ -49,7 +51,6 @@ class modWebSocietyTopicsGetdataProcessor extends modSocietyWebTopicsGetdataProc
             }
         }
         
-        $query->innerJoin('SocietyBlogTopic', 'bt', "bt.topicid = {$this->classKey}.id");
         $where['bt.blogid:in'] = $can_view_ids;
         
         // Поиск по тегу
@@ -71,7 +72,7 @@ class modWebSocietyTopicsGetdataProcessor extends modSocietyWebTopicsGetdataProc
         
         $q->innerJoin('modUserProfile', 'CreatedByProfile', "CreatedBy.id = CreatedByProfile.internalKey");
         $q->innerJoin('SocietyTopicAttributes', 'Attributes');
-        $q->innerJoin('SocietyBlogTopic', 'bt', "bt.topicid = {$this->classKey}.id");
+        # $q->innerJoin('SocietyBlogTopic', 'bt', "bt.topicid = {$this->classKey}.id");
         $q->innerJoin('modResource', 'blog', "blog.id = bt.blogid");
         
         $q->select(array(

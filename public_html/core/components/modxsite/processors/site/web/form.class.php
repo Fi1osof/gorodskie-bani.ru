@@ -28,12 +28,16 @@ class modSiteWebFormProcessor extends modProcessor{
             $this->setProperty('email', $email);
         }
         
+        if($this->use_captcha){
+            $this->checkCaptcha();
+        }
+        
         // Выполнеяем проверку данных
         if(!$this->validateFields()){
             return "Проверьте правильность заполнения формы";
         }
         
-        return parent::initialize();
+        return parent::initialize() && !$this->hasErrors();
     } 
 
 
@@ -104,9 +108,9 @@ class modSiteWebFormProcessor extends modProcessor{
     protected function validateFields(){
         
         $fields = $this->getFields();
-
+        
         foreach($fields as $field => $d){
-            if(@$d['required'] && !$this->getProperty($field)){
+            if($d['required'] && !$this->getProperty($field)){
                 $error = !empty($d['error_message']) ? $d['error_message'] : 'Поле заполненно не корректно';
                 $this->addFieldError($field, $error);
                 continue;
@@ -119,10 +123,6 @@ class modSiteWebFormProcessor extends modProcessor{
                     break;
                 default: 
             }
-        }
-        
-        if($this->use_captcha){
-            $this->checkCaptcha();
         }
         
         return !$this->hasErrors();
@@ -139,6 +139,7 @@ class modSiteWebFormProcessor extends modProcessor{
         
         if($result !== 'true'){
             $error = (!empty($result) ? $result : "Неверный проверочный код");
+            // Надо будет добавить лексиконы в modCaptcha
             $this->addFieldError('captcha', $error);
         }
         

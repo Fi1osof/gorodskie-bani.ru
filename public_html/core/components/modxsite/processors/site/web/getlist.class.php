@@ -5,24 +5,30 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
     public $defaultSortField = '';
     public $flushWhere = true;   // Flush query condition and search only by objects IDs
     protected $total = 0;
-
    
     protected $sources = array();
 
+
     public function initialize(){
-         
+        
         $this->setDefaultProperties(array(
             'cache'             => false,           // Use cache
             'cache_lifetime'    => 0,               // seconds
             'cache_prefix'      => 'getdata/',      
+            'current'           => false,   // get and return only first element 
+            'page'              => 0,   // !empty($_REQUEST['page']) ? (int)$_REQUEST['page'] : 0,
             'getPage'           => false,
             'getPageParamsSet'  => "getPage",   // Имя набора параметров для getPage
-            'page'              => 0,
-            'current'           => false,   // get and return only first element 
         ));
         
+        $initialized = parent::initialize();
         
-        parent::initialize();
+        /*
+            Need limits and etc.
+        */
+        if($initialized !== true){
+            return $initialized;
+        }
         
         if($this->getProperty('current')){
             $this->setProperty('limit', 1);
@@ -30,6 +36,15 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
         
         if($page = $this->getProperty('page') AND $page > 1 AND $limit = $this->getProperty('limit', 0)){
             $this->setProperty('start', ($page-1) * $limit);
+        }
+        
+        if(
+            $sort = $this->getProperty('sort')
+            AND mb_strpos($str, ".", 0,  'utf-8') === false
+            AND $fields = $this->modx->getFields($this->classKey)
+            AND array_key_exists($sort, $fields)
+        ){ 
+            $this->setProperty('sort', "{$this->classKey}.{$sort}");
         }
         
         return !$this->hasErrors();
@@ -58,31 +73,6 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
     }  
 
     
-    /*
-        В этот прописываем вызов всего того, что должно быть отработано даже тогда,
-        когда результат процессора взят из кеша (к примеру, вызов сниппета getPage,
-        а то если его не вызывать каждый раз, то не будет отображаться постраничность)
-    */
-    protected function prepareResponse($response){ 
-         
-        
-        if($this->getProperty('getPage') AND $limit = $this->getProperty('limit') AND !empty($response['total'])){
-            
-            $this->modx->setPlaceholder('total', $response['total']);
-            
-            $snippet = "getPage";
-            if($getPageParamsSet = $this->getProperty('getPageParamsSet')){
-                $snippet .= "@{$getPageParamsSet}";
-            }
-            
-            $this->modx->runSnippet($snippet, array(
-                'limit' => $limit,
-            ));
-        }
-        
-        return $response;
-    }
-    
     /**
      * Get the data of the query
      * @return array
@@ -98,7 +88,6 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
         if(!$c = $this->getCount($c)){
             return $data;
         }
-        $c = $this->prepareQueryAfterCount($c);
 
         $this->setSelection($c);
         
@@ -113,26 +102,29 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
             $sortKey = $this->modx->getSelectColumns($sortClassKey,$this->getProperty('sortAlias',$sortClassKey),'',array($this->getProperty('sort')));
         }
         
-        $query = clone $c;
-        $query = $this->prepareCountQuery($query);
-        if(!$this->total = $this->countTotal($this->classKey,$query)){
+        $c = $this->prepareCountQuery($c);
+        if(!$this->total = $this->countTotal($this->classKey,$c)){
             return false;
         }
         
+        $c = $this->prepareQueryAfterCount($c);
+        
+        
         if($sortKey){
             $c->sortby($sortKey,$this->getProperty('dir'));
-            $query->sortby($sortKey,$this->getProperty('dir'));
         }
+        
+        $query = clone $c;
         
         $limit = intval($this->getProperty('limit'));
         $start = intval($this->getProperty('start'));
         
-        if ($limit > 0) {
+        if ($limit || $start) {
             $query->limit($limit,$start);
         }
         
         $query = $this->prepareUniqObjectsQuery($query);
-        if($query->prepare() && $query->stmt->execute() && $rows = $row = $query->stmt->fetchAll(PDO::FETCH_ASSOC)){
+        if($query->prepare() && $query->stmt->execute() && $rows = $query->stmt->fetchAll(PDO::FETCH_ASSOC)){
             $IDs = array();
             foreach($rows as $row){
                 $IDs[] = $row['id'];
@@ -144,6 +136,13 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
             ));
         }
         else{
+            
+            if($query->stmt AND $query->stmt->errorCode() !== "00000"){
+                $this->modx->log(xPDO::LOG_LEVEL_ERROR, __CLASS__);
+                $this->modx->log(xPDO::LOG_LEVEL_ERROR, print_r($query->stmt->errorInfo(), true));
+                $this->modx->log(xPDO::LOG_LEVEL_ERROR, $query->toSQL());
+            }
+            
             return false;
         }     
         
@@ -161,13 +160,51 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
     /*
      * Count total results
      */
-    protected function countTotal($className, xPDOQuery & $query){
-        return $this->modx->getCount($this->classKey,$query);
+    protected function countTotal($className, xPDOQuery & $criteria){
+        $count = 0; 
+        
+        $query = clone($criteria);
+        
+        $stmt = null;
+        $expr = '*';
+        if ($pk = $this->modx->getPK($className)) {
+            if (!is_array($pk)) {
+                $pk = array($pk);
+            }
+            $expr = $this->modx->getSelectColumns($className, $query->getAlias(), '', $pk);
+        } 
+        if (isset($query->query['columns'])) {
+            $query->query['columns'] = array();
+        }
+        if (!empty($query->query['groupby']) || !empty($query->query['having'])) {
+            $query->select($expr);
+            if ($query->prepare()) {
+                $countQuery = new xPDOCriteria($this->modx, "SELECT COUNT(*) FROM ({$query->toSQL(false)}) cq", $query->bindings, $query->cacheFlag);
+                $stmt = $countQuery->prepare();
+            }
+        } else {
+            $query->select(array("COUNT(DISTINCT {$expr})"));
+            $stmt = $query->prepare();
+        }
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $count = intval($stmt->fetchColumn());
+                
+            }
+            else if($stmt->errorCode() !== "00000"){
+                $this->modx->log(xPDO::LOG_LEVEL_ERROR, __CLASS__);
+                $this->modx->log(xPDO::LOG_LEVEL_ERROR, print_r($stmt->errorInfo(), true));
+                $this->modx->log(xPDO::LOG_LEVEL_ERROR, $query->toSQL());
+            }
+        } 
+        
+        return $count;
     }
 
     protected function prepareUniqObjectsQuery(xPDOQuery & $query){
-        if (isset($query->query['columns'])) $query->query['columns'] = array();
-        $query->select(array ("DISTINCT {$this->classKey}.id"));
+        
+        $query->select(array ("{$this->classKey}.id"));
+        $query->distinct(); 
         
         return $query;
     } 
@@ -185,28 +222,60 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
     }
     
     protected function getMessage(){return '';}
- 
- 
- 
+
+    /*
+        Here you may add callback when caching anabled
+    */
     
-    public function outputArray(array $array, $count = false) {
+    /*
+        В этот прописываем вызов всего того, что должно быть отработано даже тогда,
+        когда результат процессора взят из кеша (к примеру, вызов сниппета getPage,
+        а то если его не вызывать каждый раз, то не будет отображаться постраничность)
+    */
+    protected function prepareResponse($response){
         
-        if($this->getProperty('current')){
-            $array = current($array);
+        if($this->getProperty('getPage') AND $limit = $this->getProperty('limit') AND !empty($response['total'])){
+            
+            $this->modx->setPlaceholder('total', $response['total']);
+            
+            $snippet = "getPage";
+            if($getPageParamsSet = $this->getProperty('getPageParamsSet')){
+                $snippet .= "@{$getPageParamsSet}";
+            }
+            
+            $this->modx->runSnippet($snippet, array(
+                'limit' => $limit,
+            ));
         }
         
-        $response = array(
+        return $response;
+    }
+
+    public function outputArray(array $array, $count = false){
+        
+        if($this->getProperty('current')){
+            if($array){
+                $array = current($array);
+                $_count = 1;
+            }
+            else{
+                $_count = 0;
+            }
+        }
+        else{
+            $_count = count($array);
+        }
+        
+        return $this->prepareResponse(array(
             'success' => true,
             'message' => $this->getMessage(),
-            'count'   => count($array),
+            'count'   => $_count,
             'total'   => $count,
+            'limit'   => (int)$this->getProperty('limit', 0),
+            'page'    => (int)$this->getProperty('page', 0),
             'object'  => $array,
-        );
-        
-        return $this->prepareResponse($response);
+        ));
     }
-    
-    
     
     
     protected function getSourcePath($id = null, $callback = 'getBaseUrl', $params = array()){
@@ -225,12 +294,20 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
             }
             $this->sources[$id] = & $source;
         }
+         
         
-        $result = $this->sources[$id]->$callback($params);
+        switch($callback){
+            case 'getBaseUrl':
+                if(!is_string($params)){
+                    $params = '';
+                }
+                break;
+        }
+        
+        $result = $this->sources[$id]->$callback($params); 
         
         return $result;
     }
-    
 }
 
 return 'modSiteWebGetlistProcessor';

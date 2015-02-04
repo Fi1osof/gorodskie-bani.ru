@@ -1,0 +1,9 @@
+modCaptcha-1.0.1-beta
+==============================================
+1. Minor session bugfix
+
+
+modCaptcha-1.0.0-beta
+==============================================
+
+First release

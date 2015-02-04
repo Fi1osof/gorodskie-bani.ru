@@ -1,0 +1,17 @@
+Console-2.0.1-beta
+=============================================================
+- Saving code in $_SESSION;
+
+Console-2.0.0-rc
+=============================================================
+- Ace integration fix;
+
+Console-1.2.0-rc
+=============================================================
+- Set default LogTarget('HTML');
+- Set default LogLevel(xPDO::LOG_LEVEL_DEBUG);
+
+Console-1.1.0-rc
+=============================================================
+
+- First release

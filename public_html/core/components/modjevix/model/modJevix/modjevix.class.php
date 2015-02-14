@@ -15,7 +15,7 @@ class modJevix extends Jevix{
     }
     
     /**
-	 * Конфигурирует типограф
+     * Конфигурирует типограф
 	 *
 	 */
 	protected function JevixConfig() {
@@ -66,7 +66,7 @@ class modJevix extends Jevix{
         		'cfgAllowTags' => array(
         			// вызов метода с параметрами
         			array(
-        				array('ls','cut','a', 'img', 'i', 'b', 'u', 's', 'video', 'em',  'strong', 'nobr', 'li', 'ol', 'ul', 'sup', 'abbr', 'sub', 'acronym', 'h4', 'h5', 'h6', 'br', 'hr', 'pre', 'code', 'object', 'param', 'embed', 'blockquote', 'iframe','table','th','tr','td'),
+        				array('p','ls','div','cut','a', 'img', 'i', 'b', 'u', 's', 'video', 'em',  'strong', 'nobr', 'li', 'ol', 'ul', 'sup', 'abbr', 'sub', 'acronym', 'h3', 'h4', 'h5', 'h6', 'br', 'hr', 'pre', 'code', 'object', 'param', 'embed', 'blockquote', 'iframe','table','th','tr','td'),
         			),			
         		),
         		// Коротие теги типа
@@ -83,10 +83,31 @@ class modJevix extends Jevix{
         		),
         		// Разрешённые параметры тегов
         		'cfgAllowTagParams' => array(
-        			// вызов метода
+        			// вызов метода 
+        			 
+        			array(
+        				'p',
+        				array('class')
+        			),
+        			array(
+        				'div',
+        				array('class')
+        			),
+        			array(
+        				'h3',
+        				array('class')
+        			),
+        			array(
+        				'h4',
+        				array('class')
+        			),
+        			array(
+        				'h5',
+        				array('class')
+        			),
         			array(
         				'img',
-        				array('src', 'alt' => '#text', 'title', 'align' => array('right', 'left', 'center', 'middle'), 'width' => '#int', 'height' => '#int', 'hspace' => '#int', 'vspace' => '#int', 'class'=> array('image-center'))
+        				array('src', 'alt' => '#text', 'title', 'align' => array('right', 'left', 'center', 'middle'), 'width' => '#int', 'height' => '#int', 'hspace' => '#int', 'vspace' => '#int', 'class')
         			),
         			// следующий вызов метода
         			array(
@@ -128,11 +149,15 @@ class modJevix extends Jevix{
         			),
         			array(
         				'td',
-        				array('colspan'=>'#int','rowspan'=>'#int','align'=>array('right', 'left', 'center', 'justify'),'height'=>'#int','width'=>'#int')
+        				array('colspan'=>'#int','rowspan'=>'#int','align'=>array('right', 'left', 'center', 'justify'),'height'=>'#int','width'=>'#int', 'class')
+        			),
+        			array(
+        				'th',
+        				array('colspan'=>'#int','rowspan'=>'#int','align'=>array('right', 'left', 'center', 'justify'),'height'=>'#int','width'=>'#int', 'class')
         			),
         			array(
         				'table',
-        				array('border'=>'#int','cellpadding'=>'#int','cellspacing'=>'#int','align'=>array('right', 'left', 'center'),'height'=>'#int','width'=>'#int')
+        				array('border'=>'#int','cellpadding'=>'#int','cellspacing'=>'#int','align'=>array('right', 'left', 'center'),'height'=>'#int','width'=>'#int', 'class')
         			),
         		),
         		// Параметры тегов являющиеся обязательными

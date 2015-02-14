@@ -28,6 +28,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
             "parent" => 309,
             "template"  => 15,
             "tv23"       => $this->modx->hasPermission('society.approve_topics') ? '1' : '',
+            "show_in_tree"  => 1,
         ));
         
         return parent::initialize();

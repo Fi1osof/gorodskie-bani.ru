@@ -71,6 +71,11 @@ class modWebPublicActionProcessor extends modProcessor{
                     require dirname(dirname(__FILE__)) . '/society/email_messages/send.class.php';
                     self::$actualClassName = 'modWebSocietyEmailmessagesSendProcessor';
                     break; 
+                
+                case 'login':
+                    require_once dirname(dirname(__FILE__)) . '/society/users/login.class.php';
+                    self::$actualClassName = "modWebSocietyUsersLoginProcessor";
+                    break;
                     
                 
                 default:;

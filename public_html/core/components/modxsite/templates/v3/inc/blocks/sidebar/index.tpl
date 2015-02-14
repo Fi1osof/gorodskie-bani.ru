@@ -4,12 +4,12 @@
             
     <div class="title">Справочник</div>      
     <div class="">  
-        [[!Wayfinder?startId=`0`&level=`1`&outerClass=`menu`&where=`{ "template":26 }`]] 
+        [[!Wayfinder?startId=`1296`&level=`1`&outerClass=`menu`]] 
     </div>
      
     <div class="title">Разделы</div>  	
     <div class="">  
-        [[!Wayfinder?startId=`0`&level=`1`&outerClass=`menu`&where=`{ "template:!=":26 }`]] 
+        [[!Wayfinder?startId=`0`&level=`1`&outerClass=`menu`&where=`{ "template:!=":26, "id:not in":[1296]}`]] 
     </div>
     
     <div style="margin: 0 0 20px;">

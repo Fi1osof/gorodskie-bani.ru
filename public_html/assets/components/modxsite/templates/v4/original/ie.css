@@ -1,0 +1,22 @@
+#menu ul {
+}
+
+#menu ul li {
+	margin: 0;
+	padding: 0;
+	float: left;
+	text-align: center;
+	display: inline;
+	padding: 0 30px 0 0;	
+}
+#menu ul li a {
+	color : #684c0a;
+	background-color: transparent;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 1.4em;
+	text-decoration : none;
+	font-style: italic;
+	font-weight: bold;
+	display: inline;	
+	border-style:none;
+}

@@ -1,5 +1,9 @@
 @import url("../../vendor/AlertifyJS/build/css/themes/bootstrap.css");
 @import url("../../vendor/AlertifyJS/build/css/alertify.css");
+.brand-leaf {
+  width: 59px;
+  background-repeat: no-repeat;
+}
 #main {
   margin-top: 50px;
   padding-bottom: 50px;
@@ -56,6 +60,37 @@
 }
 #sidebar ul li {
   margin: 10px 0;
+}
+.panel-heading .title,
+.page-header .title {
+  display: inline-block;
+  background: url("../../img/leaf.png") no-repeat scroll 10px center rgba(0, 0, 0, 0);
+  padding: 6px 0 6px 40px;
+}
+.navbar-header .navbar-brand {
+  padding: 3px 0;
+}
+.navbar-header .navbar-brand .logo {
+  height: 45px;
+  overflow: hidden;
+}
+.navbar-header .navbar-brand .logo .str {
+  display: block;
+  float: left;
+  height: 45px;
+  line-height: 45px;
+  font-size: 25px;
+}
+.navbar-header .navbar-brand .logo .leaf {
+  width: 59px;
+  background-repeat: no-repeat;
+}
+.navbar-header .navbar-brand .logo .leaf.leaf-l {
+  background-image: url(../../img/bath-logo.png);
+  margin-right: 5px;
+}
+.navbar-header .navbar-brand .logo .leaf.leaf-r {
+  background-image: url(../../img/venik-l.png);
 }
 .counter {
   display: inline-block;

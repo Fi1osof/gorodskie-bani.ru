@@ -86,7 +86,52 @@
         }
     }
     
+    
 }
+.panel-heading
+,.page-header{
+    
+    .title{
+        display:inline-block;
+        background: @leaf;
+        padding: @leaf-paddings;
+    }
+}
+
+.navbar-header{
+    
+    .navbar-brand{
+        padding: 3px 0;
+        
+        .logo{
+            height:45px;
+            overflow: hidden;
+            
+            .str{
+                display: block;
+                float: left;
+                height: 45px;
+                line-height:45px;
+                font-size: 25px;
+            }
+            
+            .leaf{
+                .brand-leaf;
+                
+                &.leaf-l{
+                    background-image: url(../../img/bath-logo.png);
+                    margin-right: 5px;
+                }
+                
+                &.leaf-r{
+                    background-image: url(../../img/venik-l.png);
+                }
+            }
+        }
+        
+    }
+}
+
 
 .counter{
     display: inline-block;

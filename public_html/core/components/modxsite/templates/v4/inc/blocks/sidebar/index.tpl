@@ -4,7 +4,7 @@
     <div class="panel panel-default">
         
         <div class="panel-heading">
-            Поиск по сайту
+            <h4 class="title">Поиск по сайту</h4>
         </div>
         
         <div class="panel-body">
@@ -17,7 +17,7 @@
     <div class="panel panel-default">
         
         <div class="panel-heading">
-            Справочник
+            <h4 class="title">Справочник</h4>
         </div>
         
         <div class="panel-body">
@@ -28,7 +28,7 @@
     <div class="panel panel-default">
         
         <div class="panel-heading">
-            Разделы
+            <h4 class="title">Разделы</h4>
         </div>
         
         <div class="panel-body">

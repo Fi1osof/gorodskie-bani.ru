@@ -96,7 +96,7 @@
         <div class="navbar navbar-default navbar-fixed-top">
           <div class="container">
             <div class="navbar-header">
-              <a href="{$site_url}" class="navbar-brand">Городские бани</a>
+              <a href="{$site_url}" class="navbar-brand"><div class="logo"><i class="str leaf leaf-l"></i><span class="str">Городские бани</span></div></a>
               <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -175,6 +175,149 @@
         {block name=footers}    
             <script src="{$template_url}vendor/AlertifyJS/build/alertify.min.js"></script>
             <script src="{$template_url}bundle/app.js"></script>
+        {/block}
+        
+        {block society_scripts}
+        
+            
+
+        <script type="text/javascript">
+            
+            (new function(){
+                
+                this.inRequest = false;
+                
+                this.init = function(){
+                    this.addListeners();
+                } 
+                
+                this.addListeners = function(){
+                    $('.topic_vote').on('click', this, this.doVote);
+                }
+                
+                this.doVote = function(obj){
+                    
+                    var scope = obj.data;
+                    
+                    
+                    if(scope.inRequest){
+                        return false;
+                    }
+                    
+                    // else
+                    scope.inRequest = true;
+                    
+                    var a = $(this);
+                    var topic_list = a.parents('.topic_list:first');
+                    console.log(topic_list);
+                    var target_id = topic_list.attr('id').replace('topic_list_', '');
+                    var vote_direction = a.attr('vote_direction');
+                    
+                    $.ajax({
+                        "url":"assets/components/modxsite/connectors/society.php",
+                        "type": "POST",
+                        "dataType": "json",
+                        "data":{
+                            "pub_action": "topics/votes/create",
+                            "target_id"  : target_id,
+                            "vote_direction": vote_direction
+                        },
+                        "error": function(response){
+                            scope.inRequest = false;
+                            alert('Ошибка выполнения запроса');
+                        },
+                        "success": function(response){
+                            scope.inRequest = false;
+                            response = response || {};
+                            
+                            if(!response.success){
+                                alert(response.message || 'Ошибка выполнения запроса');
+                                return;
+                            }
+                            
+                            // else
+                            alert(response.message || 'Ваш голос успешно принят');
+                            
+                            // Обновляем значение рейтинга
+                            var rating = topic_list.find('.rating:first');
+                            rating.text( (parseInt(rating.text()) || 0)*1 + response.object.vote_value*1);
+                            
+                            return;
+                        }
+                    });
+                    return false;
+                }
+            }).init();
+            
+            
+            (new function(){
+                
+                this.inRequest = false;
+                
+                this.init = function(){
+                    this.addListeners();
+                } 
+                
+                this.addListeners = function(){
+                    $('.comment_vote').on('click', this, this.doVote);
+                }
+                
+                this.doVote = function(obj){
+                    
+                    var scope = obj.data;
+                    
+                    
+                    if(scope.inRequest){
+                        return false;
+                    }
+                    
+                    // else
+                    scope.inRequest = true;
+                    
+                    var a = $(this);
+                    var comment = a.parents('.comment:first');
+                    var target_id = comment.attr('id').replace('comment-', '');
+                    var vote_direction = a.attr('vote_direction');
+                    
+                    $.ajax({
+                        "url":"assets/components/modxsite/connectors/society.php",
+                        "type": "POST",
+                        "dataType": "json",
+                        "data":{
+                            "pub_action": "topics/comments/votes/create",
+                            "target_id"  : target_id,
+                            "vote_direction": vote_direction
+                        },
+                        "error": function(response){
+                            scope.inRequest = false;
+                            alert('Ошибка выполнения запроса');
+                        },
+                        "success": function(response){
+                            scope.inRequest = false;
+                            response = response || {};
+                            
+                            if(!response.success){
+                                alert(response.message || 'Ошибка выполнения запроса');
+                                return;
+                            }
+                            
+                            // else
+                            alert(response.message || 'Ваш голос успешно принят');
+                            
+                            // Обновляем значение рейтинга
+                            var rating = comment.find('.rating:first');
+                            rating.text( (parseInt(rating.text()) || 0)*1 + response.object.vote_value*1 );
+                            
+                            return;
+                        }
+                    });
+                    return false;
+                }
+            }).init();
+            
+        </script>
+
+        
         {/block}
         
     </body>

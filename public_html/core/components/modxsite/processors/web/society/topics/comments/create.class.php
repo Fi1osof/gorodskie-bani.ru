@@ -14,6 +14,14 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
         return parent::checkPermissions();
     }
     
+    
+    public function getLanguageTopics() {
+        return array_merge((array)parent::getLanguageTopics(), array(
+            "modsociety:default",
+        ));
+    }
+    
+    
     public function initialize(){
         
         $this->setProperties(array(

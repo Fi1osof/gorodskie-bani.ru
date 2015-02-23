@@ -6,7 +6,7 @@
 {$image = $object.image}
 {$src = $modx->runSnippet('phpthumbof', [
     "input" => $image,
-    "options"   => "&q=100&far=T&zc=1&w=600&h=400"
+    "options"   => "&q=40&far=T&zc=1&w=500&h=350&f=jpg"
 ])}
 
 {$approved = $object.tvs.approved.value} 

@@ -5,8 +5,10 @@
 {extends file="society/topics/index.tpl"}
 
 {block name=params append}
-
-    {$params.where.template = 28}
+ 
+    {$processor = "web/society/topics/obzory/getdata"}
+    
+    {$params.facility_type = 1298}
     
 {/block}
 

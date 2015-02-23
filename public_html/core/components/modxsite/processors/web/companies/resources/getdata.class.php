@@ -13,9 +13,16 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebResourcesGetdataPro
     public function prepareQueryBeforeCount(xPDOQuery $c){
         $c = parent::prepareQueryBeforeCount($c);
         
-        $c->innerJoin('modResource', 'City', "City.id = {$this->classKey}.parent");
+        $alias = $c->getAlias();
+        
+        $c->innerJoin('modResource', 'City', "City.id = {$alias}.parent");
         
         # $c->innerJoin('modCompany', 'Company');
+        
+        // По типу заведения
+        if($facility_type = (int)$this->getProperty('facility_type')){
+            $c->innerJoin("modTemplateVarResource", "facility_type", "facility_type.contentid = {$alias}.id AND facility_type.tmplvarid = 25 AND facility_type.value = {$facility_type}");
+        }
         
         $c->where(array(
             "template"  => 27,

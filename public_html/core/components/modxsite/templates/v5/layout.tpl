@@ -39,7 +39,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <link rel="stylesheet" href="{$template_url}bootswatch/cerulean/bootstrap.css" media="screen">
-        <link rel="stylesheet" href="{$template_url}bootswatch/bower_components/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="{$template_url}bootswatch/assets/css/bootswatch.min.css">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -56,12 +55,6 @@
         </script>
         *}
         
-        <script src="{$template_url}libs/jquery/jquery-1.8.3.min.js" type="text/javascript"></script>
-        <script src="{$template_url}libs/markitup/jquery.markitup.js" type="text/javascript"></script>
-        <link href="{$template_url}libs/markitup/skins/synio/style.css" rel="stylesheet">
-        <link href="{$template_url}libs/markitup/sets/synio/style.css" rel="stylesheet">
-         
-        <link rel='stylesheet' type='text/css' href='/assets/components/directresize/highslide/highslide.css' />
 
         <link rel="stylesheet" href="{$template_url}bundle/styles/styles.css">
         
@@ -153,6 +146,175 @@
               </div>
             </div>
         {/block}
+        
+        
+        {block markitup}
+            <script src="{$template_url}libs/jquery/jquery-1.8.3.min.js" type="text/javascript"></script>
+            <script src="{$template_url}libs/markitup/jquery.markitup.js" type="text/javascript"></script>
+            <link href="{$template_url}libs/markitup/skins/synio/style.css" rel="stylesheet">
+            <link href="{$template_url}libs/markitup/sets/synio/style.css" rel="stylesheet">
+        {/block}
+        
+        
+        {block editors}
+        
+            {literal}
+                <script type="text/javascript">
+                    jQuery(function($){
+            			// Подключаем редактор
+            			$('.markitup-editor').markItUp({
+                    		onShiftEnter:  	{keepDefault:false, replaceWith:'<br />\n'},
+                			onTab:    		{keepDefault:false, replaceWith:'    '},
+                			markupSet:  [
+                                {name: 'жирный', className:'editor-bold', key:'B', openWith:'(!(<strong>|!|<b>)!)', closeWith:'(!(</strong>|!|</b>)!)' },
+                    			{name: 'курсив', className:'editor-italic', key:'I', openWith:'(!(<em>|!|<i>)!)', closeWith:'(!(</em>|!|</i>)!)'  },
+                				{name: 'зачеркнутый', className:'editor-stroke', key:'S', openWith:'<s>', closeWith:'</s>' },
+                				{name: "подчеркнутый", className:'editor-underline', key:'U', openWith:'<u>', closeWith:'</u>' },
+                				{separator:'---------------' },
+                				{name: "цитировать", className:'editor-quote', key:'Q', replaceWith: function(m) { if (m.selectionOuter) return '<blockquote>'+m.selectionOuter+'</blockquote>'; else if (m.selection) return '<blockquote>'+m.selection+'</blockquote>'; else return '<blockquote></blockquote>' } },
+                				{name: "код", className:'editor-code', openWith:'<code>', closeWith:'</code>' },
+                                {name: "вставить ссылку", className:'editor-link', key:'L', openWith:'<a href="[![Введите ссылку:!:http://]!]"(!( title="[![Title]!]")!)>', closeWith:'</a>', placeHolder:'Your text to link...' }
+            			    ]
+                		});
+            		});
+            	</script>
+            {/literal}
+        
+
+
+            <script type="text/javascript">
+                
+                var D = {
+                    
+                    inRequest: false
+                    
+                    ,init: function(block){
+                        this.block = block;
+                        
+                        this.block.on('click', '.comment-button', this, this.onClick);
+                        
+                        this.form = $('#reply form');
+                        
+                        this.form.on('submit', this, this.onSubmit);
+                         
+                    }
+                    
+                    ,onClick: function(e){ 
+                        
+                        var a = $(this);
+                        var wrapper = a.parent();
+                        var reply_form = $('#reply');
+                        var comment_id = wrapper.attr('data-comment-id');
+                        
+                        reply_form.find('#form_comment_reply').val(comment_id);
+                        // 
+                        // console.log(a);
+                        // console.log(wrapper);
+                        // console.log(comment_id);
+                        
+                        
+                        
+                        wrapper.after(reply_form);
+                        
+                        $('#reply').show();
+                        return false;
+                    }
+                    
+                    ,onSubmit: function(e){
+                        
+                        var scope = e.data;
+                        
+                        var form = $(this);
+                        
+                        
+                        if(!scope.inRequest){ 
+                            
+                            scope.inRequest = true;
+                            var data = form.serialize();
+                            var comment_parent = form.find("[name=parent]").val();
+                            
+                            scope.form.find('.has-error').removeClass('has-error');
+                            
+                            $.ajax({
+                                url: "assets/components/modxsite/connectors/connector.php"
+                                ,type: "post"
+                                ,dataType: "json"
+                                ,data: data
+                                ,error: function(){
+                                    scope.inRequest = false;
+                                    
+                                    alert("Ошибка выполнения запроса");
+                                    
+                                    return false;
+                                }
+                                ,success: function(response){ 
+                                    scope.inRequest = false;
+                                    
+                                    if(!response.success){
+                                        
+                                        alert(response.message || "Ошибка выполнения запроса");
+                                        
+                                        return;
+                                    }
+                                    
+                                    // else
+                                    alert(response.message || "Успешно");
+                                    scope.form[0].reset();
+                                    
+                                    $('#reply').hide();
+                                    
+                                    
+                                    // Подставляем код комментария
+                                    if(response.object && response.object.comment_html){
+                                        
+                                        // Подставляем или в ответ, или новым блоком
+                                        
+                                        var outer_block, inner_block;
+                                        
+                                        if(comment_parent > 0){
+                                            inner_block = $('#comment-' + comment_parent);
+                                            
+                                            outer_block = inner_block.find('.outer-tpl:first');
+                                            
+                                            if(!outer_block.length){
+                                                outer_block = $('<div class="comment-list outer-tpl"></div>');
+                                            }
+                                        }
+                                        else{
+                                            
+                                            inner_block = $('#comments-wrapper');
+                                        }
+                                        
+                                        
+                                        if(!outer_block || !outer_block.length){
+                                            outer_block = $('<div class="comment-list outer-tpl"></div>');
+                                        }
+                                        
+                                        outer_block.append(response.object.comment_html);
+                                        
+                                        inner_block.append(outer_block);
+                                        
+                                    }
+                                    
+                                    return;
+                                }
+                            });
+                        } 
+                        
+                        return false;
+                    }
+                     
+                };
+                
+                D = Object.create(D)
+                    .init($('.topic_list'));
+                
+            </script>
+
+        
+        {/block}
+        
+        
     
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script> 
         <script src="{$template_url}bootswatch/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -160,8 +322,13 @@
         
         {include "inc/login/modal.tpl"}
         
-        
         {block name=libs}
+        
+            <link rel="stylesheet" href="{$template_url}bootswatch/bower_components/font-awesome/css/font-awesome.min.css">
+             
+            <link rel='stylesheet' type='text/css' href='/assets/components/directresize/highslide/highslide.css' />
+        
+        
             <script type='text/javascript' src='/assets/components/directresize/js/highslide-with-gallery.min.js'></script>
             <script type='text/javascript'>
                 hs.graphicsDir = '/assets/components/directresize/highslide/graphics/';

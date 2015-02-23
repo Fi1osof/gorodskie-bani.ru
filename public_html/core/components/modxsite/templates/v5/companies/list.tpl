@@ -11,7 +11,8 @@
         "page"      => 0,
         "parent"    => 1197,
         "sort"      => "modResource.publishedon",
-        "dir"       => "DESC"
+        "dir"       => "DESC",
+        "facility_type" => 1298
     ])}
     
     {$processor = "web/companies/resources/getdata"} 

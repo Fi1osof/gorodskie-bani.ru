@@ -98,6 +98,12 @@
 .navbar-header .navbar-brand .logo .leaf.leaf-r {
   background-image: url(../../img/venik-l.png);
 }
+.outer-tpl .outer-tpl {
+  margin-left: 20px;
+}
+.outer-tpl.level-7 .outer-tpl {
+  margin-left: 0;
+}
 .counter {
   display: inline-block;
   margin: 10px 5px 0 0;

@@ -18,9 +18,14 @@ class modWebSocietyTopicsGetdataProcessor extends modSocietyWebTopicsGetdataProc
     public function prepareQueryBeforeCount(xPDOQuery $q){
         $q = parent::prepareQueryBeforeCount($q);
         
-        //$q->innerJoin('modUser', 'CreatedBy');
+        $q->innerJoin('modResource', 'Parent');
         
         $q->innerJoin('SocietyBlogTopic', 'bt', "bt.topicid = {$this->classKey}.id");
+         
+        // По типу заведения
+        if($facility_type = (int)$this->getProperty('facility_type')){
+            $q->innerJoin("modTemplateVarResource", "facility_type", "facility_type.contentid = Parent.id AND facility_type.tmplvarid = 25 AND facility_type.value = {$facility_type}");
+        }
         
         return $q;
     }

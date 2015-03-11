@@ -1,5 +1,6 @@
 {extends file="society/topics/create.tpl"}
 
+{block no_send_mails_field}{/block}
 
 {block name=form}
     

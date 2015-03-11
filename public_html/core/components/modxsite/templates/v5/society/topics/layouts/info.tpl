@@ -10,7 +10,7 @@
 <p class="date">
     <span class="login">
         <a title="" href="{$users_url}{$object.author_username}">{if $src}<img src="{$src}" width="24" height="24" alt=""/>{else}<i class="glyphicon glyphicon-user"></i>{/if}
-            {$object.author_username}
+            {$object.author_fullname|default:$object.author_username}
         </a>
     </span>
     <span class="sep"> | </span>

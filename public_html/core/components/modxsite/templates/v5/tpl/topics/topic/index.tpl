@@ -3,6 +3,8 @@
 *}
 {extends file="layout.tpl"}
 
+{block pagetitle}{/block}
+
 {block name=content}
     [[!smarty?tpl=`society/topics/topic/index.tpl`]]
     

@@ -2,7 +2,7 @@
 {$link = $modx->makeUrl($modx->resource->id, '', '', 'full')}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 <channel>
-    <title>{$modx->resource->longtitle} | {$modx->getOption('site_name')}</title>
+    <title>{$modx->getOption('site_name')} | {$modx->resource->longtitle}</title>
     <link>{$link}</link>
     <description><![CDATA[{$modx->resource->introtext}]]></description>
     <language>{$modx->getOption('cultureKey')}</language>

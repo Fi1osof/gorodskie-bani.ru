@@ -1,3 +1,4 @@
+{block comments_header}{/block}
 {*
     Выводим все комментарии по топикам
 *}
@@ -23,7 +24,10 @@
 
 {* Выводим комментарии *}
 {$comments_inner_tpl = $comments_inner_tpl|default:"society/threads/comments/all/inner.tpl"}
-{include file="society/threads/comments/outer.tpl"}
+
+{block comments_fetch}
+    {include file="society/threads/comments/outer.tpl"}
+{/block}
 
 
 {block name=paging}

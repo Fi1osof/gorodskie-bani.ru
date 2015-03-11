@@ -24,6 +24,11 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
     
     public function initialize(){
         
+        $this->setDefaultProperties(array(
+            'no_send_emails'    => 0,       // Не отсылать емейл-рассылку пользователям о новом топике  
+            'tv26'              => $this->getProperty('original_source'),   // Ссылка на источник
+        ));
+        
         $this->setProperties(array(
             "parent" => 309,
             "template"  => 15,
@@ -169,7 +174,9 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
             } 
         }
         
-        
+        # $this->modx->log(1, print_r($this->properties, 1));
+        # $this->modx->log(1, print_r($this->getProperty('no_send_emails')));
+        # return 'debug';
         return !$this->hasErrors();
     }
     
@@ -177,6 +184,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
     public function afterSave(){
         $topic = & $this->object;
         $can_send_notices = $this->modx->hasPermission('modxclub.send_notices');
+        $no_send_emails = $this->getProperty('no_send_emails', false);
         $site_name = $this->modx->getOption('site_name');
         $use_delayed_emails = $this->modx->getOption('modsociety.use_delayed_emails', null, false);
         
@@ -221,7 +229,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
         
         
         // Отправляем всем, кто подписан на топики
-        if($can_send_notices){
+        if($can_send_notices && !$no_send_emails){
             $sended_to = array_unique($sended_to);
             $q = clone($users_query);
             
@@ -232,7 +240,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
             }
             $q->where(array(
                 "NoticeType.type"   => "new_topic",
-            ));
+            )); 
             
             # if($users = $this->modx->getCollection('modUser', $q)){
                 # foreach($users as $user){
@@ -268,7 +276,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
                 }
                 $this->modx->smarty->assign('auth_user_id', false);
             # }
-        }
+        } 
         
         // 1. Администрации
         $q = $this->modx->newQuery('modUser');

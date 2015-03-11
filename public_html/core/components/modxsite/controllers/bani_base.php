@@ -1,12 +1,6 @@
 <?php
 // ini_set('display_errors', 1);
         
-if($modx->hasPermission('frame')){
-
-    return require __DIR__ . '/bani_base.php';    
-}
-        
-        
 $properties = $modx->resource->getOne('Template')->getProperties();
 
 
@@ -39,7 +33,7 @@ foreach($arr as $a){
 exit;*/
 require_once dirname(__FILE__) . '/view/'.$path.'.class.php';
 $view = new $class($modx, $properties);
-return $view ->process();
+return preg_replace("/[ \r\n\t]+$/sm", "", $view ->process());
 
 /*
 require_once dirname(__FILE__) . '/view/view.class.php';

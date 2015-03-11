@@ -130,6 +130,12 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
     public function afterSave(){
         $topic = & $this->object;
         
+        
+        // ссылка на источник
+        if($original_source = $this->getProperty('original_source')){
+            $topic->setTVValue(26, $original_source);
+        }
+        
         // 1. Администрации
         $q = $this->modx->newQuery('modUser');
         $q->innerJoin('modUserGroupMember', 'UserGroupMembers');

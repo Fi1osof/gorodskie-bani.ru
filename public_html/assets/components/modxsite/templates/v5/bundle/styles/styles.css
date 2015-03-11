@@ -53,6 +53,9 @@
 .img-block {
   margin: 10px 0;
 }
+.gallery.row {
+  margin-top: 25px;
+}
 .gallery > div {
   margin-bottom: 20px;
 }
@@ -224,4 +227,10 @@
 }
 #robokassa .submit.robokassa:hover {
   background-position: -240px -785px;
+}
+.topic_list .topic-thumb {
+  margin-right: 5px;
+}
+blockquote {
+  font-size: inherit;
 }

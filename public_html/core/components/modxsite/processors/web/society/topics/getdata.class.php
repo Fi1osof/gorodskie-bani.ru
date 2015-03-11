@@ -82,6 +82,7 @@ class modWebSocietyTopicsGetdataProcessor extends modSocietyWebTopicsGetdataProc
         
         $q->select(array(
             "CreatedBy.username as author",
+            "CreatedByProfile.fullname as author_fullname",
             "CreatedByProfile.photo as author_avatar",
             "Attributes.short_text",
             "Attributes.topic_tags",
@@ -107,14 +108,46 @@ class modWebSocietyTopicsGetdataProcessor extends modSocietyWebTopicsGetdataProc
         
         $url = $this->getSourcePath($this->modx->getOption('modavatar.default_media_source', null, 15));
         
+        switch($this->getProperty('image_url_schema')){
+            case 'base':
+                $images_base_url = $this->modx->runSnippet('getSourcePath');
+                break;
+                
+            case 'full':
+                $images_base_url = $this->modx->getOption('site_url');
+                $images_base_url .= preg_replace("/^\//", "", $this->modx->runSnippet('getSourcePath'));
+                break;
+                
+            default: $images_base_url = '';
+        }
+        
         foreach($list as & $l){
             if($l['author_avatar']){
                 $l['author_avatar'] = $url . $l['author_avatar'];
             }
+             
+            $l['gallery'] = array();
+            if(
+                !empty($l['tvs']['gallery']['value'])
+                AND $gallery = json_decode($l['tvs']['gallery']['value'], 1)
+                AND is_array($gallery)
+            ){
+                foreach($gallery as $image){ 
+                    $image['image'] = $images_base_url . $image['image'];
+                    # $image['image'] = $image['image'];
+                    $l['gallery'][] = $image;
+                    
+                    if(!$l['image']){
+                        $l['image'] = $image['image'];
+                    }
+                }
+                
+            } 
         }
         
         return $list;
     }
+    
     
 }
 

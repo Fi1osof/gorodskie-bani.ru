@@ -384,11 +384,19 @@ class modJevix extends Jevix{
 	 * @return string
 	 */
 	public function VideoParser($sText) {
-		/**
+        /*
+            Мое
+        */ 
+ 
+	    $sText = preg_replace('/<video>((https?:)?\/\/(?:www\.|)youtube\.com\/.*)<\/video>/Ui', '<iframe width="560" height="315" src="$1" frameborder="0" allowfullscreen></iframe>', $sText);
+		
+        /**
 		 * youtube.com
 		 */
 		$sText = preg_replace('/<video>http:\/\/(?:www\.|)youtube\.com\/watch\?v=([a-zA-Z0-9_\-]+)(&.+)?<\/video>/Ui', '<iframe width="560" height="315" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>', $sText);
-		/**
+		
+     
+        /**
 		 * vimeo.com
 		 */
 		$sText = preg_replace('/<video>http:\/\/(?:www\.|)vimeo\.com\/(\d+).*<\/video>/i', '<iframe src="http://player.vimeo.com/video/$1" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>', $sText);

@@ -38,8 +38,7 @@
     <noscript><div><img src="//mc.yandex.ru/watch/26848689" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
 
-{/literal}
- 
+{/literal} 
 </div>
         
 <div class="counter">

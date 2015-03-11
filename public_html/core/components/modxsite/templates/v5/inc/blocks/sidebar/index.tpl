@@ -14,6 +14,14 @@
         </div>
     </div>
 
+    <noindex>
+        <div class="img-block"> 
+            <a href="http://www.drovyanka.ru/?r=gb" title="Строительство саун. Печи для бани и сауны Harvia, Kastor, Helo. Дымоходы Schiedel. Канадский кедр. Гималайская соль." target="_blank" rel="nofollow">
+                <img src="assets/images/side/drovyanka.jpg" class="img-responsive" style="width: 100%;margin-bottom: 20px;"/>
+            </a> 
+        </div> 
+    </noindex>
+    
     <div class="panel panel-default">
         
         <div class="panel-heading">
@@ -31,7 +39,7 @@
             <ul class="menu">
                 {foreach $result.object as $object}
                     {$title = $object.longtitle|default:$object.pagetitle}
-                    <li><a title="{$title|@escape}" href="moskovskaya-oblast/">{$title}</a></li>
+                    <li><a title="{$title|@escape}" href="{$object.uri}">{$title}</a></li>
                 {/foreach}
             </ul>
             
@@ -81,11 +89,6 @@
         </a> 
     </div> 
     
-    <div class="img-block"> 
-        <a href="http://www.drovyanka.ru/?r=gb" title="Строительство саун. Печи для бани и сауны Harvia, Kastor, Helo. Дымоходы Schiedel. Канадский кедр. Гималайская соль." target="_blank">
-            <img src="assets/images/side/drovyanka.jpg" class="img-responsive"/>
-        </a> 
-    </div> 
         
               
 </div>

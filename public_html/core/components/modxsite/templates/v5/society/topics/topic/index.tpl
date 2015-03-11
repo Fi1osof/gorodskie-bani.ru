@@ -51,8 +51,48 @@
             
             
             <div class="panel-body">
+                {$title = $object.longtitle|default:$object.pagetitle}
                 
-                {$modx->resource->content} 
+                {if $image = $object.image}
+                    {$thumb = $modx->runSnippet('phpthumbof', [
+                        'input' => $image,
+                        "options"   => "w=150"
+                    ])}
+                    
+                    <div class="head">
+                        <a class="highslide thumb" onclick="return hs.expand(this)" href="{$image}">
+                            <img class="pull-left topic-thumb" title="{$title|@escape}" alt="{$title|@escape}" src="{$thumb}"/>
+                        </a>
+                    </div>
+                {/if}
+                
+                 
+                {$object.content} 
+                
+                {if $object.gallery} 
+                    {include "inc/blocks/topics/gallery.tpl"}
+                {/if}
+                
+                {*
+                    Ссылка на оригинал
+                    Array
+                    (
+                        [scheme] => http
+                        [host] => svpressa.ru
+                        [path] => /post/article/114240/
+                    )
+
+                *}
+                {if $original_source = $object.tvs.original_source.value}
+                    {$parsed_url = parse_url($original_source)}
+                    <noindex>
+                        <p>
+                            <i>
+                                Источник: <a href="{$original_source}" target="_blank" rel="nofollow">{$parsed_url.host}</a>
+                            </i>
+                        </p>
+                    </noindex>
+                {/if}
                 
             </div>
             

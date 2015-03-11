@@ -4,6 +4,7 @@
 *}
 {extends file="tpl/companies/mainpage.tpl"}
 
+{block name=title}{$modx->resource->longtitle|default:$modx->resource->pagetitle} | {$modx->resource->Parent->pagetitle}, {$modx->resource->Parent->Parent->pagetitle}{if $address = $modx->resource->Parent->getTVValue(14)}, {$address}{/if} | {$site_name}{/block}
 
 {block name=params}
     

@@ -136,7 +136,15 @@
                   
                 <div class="row">
                     <div class="pull-right col-lg-9">
-                        {snippet name=Wayfinder params="startId=`0`&level=`1`&outerClass=`nav navbar-nav pull-right nav-footer`"}
+                        {$menuParams = [
+                            startId => 0,
+                            level => 1,
+                            outerClass => "nav navbar-nav pull-right nav-footer",
+                            where => json_encode([
+                                "id:not in" => [  239, 2, 1296]
+                            ])
+                        ]}
+                        {snippet name=Wayfinder params=$menuParams as_tag=1}
                     </div>
                     <div class="col-lg-3">
                         {include file="inc/counters/index.tpl"}
@@ -158,27 +166,36 @@
         
         {block editors}
         
-            {literal}
-                <script type="text/javascript">
-                    jQuery(function($){
-            			// Подключаем редактор
-            			$('.markitup-editor').markItUp({
-                    		onShiftEnter:  	{keepDefault:false, replaceWith:'<br />\n'},
-                			onTab:    		{keepDefault:false, replaceWith:'    '},
-                			markupSet:  [
-                                {name: 'жирный', className:'editor-bold', key:'B', openWith:'(!(<strong>|!|<b>)!)', closeWith:'(!(</strong>|!|</b>)!)' },
-                    			{name: 'курсив', className:'editor-italic', key:'I', openWith:'(!(<em>|!|<i>)!)', closeWith:'(!(</em>|!|</i>)!)'  },
-                				{name: 'зачеркнутый', className:'editor-stroke', key:'S', openWith:'<s>', closeWith:'</s>' },
-                				{name: "подчеркнутый", className:'editor-underline', key:'U', openWith:'<u>', closeWith:'</u>' },
-                				{separator:'---------------' },
-                				{name: "цитировать", className:'editor-quote', key:'Q', replaceWith: function(m) { if (m.selectionOuter) return '<blockquote>'+m.selectionOuter+'</blockquote>'; else if (m.selection) return '<blockquote>'+m.selection+'</blockquote>'; else return '<blockquote></blockquote>' } },
-                				{name: "код", className:'editor-code', openWith:'<code>', closeWith:'</code>' },
-                                {name: "вставить ссылку", className:'editor-link', key:'L', openWith:'<a href="[![Введите ссылку:!:http://]!]"(!( title="[![Title]!]")!)>', closeWith:'</a>', placeHolder:'Your text to link...' }
-            			    ]
+            
+            {*
+                Написать топик
+            *}
+            
+            {if in_array($modx->resource->id, [999, 1140])}
+                {include "inc/blocks/scripts/topics/create.tpl"}
+            {else}
+                {literal}
+                    <script type="text/javascript">
+                        jQuery(function($){
+                			// Подключаем редактор
+                			$('.markitup-editor').markItUp({
+                        		onShiftEnter:  	{keepDefault:false, replaceWith:'<br />\n'},
+                    			onTab:    		{keepDefault:false, replaceWith:'    '},
+                    			markupSet:  [
+                                    {name: 'жирный', className:'editor-bold', key:'B', openWith:'(!(<strong>|!|<b>)!)', closeWith:'(!(</strong>|!|</b>)!)' },
+                        			{name: 'курсив', className:'editor-italic', key:'I', openWith:'(!(<em>|!|<i>)!)', closeWith:'(!(</em>|!|</i>)!)'  },
+                    				{name: 'зачеркнутый', className:'editor-stroke', key:'S', openWith:'<s>', closeWith:'</s>' },
+                    				{name: "подчеркнутый", className:'editor-underline', key:'U', openWith:'<u>', closeWith:'</u>' },
+                    				{separator:'---------------' },
+                    				{name: "цитировать", className:'editor-quote', key:'Q', replaceWith: function(m) { if (m.selectionOuter) return '<blockquote>'+m.selectionOuter+'</blockquote>'; else if (m.selection) return '<blockquote>'+m.selection+'</blockquote>'; else return '<blockquote></blockquote>' } },
+                    				{name: "код", className:'editor-code', openWith:'<code>', closeWith:'</code>' },
+                                    {name: "вставить ссылку", className:'editor-link', key:'L', openWith:'<a href="[![Введите ссылку:!:http://]!]"(!( title="[![Title]!]")!)>', closeWith:'</a>', placeHolder:'Your text to link...' }
+                			    ]
+                    		});
                 		});
-            		});
-            	</script>
-            {/literal}
+                	</script>
+                {/literal}
+            {/if}
         
 
 
@@ -352,143 +369,160 @@
         {block society_scripts}
         
             
-
-        <script type="text/javascript">
-            
-            (new function(){
+    
+            <script type="text/javascript">
                 
-                this.inRequest = false;
-                
-                this.init = function(){
-                    this.addListeners();
-                } 
-                
-                this.addListeners = function(){
-                    $('.topic_vote').on('click', this, this.doVote);
-                }
-                
-                this.doVote = function(obj){
+                (new function(){
                     
-                    var scope = obj.data;
+                    this.inRequest = false;
                     
+                    this.init = function(){
+                        this.addListeners();
+                    } 
                     
-                    if(scope.inRequest){
-                        return false;
+                    this.addListeners = function(){
+                        $('.topic_vote').on('click', this, this.doVote);
                     }
                     
-                    // else
-                    scope.inRequest = true;
-                    
-                    var a = $(this);
-                    var topic_list = a.parents('.topic_list:first');
-                    console.log(topic_list);
-                    var target_id = topic_list.attr('id').replace('topic_list_', '');
-                    var vote_direction = a.attr('vote_direction');
-                    
-                    $.ajax({
-                        "url":"assets/components/modxsite/connectors/society.php",
-                        "type": "POST",
-                        "dataType": "json",
-                        "data":{
-                            "pub_action": "topics/votes/create",
-                            "target_id"  : target_id,
-                            "vote_direction": vote_direction
-                        },
-                        "error": function(response){
-                            scope.inRequest = false;
-                            alert('Ошибка выполнения запроса');
-                        },
-                        "success": function(response){
-                            scope.inRequest = false;
-                            response = response || {};
-                            
-                            if(!response.success){
-                                alert(response.message || 'Ошибка выполнения запроса');
+                    this.doVote = function(obj){
+                        
+                        var scope = obj.data;
+                        
+                        
+                        if(scope.inRequest){
+                            return false;
+                        }
+                        
+                        // else
+                        scope.inRequest = true;
+                        
+                        var a = $(this);
+                        var topic_list = a.parents('.topic_list:first');
+                        console.log(topic_list);
+                        var target_id = topic_list.attr('id').replace('topic_list_', '');
+                        var vote_direction = a.attr('vote_direction');
+                        
+                        $.ajax({
+                            "url":"assets/components/modxsite/connectors/society.php",
+                            "type": "POST",
+                            "dataType": "json",
+                            "data":{
+                                "pub_action": "topics/votes/create",
+                                "target_id"  : target_id,
+                                "vote_direction": vote_direction
+                            },
+                            "error": function(response){
+                                scope.inRequest = false;
+                                alert('Ошибка выполнения запроса');
+                            },
+                            "success": function(response){
+                                scope.inRequest = false;
+                                response = response || {};
+                                
+                                if(!response.success){
+                                    alert(response.message || 'Ошибка выполнения запроса');
+                                    return;
+                                }
+                                
+                                // else
+                                alert(response.message || 'Ваш голос успешно принят');
+                                
+                                // Обновляем значение рейтинга
+                                var rating = topic_list.find('.rating:first');
+                                rating.text( (parseInt(rating.text()) || 0)*1 + response.object.vote_value*1);
+                                
                                 return;
                             }
-                            
-                            // else
-                            alert(response.message || 'Ваш голос успешно принят');
-                            
-                            // Обновляем значение рейтинга
-                            var rating = topic_list.find('.rating:first');
-                            rating.text( (parseInt(rating.text()) || 0)*1 + response.object.vote_value*1);
-                            
-                            return;
-                        }
-                    });
-                    return false;
-                }
-            }).init();
-            
-            
-            (new function(){
-                
-                this.inRequest = false;
-                
-                this.init = function(){
-                    this.addListeners();
-                } 
-                
-                this.addListeners = function(){
-                    $('.comment_vote').on('click', this, this.doVote);
-                }
-                
-                this.doVote = function(obj){
-                    
-                    var scope = obj.data;
-                    
-                    
-                    if(scope.inRequest){
+                        });
                         return false;
                     }
+                }).init();
+                
+                
+                (new function(){
                     
-                    // else
-                    scope.inRequest = true;
+                    this.inRequest = false;
                     
-                    var a = $(this);
-                    var comment = a.parents('.comment:first');
-                    var target_id = comment.attr('id').replace('comment-', '');
-                    var vote_direction = a.attr('vote_direction');
+                    this.init = function(){
+                        this.addListeners();
+                    } 
                     
-                    $.ajax({
-                        "url":"assets/components/modxsite/connectors/society.php",
-                        "type": "POST",
-                        "dataType": "json",
-                        "data":{
-                            "pub_action": "topics/comments/votes/create",
-                            "target_id"  : target_id,
-                            "vote_direction": vote_direction
-                        },
-                        "error": function(response){
-                            scope.inRequest = false;
-                            alert('Ошибка выполнения запроса');
-                        },
-                        "success": function(response){
-                            scope.inRequest = false;
-                            response = response || {};
-                            
-                            if(!response.success){
-                                alert(response.message || 'Ошибка выполнения запроса');
+                    this.addListeners = function(){
+                        $('.comment_vote').on('click', this, this.doVote);
+                    }
+                    
+                    this.doVote = function(obj){
+                        
+                        var scope = obj.data;
+                        
+                        
+                        if(scope.inRequest){
+                            return false;
+                        }
+                        
+                        // else
+                        scope.inRequest = true;
+                        
+                        var a = $(this);
+                        var comment = a.parents('.comment:first');
+                        var target_id = comment.attr('id').replace('comment-', '');
+                        var vote_direction = a.attr('vote_direction');
+                        
+                        $.ajax({
+                            "url":"assets/components/modxsite/connectors/society.php",
+                            "type": "POST",
+                            "dataType": "json",
+                            "data":{
+                                "pub_action": "topics/comments/votes/create",
+                                "target_id"  : target_id,
+                                "vote_direction": vote_direction
+                            },
+                            "error": function(response){
+                                scope.inRequest = false;
+                                alert('Ошибка выполнения запроса');
+                            },
+                            "success": function(response){
+                                scope.inRequest = false;
+                                response = response || {};
+                                
+                                if(!response.success){
+                                    alert(response.message || 'Ошибка выполнения запроса');
+                                    return;
+                                }
+                                
+                                // else
+                                alert(response.message || 'Ваш голос успешно принят');
+                                
+                                // Обновляем значение рейтинга
+                                var rating = comment.find('.rating:first');
+                                rating.text( (parseInt(rating.text()) || 0)*1 + response.object.vote_value*1 );
+                                
                                 return;
                             }
-                            
-                            // else
-                            alert(response.message || 'Ваш голос успешно принят');
-                            
-                            // Обновляем значение рейтинга
-                            var rating = comment.find('.rating:first');
-                            rating.text( (parseInt(rating.text()) || 0)*1 + response.object.vote_value*1 );
-                            
-                            return;
-                        }
-                    });
-                    return false;
-                }
-            }).init();
+                        });
+                        return false;
+                    }
+                }).init();
+                
+            </script>
             
-        </script>
-
+            {if in_array($modx->resource->id, [999, 1140])}
+                {$modx->regClientCSS("{$template_url}libs/select2/select2-3.5.1/select2.css")}
+                <script type="text/javascript" src="{$template_url}libs/select2/select2-3.5.1/select2.js"></script>
+                
+                {*
+                    Получаем все теги
+                *}
+                {processor action="web/society/topics/topictags/getunique" ns="modxsite" assign=result}
+                {$tags = (array)$result.object} 
+                
+                <script>
+                    $("#topic_tags").select2({
+                        tags: {json_encode($tags)}
+                    });
+                </script>
+            {/if}
+            
         
         {/block}
         

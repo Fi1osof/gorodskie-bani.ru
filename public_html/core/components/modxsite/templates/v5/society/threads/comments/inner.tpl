@@ -7,7 +7,7 @@
                 
                 <a href="{$modx->makeUrl(626)}{$comment.author_username}">
                     {if $comment.author_avatar}
-                        <img width="24" src="{$comment.author_avatar}" alt="" align="left" class="picleft">
+                        <img width="24" src="{$comment.author_avatar}" alt="" class="picleft">
                     {/if}
                     {$comment.author_fullname|default:$comment.author_username}
                 </a>

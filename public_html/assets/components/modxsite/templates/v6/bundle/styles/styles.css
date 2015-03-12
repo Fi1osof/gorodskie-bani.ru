@@ -1,0 +1,258 @@
+@import url("../../vendor/AlertifyJS/build/css/themes/bootstrap.css");
+@import url("../../vendor/AlertifyJS/build/css/alertify.css");
+.brand-leaf {
+  width: 59px;
+  background-repeat: no-repeat;
+}
+#main {
+  margin-top: 35px;
+  padding-bottom: 50px;
+}
+#doc_1 .block {
+  margin-top: 45px;
+}
+.overlay {
+  background: none repeat scroll 0 0 #25a0e6;
+  border-radius: 0;
+  height: 100%;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  transition: opacity 500ms ease 0s;
+  vertical-align: middle;
+  width: 100%;
+}
+.overlay a {
+  text-decoration: none;
+}
+.overlay.large {
+  padding: 0 20px;
+}
+.overlay,
+.overlay h3,
+.overlay a {
+  color: #fff;
+}
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+h1,
+.h1 {
+  font-size: 26px;
+}
+h2,
+.h2 {
+  font-size: 22px;
+}
+h3,
+.h3 {
+  font-size: 18px;
+}
+*:hover > .overlay {
+  opacity: 1;
+}
+.cols-nopadding > [class*="col-"] {
+  padding: 0;
+}
+/*
+    Скрываем рудиментарные блоки
+*/
+.topic-body .head {
+  display: none;
+}
+.company-cart .head {
+  float: left;
+  margin: 0 10px 0 0;
+}
+.img-block {
+  margin: 10px 0;
+}
+.gallery.row {
+  margin-top: 25px;
+}
+.gallery > div {
+  margin-bottom: 20px;
+}
+#sidebar ul {
+  list-style: outside none none;
+  margin: 0;
+  padding: 0;
+}
+#sidebar ul li {
+  margin: 10px 0;
+}
+.page-header {
+  margin: 12px 0 20px;
+}
+.panel-heading .title,
+.page-header .title {
+  display: inline-block;
+  background: url("../../img/leaf.png") no-repeat scroll 10px center rgba(0, 0, 0, 0);
+  padding: 6px 0 6px 40px;
+  margin: 0;
+}
+.navbar-header .navbar-brand {
+  padding: 3px 0;
+}
+.navbar-header .navbar-brand .logo {
+  height: 45px;
+  overflow: hidden;
+}
+.navbar-header .navbar-brand .logo .str {
+  display: block;
+  float: left;
+  height: 45px;
+  line-height: 45px;
+  font-size: 25px;
+}
+.navbar-header .navbar-brand .logo .leaf {
+  width: 59px;
+  background-repeat: no-repeat;
+}
+.navbar-header .navbar-brand .logo .leaf.leaf-l {
+  background-image: url(../../img/bath-logo.png);
+  margin-right: 5px;
+}
+.navbar-header .navbar-brand .logo .leaf.leaf-r {
+  background-image: url(../../img/venik-l.png);
+}
+.outer-tpl .outer-tpl {
+  margin-left: 20px;
+}
+.outer-tpl.level-7 .outer-tpl {
+  margin-left: 0;
+}
+.counter {
+  display: inline-block;
+  margin: 10px 5px 0 0;
+}
+.social {
+  background: url("../../img/se-icon.png") no-repeat scroll 0 0 transparent;
+  display: inline-block;
+  height: 16px;
+  vertical-align: middle;
+  width: 16px;
+}
+.social.Twitter {
+  background-position: 0 -51px;
+}
+.social.Facebook {
+  background-position: 0 -68px;
+}
+.social.Google {
+  background-position: 0 -426px;
+}
+.social.Yandex {
+  background-position: 0 -17px;
+}
+#robokassa .sprite {
+  background-image: url("../../img/payments_sprite.png");
+}
+#robokassa .submit {
+  background-repeat: no-repeat;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  margin: 5px 10px;
+}
+#robokassa .submit.mastercard {
+  background-position: 0 -25px;
+  height: 65px;
+  width: 96px;
+}
+#robokassa .submit.mastercard:hover {
+  background-position: -239px -25px;
+}
+#robokassa .submit.visa {
+  background-position: 0 -89px;
+  height: 62px;
+  width: 95px;
+}
+#robokassa .submit.visa:hover {
+  background-position: -239px -89px;
+}
+#robokassa .submit.qiwi {
+  background-position: 0 -272px;
+  height: 103px;
+  width: 106px;
+}
+#robokassa .submit.qiwi:hover {
+  background-position: -239px -272px;
+}
+#robokassa .submit.yandex {
+  background-position: 0 -150px;
+  height: 62px;
+  width: 142px;
+}
+#robokassa .submit.yandex:hover {
+  background-position: -239px -150px;
+}
+#robokassa .submit.rbk {
+  background-position: 0 -221px;
+  height: 49px;
+  width: 113px;
+}
+#robokassa .submit.rbk:hover {
+  background-position: -239px -221px;
+}
+#robokassa .submit.euroset {
+  background-position: 0 -378px;
+  height: 94px;
+  width: 79px;
+}
+#robokassa .submit.euroset:hover {
+  background-position: -239px -378px;
+}
+#robokassa .submit.mts {
+  background-position: 0 -479px;
+  height: 84px;
+  width: 180px;
+}
+#robokassa .submit.mts:hover {
+  background-position: -239px -479px;
+}
+#robokassa .submit.megafon {
+  background-position: 0 -572px;
+  height: 87px;
+  width: 101px;
+}
+#robokassa .submit.megafon:hover {
+  background-position: -239px -572px;
+}
+#robokassa .submit.svyaznoy {
+  background-position: 0 -666px;
+  height: 45px;
+  width: 209px;
+}
+#robokassa .submit.svyaznoy:hover {
+  background-position: -239px -666px;
+}
+#robokassa .submit.webmoney {
+  background-position: 0 -719px;
+  height: 63px;
+  width: 239px;
+}
+#robokassa .submit.webmoney:hover {
+  background-position: -239px -719px;
+}
+#robokassa .submit.robokassa {
+  background-position: 0 -785px;
+  height: 28px;
+  width: 239px;
+}
+#robokassa .submit.robokassa:hover {
+  background-position: -240px -785px;
+}
+.topic_list .topic-thumb {
+  margin-right: 5px;
+}
+blockquote {
+  font-size: inherit;
+}

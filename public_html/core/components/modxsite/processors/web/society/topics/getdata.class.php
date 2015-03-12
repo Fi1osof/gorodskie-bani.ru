@@ -9,6 +9,7 @@ class modWebSocietyTopicsGetdataProcessor extends modSocietyWebTopicsGetdataProc
         
         $this->setDefaultProperties(array(
             "showunpublished"   => $this->modx->hasPermission('view_unpublished_topics'),
+            "approved"          => false,       // Показывать только все подряд
         ));
         
         return parent::initialize();
@@ -44,6 +45,12 @@ class modWebSocietyTopicsGetdataProcessor extends modSocietyWebTopicsGetdataProc
         $q->where(array(
             "BlogTopics.topicid"    => $this->modx->resource->id,
         ));*/
+        
+        
+        // Только одобренные
+        if($this->getProperty('approved')){
+            $query->innerJoin('modTemplateVarResource', "tv_approved", "tv_approved.tmplvarid = 24 AND tv_approved.contentid = {$this->classKey}.id AND tv_approved.value = '1'");
+        }
         
         $can_view_ids = array();
         

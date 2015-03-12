@@ -5,9 +5,11 @@
     У одной компании может быть только одна страница
 */
 
-require_once dirname(dirname(dirname(__FILE__))) . '/resources/getdata.class.php';
+# require_once dirname(dirname(dirname(__FILE__))) . '/resources/getdata.class.php';
+require_once dirname(dirname(dirname(__FILE__))) . '/society/blogs/getdata.class.php';
 
-class modWebCompaniesResourcesGetdataProcessor extends modWebResourcesGetdataProcessor{
+# class modWebCompaniesResourcesGetdataProcessor extends modWebResourcesGetdataProcessor{
+class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdataProcessor{
     
     
     public function prepareQueryBeforeCount(xPDOQuery $c){

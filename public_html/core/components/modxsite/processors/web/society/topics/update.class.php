@@ -85,6 +85,7 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
         // Преобразуем все теги к нижнему регистру
         $words = array();
         foreach($topic_tags as $topic_tag){
+            $topic_tag = strip_tags($topic_tag);
             $words[mb_convert_case($topic_tag, MB_CASE_LOWER, 'utf-8')] = $topic_tag;
         }
         
@@ -119,9 +120,6 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
             return $ok;
         }
         
-        
-        
-        
         // return "Debug";
         
         return parent::beforeSave();
@@ -130,9 +128,10 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
     public function afterSave(){
         $topic = & $this->object;
         
-        
         // ссылка на источник
-        if($original_source = $this->getProperty('original_source')){
+        $original_source = $this->getProperty('original_source', null);
+        if(isset($original_source)){
+            $original_source = strip_tags($original_source);
             $topic->setTVValue(26, $original_source);
         }
         

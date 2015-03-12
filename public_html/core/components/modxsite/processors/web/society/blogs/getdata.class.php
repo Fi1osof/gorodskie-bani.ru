@@ -98,15 +98,34 @@ class modWebSocietyBlogsGetdataProcessor extends modSocietyWebBlogsGetdataProces
     }
     
     
-    public function setSelection(xPDOQuery $q){
-        $q = parent::setSelection($q);
+    public function setSelection(xPDOQuery $c){
+        $c = parent::setSelection($c);
         
-        $q->select(array(
+        /*
+            Получаем данные диалоговой ветви
+        */
+        $c->leftJoin('SocietyThread', 'thread', "thread.target_class='modResource' AND thread.target_id={$this->classKey}.id");    
+        
+        /*
+            Проверяем, есть ли голос пользователя здесь
+        */
+        $c->leftJoin('SocietyVote', 'vote', "vote.target_class='modResource' AND vote.target_id={$this->classKey}.id AND vote.user_id = ". $this->modx->user->id);
+        
+        
+        $c->select(array(
             "CreatedBy.username as author",
             "CreatedByProfile.photo as author_avatar",
+            "CreatedBy.username as author_username",
+            "thread.id as thread_id",
+            "thread.positive_votes",
+            "thread.negative_votes",
+            "thread.comments_count",
+            "vote.id as vote_id",
+            "vote.vote_direction",
+            "vote.vote_value",
         ));
         
-        return $q;
+        return $c;
     }
     
     
@@ -115,11 +134,42 @@ class modWebSocietyBlogsGetdataProcessor extends modSocietyWebBlogsGetdataProces
         
         $url = $this->getSourcePath($this->modx->getOption('modavatar.default_media_source', null, 15));
         
+        switch($this->getProperty('image_url_schema')){
+            case 'base':
+                $images_base_url = $this->modx->runSnippet('getSourcePath');
+                break;
+                
+            case 'full':
+                $images_base_url = $this->modx->getOption('site_url');
+                $images_base_url .= preg_replace("/^\//", "", $this->modx->runSnippet('getSourcePath'));
+                break;
+                
+            default: $images_base_url = '';
+        }
+        
         foreach($list as & $l){
             if($l['author_avatar']){
                 $l['author_avatar'] = $url . $l['author_avatar'];
             }
+            
+            $l['gallery'] = array();
+            if(
+                !empty($l['tvs']['gallery']['value'])
+                AND $gallery = json_decode($l['tvs']['gallery']['value'], 1)
+            ){
+                foreach($gallery as $image){ 
+                    $image['image'] = $images_base_url . $image['image'];
+                    # $image['image'] = $image['image'];
+                    $l['gallery'][] = $image;
+                    
+                    if(!$l['image']){
+                        $l['image'] = $image['image'];
+                    }
+                }
+                
+            } 
         }
+        
         
         return $list;
     }

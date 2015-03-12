@@ -26,13 +26,13 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
         
         $this->setDefaultProperties(array(
             'no_send_emails'    => 0,       // Не отсылать емейл-рассылку пользователям о новом топике  
-            'tv26'              => $this->getProperty('original_source'),   // Ссылка на источник
+            'tv26'              => strip_tags($this->getProperty('original_source')),   // Ссылка на источник
         ));
         
         $this->setProperties(array(
             "parent" => 309,
             "template"  => 15,
-            "tv23"       => $this->modx->hasPermission('society.approve_topics') ? '1' : '',
+            "tv24"       => $this->modx->hasPermission('society.approve_topics') ? '1' : '',
             "show_in_tree"  => 1,
         ));
         
@@ -132,6 +132,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
             }
             
             foreach($topic_tags as & $tag){
+                $tag = strip_tags($tag);
                 $newTag = $this->modx->newObject('SocietyTopicTag', array(
                     "tag"       => $tag,
                     "active"    => 1,

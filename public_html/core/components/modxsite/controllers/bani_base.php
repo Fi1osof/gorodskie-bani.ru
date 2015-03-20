@@ -33,7 +33,20 @@ foreach($arr as $a){
 exit;*/
 require_once dirname(__FILE__) . '/view/'.$path.'.class.php';
 $view = new $class($modx, $properties);
-return preg_replace("/[ \r\n\t]+$/sm", "", $view ->process());
+
+
+
+$output = $view ->process();
+
+# if(!in_array($modx->resource->id, array(
+#     1140,
+# ))){
+    # $output = preg_replace("/[ \r\n\t]+$/sm", "", $output);
+# }
+
+# return $output;
+
+return preg_replace("/[ \r\n\t]+$/sm", "", $output);
 
 /*
 require_once dirname(__FILE__) . '/view/view.class.php';

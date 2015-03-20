@@ -64,3 +64,12 @@ $this->map['modResource']['composites']['Tags'] = array(
     'owner' => 'local',
 );
 
+// Голоса по типу рейтинга
+$this->map['modResource']['composites']['TypeVotes'] = array(
+    'class' => 'SocietyVote',
+    'local' => 'id',
+    'foreign' => 'type',
+    'cardinality' => 'many',
+    'owner' => 'local',
+);
+

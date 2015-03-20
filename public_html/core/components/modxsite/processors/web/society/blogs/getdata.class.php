@@ -18,8 +18,15 @@ class modWebSocietyBlogsGetdataProcessor extends modSocietyWebBlogsGetdataProces
     public function prepareQueryBeforeCount(xPDOQuery $q){
         $q = parent::prepareQueryBeforeCount($q);
         
+        $alias = $q->getAlias();
+        
         $q->innerJoin('modUser', 'CreatedBy');
         $q->innerJoin('modUserProfile', 'CreatedByProfile', "CreatedBy.id = CreatedByProfile.internalKey");
+        
+        /*
+            Получаем данные диалоговой ветви
+        */
+        $q->leftJoin('SocietyThread', 'thread', "thread.target_class='modResource' AND thread.target_id={$alias}.id");    
         
         return $q;
     }
@@ -100,11 +107,6 @@ class modWebSocietyBlogsGetdataProcessor extends modSocietyWebBlogsGetdataProces
     
     public function setSelection(xPDOQuery $c){
         $c = parent::setSelection($c);
-        
-        /*
-            Получаем данные диалоговой ветви
-        */
-        $c->leftJoin('SocietyThread', 'thread', "thread.target_class='modResource' AND thread.target_id={$this->classKey}.id");    
         
         /*
             Проверяем, есть ли голос пользователя здесь

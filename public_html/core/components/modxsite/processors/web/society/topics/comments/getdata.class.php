@@ -39,8 +39,28 @@ class modWebSocietyTopicsCommentsGetdataProcessor extends modWebSocietyCommentsG
             }
         }
         
-        $query->innerJoin('SocietyBlogTopic', 'bt', "bt.topicid = Thread.target_id");
-        $where['bt.blogid:in'] = $can_view_ids;
+        if(!$can_view_ids){
+            $query->where(array(
+                "1 = 2",
+            ));
+            
+            return $query;
+        }
+        
+        // else
+        
+        # if($this->modx->hasPermission('sdfsdf')){
+            $query->leftJoin('SocietyBlogTopic', 'bt', "bt.topicid = Thread.target_id");
+            $query->where(array(
+                'bt.blogid:in' => $can_view_ids,
+                "OR:Thread.target_id:in"    => $can_view_ids,
+            ));
+        # }
+        # else{
+        #     $query->innerJoin('SocietyBlogTopic', 'bt', "bt.topicid = Thread.target_id");
+        #     $where['bt.blogid:in'] = $can_view_ids;
+        #     
+        # }
         
         /*print_r($can_view_ids);
         print_r(count($can_view_ids));

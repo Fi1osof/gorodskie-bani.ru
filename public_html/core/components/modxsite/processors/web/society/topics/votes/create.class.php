@@ -32,6 +32,26 @@ class modWebSocietyTopicsVotesCreateProcessor extends modSocietyWebThreadsVotePr
         return parent::initialize();
     }
     
+    public function afterSave(){
+        // Если есть права, аппрувим топик
+        if(
+            $this->modx->hasPermission('society.approve_topics')
+            AND $this->object->target_class == 'modResource'
+            AND $thread = $this->object->Thread
+            AND $topic = $this->modx->getObject('modResource', $thread->target_id)
+        ){
+            if($thread->rating > 0){
+                $approved = '1';
+            }
+            else{
+                $approved = '';
+            }
+            $topic->setTVValue(24, $approved);
+        }
+        
+        return parent::afterSave();
+    }
+    
 }
 
 

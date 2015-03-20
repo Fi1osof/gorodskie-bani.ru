@@ -8,6 +8,7 @@ $xpdo_meta_map['SocietyVote']= array (
   array (
     'target_id' => NULL,
     'target_class' => NULL,
+    'type' => 0,
     'thread_id' => NULL,
     'user_id' => NULL,
     'vote_direction' => '0',
@@ -31,6 +32,15 @@ $xpdo_meta_map['SocietyVote']= array (
       'precision' => '100',
       'phptype' => 'string',
       'null' => false,
+    ),
+    'type' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '10',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => false,
+      'default' => 0,
     ),
     'thread_id' => 
     array (
@@ -101,6 +111,12 @@ $xpdo_meta_map['SocietyVote']= array (
           'collation' => 'A',
           'null' => false,
         ),
+        'type' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
       ),
     ),
     'thread_id' => 
@@ -123,6 +139,12 @@ $xpdo_meta_map['SocietyVote']= array (
           'collation' => 'A',
           'null' => false,
         ),
+        'type' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
       ),
     ),
   ),
@@ -137,6 +159,13 @@ $xpdo_meta_map['SocietyVote']= array (
         "Voter" => array(
             'class' => 'modUser',
             'local' => 'user_id',
+            'foreign' => 'id',
+            'cardinality' => 'one',
+            'owner' => 'foreign',
+        ),
+        "Type" => array(
+            'class' => 'modResource',
+            'local' => 'type',
             'foreign' => 'id',
             'cardinality' => 'one',
             'owner' => 'foreign',

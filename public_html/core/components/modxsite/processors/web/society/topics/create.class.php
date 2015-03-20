@@ -34,7 +34,16 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
             "template"  => 15,
             "tv24"       => $this->modx->hasPermission('society.approve_topics') ? '1' : '',
             "show_in_tree"  => 1,
+            "links_follow"  => 0,   // Индексируемые ссылки
         ));
+        
+        if(
+            $notices = $this->getProperty('notices')
+            AND !is_array($notices)
+        ){
+            $notices = array_map('trim', explode(",", $notices));
+            $this->setProperty('notices', $notices);
+        }
         
         return parent::initialize();
     }
@@ -215,21 +224,26 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
         
         // Не используем этот объект запроса, а только его клоны
         $users_query = $this->modx->newQuery('modUser');
+        
+        $users_query->distinct();
+        
         $users_query->innerJoin('modUserProfile', 'Profile');
+        $users_query->leftJoin('SocietyNoticeUser', 'Notices');
+        $users_query->leftJoin('SocietyNoticeType', 'NoticeType', "NoticeType.target = 'modResource' AND NoticeType.id = Notices.notice_id");
+        
         $users_query->where(array(
             "active"    => 1,
             "Profile.blocked"   => 0,
             "id:not in" => $sended_to,
         ));
-        $users_query->leftJoin('SocietyNoticeUser', 'Notices');
-        $users_query->leftJoin('SocietyNoticeType', 'NoticeType', "NoticeType.id = Notices.notice_id");
+        
         $users_query->where(array(
             "Profile.blockeduntil"    => 0,
             "OR:Profile.blockeduntil:<" => time(),
         ));
         
         
-        // Отправляем всем, кто подписан на топики
+        // Отправляем всем, кто подписан на топики или по выбранный уровням уведомлений
         if($can_send_notices && !$no_send_emails){
             $sended_to = array_unique($sended_to);
             $q = clone($users_query);
@@ -239,9 +253,20 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
                     "id:not in"    => $sended_to,
                 ));
             }
-            $q->where(array(
-                "NoticeType.type"   => "new_topic",
-            )); 
+            
+            if(
+                $notices = $this->getProperty('notices') 
+                AND is_array($notices)
+            ){
+                $q->where(array(
+                    "NoticeType.id:in"   => $notices,
+                )); 
+            }
+            else{
+                $q->where(array(
+                    "NoticeType.type"   => "new_topic",
+                )); 
+            }
             
             # if($users = $this->modx->getCollection('modUser', $q)){
                 # foreach($users as $user){

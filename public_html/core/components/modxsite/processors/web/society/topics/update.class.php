@@ -20,6 +20,10 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
             $this->setProperty('id', $id);
         }
         
+        $this->setDefaultProperties(array(
+            "links_follow"  => 0,       // Индексируемые ссылки
+        ));
+        
         return parent::initialize();
     }
     

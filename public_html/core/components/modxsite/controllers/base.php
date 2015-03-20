@@ -1,11 +1,11 @@
 <?php
 // ini_set('display_errors', 1);
         
-if($modx->hasPermission('frame')){
-
-    return require __DIR__ . '/bani_base.php';    
-}
+# if($modx->hasPermission('frame')){
+# 
+# }
         
+return require __DIR__ . '/bani_base.php';    
         
 $properties = $modx->resource->getOne('Template')->getProperties();
 

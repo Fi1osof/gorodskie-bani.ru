@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model package="_ModSociety" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" version="1.1">
+	<object class="SocietyTopicAttributes" table="society_topic_attributes" extends="xPDOSimpleObject">
+		<field key="resourceid" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" index="unique" />
+		<field key="content_hash" dbtype="char" precision="32" phptype="string" null="true" index="unique" />
+		<field key="short_text" dbtype="text" phptype="string" null="false" />
+		<field key="raw_content" dbtype="text" phptype="string" null="false" />
+		<field key="topic_tags" dbtype="varchar" precision="1024" phptype="string" null="false" default="" />
+
+		<index alias="resourceid" name="resourceid" primary="false" unique="true" type="BTREE" >
+			<column key="resourceid" length="" collation="A" null="false" />
+		</index>
+		<index alias="content_hash" name="content_hash" primary="false" unique="true" type="BTREE" >
+			<column key="content_hash" length="" collation="A" null="true" />
+		</index>
+	</object>
+	<object class="SocietyVotes" table="society_votes" extends="xPDOSimpleObject">
+		<field key="target_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" index="index" />
+		<field key="target_class" dbtype="varchar" precision="100" phptype="string" null="false" />
+		<field key="rating_type" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" default="0" />
+		<field key="thread_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="true" index="index" />
+		<field key="user_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+		<field key="vote_direction" dbtype="enum" precision="'-1','0','1'" phptype="string" null="false" default="0" />
+		<field key="vote_value" dbtype="float" precision="9,3" phptype="float" null="false" default="0.000" />
+		<field key="vote_date" dbtype="timestamp" phptype="timestamp" null="false" default="CURRENT_TIMESTAMP" />
+
+		<index alias="target_id" name="target_id" primary="false" unique="true" type="BTREE" >
+			<column key="target_id" length="" collation="A" null="false" />
+			<column key="target_class" length="" collation="A" null="false" />
+			<column key="user_id" length="" collation="A" null="false" />
+			<column key="rating_type" length="" collation="A" null="false" />
+		</index>
+		<index alias="thread_id" name="thread_id" primary="false" unique="true" type="BTREE" >
+			<column key="thread_id" length="" collation="A" null="true" />
+			<column key="user_id" length="" collation="A" null="false" />
+			<column key="rating_type" length="" collation="A" null="false" />
+		</index>
+	</object>
+</model>

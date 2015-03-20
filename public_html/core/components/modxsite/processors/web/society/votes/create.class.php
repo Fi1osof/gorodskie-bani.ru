@@ -4,6 +4,10 @@
     Create new vote
 */
 
+/*
+    Depricated. Пока еще используется, но надо будет перевести на object-процессор (лежит в этой директории)
+*/
+
 class modWebSocietyVotesCreateProcessor extends modObjectCreateProcessor{
 
     public $classKey = 'SocietyVote';
@@ -32,12 +36,23 @@ class modWebSocietyVotesCreateProcessor extends modObjectCreateProcessor{
         
         $this->setProperties(array(
             "user_id"       => $this->modx->user->id,
+            'type'              => $this->getTypeFromRequest(),   // Тип голоса
             "vote_date"     => time(),
         )); 
         
         return parent::initialize();
     }
-      
+    
+    
+    /*
+        Получаем указанный в запросе тип.
+        По умолчанию указываем 0, чтобы не могли указывать типы там,
+        где этого нельзя делать
+    */
+    protected function getTypeFromRequest(){
+        return 0;
+    }
+    
     
     public function beforeSave(){
         
@@ -143,6 +158,7 @@ class modWebSocietyVotesCreateProcessor extends modObjectCreateProcessor{
             "user_id"       => $vote->user_id,
             "target_class"  => $vote->target_class,
             "target_id"     => $vote->target_id,
+            "type"          => $vote->type,
         ));
         $q->limit(1);
         

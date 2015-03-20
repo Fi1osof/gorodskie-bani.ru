@@ -91,7 +91,10 @@ class modWebSocietyTopicsValidator extends modWebValidator{
         
         $jevix = $this->modx->getService('modJevix','modJevix', MODX_CORE_PATH . 'components/modjevix/model/modJevix/');
         
-        if($this->modx->hasPermission('modxclub.post_indexed_links')){
+        if(
+            $this->modx->hasPermission('modxclub.post_indexed_links')
+            AND $this->getProperty('links_follow')
+        ){
             $rel = "follow";
         }
         else{

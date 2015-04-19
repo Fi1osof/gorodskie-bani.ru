@@ -3,7 +3,7 @@
 {block name=params append}
 
     {$params = array_merge($params, [
-        "limit" => 3,
+        "limit" => 4,
         "page"  => 0
     ])}
     

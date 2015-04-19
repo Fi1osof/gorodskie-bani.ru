@@ -274,7 +274,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
                     if($topic->checkPolicy('view', null, $user)){
                         $this->modx->smarty->assign('auth_user_id', $user->id);
                         $message = $this->modx->smarty->fetch('messages/society/new_topic/subscribers.tpl');
-                        $subject = "Новый топик на сайте MODX-Клуба";
+                        $subject = "Новый топик на сайте {$site_name}";
                         /*
                             Пытаемся записать в отложенную рассылку
                         */

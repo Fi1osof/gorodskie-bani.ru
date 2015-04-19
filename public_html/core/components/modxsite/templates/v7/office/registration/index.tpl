@@ -23,7 +23,7 @@
             "captcha"   => $smarty.post.captcha
         ])}
         
-        {processor action="web/society/users/create" ns="modxsite" params=$request assign=reg_result}
+        {processor action="web/society/users/create" ns="modxsite" params=$request assign=reg_result} 
     {/if}
     
     
@@ -99,21 +99,28 @@
                     
                     
                     {if !$social_profile}
-                        <div class="row">
-                            
-                            <div class="col-xs-8">
-                                 
-                                <div class="form-group">
-                                    <input type="text" class="form-control input-hg" placeholder="Код с картинки" name="captcha" value="" autocomplete="off">
+                        {if !$request OR $reg_result.field_errors.captcha OR !$request.captcha}
+                            <div class="row">
+                                
+                                <div class="col-xs-8">
+                                     
+                                    <div class="form-group {if $reg_result.field_errors.captcha}has-error{/if}">
+                                        <input type="text" class="form-control input-hg" placeholder="Код с картинки" name="captcha" value="" autocomplete="off">
+                                        {if $reg_result.field_errors.captcha}
+                                            <p class="text-danger">{$reg_result.field_errors.captcha}</p>
+                                        {/if}
+                                    </div>
+                                    
+                                </div>
+                                
+                                <div class="col-xs-4">
+                                    {chunk name=modcaptcha}
                                 </div>
                                 
                             </div>
-                            
-                            <div class="col-xs-4">
-                                {chunk name=modcaptcha}
-                            </div>
-                            
-                        </div>
+                        {else}
+                            <input type="hidden" name="captcha" value="{$request.captcha}" />
+                        {/if}
                     {/if}
                     
                     

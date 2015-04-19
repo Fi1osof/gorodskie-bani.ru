@@ -21,7 +21,27 @@
             </div>
         </div>
     *}
-    {include "companies/index.tpl"}
+    
+    {*if !$modx->hasPermission('sdfsdf')}
+    
+        {include "companies/index.tpl"}
+    {else}
+        {$params = [
+            'tpl'   => 'companies/index.tpl',
+            'company_page_id' => $company_page_id
+        ]} 
+        
+        {snippet name=smarty params=$params as_tag=1}
+    
+    {/if*}
+    
+    {$params = [
+        'tpl'   => 'companies/index.tpl',
+        'company_page_id' => $company_page_id
+    ]} 
+    
+    {snippet name=smarty params=$params as_tag=1}
+    
 
 {/block}
 

@@ -22,8 +22,8 @@
     	<meta http-equiv="Content-Style-Type" content="text/css" />
     	<meta http-equiv="Content-Script-Type" content="text/javascript" />
     <!-- meta -->
-    	<meta name="keywords" content="{$keywords|escape}" />
-    	<meta name="description" content="{$modx->resource->description|escape}" />
+    	<meta name="keywords" content="{block keywords}{$keywords|escape}{/block}" />
+    	<meta name="description" content="{block description}{$modx->resource->description|escape}{/block}" />
     	
         {$last_modified = $last_modified|default:$modx->resource->editedon}
     	<meta http-equiv="last-modified" content="{gmdate('D, d M Y H:i:s \M\S\K', $last_modified)}" />
@@ -143,18 +143,18 @@
               <div class="container">
                   
                 <div class="row">
-                    <div class="pull-right col-lg-9">
+                    <div class="col-md-9">
                         {$menuParams = [
                             startId => 0,
                             level => 1,
-                            outerClass => "nav navbar-nav pull-right nav-footer",
+                            outerClass => "nav navbar-nav nav-footer",
                             where => json_encode([
-                                "id:not in" => [  239, 2, 1296, 999]
+                                "id:not in" => [  239, 1296, 999]
                             ])
                         ]}
                         {snippet name=Wayfinder params=$menuParams as_tag=1}
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-md-3" style="overflow:hidden;">
                         {include file="inc/counters/index.tpl"}
                     </div>
                 </div>

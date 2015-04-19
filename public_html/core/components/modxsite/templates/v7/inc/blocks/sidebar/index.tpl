@@ -16,44 +16,17 @@
 
     <noindex>
         <div class="img-block"> 
-            <a href="http://www.drovyanka.ru/?r=gb" title="Строительство саун. Печи для бани и сауны Harvia, Kastor, Helo. Дымоходы Schiedel. Канадский кедр. Гималайская соль." target="_blank" rel="nofollow">
-                <img src="assets/images/side/drovyanka.jpg" class="img-responsive" style="width: 100%;margin-bottom: 20px;"/>
+            <a href="http://www.jadebest.ru/" title="Интернет-магазин товаров для бани и сауны - ЖадеБест" target="_blank" rel="nofollow">
+                <img src="assets/images/side/2015/jadebest.jpg" class="img-responsive" style="width: 100%;margin-bottom: 20px;"/>
             </a> 
         </div> 
     </noindex>
     
-    <div class="panel panel-default">
-        
-        <div class="panel-heading">
-            <h4 class="title">Справочник</h4>
-        </div>
-        
-        <div class="panel-body">
-            
-            {$params = [
-                "parent"    => 1296
-            ]}
-            
-            {processor action="web/resources/getdata" ns=modxsite params=$params assign=result}
-            
-            <ul class="menu">
-                {foreach $result.object as $object}
-                    {$title = $object.longtitle|default:$object.pagetitle}
-                    <li><a title="{$title|@escape}" href="{$object.uri}">{$title}</a></li>
-                {/foreach}
-            </ul>
-            
-            {*
-            <li class="first active"><a title="Москва" href="moscow/">Москва</a></li>
-            <li><a title="Московская область" href="moskovskaya-oblast/">Московская область</a></li>
-            <li><a title="Санкт-Петербург" href="st-petersburg/">Санкт-Петербург</a></li>
-            <li><a title="Пенза" href="penza/">Пенза</a></li>
-            <li><a title="Челябинск" href="chelyabinsk/">Челябинск</a></li>
-            <li class="last"><a title="Череповец" href="cherepovecz/">Череповец</a></li>
-            *}
-            
-        </div>
-    </div>
+    <div class="img-block"> 
+        <a href="[[~1375]]" title="Зубовские бани">
+            <img src="assets/images/side/2015/zubovskie-bani.jpg" class="img-responsive" style="width: 100%;margin-bottom: 20px;"/>
+        </a> 
+    </div> 
 
     <div class="panel panel-default">
         
@@ -78,6 +51,33 @@
             {snippet name=Wayfinder params=$params}
         </div>
     </div>
+    
+    {*
+    <div class="panel panel-default">
+        
+        <div class="panel-heading">
+            <h4 class="title">Справочник</h4>
+        </div>
+        
+        <div class="panel-body">
+            
+            {$params = [
+                "parent"    => 1296,
+                "limit"     => 0
+            ]}
+            
+            {processor action="web/resources/getdata" ns=modxsite params=$params assign=result}
+            
+            <ul class="menu">
+                {foreach $result.object as $object}
+                    {$title = $object.longtitle|default:$object.pagetitle}
+                    <li><a title="{$title|@escape}" href="{$object.uri}">{$title}</a></li>
+                {/foreach}
+            </ul> 
+            
+        </div>
+    </div>
+    *}
   
     <noindex>
         [[!smarty?tpl=`inc/blocks/topics/new.tpl`]]
@@ -90,6 +90,14 @@
         </a> 
     </div> 
     
+
+    <noindex>
+        <div class="img-block"> 
+            <a href="http://www.drovyanka.ru/?r=gb" title="Строительство саун. Печи для бани и сауны Harvia, Kastor, Helo. Дымоходы Schiedel. Канадский кедр. Гималайская соль." target="_blank" rel="nofollow">
+                <img src="assets/images/side/drovyanka.jpg" class="img-responsive" style="width: 100%;margin-bottom: 20px;"/>
+            </a> 
+        </div> 
+    </noindex>
         
               
 </div>

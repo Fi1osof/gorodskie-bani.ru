@@ -275,7 +275,7 @@
         
         <div style="margin: 30px 0 0;">
             <h5>
-                <a data-target="#myModal" data-toggle="modal" href="javascript:;">Авторизуйтесь</a> или <a href="{$modx->makeUrl(991)}">зарегистрируйтесь</a> (можно через соцсети {include file="inc/blocks/social_auth_button.tpl"}), чтобы написать топик.
+                <a data-target="#loginLoginForm" data-toggle="modal" href="javascript:;">Авторизуйтесь</a> или <a href="{$modx->makeUrl(991)}">зарегистрируйтесь</a> (можно через соцсети {include file="inc/blocks/social_auth_button.tpl"}), чтобы написать топик.
             </h5>
         </div>
         

@@ -13,14 +13,17 @@
             {/literal}
         </div>
     </div>
-
-    <noindex>
-        <div class="img-block"> 
-            <a href="http://www.jadebest.ru/" title="Интернет-магазин товаров для бани и сауны - ЖадеБест" target="_blank" rel="nofollow">
-                <img src="assets/images/side/2015/jadebest.jpg" class="img-responsive" style="width: 100%;margin-bottom: 20px;"/>
-            </a> 
-        </div> 
-    </noindex>
+    
+    {*
+        <noindex>
+            <div class="img-block"> 
+                <a href="http://www.jadebest.ru/" title="Интернет-магазин товаров для бани и сауны - ЖадеБест" target="_blank" rel="nofollow">
+                    <img src="assets/images/side/2015/jadebest.jpg" class="img-responsive" style="width: 100%;margin-bottom: 20px;"/>
+                </a> 
+            </div> 
+        </noindex>
+    *}
+    
     
     <div class="img-block"> 
         <a href="[[~1375]]" title="Зубовские бани">

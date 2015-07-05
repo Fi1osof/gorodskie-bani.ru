@@ -18,6 +18,8 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         $this->setDefaultProperties(array(
             "sort"  => "avg_rating DESC, {$this->classKey}.menutitle",
             "dir"   => "ASC",
+            "with_coors_only"   => false,       // Только с координатами
+            "approved_only"     => false,       // Только одобренные
         ));
         
         # parent::initialize();
@@ -57,6 +59,16 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         // По типу заведения
         if($facility_type = (int)$this->getProperty('facility_type')){
             $c->innerJoin("modTemplateVarResource", "facility_type", "facility_type.contentid = {$alias}.id AND facility_type.tmplvarid = 25 AND facility_type.value = {$facility_type}");
+        }
+        
+        // Только с координатами для карты
+        if($this->getProperty('with_coors_only')){
+            $c->innerJoin("modTemplateVarResource", "with_coors_only", "with_coors_only.contentid = {$alias}.id AND with_coors_only.tmplvarid = 27 AND with_coors_only.value != ''");
+        }
+        
+        // Только одобренные
+        if($this->getProperty('approved_only')){
+            $c->innerJoin("modTemplateVarResource", "approved_only", "approved_only.contentid = {$alias}.id AND approved_only.tmplvarid = 24 AND approved_only.value = '1'");
         }
         
         /*

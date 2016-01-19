@@ -8,7 +8,9 @@
         {$params = [
             "limit" => 10,
             "sort"  => "publishedon",
-            "dir"   => "DESC"
+            "dir"   => "DESC",
+            "cache" => 1,
+            'cache_prefix'      => "getdata/{$modx->user->id}/"
         ]}
         
         {processor action="web/society/topics/getdata" ns="modxsite" params=$params assign=result}

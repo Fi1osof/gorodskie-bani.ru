@@ -106,40 +106,125 @@ switch($modx->event->name){
         */
         
         // Авторизация по прямой ссылке
-        if(
+        // if(
+        //     !empty($_GET['u'])
+        //     && !empty($_GET['e'])
+        //     && !empty($_GET['auth_key'])
+        //     && !$modx->user->id
+        //     && empty($_GET['service'])
+        // ){ 
+            
+        //     $user_id = $_GET['u'];
+        //     $email = $_GET['e'];
+        //     $auth_key = $_GET['auth_key'];
+        //     $key = md5($user_id . $modx->site_id . $modx->getOption('modsociety.auth_link_salt'));
+            
+        //     # print "<br />" . $user_id;
+        //     # print "<br />" . $email;
+        //     # print "<br />" . $modx->site_id;
+        //     # print "<br />";
+        //     # print $key;
+        //     if(
+        //         $user = $modx->getObject('modUser', $user_id)
+        //         AND $email == $user->Profile->email
+        //         AND $auth_key == $key
+        //     ){
+        //         # print "OK";
+        //         $modx->user = &$user;
+        //         $modx->setPlaceholder('modx.user.username', $user->username);
+        //         $user->addSessionContext($modx->context->key);
+        //     }
+            
+        //     # exit;
+        //     break;
+        // }
+        
+        /*
+            Выход. Убивается сессия вообще, выйдет из всех контекстов, в том числе и mgr
+        */
+        if(isset($_GET['service'])){
+            switch(strtolower($_GET['service'])){
+                case 'logout':
+                    $modx->user->endSession();
+                    $modx->user = null;
+                    $modx->getUser();
+                    break;
+            }
+        } 
+        
+        // Авторизация по прямой ссылке
+        else if(
             !empty($_GET['u'])
             && !empty($_GET['e'])
             && !empty($_GET['auth_key'])
-            && !$modx->user->id
-            && empty($_GET['service'])
         ){ 
             
-            $user_id = $_GET['u'];
-            $email = $_GET['e'];
-            $auth_key = $_GET['auth_key'];
-            $key = md5($user_id . $modx->site_id . $modx->getOption('modsociety.auth_link_salt'));
-            
-            # print "<br />" . $user_id;
-            # print "<br />" . $email;
-            # print "<br />" . $modx->site_id;
-            # print "<br />";
-            # print $key;
             if(
-                $user = $modx->getObject('modUser', $user_id)
-                AND $email == $user->Profile->email
-                AND $auth_key == $key
+                !empty($_GET['exp'])
+                AND !$modx->user->id
+                AND empty($_GET['service'])
+                AND $_GET['exp'] > time()
             ){
-                # print "OK";
-                $modx->user = &$user;
-                $modx->setPlaceholder('modx.user.username', $user->username);
-                $user->addSessionContext($modx->context->key);
+                
+                $user_id = $_GET['u'];
+                $email = $_GET['e'];
+                $expired = $_GET['exp'];
+                $auth_key = $_GET['auth_key'];
+                $key = md5($user_id . $modx->site_id . $expired. $modx->getOption('modsociety.auth_link_salt'));
+                
+                # print "<br />" . $user_id;
+                # print "<br />" . $email;
+                # print "<br />" . $modx->site_id;
+                # print "<br />";
+                # print $key;
+                if(
+                    $user = $modx->getObject('modUser', $user_id)
+                    AND !$user->Profile->blocked
+                    AND $user->active
+                    AND $email == $user->Profile->email
+                    AND $auth_key == $key
+                ){
+                    # print "OK";
+                    $modx->user = &$user;
+                    $modx->setPlaceholder('modx.user.username', $user->username);
+                    $user->addSessionContext($modx->context->key);
+                }
             }
             
+            if($str = parse_url($_SERVER['REQUEST_URI'])){
+                $url ='';
+                $url .= (!empty($str['scheme']) ? $str['scheme'] .'://' : '');
+                $url .= (!empty($str['host']) ? $str['host'] : '');
+                $url .= $str['path'];
+                $url .= (!empty($str['fragment']) ? '#' .$str['fragment'] : '');
+                
+                return $modx->sendRedirect($url);
+            }
+            
+            
             # exit;
-            break;
         }
         
+        else if(
+            !empty($_GET['username'])
+            AND !empty($_GET['password'])
+            AND !$modx->user->id
+            AND $user = $modx->getObject('modUser', array(
+                "username"  => $_GET['username']
+            ))
+        ){
+            $response = $modx->runProcessor('security/login', array(
+                "username" => $_GET['username'],
+                "password" => $_GET['password'],
+            ));
+            if(!$response->isError()){
+                $modx->user = & $user;
+                $user->addSessionContext($modx->context->key);
+            }
+            $modx->error->reset();
+        }
         
+        break;
         
     # case 'OnWebPageInit':
     #     /*$modx->resource = $modx->getObject('modResource', $modx->resourceIdentifier);

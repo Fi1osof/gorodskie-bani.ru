@@ -12,6 +12,15 @@
     </div>
     
     
+    <noindex>
+        
+        <div class="container block">
+            <a href="http://sokolinka33.ru/">
+                <img class="img img-responsive" src="assets/images/site/sb_1024 (1).jpg" style="width:100%;">
+            </a>
+        </div>
+    </noindex>
+    
     <div class="container block">
         <h2 class="page-header">
             <a class="title" href="{$modx->makeUrl(1197)}">Бани в Москве</a>
@@ -38,6 +47,7 @@
                     tpl => "society/topics/obzory/mainpage/list.tpl",
                     topic_list_col_class => "col-lg-12"
                 ]}
+                
                 {snippet name=smarty params=$params as_tag=1}
             </div>
         

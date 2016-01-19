@@ -8,7 +8,9 @@
         "limit" => 10,
         "page"      => $smarty.get.page,
         "sort"  => "createdon",
-        "dir"   => "DESC"
+        "dir"   => "DESC",
+        "cache" => 1,
+        'cache_prefix'      => "getdata/{$modx->user->id}/"
     ]}
     
     {$processor = "web/society/topics/getdata"}

@@ -6,7 +6,9 @@
 {block name=params}
 
     {$params = [
-        "limit" => 20
+        "limit" => 20,
+        "cache" => 1,
+        'cache_prefix'      => "getdata/{$modx->user->id}/"
     ]}
     
     {if (int)$smarty.get.page > 1}

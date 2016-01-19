@@ -9,6 +9,9 @@
  * @author Danil Kostin <danya.postfactum(at)gmail.com>
  *
  * @package ace
+ *
+ * @var array $scriptProperties
+ * @var Ace $ace
  */
 if ($modx->event->name == 'OnRichTextEditorRegister') {
     $modx->event->output('Ace');
@@ -20,11 +23,10 @@ if ($modx->getOption('which_element_editor', null, 'Ace') !== 'Ace') {
 }
 
 $ace = $modx->getService('ace', 'Ace', $modx->getOption('ace.core_path', null, $modx->getOption('core_path').'components/ace/').'model/ace/');
-
 $ace->initialize();
 
 $extensionMap = array(
-    'tpl'   => 'text/html',
+    'tpl'   => 'text/x-smarty',
     'htm'   => 'text/html',
     'html'  => 'text/html',
     'css'   => 'text/css',
@@ -37,6 +39,7 @@ $extensionMap = array(
     'json'  => 'application/json',
     'php'   => 'application/x-php',
     'sql'   => 'text/x-sql',
+    'md'    => 'text/x-markdown',
     'txt'   => 'text/plain',
 );
 
@@ -49,8 +52,10 @@ switch ($modx->event->name) {
         break;
     case 'OnTempFormPrerender':
         $field = 'modx-template-content';
-        $mimeType = 'text/html';
         $modxTags = true;
+        $mimeType = $modx->getOption('pdotools_fenom_parser')
+            ? 'text/x-smarty'
+            : 'text/html';
         break;
     case 'OnChunkFormPrerender':
         $field = 'modx-chunk-snippet';
@@ -61,6 +66,9 @@ switch ($modx->event->name) {
             $mimeType = 'text/html';
         }
         $modxTags = true;
+        $mimeType = $modx->getOption('pdotools_fenom_default')
+            ? 'text/x-smarty'
+            : 'text/html';
         break;
     case 'OnPluginFormPrerender':
         $field = 'modx-plugin-plugincode';
@@ -73,7 +81,9 @@ switch ($modx->event->name) {
     case 'OnFileEditFormPrerender':
         $field = 'modx-file-content';
         $extension = pathinfo($scriptProperties['file'], PATHINFO_EXTENSION);
-        $mimeType = isset($extensionMap[$extension]) ? $extensionMap[$extension] : 'text/plain';
+        $mimeType = isset($extensionMap[$extension])
+            ? $extensionMap[$extension]
+            : 'text/plain';
         $modxTags = $extension == 'tpl';
         break;
     case 'OnDocFormPrerender':
@@ -82,6 +92,9 @@ switch ($modx->event->name) {
         }
         $field = 'ta';
         $mimeType = $modx->getObject('modContentType', $modx->controller->resourceArray['content_type'])->get('mime_type');
+        if ($mimeType == 'text/html' && $modx->getOption('pdotools_fenom_parser')) {
+            $mimeType = 'text/x-smarty';
+        }
         if ($modx->getOption('use_editor')){
             $richText = $modx->controller->resourceArray['richtext'];
             $classKey = $modx->controller->resourceArray['class_key'];
@@ -89,15 +102,14 @@ switch ($modx->event->name) {
                 $field = false;
             }
         }
-
         $modxTags = true;
         break;
     default:
         return;
 }
 
-$modxTags = json_encode($modxTags);
-$script = "";
+$modxTags = (int) $modxTags;
+$script = '';
 if ($field) {
     $script .= "MODx.ux.Ace.replaceComponent('$field', '$mimeType', $modxTags);";
 }

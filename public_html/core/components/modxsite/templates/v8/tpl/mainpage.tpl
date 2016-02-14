@@ -11,7 +11,7 @@
         </div>
     </div>
     
-    
+    {*
     <noindex>
         
         <div class="container block">
@@ -20,6 +20,7 @@
             </a>
         </div>
     </noindex>
+    *}
     
     <div class="container block">
         <h2 class="page-header">

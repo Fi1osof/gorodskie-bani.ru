@@ -16,6 +16,12 @@
     
     {if $result.success && $result.object}
         
+        <style>
+            .YMaps-b-balloon-content{
+                white-space: nowrap;
+            }
+        </style>
+        
         <div id="YMapsID" class="container" style="width:100%;"></div>
             
         <script type="text/javascript">

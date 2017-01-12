@@ -40,6 +40,8 @@ class modSiteWebResourcesGetdataProcessor extends modSiteWebGetdataProcessor{
     public function prepareQueryBeforeCount(xPDOQuery $c) {
         $c = parent::prepareQueryBeforeCount($c);
         
+        $alias = $c->getAlias();
+        
         $where = array(
             'deleted'   => false,
         );
@@ -56,7 +58,58 @@ class modSiteWebResourcesGetdataProcessor extends modSiteWebGetdataProcessor{
             $where["parent"] = $parent;
         }
         
+        
+        // Поиск по запросу
+        // Требуется компонент modSearch
+        if(
+            $query_string = trim($this->getProperty('search'))
+            AND $searcher = $this->modx->getService('modSearch', 'modSearch')
+        ){
+            /*
+                Получаем леммы для запроса
+            */
+            if($lemmas = $searcher->textToLemmas($query_string)){
+                $indexes_table = $this->modx->getTableName('modSearchIndex');
+                
+                
+                /*
+                    Поиск по всем словам
+                */
+                
+                # $search_where = array();
+                foreach($lemmas as $lemma){
+                    $lemma_query_string = $this->modx->quote("%{$lemma}%");
+                    $lemma = $this->modx->quote($lemma);
+                    $query_string = $this->modx->quote("%{$query_string}%");
+                    
+                    $sql = "EXISTS (
+                        SELECT NULL FROM {$indexes_table} WHERE {$indexes_table}.resource_id = {$alias}.id AND {$indexes_table}.lemma LIKE $lemma_query_string
+                    )";
+                    
+                    // Указываем побольше уровень вложенности запроса, чтобы не возникло критической ошибки
+                    // при попытки обработчиком обратиться к объекту как к массиву
+                    $c->query['where'][][][] = new xPDOQueryCondition(array(
+                        'sql' => $sql,
+                    ));
+                }
+                
+                # $where[] = $search_where;
+                # $c->prepare($search_where);
+            }
+            else{
+                $where[] = '0=1';
+            }
+            
+        }
+        
         $c->where($where);
+        
+        # print_r($c->query['where']);
+        # $c->select(array(
+        #     "{$alias}.*",
+        # ));
+        # $c->prepare();
+        # print $c->toSQL();
         
         return $c;
     }
@@ -73,11 +126,13 @@ class modSiteWebResourcesGetdataProcessor extends modSiteWebGetdataProcessor{
             $c->select(array(
                 "tv.id as tv_id",
                 'tv.name as tv_name',
+                "tv.caption as tv_caption",
+                "tv.category as tv_category",
                 "TemplateVarResources.id as tv_value_id",
                 "TemplateVarResources.value as tv_value",
             ));
         }
-    
+        
         return $c;
     }
     
@@ -95,24 +150,15 @@ class modSiteWebResourcesGetdataProcessor extends modSiteWebGetdataProcessor{
             $properties = $this->getProperties();
         }
         
-        switch($this->getProperty('image_url_schema')){
-            case 'base':
-                $images_base_url = $this->getSourcePath();
-                break;
-                
-            case 'full':
-                $images_base_url = $this->modx->getOption('site_url');
-                $images_base_url .= preg_replace("/^\/*/", "", $this->getSourcePath());
-                break;
-                
-            default: $images_base_url = '';
-        }
+        $images_base_url = $this->getImageBaseUrl();
         
         foreach($list as & $l){  
             
             // Картинка
-            $l['image'] = '';
-            if(!empty($l['tvs']['image']['value'])){
+            if(
+                empty($l['image'])
+                AND !empty($l['tvs']['image']['value'])
+            ){
                 $l['image'] = $images_base_url . $l['tvs']['image']['value'];
             }
             else{
@@ -158,7 +204,25 @@ class modSiteWebResourcesGetdataProcessor extends modSiteWebGetdataProcessor{
             }
         }
         return $url;
-    }    
+    }
+    
+        
+    protected function getImageBaseUrl(){
+        switch($this->getProperty('image_url_schema')){
+            case 'base':
+                $images_base_url = $this->getSourcePath();
+                break;
+                
+            case 'full':
+                $images_base_url = $this->modx->getOption('site_url');
+                $images_base_url .= preg_replace("/^\/*/", "", $this->getSourcePath());
+                break;
+                
+            default: $images_base_url = '';
+        }
+        
+        return $images_base_url;
+    } 
     
 }
 

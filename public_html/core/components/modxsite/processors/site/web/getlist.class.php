@@ -14,7 +14,8 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
         $this->setDefaultProperties(array(
             'cache'             => false,           // Use cache
             'cache_lifetime'    => 0,               // seconds
-            'cache_prefix'      => 'getdata/',      
+            xPDO::OPT_CACHE_KEY => "resource",
+            'cache_prefix'      => $this->modx->context->key . '/getdata/',      
             'current'           => false,   // get and return only first element 
             'page'              => 0,   // !empty($_REQUEST['page']) ? (int)$_REQUEST['page'] : 0,
             'getPage'           => false,
@@ -38,15 +39,6 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
             $this->setProperty('start', ($page-1) * $limit);
         }
         
-        if(
-            $sort = $this->getProperty('sort')
-            AND mb_strpos($sort, ".", 0,  'utf-8') === false
-            AND $fields = $this->modx->getFields($this->classKey)
-            AND array_key_exists($sort, $fields)
-        ){ 
-            $this->setProperty('sort', "{$this->classKey}.{$sort}");
-        }
-        
         return !$this->hasErrors();
     }
 
@@ -56,9 +48,13 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
         // Use or not caching
         $cacheable = $this->getProperty('cache');
         
+        $cache_options = array(
+            xPDO::OPT_CACHE_KEY => $this->getProperty(xPDO::OPT_CACHE_KEY),
+        );
+        
         if($cacheable){
             $key = $this->getProperty('cache_prefix') . md5( __CLASS__ . json_encode($this->getProperties()));
-            if($cache = $this->modx->cacheManager->get($key)){
+            if($cache = $this->modx->cacheManager->get($key, $cache_options)){
                 return $this->prepareResponse($cache);
             }
         }
@@ -66,7 +62,7 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
         $result = parent::process();
         
         if($cacheable){
-            $this->modx->cacheManager->set($key, $result, $this->getProperty('cache_lifetime', 0));
+            $this->modx->cacheManager->set($key, $result, $this->getProperty('cache_lifetime', 0), $cache_options);
         }
         
         return $result;
@@ -84,6 +80,19 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
         );
 
         $c = $this->modx->newQuery($this->classKey);
+        
+        $alias = $c->getAlias();
+        
+        if(
+            $sort = $this->getProperty('sort')
+            AND mb_strpos($sort, ".", 0,  'utf-8') === false
+            AND $fields = $this->modx->getFields($this->classKey)
+            AND array_key_exists($sort, $fields)
+        ){ 
+            $this->setProperty('sort', "{$alias}.{$sort}");
+        }
+        
+        
         $c = $this->prepareQueryBeforeCount($c);
         if(!$c = $this->getCount($c)){
             return $data;
@@ -97,6 +106,9 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
     }
     
     protected function getCount(xPDOQuery & $c){
+        
+        $alias = $c->getAlias();
+        
         if(!$sortKey = $this->getProperty('sort')){
             $sortClassKey = $this->getSortClassKey();
             $sortKey = $this->modx->getSelectColumns($sortClassKey,$this->getProperty('sortAlias',$sortClassKey),'',array($this->getProperty('sort')));
@@ -132,7 +144,7 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
             
             if ($this->flushWhere && isset($c->query['where'])) $c->query['where'] = array();
             $c->where(array(
-                "{$this->classKey}.id:IN" => $IDs,
+                "{$alias}.id:IN" => $IDs,
             ));
         }
         else{
@@ -202,17 +214,20 @@ class modSiteWebGetlistProcessor extends modObjectGetListProcessor{
     }
 
     protected function prepareUniqObjectsQuery(xPDOQuery & $query){
+        $alias = $query->getAlias();
         
-        $query->select(array ("{$this->classKey}.id"));
+        $query->select(array ("{$alias}.id"));
         $query->distinct(); 
         
         return $query;
     } 
 
     protected function setSelection(xPDOQuery $c){
+        $alias = $c->getAlias();
+        
         $c->select(array(
-            "{$this->classKey}.*",
-            "{$this->classKey}.id as `object_id`",    // Make sure resource id will not overwrite
+            "{$alias}.*",
+            "{$alias}.id as `object_id`",    // Make sure resource id will not overwrite
         ));
         return $c;
     }

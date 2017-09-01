@@ -29,6 +29,7 @@ module.exports = (options) => ({
 							/\/material-ui-components\//.test(file)
 							|| /\/structor-templates\//.test(file)
 							|| /\/react-cms-data-view\//.test(file)
+							|| /\/google-map-react\//.test(file)
 							// || /\/moment\//.test(file)
 						){
 							return;
@@ -60,12 +61,20 @@ module.exports = (options) => ({
 				test: /\.(mp4|webm)$/,
 				loader: 'url-loader?limit=10000',
 			},{
-	          test: new RegExp('\.(le|se|sa)ss$'),
-	          loader: ExtractTextPluginMainPlugin.extract({
-	            fallback: "style-loader",
-	            use: "css-loader!autoprefixer-loader?browsers=last 2 versions!less-loader"
-	          })
-	        }],
+        test: new RegExp('\.(sc|sa)ss$'),
+        loaders: [
+          'style-loader',
+          'css-loader?modules&importLoaders=2&localIdentName=[name]__[local]',
+          'postcss-loader',
+          'sass-loader?precision=10&indentedSyntax=sass',
+        ],
+      },{
+        test: new RegExp('\.(le|se)ss$'),
+        loader: ExtractTextPluginMainPlugin.extract({
+          fallback: "style-loader",
+          use: "css-loader!autoprefixer-loader?browsers=last 2 versions!less-loader"
+        })
+      }],
 	},
 	plugins: options.plugins.concat([
 		new webpack.ProvidePlugin({

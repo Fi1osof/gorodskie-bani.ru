@@ -12,6 +12,7 @@ require('babel-core/register')({
         || /\/react-cms-data-view\//.test(file)
         || /\/structor-templates\//.test(file)
         || /\/react-decliner\//.test(file)
+        || /\/google-map-react\//.test(file)
         // || /\/moment\//.test(file)
       ){
         return;

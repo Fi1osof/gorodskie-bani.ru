@@ -6,6 +6,8 @@ import Page from '../layout';
 
 import {Link} from 'react-router';
 
+import MainMap from '../../Map';
+
 export default class MainPage extends Page{
 
 
@@ -19,9 +21,8 @@ export default class MainPage extends Page{
 	
 	render(){
 
-		return <div>
-			Main Page dsfdsf fgdfgdfg sdfsdfds werewrwer 33333 234234234
-		</div>
+		return <MainMap 
+		/>
 	}
 }
 

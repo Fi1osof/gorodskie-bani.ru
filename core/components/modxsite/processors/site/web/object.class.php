@@ -99,7 +99,11 @@ class modSiteWebObjectProcessor extends modObjectProcessor{
                 }
                 
                 else{
-                    $this->object->fromArray($this->getProperties());
+                    $properties = $this->getProperties();
+
+                    unset($properties['save_object'], $properties['new_object']);
+
+                    $this->object->fromArray($properties);
                     
                     /* Run the beforeSave method and allow stoppage */
                     $canSave = $this->beforeSave();
@@ -215,7 +219,21 @@ class modSiteWebObjectProcessor extends modObjectProcessor{
      * Override in your derivative class to do functionality before save() is run
      * @return boolean
      */
-    public function beforeSave() { return !$this->hasErrors(); }
+    public function beforeSave() {
+
+        $object = & $this->object;
+
+        foreach($object->_dirty as $field => $value){
+            if(
+                $object->$field
+                AND is_scalar($object->$field)
+            ){
+                $object->set($field, trim($object->get($field)));
+            }
+        }
+
+        return !$this->hasErrors(); 
+    }
 
     /**
      * Override in your derivative class to do functionality after save() is run
@@ -311,7 +329,13 @@ class modSiteWebObjectProcessor extends modObjectProcessor{
     }
     
     public function cleanup() {
-        return $this->success('', $this->object);
+        $object = & $this->object;
+
+        unset($object->_fields['pub_action']);
+        unset($object->_fields['save_object']);
+        unset($object->_fields['new_object']);
+
+        return $this->success('', $object);
     }
     
     

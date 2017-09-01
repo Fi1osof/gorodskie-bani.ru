@@ -1,1 +1,0 @@
-<h4 class="text-primary">{$message}</h4>

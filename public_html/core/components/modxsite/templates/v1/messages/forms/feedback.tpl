@@ -1,1 +1,0 @@
-{extends file="messages/forms/default.tpl"}

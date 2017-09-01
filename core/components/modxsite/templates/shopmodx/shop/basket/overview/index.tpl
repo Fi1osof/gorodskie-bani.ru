@@ -1,17 +1,58 @@
 {extends file="shop/basket/layout.tpl"}
 
+{block name=params append}
+
+    {if $basket_action = $request.basket_action}
+        {$params = $request}
+        {$processor = "shopmodx/public/action"}
+    {/if}
+    
+{/block}
+
 {block name=basket_content}
     {field name=uri assign=current_uri}
  
-    {*<pre>
-        {print_r($basket_result)}
-    </pre> *}
-
+    {*
+        <pre>
+            {print_r($Order)}
+        </pre> 
+    *}
+    
+    {if $request && $basket_result}
+    
+        {if $basket_result.success}
+            {if $basket_result.message}
+                <div class="alert alert-success">
+                    {$basket_result.message}
+                </div>
+            {/if}
+        {else}
+            <div class="alert alert-success">
+                {$basket_result.message|default:"Ошибка выполнения запроса"}
+            </div>
+        {/if}
+    
+    {/if}
+    
     <div class="row-fluid">
         <div class="span12">
         
-            {if $basket_result.success && $basket_result.object}
-            
+            {if $Order && $Order._OrderProducts && $Order.status_id == '1'}
+                
+                {*
+                    Получаем данные товаров
+                *}
+                
+                {$pr_params = [
+                    "where" => [
+                        "id:in" => $Order.products_ids
+                    ],
+                    "limit" => 0
+                ]}
+                
+                {processor action="web/catalog/products/getdata" ns="modxsite" params=$pr_params assign=products_result}
+                
+                
                 <div data-smodx-basket="order">
             
                     <form name="order_form" action="" method="post">        
@@ -28,34 +69,44 @@
                                 </tr>
                             </thead>
                             <tbody> 
-                                {foreach $basket_result.object as $object}
-                                    {$key = $object.id}
+                                {foreach $Order._OrderProducts as $OrderProduct}
+                                    {$Product = $OrderProduct._Product}
+                                    {$key = $OrderProduct.id}
+                                    
+                                    {$object = $products_result.object[$Product.id]}
                                      
                                     <tr data-smodx-item-id="{$key}" data-smodx-item="good">            
                                         <td>
-                                            <img src="{snippet name=phpthumbof params="input=`$object.image`&options=`w=100`"}" />
+                                            <img src="{snippet name=phpthumbof params="input=`{$object.image|default:$object.imageDefault}`&options=`w=100`"}" />
                                         </td>
                                         <td>
                                             <a href="{$object.uri}">{$object.pagetitle}</a>
                                         </td>
                                         <td class="button">
-                                            <input type="text" data-smodx-behav="goodNum" value="{$object.quantity}" class="field2 input-mini" name="quantity[{$key}]">
+                                            <input type="text" data-smodx-behav="goodNum" value="{$OrderProduct.quantity}" class="field2 input-mini" name="quantity[{$key}]">
                                         </td>
-                                        <td class="cost">{$object.price|number_format:0:"":" "} {$object.currency_code}</td>
+                                        <td class="cost">{$OrderProduct.price|number_format:0:"":" "} {$OrderProduct.currency_code}</td>
                                         
-                                        <td><a class="btn btn-danger" data-smodx-behav="goodDel" href="{$current_uri}?basket_action=remove_product&product_key={$key}">удалить</a></td>
+                                        <td><a class="btn btn-danger" data-smodx-behav="goodDel" href="javascript:;">удалить</a></td>
                                     </tr>
                                     
                                 {/foreach}
                             </tbody>
                         </table>
                         
+                        {*
+                        
+                        <pre>
+                            {print_r($Order)}
+                        </pre>
+                        
+                        *}
                         <div class="row-fliud">
                             <div class="span2 offset10">
-                            
+                            {$basket.discount}
                                 <div data-smodx-data="cost" class="order_data">
-                                    <p>В корзине:     <span class="num">{$basket_result.quantity}</span> <span class="text">{$basket_result.quantity|spell:"товар":"товара":"товаров"}</span></p>
-                                    <p>Сумма заказа: <span class="cost">{$basket_result.sum|number_format:0:".":" "}</span> руб.</p>
+                                    <p>В корзине:     <span class="num">{$Order.quantity}</span> <span class="text">{$Order.quantity|spell:"товар":"товара":"товаров"}</span></p>
+                                    <p>Сумма заказа: <span><s class="cost_original">{if $Order.discount}{((float)$Order.original_sum)|number_format:0:".":" "}{/if}</s></span> <span class="cost">{$Order.sum|number_format:0:".":" "}</span> руб.</p>
                                 </div>
                                 
                             </div>
@@ -67,8 +118,8 @@
                                 <div class="order_control" data-smodx-basket-control="rulers">
                                     <input type="hidden" name="basket_action" value="recalculate" />
                                     
-                                    <input type="submit" data-smodx-behav="recount" class="btn update_button" value="Пересчитать">
-                                    <a class="btn btn-success" data-smodx-behav="accept" href="{link id=83}"><span>Оформить заказ</span></a>
+                                    <input type="submit" data-smodx-behav="recount" class="btn btn-default update_button" value="Пересчитать">
+                                    <a class="btn btn-success" data-smodx-behav="accept" href="{$modx->makeUrl(83)}"><span>Оформить заказ</span></a>
                                     <a class="btn btn-warning" data-smodx-behav="clear" href="{$current_uri}?basket_action=empty_basket"><span>Очистить корзину</span></a>  
                                 </div>
                                 

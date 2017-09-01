@@ -6,21 +6,23 @@
 {block name=params}
     
     {$options = "&q=100&w=200"}
-    
-    {$image = $object.image|default:$object.imageDefault}
-    
-    {$src = $modx->runSnippet('phpthumbof', [
-        "input" => $image,
-        "options"   => $options
-    ])}
 
 {/block}
+
+
+{$image = $object.image|default:$object.imageDefault}
+
+{$src = $modx->runSnippet('phpthumbof', [
+    "input" => $image,
+    "options"   => $options
+])}
+
 
 {block name=cart}
 
     <div data-smodx-productcls="listproduct">
         <form action="" method="post">
-            <input type="hidden" name="product_id" value="{$object.product_id}"/>
+            <input type="hidden" name="product_id" value="{$object.id}"/>
             <input type="hidden" name="action" value="add_product"/>
             <table>
                 <tbody>
@@ -34,7 +36,7 @@
                     </tr>
                     <tr>
                         <td>Цена: </td>
-                        <td>{$object.sm_price|number_format:2:".":" "} {$object.currency_code}</td>
+                        <td>{$object.price|number_format:2:".":" "} {$object.currency_code}</td>
                     </tr>
                     <tr>
                         <td>Количество: </td>

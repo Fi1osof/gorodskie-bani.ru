@@ -72,6 +72,11 @@ class modWebPublicActionProcessor extends modProcessor{
                     self::$actualClassName = 'modWebFormsCompanyrequestProcessor';
                     break; 
                     
+                case 'forms/feedback':
+                    require dirname(dirname(__FILE__)) . '/forms/feedback.class.php';
+                    self::$actualClassName = 'modWebFormsFeedbackProcessor';
+                    break; 
+                    
                 
                 case 'email_messages/send':
                     require dirname(dirname(__FILE__)) . '/society/email_messages/send.class.php';

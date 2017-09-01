@@ -376,6 +376,34 @@
             <script src="{$template_url}vendor/AlertifyJS/build/alertify.min.js"></script>
             <script src="{$template_url}bundle/app.js"></script>
         
+            <script>
+                $('[data-action]').submit(function(e){
+                    e.preventDefault();
+                    var form = $(this);
+                    $.ajax({
+                        url: 'assets/components/modxsite/connectors/connector.php?pub_action='+ form.attr('data-action'),
+                        data: form.serialize(),
+                        error: function(e){
+                            console.log(e);
+                            form.find('.js-form-error').remove();
+                        },
+                        success: function(r){
+                            console.log(r);
+                            form.find('.js-form-error').remove();
+                            if(r.success){
+                                alertify.success(r.message);
+                                form[0].reset();
+                            } else {
+                                alertify.error(r.message);
+                                for(var i in r.data){
+                                    form.find('[name='+ r.data[i].id +']').after('<div class="js-form-error" style="color:red;font-size:75%;font-style:italic;">'+ r.data[i].msg +'</div>')
+                                }
+                            }
+                        }
+                    })
+                });
+            </script>
+        
             <script src="http://api-maps.yandex.ru/1.1/index.xml" type="text/javascript"></script>
         {/block}
         

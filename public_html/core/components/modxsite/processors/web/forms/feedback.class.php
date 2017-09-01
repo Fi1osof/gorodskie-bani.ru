@@ -19,6 +19,10 @@ class modWebFormsFeedbackProcessor extends modSiteWebFormProcessor{
             $this->modx->getOption('shop.managers_notify_group', null, 1),
         );
         
+        if(!$this->modx->smarty){
+            $this->modx->invokeEvent('OnHandleRequest');
+        }
+        
         return parent::initialize();
     }
     
@@ -51,6 +55,10 @@ class modWebFormsFeedbackProcessor extends modSiteWebFormProcessor{
             )
         );
         return $fields;
+    }
+    
+    public function cleanup(){
+        return $this->success('Сообщение успешно отправлено');
     }
     
 }

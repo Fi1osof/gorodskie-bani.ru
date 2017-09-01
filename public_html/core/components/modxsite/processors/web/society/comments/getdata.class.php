@@ -14,6 +14,7 @@ class modWebSocietyCommentsGetdataProcessor extends modWebGetdataProcessor{
         $this->setDefaultProperties(array(
             "sort"  => "id",
             "dir"   => "DESC",
+            "show_deleted"  => true,
         ));
         
         return parent::initialize();
@@ -22,8 +23,18 @@ class modWebSocietyCommentsGetdataProcessor extends modWebGetdataProcessor{
     public function prepareQueryBeforeCount(xPDOQuery $q){
         $q = parent::prepareQueryBeforeCount($q);
         
+        $where = array();
+        
         $q->innerJoin('SocietyThread', 'Thread');
         $q->innerJoin('modUser', 'CreatedBy', "CreatedBy.id = {$this->classKey}.createdby");
+        
+        if(!$this->getProperty("show_deleted")){
+            $where['deleted'] = 0;
+        }
+        
+        if($where){
+            $q->where($where);
+        }
         
         return $q;
     }

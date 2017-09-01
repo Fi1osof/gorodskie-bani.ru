@@ -31,7 +31,7 @@
 
 
 {if !$form_result.success}
-        <form name="order_form" action="{link id=$modx->resource->id}?action=submit" method="post" class="wrapper-content">
+        <form name="order_form" data-action="forms/feedback" action="{link id=$modx->resource->id}?action=submit" method="post" class="wrapper-content">
         
             <div class="form-group control-group {if $form_result.field_errors.fullname}error{/if}">
                 <label for="fullname">Имя</label>

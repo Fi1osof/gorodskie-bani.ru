@@ -365,6 +365,7 @@ export default class DbPage extends Page{
 
 	  return fetch('/api/?pub_action=graphql', {
 	    method: 'post',
+      credentials: "same-origin",
 	    headers: { 'Content-Type': 'application/json' },
 	    // body: JSON.stringify(graphQLParams),
 	    // body: JSON.stringify(body),

@@ -53,7 +53,11 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         
         $alias = $c->getAlias();
         
-        $c->innerJoin('modResource', 'City', "City.id = {$alias}.parent");
+        $where = array(
+            "template"  => 27,
+        );
+
+        $c->leftJoin('modResource', 'City', "City.template = 26 AND City.id = {$alias}.parent");
         
         # $c->innerJoin('modCompany', 'Company');
         
@@ -85,8 +89,11 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
             "pagetitle",
         ));
         
+
         $s = $ratings_query->prepare();
         $s->execute();
+
+        // print $ratings_query->toSQL();
         
         $votes_table = $this->modx->getTableName("SocietyVote");
         $threads_table = $this->modx->getTableName("SocietyThread");
@@ -123,17 +130,21 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         ));
         
         
-        $c->where(array(
-            "template"  => 27,
-        ));
+        $c->where($where);
         
+        // $c->prepare();
+        // print $c->toSQL();
+
         return $c;
     }
     
     public function setSelection(xPDOQuery $c){
         $c = parent::setSelection($c); 
          
+        $alias = $c->getAlias();
+
         $c->select(array(
+            "{$alias}.pagetitle as name",
             "City.id as city_id",
             "City.pagetitle as city",
             "City.uri as city_uri",

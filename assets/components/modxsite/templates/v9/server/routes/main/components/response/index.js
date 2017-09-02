@@ -37,32 +37,59 @@ import {
   GraphQLList,
   GraphQLNonNull,
   GraphQLID,
+  GraphQLEnumType,
 } from 'graphql';
 
 var knex;
-  
-// console.log('GraphQLFloat', GraphQLFloat); 
+
+var knexdb = require('knex');
 
 export default class Response{
 
-  constructor (req, res, params, knexdb) {
+  constructor (req, res, params) {
  
 
-    knex = knexdb;
+    knex = knexdb(db_config);
 
     this.req = req;
     this.res = res;
     this.params = params;
- 
+    
+    this.prepareSchema();
+  }
+
+  prepareSchema(){
+
+    this.RatingGroupbyEnumList = {
+      name : 'RatingGroupbyEnum',
+      description : 'Способ группировки рейтингов',
+      values : {
+        company: {
+          value: 'company',
+          description : 'Сгруппировать по компаниям (общий рейтинг)'
+        },
+        rating_type: {
+          value: 'rating_type',
+          description : 'Сгруппировать по типам рейтингов (по каким рейтингам сколько голосов всего и по количеству компаний)'
+        },
+        company_and_rating_type: {
+          value: 'company_and_rating_type',
+          description : 'Сгруппировать по компаниям и типам рейтингов (средний балл на каждую компанию по типу рейтинга)'
+        },
+        // rating_type_and_company: {
+        //   value: 'rating_type_and_company',
+        //   description : 'Сгруппировать по компаниям и типам рейтингов в них'
+        // },
+      }
+    };
+
+
+    return;
   }
 
   SendMODXRequest (action, params) {
 
     const req = this.req;
-
-    // console.log('request Cookies', req.getHeaders());
-    
-    console.log('Cookies: ', req.cookies);
 
     const method = 'POST';
 
@@ -87,15 +114,6 @@ export default class Response{
     if(method == 'POST' && params){
       // var postData = querystring.stringify(params);
 
-      // console.log('postData', postData);
-      // console.log('Buffer.byteLength(postData)', Buffer.byteLength(postData));
-
-      // Object.assign(options.headers, {
-      //   'Content-Type': 'application/x-www-form-urlencoded',
-      //   'Content-Length': Buffer.byteLength(postData)
-      // });
-
-      // console.log('request params', params);
 
       form = new FormData()
 
@@ -168,17 +186,7 @@ export default class Response{
     debug("options", options);
 
 
-    // console.log("SendMODXRequest", url, options);
-
-    // return httpServ.request(options);
-
     return fetch('http://gorodskie-bani.local' + url, options);
-      // .then(function(res) {
-      //     return res.json();
-      // }).then(function(json) {
-      //     // console.log('fetch response', json);
-      //     console.log('fetch response success');
-      // });
   }
 
   contactsResolver = (object, args) => {
@@ -190,9 +198,6 @@ export default class Response{
       // А когда они завершатся — нужно вызвать одно из:
       // resolve(результат) при успешном выполнении
       // reject(ошибка) при ошибке
-
-
-      console.log('contactsResolver', object, args);
 
       let {
         id,
@@ -218,8 +223,6 @@ export default class Response{
         return res.json();
       })
       .then((data) => {
-          // console.log('fetch response', data);
-          // console.log('fetch response success');
 
         if(!data.success){
 
@@ -276,9 +279,182 @@ export default class Response{
     });
   }
 
-  placesResolver = (contact, args) => {
+  RatingTypesResolver = (contact, args) => {
 
-    console.log('placesResolver', contact, args);
+    let {
+      id,
+      limit,
+      start,
+      sort,
+    } = args || {};
+
+    var q = knex(`${prefix}site_content as rating_types`)
+      // .innerJoin(`${prefix}user_attributes as profile`, 'users.id', 'profile.internalKey')
+      // .select('profile.*')
+      .select('rating_types.*')
+      .select('rating_types.pagetitle as name')
+      // .limit('3')
+      ;
+
+      q.where({
+        deleted: 0,
+        published: 1,
+        hidemenu: 0,
+        parent: 1349,
+      });
+
+      // if(contact_id){
+
+      //   q.innerJoin(`${prefix}modxsite_contacts_places as places_contacts`, 'places_contacts.place_id', 'places.id');
+      //   q.where('places_contacts.contact_id', contact_id);
+
+      // }
+
+      if(id){
+        q.where('id', id);
+      }
+
+      if(limit > 0){
+        q.limit(limit);
+      }
+
+      // console.log('.toSQL()', q.toSQL());
+
+      q.then((result) => { 
+        return result;
+      });
+
+    return q; 
+  }
+
+  RatingsResolver = (contact, args) => {
+
+    const {
+      RatingGroupbyEnumList,
+    } = this;
+
+    let {
+      id,
+      limit,
+      start,
+      sort,
+      groupBy,
+    } = args || {};
+
+    var q = knex(`${prefix}society_votes as votes`)
+      // .innerJoin(`${prefix}user_attributes as profile`, 'users.id', 'profile.internalKey')
+      // .select('profile.*')
+      // .select('round(sum(votes.vote_value) / count(*), 2) as rating')
+      
+      .select('votes.type')
+      .select('votes.thread_id')
+      .select('votes.target_id')
+      .select('votes.vote_value as rating')
+      // .limit('3')
+      ;
+
+      // q.where({
+      // });
+
+      q.where('type', '!=', 0);
+
+      // if(contact_id){
+
+      //   q.innerJoin(`${prefix}modxsite_contacts_places as places_contacts`, 'places_contacts.place_id', 'places.id');
+      //   q.where('places_contacts.contact_id', contact_id);
+
+      // }
+
+      if(id){
+        q.where('id', id);
+      }
+
+      if(limit > 0){
+        q.limit(limit);
+      }
+
+
+    // this.RatingGroupbyEnumList = {
+    //   name : 'RatingGroupbyEnum',
+    //   description : 'Способ группировки рейтингов',
+    //   values : {
+    //     company: {
+    //       value: 'company',
+    //       description : 'Сгруппировать по компаниям (общий рейтинг)'
+    //     },
+    //     rating_type: {
+    //       value: 'rating_type',
+    //       description : 'Сгруппировать по типам рейтингов (по каким рейтингам сколько голосов всего и по количеству компаний)'
+    //     },
+    //     company_and_rating_type: {
+    //       value: 'company_and_rating_type',
+    //       description : 'Сгруппировать по компаниям и типам рейтингов (средний балл на каждую компанию по типу рейтинга)'
+    //     },
+    //     rating_type_and_company: {
+    //       value: 'rating_type_and_company',
+    //       description : 'Сгруппировать по компаниям и типам рейтингов в них'
+    //     },
+    //   }
+    // };
+
+      if(groupBy){
+        
+        q.count('* as quantity');
+        q.select(knex.raw('round(sum(votes.vote_value) / count(*), 2) as rating'));
+        q.select(knex.raw('max(votes.vote_value) as max_vote'));
+        q.select(knex.raw('min(votes.vote_value) as min_vote'));
+
+        switch(groupBy){
+          // q.select(knex.raw('round(sum(votes.vote_value) / count(*), 2) as rating'))
+
+          // q.groupBy('type');
+          // q.groupBy('target_id');
+          // q.groupBy('thread_id');
+
+          // Сгруппировать по компаниям (общий рейтинг)
+          case 'company':
+
+            q.groupBy('thread_id');
+            break;
+
+          case 'rating_type':
+
+            q.groupBy('type');
+            break;
+
+          // Сколько всего 
+          case 'company_and_rating_type':
+      
+            // q.countDistinct('round(sum(votes.vote_value) / count(*), 2) as rating');
+
+            q.groupBy('thread_id');
+            q.groupBy('type');
+            break;
+
+          // case 'rating_type_and_company':
+
+          //   q.groupBy('type');
+          //   q.groupBy('thread_id');
+          //   break;
+
+          default:;
+        }
+
+      }
+      else{
+        // q.select('1 as quantity');
+      }
+
+      console.log('ratings .toSQL()', q.toSQL());
+
+      q.then((result) => { 
+        return result;
+      });
+
+    return q; 
+  }
+
+  placesResolver = (contact, args) => {
 
     let {
       id,
@@ -323,7 +499,7 @@ export default class Response{
         q.limit(limit);
       }
 
-      console.log('.toSQL()', q.toSQL());
+      // console.log('.toSQL()', q.toSQL());
 
       q.then((result) => { 
         return result;
@@ -332,10 +508,7 @@ export default class Response{
     return q; 
   }
 
-
   servicesResolver = (object, args) => {
-
-    console.log('servicesResolver', object, args);
 
     let {
       id,
@@ -434,9 +607,66 @@ export default class Response{
 
   getSchema(){
 
+    let RatingTypeType;
+    let RatingsType;
+    let RatingGroupbyEnum;
+
     let PlaceType;
     let ContactType;
     let ServiceType;
+
+    const {
+      RatingGroupbyEnumList,
+    } = this;
+    
+
+    RatingGroupbyEnum = new GraphQLEnumType(RatingGroupbyEnumList);
+
+    RatingTypeType = new GraphQLObjectType({
+      name: 'RatingTypeType',
+      fields: () => {
+
+        return {
+          id: {
+            type: GraphQLInt
+          },
+          name: {
+            type: GraphQLString
+          },
+        };
+      },
+    });
+
+
+    RatingsType = new GraphQLObjectType({
+      name: 'RatingsType',
+      fields: () => {
+
+        return {
+          rating: {
+            type: GraphQLFloat
+          },
+          max_vote: {
+            type: GraphQLFloat
+          },
+          min_vote: {
+            type: GraphQLFloat
+          },
+          type: {
+            type: GraphQLInt
+          },
+          thread_id: {
+            type: GraphQLInt
+          },
+          target_id: {
+            type: GraphQLInt
+          },
+          quantity: {
+            type: GraphQLInt
+          },
+        };
+      },
+    }); 
 
     PlaceType = new GraphQLObjectType({
       name: 'PlaceType',
@@ -554,7 +784,7 @@ export default class Response{
             type: new GraphQLList(PlaceType),
             resolve: (service, args) => {
 
-              console.log('this.ServiceType placesResolver', service, args);
+              // console.log('this.ServiceType placesResolver', service, args);
 
               const {
                 id: service_id,
@@ -564,7 +794,7 @@ export default class Response{
                 service_id,
               });
 
-              console.log('this.ServiceType placesResolver 2', {}, args);
+              // console.log('this.ServiceType placesResolver 2', {}, args);
 
               return this.placesResolver(service, args);
             },
@@ -582,7 +812,7 @@ export default class Response{
             // },
             resolve: (service, args) => {
 
-              console.log('this.ServiceType contactsResolver', service, args);
+              // console.log('this.ServiceType contactsResolver', service, args);
 
               const {
                 id: service_id,
@@ -592,7 +822,7 @@ export default class Response{
                 service_id,
               });
 
-              console.log('this.ServiceType contactsResolver 2', {}, args);
+              // console.log('this.ServiceType contactsResolver 2', {}, args);
 
 
               return this.contactsResolver({}, args);
@@ -645,6 +875,47 @@ export default class Response{
     const RootType = new GraphQLObjectType({
       name: 'RootType',
       fields: {
+        rating_types: {
+          type: new GraphQLList(RatingTypeType),
+          args: {
+            id: {
+              type: GraphQLID
+              // type: new GraphQLNonNull(GraphQLID)
+            },
+            limit: {
+              type: new GraphQLNonNull(GraphQLInt)
+              // type: GraphQLInt
+            },
+          },
+          resolve: (object, args) => {
+
+            // console.log('this.contactsResolver', object, args);
+
+            return this.RatingTypesResolver(object, args);
+          },
+        },
+        ratings: {
+          type: new GraphQLList(RatingsType),
+          args: {
+            id: {
+              type: GraphQLID
+              // type: new GraphQLNonNull(GraphQLID)
+            },
+            limit: {
+              type: new GraphQLNonNull(GraphQLInt)
+              // type: GraphQLInt
+            },
+            groupBy: {
+              type : RatingGroupbyEnum,
+            },
+          },
+          resolve: (object, args) => {
+
+            // console.log('this.contactsResolver', object, args);
+
+            return this.RatingsResolver(object, args);
+          },
+        },
         contacts: {
           type: new GraphQLList(ContactType),
           args: {
@@ -665,7 +936,7 @@ export default class Response{
           },
           resolve: (object, args) => {
 
-            console.log('this.contactsResolver', object, args);
+            // console.log('this.contactsResolver', object, args);
 
             return this.contactsResolver(object, args);
           },
@@ -786,13 +1057,6 @@ export default class Response{
           // });
 
           graphql(schema, introspectionQuery).then(result => {
-            // fs.writeFileSync(
-            //   `${yourSchemaPath}.json`,
-            //   JSON.stringify(result, null, 2)
-            // );
-
-            // console.log("introspectionQuery 2", result);
-            // console.log("introspectionQuery", JSON.stringify(result, null, 2));
 
             return this.success("", result);
           });

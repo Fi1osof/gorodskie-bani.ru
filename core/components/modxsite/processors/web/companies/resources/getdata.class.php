@@ -14,6 +14,10 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
     
     public function initialize(){
          
+        # parent::initialize();
+        // $this->modx->log(1, var_dump($this->properties, 1), "FILE");
+        // $this->modx->log(1, print_r($_REQUEST, 1), "FILE");
+        # return true; 
         
         $this->setDefaultProperties(array(
             "sort"  => "avg_rating DESC, {$this->classKey}.menutitle",
@@ -22,9 +26,6 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
             "approved_only"     => false,       // Только одобренные
         ));
         
-        # parent::initialize();
-        # $this->modx->log(1, print_r($this->properties, 1));
-        # return true; 
         
         
         // Учитываем различные параметры сортировки

@@ -10,6 +10,8 @@ class modWebSocietyBlogsGetdataProcessor extends modSocietyWebBlogsGetdataProces
             "blogs"     => array(),         // Массив дополнительных 
             "check_for_post"   => 0,       // Проверка блогов, в которые можно публиковать топики
             "sort"      => "pagetitle",
+            "format" => "json",
+            "count" => 0,
         ));
         
         return parent::initialize();
@@ -164,7 +166,7 @@ class modWebSocietyBlogsGetdataProcessor extends modSocietyWebBlogsGetdataProces
                     # $image['image'] = $image['image'];
                     $l['gallery'][] = $image;
                     
-                    if(!$l['image']){
+                    if(empty($l['image'])){
                         $l['image'] = $image['image'];
                     }
                 }

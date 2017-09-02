@@ -4,6 +4,8 @@ import {
   MainApp,
   MainPage,
   TopicsPage,
+  NotFoundPage,
+  DbPage,
   // Lesson1,
   // PageGraphiQL,
 } from "modules/Site";
@@ -25,15 +27,55 @@ export default {
     //   component: MainPage
     // },
     {
-      path: "/",
+      path: "/@:lat,:lng,:zoom",
       name: "TopicsPage",
       component: MainPage
     },
     {
-      path: "/topics/",
-      name: "TopicsPage",
-      component: TopicsPage
+      path: "/db/",
+      component: DbPage,
+      // childRoutes: [
+      //   {
+      //     path: "/db/contacts",
+      //     name: "/db/contacts",
+      //     component: Contacts,
+      //     childRoutes: [{
+      //       path: "/db/contacts/:contactId/",
+      //     }]
+      //   },
+      //   {
+      //     path: "/db/places",
+      //     name: "/db/places",
+      //     component: Places,
+      //     childRoutes: [{
+      //       path: "/db/places/:placeId/",
+      //     }]
+      //   },
+      //   {
+      //     path: "/db/services",
+      //     name: "/db/services",
+      //     component: Services,
+      //     childRoutes: [{
+      //       path: "/db/services/:serviceId/",
+      //     }]
+      //   },
+      //   {
+      //     path: "/db/places-services",
+      //     name: "/db/places-services",
+      //     component: Page66
+      //   },
+      //   {
+      //     path: "/db/sources",
+      //     name: "/db/sources",
+      //     component: Page72
+      //   }
+      // ]
     },
+    // {
+    //   path: "/topics/",
+    //   name: "TopicsPage",
+    //   component: TopicsPage
+    // },
     // {
     //   path: "/react-lessons/lesson1",
     //   name: "Lesson1",
@@ -47,7 +89,7 @@ export default {
     {
       path: "*",
       // name: "notfound",
-      component: MainPage
+      component: NotFoundPage,
     }
   ]
 };

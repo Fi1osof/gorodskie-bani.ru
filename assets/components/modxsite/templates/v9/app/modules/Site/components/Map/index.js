@@ -36,7 +36,7 @@ export default class MapMainView extends Component{
 
 		// updateItem: PropTypes.func.isRequired,
 		// savePlaceItem: PropTypes.func.isRequired,
-  //   router: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
 		// mapShowContacts: PropTypes.bool.isRequired,
 		// mapShowContactsToggle: PropTypes.func.isRequired,
 		// mapShowGeoObjects: PropTypes.bool.isRequired,
@@ -59,10 +59,10 @@ export default class MapMainView extends Component{
 
 		this.state = {
 			draggable: true,
-		  // mapOptions: {
-		  //   center: props.center,
-		  //   zoom: props.zoom,
-		  // },
+		  mapOptions: {
+		    center: props.center,
+		    zoom: props.zoom,
+		  },
 		  center: props.center,
 		  zoom: props.zoom,
 		  clusters: null,
@@ -74,54 +74,54 @@ export default class MapMainView extends Component{
 		}
 	}
 
-	// componentWillMount(){
+	componentWillMount(){
 
- // 		let {
+ 		// let {
 
-	// 		PlacesStore,
-	// 		ContactsStore,
- // 		} = this.props;
+			// PlacesStore,
+			// ContactsStore,
+ 		// } = this.props;
 
- // 		this.PlacesStoreListener = PlacesStore.getDispatcher().register(payload => {
+ 		// this.PlacesStoreListener = PlacesStore.getDispatcher().register(payload => {
 
- // 			this.createClusters();
- // 		});
+ 		// 	this.createClusters();
+ 		// });
 
- // 		this.ContactsStoreListener = ContactsStore.getDispatcher().register(payload => {
+ 		// this.ContactsStoreListener = ContactsStore.getDispatcher().register(payload => {
 
- // 			this.createClusters();
- // 		});
-
-
- // 		let {
- // 			router,
- // 		} = this.context;
-
- // 		let {
- // 			lat,
- // 			lng,
- // 			zoom,
- // 		} = router.params;
-
- // 		// console.log("lat lng", lat, lng, zoom);
-
- // 		if(lat && lng && zoom){
- // 			// this.setMapPosition(lat, lng);
- //      // defaultCenter={this.props.center}
+ 		// 	this.createClusters();
+ 		// });
 
 
+ 		let {
+ 			router,
+ 		} = this.context;
 
- //      Object.assign(this.state, {
- //      	center: {
-	//       	lat: parseFloat(lat),
-	//       	lng: parseFloat(lng),
-	//       },
-	//       zoom: parseFloat(zoom),
- //      });
- // 		}
+ 		let {
+ 			lat,
+ 			lng,
+ 			zoom,
+ 		} = router.params;
 
- // 		return;
-	// }
+ 		console.log("lat lng", router, lat, lng, zoom);
+
+ 		if(lat && lng && zoom){
+ 			// this.setMapPosition(lat, lng);
+      // defaultCenter={this.props.center}
+
+      Object.assign(this.state, {
+      	mapOptions: {
+	      	center: {
+		      	lat: parseFloat(lat),
+		      	lng: parseFloat(lng),
+		      },
+		      zoom: parseFloat(zoom),
+      	}
+      });
+ 		}
+
+ 		return;
+	}
 
 	// componentWillUnmount(){
 
@@ -974,17 +974,22 @@ export default class MapMainView extends Component{
 		  		:
 		  		null
 		  	}
+
+		  	mapOptions
 		  */}
 	  	
 
 	  		<GoogleMapReact
-		      apiKey="AIzaSyBdNZDE_QadLccHx5yDc96VL0M19-ZPUvU"
-		      defaultCenter={this.state.center}
-		      defaultZoom={this.state.zoom}
+		      bootstrapURLKeys={{
+		      	key: "AIzaSyBdNZDE_QadLccHx5yDc96VL0M19-ZPUvU",
+		      }}
+		      defaultCenter={this.state.mapOptions.center}
+		      defaultZoom={this.state.mapOptions.zoom}
 	  			ref="mapProvider"
 					draggable={draggable}
 				  onGoogleApiLoaded={::this.onGoogleApiLoaded}
-		  		// onChange={this.handleMapChange}
+				  yesIWantToUseGoogleMapApiInternals={true}
+		  		onChange={this.handleMapChange}
 				  // onChildClick={::this.onChildClick}
 				  // onChildMouseDown={::this.onChildMouseDown}
 				  // onChildMouseUp={::this.onChildMouseUp}

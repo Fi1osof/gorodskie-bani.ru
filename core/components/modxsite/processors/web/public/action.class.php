@@ -65,6 +65,11 @@ class modWebPublicActionProcessor extends modProcessor{
                     require dirname(dirname(__FILE__)) . '/companies/create.class.php';
                     self::$actualClassName = 'modWebCompaniesCreateProcessor';
                     break; 
+                
+                case 'companies/getdata':
+                    require dirname(dirname(__FILE__)) . '/companies/resources/getdata.class.php';
+                    self::$actualClassName = 'modWebCompaniesResourcesGetdataProcessor';
+                    break; 
                     
                 
                 case 'forms/company_request':

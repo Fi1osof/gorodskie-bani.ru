@@ -3,6 +3,9 @@ const express = require('express');
 const path = require('path');
 const compression = require('compression');
 
+const router = require('../routes/main');
+var cookieParser = require('cookie-parser');
+
 // Dev middleware
 const addDevMiddlewares = (app, webpackConfig) => {
   const webpack = require('webpack');
@@ -32,11 +35,10 @@ const addDevMiddlewares = (app, webpackConfig) => {
   //     }
   //   });
   // });
-
-  var router = require('../routes/main')({
+  
+  app.use(router({
     app: app,
-  });
-  app.use(router);
+  }));
 };
 
 // Production middlewares
@@ -52,10 +54,9 @@ const addProdMiddlewares = (app, options) => {
 
   // app.get('*', (req, res) => res.sendFile(path.resolve(outputPath, 'index.html')));
 
-  var router = require('../routes/main')({
+  app.use(router({
     app: app,
-  });
-  app.use(router);
+  }));
 };
 
 /**
@@ -63,6 +64,11 @@ const addProdMiddlewares = (app, options) => {
  */
 module.exports = (app, options) => {
   const isProd = process.env.NODE_ENV === 'production';
+
+
+  app.use(cookieParser());
+
+  // app.use(cookieParser())
 
   if (isProd) {
     addProdMiddlewares(app, options);

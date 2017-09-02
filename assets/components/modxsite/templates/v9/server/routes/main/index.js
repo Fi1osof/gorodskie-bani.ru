@@ -210,59 +210,8 @@ module.exports = function (options) {
     `;
   }
 
-  router.use('/', function(req, res) {
 
-    // debug("Server. Request Requested");
-    // console.log("Server. Request Requested", req.query);
-    // console.log("Server. Request body", req.body);
-    
-    const store = configureStore();
-
-    // console.log('store', store);
-
-    // var body = "";
-
-    // let request = {};
-
-    // const componentHTML = ReactDom.renderToString(
-    //   <Provider store={store}>
-    //     <RouterContext {...renderProps} />
-    //   </Provider>
-    // );
-
-    // res.writeHead(200, {'Content-Type': 'text/html'});
-    // res.end(renderHTML(componentHTML));
-
-    match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
-      if (redirectLocation) { // Если необходимо сделать redirect
-        return res.redirect(301, redirectLocation.pathname + redirectLocation.search);
-      }
-
-      if (error) { // Произошла ошибка любого рода
-        return res.status(500).send(error.message);
-      }
-
-      if (!renderProps) { // мы не определили путь, который бы подошел для URL
-        return res.status(404).send('Not found');
-      }
-
-
-      const componentHTML = ReactDom.renderToString(
-        <Provider store={store}>
-          <RouterContext {...renderProps} />
-        </Provider>
-      );
-
-      const state = store.getState();
-
-      return res.end(renderHTML(componentHTML, state));
-    });
-
-    return;
-  });
- 
-
-  router.post('/react-lessons/api/', function(req, res) {
+  router.post('/api/', function(req, res) {
 
     // debug("Server. Request Requested");
     // console.log("Server. Request Requested", req.query);
@@ -317,6 +266,59 @@ module.exports = function (options) {
 
  
   });
+  
+
+  router.use('/', function(req, res) {
+
+    // debug("Server. Request Requested");
+    // console.log("Server. Request Requested", req.query);
+    // console.log("Server. Request body", req.body);
+    
+    const store = configureStore();
+
+    // console.log('store', store);
+
+    // var body = "";
+
+    // let request = {};
+
+    // const componentHTML = ReactDom.renderToString(
+    //   <Provider store={store}>
+    //     <RouterContext {...renderProps} />
+    //   </Provider>
+    // );
+
+    // res.writeHead(200, {'Content-Type': 'text/html'});
+    // res.end(renderHTML(componentHTML));
+
+    match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
+      if (redirectLocation) { // Если необходимо сделать redirect
+        return res.redirect(301, redirectLocation.pathname + redirectLocation.search);
+      }
+
+      if (error) { // Произошла ошибка любого рода
+        return res.status(500).send(error.message);
+      }
+
+      if (!renderProps) { // мы не определили путь, который бы подошел для URL
+        return res.status(404).send('Not found');
+      }
+
+
+      const componentHTML = ReactDom.renderToString(
+        <Provider store={store}>
+          <RouterContext {...renderProps} />
+        </Provider>
+      );
+
+      const state = store.getState();
+
+      return res.end(renderHTML(componentHTML, state));
+    });
+
+    return;
+  });
+ 
  
 
   /*

@@ -43,6 +43,8 @@ export class AppMain extends Component{
 
   static childContextTypes = {
     resourcesMap: PropTypes.array,
+    request: PropTypes.func,
+    apiRequest: PropTypes.func,
   };
 
   getChildContext() {
@@ -56,6 +58,8 @@ export class AppMain extends Component{
 
     let context = {
       resourcesMap,
+      request: this.request,
+      apiRequest: this.apiRequest,
     };
 
     return context;
@@ -154,6 +158,7 @@ export class AppMain extends Component{
     return user.sudo == "1" || user.policies[perm] || false;
   }
 
+
   request = (context, allowMultiRequest, connector_path, params, options) => {
 
     if(allowMultiRequest === undefined){
@@ -170,7 +175,7 @@ export class AppMain extends Component{
 
 
     let {
-      connector_url,
+      connector_url: default_connector_url,
       user,
     } = this.props;
 
@@ -190,7 +195,13 @@ export class AppMain extends Component{
 
     options = options || {};
 
-    let callback2 = options.callback;
+
+    let {
+      connector_url,
+      callback: callback2,
+    } = options;
+
+    connector_url = connector_url || default_connector_url;
 
     let callback = (data, errors) => {
 
@@ -213,6 +224,16 @@ export class AppMain extends Component{
     options.callback = callback;
 
     request.call(this, connector_url, connector_path, params, options);
+  }
+  
+
+  apiRequest = (context, allowMultiRequest, connector_path, params, options) => {
+
+    options = Object.assign({
+      connector_url: '/api/',
+    }, options || {});
+
+    return this.request(context, allowMultiRequest, connector_path, params, options);
   }
 
   render() {

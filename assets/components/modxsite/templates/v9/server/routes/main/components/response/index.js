@@ -118,7 +118,10 @@ export default class Response{
       form = new FormData()
 
       for(var i in params){
-        var value = params[i] && params[i].toString() || undefined;
+        
+        var value = params[i];
+
+        value = (typeof value !== "undefined") && value.toString && value.toString() || undefined;
 
         if(value !== undefined){
           form.append(i, value);
@@ -485,6 +488,56 @@ export default class Response{
     return q; 
   }
 
+  citiesResolver = (parent, args) => {
+
+    let {
+      id,
+      limit,
+      start,
+    } = args || {};
+
+    var q = knex(`${prefix}site_content as cities`)
+      // .innerJoin(`${prefix}user_attributes as profile`, 'users.id', 'profile.internalKey')
+      // .select('profile.*')
+      .select('cities.*') 
+      .select('cities.pagetitle as name')
+      .select('coords_tv.value as coords')
+      // .limit('3')
+      ;
+
+      q.leftJoin(`${prefix}site_tmplvar_contentvalues as coords_tv`, function() {
+        this.on('coords_tv.contentid', 'cities.id')
+          .andOn('coords_tv.tmplvarid', 27)
+          .andOn(knex.raw("coords_tv.value != ''"))
+      });
+ 
+      q.where({
+        template: 26,
+        published: 1,
+        deleted: 0,
+        hidemenu: 0,
+      });
+
+      if(id){
+        q.where('id', id);
+      }
+
+      if(limit > 0){
+        q.limit(limit);
+      }
+
+      // console.log('.toSQL()', q.toSQL());
+
+      q.orderByRaw("FIELD(cities.id, 1201, 1199, 1197) DESC");
+      q.orderBy('pagetitle', 'ASC');
+
+      q.then((result) => { 
+        return result;
+      });
+
+    return q; 
+  }
+
   placesResolver = (Company, args) => {
 
     let {
@@ -642,6 +695,7 @@ export default class Response{
     let RatingsType;
     let RatingGroupbyEnum;
 
+    let CityType;
     let PlaceType;
     let CompanyType;
     let ServiceType;
@@ -767,6 +821,83 @@ export default class Response{
       },
     }); 
 
+    CityType = new GraphQLObjectType({
+      name: 'CityType',
+      fields: () => {
+
+        return {
+          id: {
+            type: GraphQLInt
+          },
+          name: {
+            type: GraphQLString
+          },
+          defaultZoom: {
+            type: GraphQLInt,
+            resolve: (object) => {
+              let zoom;
+              
+              switch(object.id){
+
+                // Москва
+                case 1197:
+                // Спб
+                case 1201:
+                  zoom = 11;
+                  break;
+
+                // Кронштадт
+                case 1394:
+                  zoom = 12;
+                  break;
+
+
+                // Москва
+                case 1199:
+                  zoom = 9;
+                  break;
+
+                default: zoom = 12;
+              }
+
+              return zoom;
+            },
+          },
+          coords: {
+            type: new GraphQLObjectType({
+              // new GraphQLObjectType({
+                name: 'cityCoordsType',
+                fields: {
+                  lat: {
+                    type: GraphQLFloat,
+                  },
+                  lng: {
+                    type: GraphQLFloat,
+                  },
+                },
+              // })
+            }),
+            resolve: (object) => {
+
+              let {
+                coords,
+              } = object;
+
+              if(coords){
+                coords = coords.split(",").map(n => parseFloat(n));
+              }
+
+              return coords && {
+                lat: coords[1],
+                lng: coords[0],
+              } || null;
+
+            },
+          },
+        };
+      },
+    }); 
+
     PlaceType = new GraphQLObjectType({
       name: 'PlaceType',
       fields: () => {
@@ -833,6 +964,18 @@ export default class Response{
             type: GraphQLInt
           },
           name: {
+            type: GraphQLString
+          },
+          longtitle: {
+            type: GraphQLString
+          },
+          description: {
+            type: GraphQLString
+          },
+          alias: {
+            type: GraphQLString
+          },
+          uri: {
             type: GraphQLString
           },
           image: {
@@ -917,8 +1060,8 @@ export default class Response{
             resolve: (object) => {
 
               return object.coords && {
-                lat: object.coords[0],
-                lng: object.coords[1],
+                lat: object.coords[1],
+                lng: object.coords[0],
               } || null;
             },
           },
@@ -1200,8 +1343,8 @@ export default class Response{
             return this.companiesListResolver(object, args);
           },
         },
-        places: {
-          type: new GraphQLList(PlaceType),
+        cities: {
+          type: new GraphQLList(CityType),
           args: {
             id: {
               type: GraphQLID
@@ -1211,47 +1354,75 @@ export default class Response{
               // type: GraphQLInt
               type: new GraphQLNonNull(GraphQLInt)
             },
-            Company_id: {
-              type: GraphQLInt
-            },
-            service_id: {
-              type: GraphQLInt
-            },
-            withGeoOnly: {
-              type: GraphQLBoolean
-            },
-          },
-          resolve: (object, args) => {
-
-            // console.log('this.companiesResolver', object, args);
-
-            return this.placesResolver(object, args);
-          },
-        },
-        services: {
-          type: new GraphQLList(ServiceType),
-          args: {
-            id: {
-              type: GraphQLID
-              // type: new GraphQLNonNull(GraphQLID)
-            },
-            limit: {
-              type: new GraphQLNonNull(GraphQLInt),
-            },
-            Company_id: {
-              type: GraphQLInt
-            },
-            place_id: {
-              type: GraphQLInt
-            },
+            // Company_id: {
+            //   type: GraphQLInt
+            // },
+            // service_id: {
+            //   type: GraphQLInt
+            // },
             // withGeoOnly: {
             //   type: GraphQLBoolean
             // },
           },
           resolve: (object, args) => {
-            return this.servicesResolver(object, args);
+
+            // console.log('this.companiesResolver', object, args);
+
+            return this.citiesResolver(object, args);
           },
         },
+        // places: {
+        //   type: new GraphQLList(PlaceType),
+        //   args: {
+        //     id: {
+        //       type: GraphQLID
+        //       // type: new GraphQLNonNull(GraphQLID)
+        //     },
+        //     limit: {
+        //       // type: GraphQLInt
+        //       type: new GraphQLNonNull(GraphQLInt)
+        //     },
+        //     Company_id: {
+        //       type: GraphQLInt
+        //     },
+        //     service_id: {
+        //       type: GraphQLInt
+        //     },
+        //     withGeoOnly: {
+        //       type: GraphQLBoolean
+        //     },
+        //   },
+        //   resolve: (object, args) => {
+
+        //     // console.log('this.companiesResolver', object, args);
+
+        //     return this.placesResolver(object, args);
+        //   },
+        // },
+        // services: {
+        //   type: new GraphQLList(ServiceType),
+        //   args: {
+        //     id: {
+        //       type: GraphQLID
+        //       // type: new GraphQLNonNull(GraphQLID)
+        //     },
+        //     limit: {
+        //       type: new GraphQLNonNull(GraphQLInt),
+        //     },
+        //     Company_id: {
+        //       type: GraphQLInt
+        //     },
+        //     place_id: {
+        //       type: GraphQLInt
+        //     },
+        //     // withGeoOnly: {
+        //     //   type: GraphQLBoolean
+        //     // },
+        //   },
+        //   resolve: (object, args) => {
+        //     return this.servicesResolver(object, args);
+        //   },
+        // },
         users: {
           type: new GraphQLList(UserType),
           resolve: () => {
@@ -1333,7 +1504,23 @@ export default class Response{
 
           graphql(schema, query).then((response) => {
 
-            this.success("", response);
+            let {
+              errors,
+            } = response;
+
+            if(errors && errors.length){
+              let {
+                message,
+                ...other
+              } = errors[0];
+
+              return this.failure(message, {...other});
+            }
+
+            // this.success("", response);
+
+            // else
+            return this.success("", response && response.data || null);
           });
 
           return ;

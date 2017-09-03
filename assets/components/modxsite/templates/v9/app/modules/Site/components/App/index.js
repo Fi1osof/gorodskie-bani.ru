@@ -11,6 +11,7 @@ import * as userActions from 'modules/Redux/actions/userActions';
 import * as documentActions from 'modules/Redux/actions/documentActions';
 
 import { connect } from 'react-redux';
+import { browserHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -23,6 +24,7 @@ import {request} from 'react-cms-data-view/src/Utils';
 
 import Informer from 'structor-templates/components/Informer';
 
+import MainMenu from './MainMenu';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
@@ -42,9 +44,10 @@ const defaultProps = {
 export class AppMain extends Component{
 
   static childContextTypes = {
-    resourcesMap: PropTypes.array,
     request: PropTypes.func,
     apiRequest: PropTypes.func,
+    openCompanyPage: PropTypes.func,
+    companiesStore: PropTypes.object,
   };
 
   getChildContext() {
@@ -53,13 +56,14 @@ export class AppMain extends Component{
     } = this.props;
 
     let {
-      resourcesMap,
+      companiesStore,
     } = this.state;
 
     let context = {
-      resourcesMap,
       request: this.request,
       apiRequest: this.apiRequest,
+      openCompanyPage: this.openCompanyPage,
+      companiesStore,
     };
 
     return context;
@@ -73,7 +77,7 @@ export class AppMain extends Component{
 
     this.state = {
       notifications_store: notifications_store,
-      resourcesMap: [],
+      companiesStore: new DataStore(new Dispatcher()),
     }
 
     let {
@@ -90,6 +94,14 @@ export class AppMain extends Component{
 
   componentWillMount(){
 
+    let {
+      companiesStore,
+    } = this.state;
+
+    companiesStore.getDispatcher().register(payload => {
+
+      this.forceUpdate();
+    });
   }
 
   componentDidMount(){
@@ -98,7 +110,7 @@ export class AppMain extends Component{
       documentActions,
     } = this.props;
 
-    // this.loadApiData();
+    this.loadApiData();
 
     return;
   }
@@ -132,18 +144,63 @@ export class AppMain extends Component{
 
   loadApiData(){
 
-    this.request('sitemap', false, 'resources/map', {}, {
+    this.loadCompanies();
+  }
+
+
+  loadCompanies(){
+
+    this.apiRequest('sitemap', false, 'graphql', {
+      query: JSON.stringify(`query{
+        companies(limit:0) {
+          success
+          message
+          total
+          limit
+          page
+          object {
+            id
+            name
+            uri
+            image
+            coords{
+              lat,
+              lng,
+            }
+          }
+        }
+      }`),
+    },{
       callback: (data, errors) => {
 
-        // console.log('resources/map callback', data, errors);
+        let {
+          companiesStore,
+        } = this.state;
+
+        console.log('companiesStore callback', data, errors);
 
         if(data.success && data.object){
-          this.setState({
-            resourcesMap: data.object,
-          });
+          // this.setState({
+          //   resourcesMap: data.object,
+          // });
+
+          const {
+            object,
+          } = data.object.companies || {};
+
+          companiesStore.getDispatcher().dispatch(companiesStore.actions['SET_DATA'], object || []);
         }
       },
     });
+  }
+
+  openCompanyPage(item){
+    if(!item){
+      console.error("Item undefined");
+      return;
+    }
+
+    item.uri && browserHistory && browserHistory.push(item.uri);
   }
 
   hasPermission = (perm) => {
@@ -252,6 +309,9 @@ export class AppMain extends Component{
       <div
         className="MainApp"
       >
+        <MainMenu 
+        />
+
         {children}
 
       <Informer

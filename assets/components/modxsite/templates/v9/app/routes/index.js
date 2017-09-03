@@ -6,6 +6,7 @@ import {
   TopicsPage,
   NotFoundPage,
   DbPage,
+  CompanyPage,
   // Lesson1,
   // PageGraphiQL,
 } from "modules/Site";
@@ -14,7 +15,7 @@ import {
 
 // App.contextTypes = { store: React.PropTypes.object };
 
-export default {
+let routes = {
   path: "/",
   component: MainApp,
   indexRoute: { 
@@ -71,6 +72,13 @@ export default {
       //   }
       // ]
     },
+    {
+      // path: "/bani/",
+      childRoutes: [{
+        path: "/bani/*/",
+        component: CompanyPage,
+      }]
+    },
     // {
     //   path: "/topics/",
     //   name: "TopicsPage",
@@ -86,10 +94,21 @@ export default {
     //   name: "GraphiQL",
     //   component: PageGraphiQL
     // },
-    {
-      path: "*",
-      // name: "notfound",
-      component: NotFoundPage,
-    }
+    // {
+    //   path: "*",
+    //   // name: "notfound",
+    //   component: NotFoundPage,
+    // }
   ]
 };
+
+if(typeof window !== 'undefined'){
+  routes.childRoutes.push({
+    path: "*",
+    // name: "notfound",
+    component: NotFoundPage,
+    // redirect: '/'
+  });
+}
+
+export default routes;

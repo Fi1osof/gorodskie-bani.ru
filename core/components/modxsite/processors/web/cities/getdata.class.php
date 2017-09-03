@@ -12,6 +12,7 @@ class modWebCitiesGetdataProcessor extends modWebGetdataProcessor{
         $this->setProperties(array(
             "sort"  => "rank DESC, city",
             "dir"   => "ASC",
+            "limit" => 0,
         ));
         
         return parent::initialize();
@@ -33,7 +34,8 @@ class modWebCitiesGetdataProcessor extends modWebGetdataProcessor{
         }
         
         return $c;
-    } 
+    }
+
     
     public function outputArray(array $array, $count = false) {
         

@@ -172,39 +172,6 @@ module.exports = function (options) {
   //     </html>
   //   `;
   // }
- 
-  function renderHTML(componentHTML, initialState) {
-
-    let assetsUrl;
-
-    if(process.env.NODE_ENV === 'production'){
-      assetsUrl = "/assets/components/modxsite/templates/v9/build/";
-    }
-    else{
-      assetsUrl = "/build/";
-    }
-
-    // console.log('process.env.NODE_ENV', process.env.NODE_ENV);
-
-    return `
-      <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Hello React</title>
-            <link rel="stylesheet" href="${assetsUrl}css/main.css">
-            <script type="application/javascript">
-              window.REDUX_INITIAL_STATE = ${JSON.stringify(initialState)};
-            </script>
-        </head>
-        <body>
-          <div id="root">${componentHTML}</div>
-          <script type="application/javascript" src="${assetsUrl}main.js"></script>
-        </body>
-      </html>
-    `;
-  }
 
 
   router.post('/api/', function(req, res) {
@@ -286,8 +253,11 @@ module.exports = function (options) {
 
     // res.writeHead(200, {'Content-Type': 'text/html'});
     // res.end(renderHTML(componentHTML));
-
-    match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
+    
+    match({ 
+      routes, 
+      location: req.url 
+    }, (error, redirectLocation, renderProps) => {
 
       console.log('renderProps', renderProps);
 
@@ -317,6 +287,39 @@ module.exports = function (options) {
 
     return;
   });
+ 
+  function renderHTML(componentHTML, initialState) {
+
+    let assetsUrl;
+
+    if(process.env.NODE_ENV === 'production'){
+      assetsUrl = "/assets/components/modxsite/templates/v9/build/";
+    }
+    else{
+      assetsUrl = "/build/";
+    }
+
+    // console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+
+    return `
+      <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Hello React</title>
+            <link rel="stylesheet" href="${assetsUrl}css/main.css">
+            <script type="application/javascript">
+              window.REDUX_INITIAL_STATE = ${JSON.stringify(initialState)};
+            </script>
+        </head>
+        <body>
+          <div id="root">${componentHTML}</div>
+          <script type="application/javascript" src="${assetsUrl}main.js"></script>
+        </body>
+      </html>
+    `;
+  }
  
  
 

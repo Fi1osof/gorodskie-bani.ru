@@ -11,7 +11,7 @@ const defaultProps = {}
 export default class Page extends Component{
 
 	static contextTypes = {
-		resourcesMap: PropTypes.array.isRequired,
+		companiesStore: PropTypes.object.isRequired,
 	};
 
 	constructor(props){
@@ -38,33 +38,7 @@ export default class Page extends Component{
 
   getContent(){
 
-		let {
-			resourcesMap,
-		} = this.context;
-
-		let {
-			router,
-		} = this.props;
-
-		let location = router.getCurrentLocation();
-
-		// console.log('router', router, location);
-
-		let {
-			pathname,
-		} = location || {};
-
-		// console.log('pathname', pathname);
-
-		// let content;
-
-		
-
-		let resource = this.findResource(resourcesMap, pathname);
-
-		// console.log('resource', resource);
-
-  	return resource && resource.content || null;
+  	return null;
   }
 
   findResource(resources, pathname){
@@ -88,62 +62,9 @@ export default class Page extends Component{
   	return resource;
   }
 
-  getMenu(resources, parent){
-  	if(!resources || !resources.length){
-  		return null;
-  	}
-
-  	let items = [];
-
-  	resources.map(resource => {
-
-			let {
-				id,
-				pagetitle,
-				menutitle,
-				hidemenu,
-				link,
-				linktext,
-				childs,
-			} = resource;
-
-			let children = [];
-
-			// childs && childs.map();
-
-			let item = <li
-				key={id || `items_${items.length}`}
-			>
-				<Link 
-					to={link}
-					href={link}
-				>{linktext}</Link>
-
-				{this.getMenu(childs, id)}
-			</li>
-
-			items.push(item);
-		});
-
-  	let menu = <ul
-  		key={parent}
-			className="react-site--main-menu"
-		>
-			{items}
-		</ul>;
-
-		return menu;
-  }
-
 	render(){
 
 		let content = this.getContent();
-
-		let {
-			resourcesMap,
-		} = this.context;
-
-		let menu = this.getMenu(resourcesMap, 0);
 
 
 		return <Grid
@@ -153,7 +74,6 @@ export default class Page extends Component{
 			<Grid
 				item
 			> 
-				{menu}
  
 			</Grid>
 

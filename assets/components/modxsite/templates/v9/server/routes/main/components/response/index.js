@@ -189,7 +189,8 @@ export default class Response{
     return fetch('http://gorodskie-bani.local' + url, options);
   }
 
-  contactsResolver = (object, args) => {
+
+  companiesListResolver = (object, args) => {
 
     return new Promise((resolve, reject) => {
       // Эта функция будет вызвана автоматически
@@ -199,12 +200,14 @@ export default class Response{
       // resolve(результат) при успешном выполнении
       // reject(ошибка) при ошибке
 
+      // console.log('companiesResolver args', args);
+
       let {
         id,
         limit,
         start,
-        // service_id,   // Поиск по услуге
-        // place_id,     // Поиск по геообъекту
+        count,
+        voted_companies,
       } = args || {};
 
       limit = limit || 0;
@@ -213,7 +216,68 @@ export default class Response{
 
       let params = {
         with_coors_only: true,       // Только с координатами
+        company_id: id,
         limit,
+        start,
+        count: count === undefined ? 1 : count,
+        companies: voted_companies,
+      };
+
+      let request = this.SendMODXRequest(action, params); 
+
+
+      request.then(function(res) {
+        return res.json();
+      })
+      .then((data) => {
+
+        if(!data.success){
+
+          return reject(data.message || "Ошибка выполнения запроса");
+        }
+
+        // delete(data.object);
+
+        // console.log('Response data', data);
+
+        return resolve(data);
+      })
+      .catch((e) => {
+        return reject(e);
+      })
+      ;
+    });
+  }
+
+  companiesResolver = (object, args) => {
+
+    return new Promise((resolve, reject) => {
+      // Эта функция будет вызвана автоматически
+
+      // В ней можно делать любые асинхронные операции,
+      // А когда они завершатся — нужно вызвать одно из:
+      // resolve(результат) при успешном выполнении
+      // reject(ошибка) при ошибке
+
+      // console.log('companiesResolver args', args);
+
+      let {
+        id,
+        limit,
+        start,
+        voted_companies,
+      } = args || {};
+
+      limit = limit || 0;
+
+      let action = 'companies/getdata';
+
+      let params = {
+        with_coors_only: true,       // Только с координатами
+        company_id: id,
+        limit,
+        start,
+        companies: voted_companies,
       };
 
       let request = this.SendMODXRequest(action, params); 
@@ -237,49 +301,10 @@ export default class Response{
         return reject(e);
       })
       ;
-
-
-      // let request = this.SendMODXRequest(action, params); 
-
-      // request.on('response', (response) => {
-      //   // console.log('response', response.read());
-      //   var str = '';
-      //   //
-      //   // //another chunk of data has been recieved, so append it to `str`
-      //   response.on('data', function (chunk) {
-      //     str += chunk;
-      //   });
-
-      //   response.on('end', function () {
-      //     // console.log('response on end ', str);
-
-      //     let data = [];
-
-      //     try{
-      //       data = JSON.parse(str);
-      //     }
-      //     catch(e){
-      //       reject(e);
-      //       return;
-      //     }
-
-      //     if(!data.success){
-
-      //       return reject(data.message || "Ошибка выполнения запроса");
-      //     }
-
-      //     // console.log('Response data', data);
-
-      //     resolve(data.object || []);
-      //   });
-
-      // });
-
-      // request.end();
     });
   }
 
-  RatingTypesResolver = (contact, args) => {
+  RatingTypesResolver = (Company, args) => {
 
     let {
       id,
@@ -303,10 +328,10 @@ export default class Response{
         parent: 1349,
       });
 
-      // if(contact_id){
+      // if(Company_id){
 
-      //   q.innerJoin(`${prefix}modxsite_contacts_places as places_contacts`, 'places_contacts.place_id', 'places.id');
-      //   q.where('places_contacts.contact_id', contact_id);
+      //   q.innerJoin(`${prefix}modxsite_companies_places as places_companies`, 'places_companies.place_id', 'places.id');
+      //   q.where('places_companies.Company_id', Company_id);
 
       // }
 
@@ -327,14 +352,15 @@ export default class Response{
     return q; 
   }
 
-  RatingsResolver = (contact, args) => {
+  RatingsResolver = (Company, args) => {
 
     const {
       RatingGroupbyEnumList,
     } = this;
 
     let {
-      id,
+      type,
+      company,
       limit,
       start,
       sort,
@@ -347,8 +373,7 @@ export default class Response{
       // .select('round(sum(votes.vote_value) / count(*), 2) as rating')
       
       .select('votes.type')
-      .select('votes.thread_id')
-      .select('votes.target_id')
+      .select('votes.target_id as company_id')
       .select('votes.vote_value as rating')
       // .limit('3')
       ;
@@ -358,15 +383,19 @@ export default class Response{
 
       q.where('type', '!=', 0);
 
-      // if(contact_id){
+      // if(Company_id){
 
-      //   q.innerJoin(`${prefix}modxsite_contacts_places as places_contacts`, 'places_contacts.place_id', 'places.id');
-      //   q.where('places_contacts.contact_id', contact_id);
+      //   q.innerJoin(`${prefix}modxsite_companies_places as places_companies`, 'places_companies.place_id', 'places.id');
+      //   q.where('places_companies.Company_id', Company_id);
 
       // }
 
-      if(id){
-        q.where('id', id);
+      if(type){
+        q.where('type', type);
+      }
+
+      if(company){
+        q.where('target_id', company);
       }
 
       if(limit > 0){
@@ -403,18 +432,19 @@ export default class Response{
         q.select(knex.raw('round(sum(votes.vote_value) / count(*), 2) as rating'));
         q.select(knex.raw('max(votes.vote_value) as max_vote'));
         q.select(knex.raw('min(votes.vote_value) as min_vote'));
+        
+        q.select(knex.raw('GROUP_CONCAT(DISTINCT votes.target_id) as voted_companies'));
 
         switch(groupBy){
           // q.select(knex.raw('round(sum(votes.vote_value) / count(*), 2) as rating'))
 
           // q.groupBy('type');
           // q.groupBy('target_id');
-          // q.groupBy('thread_id');
 
           // Сгруппировать по компаниям (общий рейтинг)
           case 'company':
 
-            q.groupBy('thread_id');
+            q.groupBy('target_id');
             break;
 
           case 'rating_type':
@@ -426,15 +456,16 @@ export default class Response{
           case 'company_and_rating_type':
       
             // q.countDistinct('round(sum(votes.vote_value) / count(*), 2) as rating');
+        
+            // q.select(knex.raw('GROUP_CONCAT(votes.target_id) as voted_companies'));
 
-            q.groupBy('thread_id');
+            q.groupBy('target_id');
             q.groupBy('type');
             break;
 
           // case 'rating_type_and_company':
 
           //   q.groupBy('type');
-          //   q.groupBy('thread_id');
           //   break;
 
           default:;
@@ -445,7 +476,7 @@ export default class Response{
         // q.select('1 as quantity');
       }
 
-      console.log('ratings .toSQL()', q.toSQL());
+      // console.log('ratings .toSQL()', q.toSQL());
 
       q.then((result) => { 
         return result;
@@ -454,22 +485,22 @@ export default class Response{
     return q; 
   }
 
-  placesResolver = (contact, args) => {
+  placesResolver = (Company, args) => {
 
     let {
       id,
       limit,
       start,
-      contact_id,
+      Company_id,
       withGeoOnly,
     } = args || {};
 
-    if(contact){
+    if(Company){
       let {
         id: cont_id,
-      } = contact;
+      } = Company;
 
-      contact_id = cont_id;
+      Company_id = cont_id;
     }
 
     var q = knex(`${prefix}gmapsdb_places as places`)
@@ -484,10 +515,10 @@ export default class Response{
         q.where('lng', '>', 0);
       }
 
-      if(contact_id){
+      if(Company_id){
 
-        q.innerJoin(`${prefix}modxsite_contacts_places as places_contacts`, 'places_contacts.place_id', 'places.id');
-        q.where('places_contacts.contact_id', contact_id);
+        q.innerJoin(`${prefix}modxsite_companies_places as places_companies`, 'places_companies.place_id', 'places.id');
+        q.where('places_companies.Company_id', Company_id);
 
       }
 
@@ -513,7 +544,7 @@ export default class Response{
     let {
       id,
       place_id,
-      contact_id,
+      Company_id,
       limit,
       start,
     } = args || {};
@@ -525,7 +556,7 @@ export default class Response{
       // .limit('3')
       ; 
 
-      if(place_id || contact_id){
+      if(place_id || Company_id){
         
         q.innerJoin(`${prefix}modxsite_place_services as place_services`, 'place_services.service_id', 'services.id');
 
@@ -533,8 +564,8 @@ export default class Response{
           q.where('place_services.place_id', place_id);
         }
 
-        if(contact_id){
-          q.where('place_services.contact_id', contact_id);
+        if(Company_id){
+          q.where('place_services.Company_id', Company_id);
         }
 
       }
@@ -607,12 +638,12 @@ export default class Response{
 
   getSchema(){
 
-    let RatingTypeType;
+    let RatingTypesType;
     let RatingsType;
     let RatingGroupbyEnum;
 
     let PlaceType;
-    let ContactType;
+    let CompanyType;
     let ServiceType;
 
     const {
@@ -622,8 +653,9 @@ export default class Response{
 
     RatingGroupbyEnum = new GraphQLEnumType(RatingGroupbyEnumList);
 
-    RatingTypeType = new GraphQLObjectType({
-      name: 'RatingTypeType',
+    RatingTypesType = new GraphQLObjectType({
+      name: 'RatingTypesType',
+      description: 'Тип рейтинга (Парилка, Интерьер, Кухня и т.п.)',
       fields: () => {
 
         return {
@@ -633,6 +665,25 @@ export default class Response{
           name: {
             type: GraphQLString
           },
+          ratings: {
+            type: new GraphQLList(RatingsType),
+            resolve: (rating_type) => {
+
+              const {
+                id: type,
+              } = rating_type;
+
+              let args = {
+                type,
+                groupBy: 'rating_type',
+                limit: 0,
+              };
+
+              console.log('RatingsResolver args', args, rating_type);
+
+              return this.RatingsResolver(null, args);
+            },
+          },
         };
       },
     });
@@ -640,6 +691,7 @@ export default class Response{
 
     RatingsType = new GraphQLObjectType({
       name: 'RatingsType',
+      description: 'Рейтинги бань (с возможностью группировки по типам рейтингов и компаний)',
       fields: () => {
 
         return {
@@ -655,14 +707,61 @@ export default class Response{
           type: {
             type: GraphQLInt
           },
-          thread_id: {
-            type: GraphQLInt
-          },
-          target_id: {
+          company_id: {
             type: GraphQLInt
           },
           quantity: {
             type: GraphQLInt
+          },
+          voted_companies: {
+            type: GraphQLString
+          },
+          companies: {
+            type: new GraphQLList(CompanyType),
+            resolve: (rating) => {
+
+              const {
+                company_id,
+                voted_companies,
+              } = rating;
+
+              if(!voted_companies && !company_id){
+                return [];
+              }
+
+              let args = {};
+
+              if(voted_companies){
+                Object.assign(args, {
+                  voted_companies,
+                });
+              }
+              else{
+                Object.assign(args, {
+                  id: company_id,
+                });
+              }
+
+              console.log('this.companiesResolver args', args, rating);
+
+              return this.companiesResolver(null, args);
+            },
+          },
+          rating_type: {
+            type: new GraphQLList(RatingTypesType),
+            resolve: (rating) => {
+
+              const {
+                type,
+              } = rating;
+
+              let args = {
+                id: type,
+                limit: 0,
+              };
+
+              return this.RatingTypesResolver(null, args);
+            },
           },
         };
       },
@@ -679,15 +778,15 @@ export default class Response{
           name: {
             type: GraphQLString
           },
-          contacts: {
-            type: new GraphQLList(ContactType),
+          companies: {
+            type: new GraphQLList(CompanyType),
             resolve: (place) => {
 
               const {
                 id: place_id,
               } = place;
 
-              return this.contactsResolver(null, {
+              return this.companiesResolver(null, {
                 place_id,
               });
             },
@@ -702,7 +801,7 @@ export default class Response{
               // limit: {
               //   type: new GraphQLNonNull(GraphQLInt),
               // },
-              // contact_id: {
+              // Company_id: {
               //   type: GraphQLInt
               // },
               // withGeoOnly: {
@@ -725,8 +824,8 @@ export default class Response{
       },
     }); 
 
-    ContactType = new GraphQLObjectType({
-      name: 'ContactType',
+    CompanyType = new GraphQLObjectType({
+      name: 'CompanyType',
       fields: () => {
 
         return {
@@ -736,33 +835,48 @@ export default class Response{
           name: {
             type: GraphQLString
           },
-          places: {
-            type: new GraphQLList(PlaceType),
-            resolve: (contact) => {
+          ratings: {
+            type: new GraphQLList(RatingsType),
+            resolve: (company) => {
+
+              console.log('CompanyType ratings resolver', company);
 
               const {
-                id: contact_id,
-              } = contact;
+                id: company_id,
+              } = company;
 
-              return this.placesResolver(null, {
-                contact_id,
+              return this.RatingsResolver(null, {
+                company: company_id,
               });
             },
           },
-          services: {
-            type: new GraphQLList(ServiceType),
-            resolve: (contact, args) => {
+          // places: {
+          //   type: new GraphQLList(PlaceType),
+          //   resolve: (Company) => {
 
-              const {
-                id: contact_id,
-              } = contact;
+          //     const {
+          //       id: Company_id,
+          //     } = Company;
 
-              return this.servicesResolver(null, {
-                contact_id,
-                limit: 0,
-              });
-            },
-          },
+          //     return this.placesResolver(null, {
+          //       Company_id,
+          //     });
+          //   },
+          // },
+          // services: {
+          //   type: new GraphQLList(ServiceType),
+          //   resolve: (Company, args) => {
+
+          //     const {
+          //       id: Company_id,
+          //     } = Company;
+
+          //     return this.servicesResolver(null, {
+          //       Company_id,
+          //       limit: 0,
+          //     });
+          //   },
+          // },
         }
       }
     });
@@ -799,8 +913,8 @@ export default class Response{
               return this.placesResolver(service, args);
             },
           },
-          contacts: {
-            type: new GraphQLList(ContactType),
+          companies: {
+            type: new GraphQLList(CompanyType),
             // args: {
             //   id: {
             //     type: GraphQLID
@@ -812,7 +926,7 @@ export default class Response{
             // },
             resolve: (service, args) => {
 
-              // console.log('this.ServiceType contactsResolver', service, args);
+              // console.log('this.ServiceType companiesResolver', service, args);
 
               const {
                 id: service_id,
@@ -822,10 +936,10 @@ export default class Response{
                 service_id,
               });
 
-              // console.log('this.ServiceType contactsResolver 2', {}, args);
+              // console.log('this.ServiceType companiesResolver 2', {}, args);
 
 
-              return this.contactsResolver({}, args);
+              return this.companiesResolver({}, args);
             },
           },
         }
@@ -871,12 +985,12 @@ export default class Response{
       }
     });
 
-
     const RootType = new GraphQLObjectType({
       name: 'RootType',
       fields: {
         rating_types: {
-          type: new GraphQLList(RatingTypeType),
+          type: new GraphQLList(RatingTypesType),
+          description: RatingTypesType.description,
           args: {
             id: {
               type: GraphQLID
@@ -889,20 +1003,26 @@ export default class Response{
           },
           resolve: (object, args) => {
 
-            // console.log('this.contactsResolver', object, args);
+            // console.log('this.companiesResolver', object, args);
 
             return this.RatingTypesResolver(object, args);
           },
         },
         ratings: {
           type: new GraphQLList(RatingsType),
+          description: RatingTypesType.description,
           args: {
-            id: {
+            type: {
               type: GraphQLID
               // type: new GraphQLNonNull(GraphQLID)
             },
             limit: {
               type: new GraphQLNonNull(GraphQLInt)
+              // type: GraphQLInt
+            },
+            company: {
+              type: GraphQLInt,
+              description: 'ID компании, по которой надо получить рейтинги',
               // type: GraphQLInt
             },
             groupBy: {
@@ -911,13 +1031,66 @@ export default class Response{
           },
           resolve: (object, args) => {
 
-            // console.log('this.contactsResolver', object, args);
+            // console.log('this.companiesResolver', object, args);
 
             return this.RatingsResolver(object, args);
           },
         },
-        contacts: {
-          type: new GraphQLList(ContactType),
+        // companies: {
+        //   type: new GraphQLList(CompanyType),
+        //   args: {
+        //     id: {
+        //       type: GraphQLID
+        //       // type: new GraphQLNonNull(GraphQLID)
+        //     },
+        //     limit: {
+        //       type: new GraphQLNonNull(GraphQLInt)
+        //       // type: GraphQLInt
+        //     },
+        //     service_id: {
+        //       type: GraphQLInt
+        //     },
+        //     place_id: {
+        //       type: GraphQLInt
+        //     },
+        //   },
+        //   resolve: (object, args) => {
+
+        //     // console.log('this.companiesResolver', object, args);
+
+        //     return this.companiesResolver(object, args);
+        //   },
+        // },
+        companies: {
+          type: new GraphQLObjectType({
+            name: "CompaniesList",
+            fields: {
+              success: {
+                type: GraphQLBoolean,
+              },
+              message: {
+                type: GraphQLString,
+              },
+              total: {
+                type: GraphQLInt,
+              },
+              limit: {
+                type: GraphQLInt,
+              },
+              page: {
+                type: GraphQLInt,
+              },
+              object: {
+                type: new GraphQLList(CompanyType),
+                resolve: (response, args) => {
+
+                  // console.log('this.CompanyType Resolver', response, args);
+
+                  return response && response.success && response.object || [];
+                },
+              },
+            },
+          }),
           args: {
             id: {
               type: GraphQLID
@@ -927,18 +1100,17 @@ export default class Response{
               type: new GraphQLNonNull(GraphQLInt)
               // type: GraphQLInt
             },
-            service_id: {
-              type: GraphQLInt
-            },
-            place_id: {
-              type: GraphQLInt
-            },
+            // service_id: {
+            //   type: GraphQLInt
+            // },
+            // place_id: {
+            //   type: GraphQLInt
+            // },
           },
           resolve: (object, args) => {
+            // console.log('this.companiesResolver', object, args);
 
-            // console.log('this.contactsResolver', object, args);
-
-            return this.contactsResolver(object, args);
+            return this.companiesListResolver(object, args);
           },
         },
         places: {
@@ -952,7 +1124,7 @@ export default class Response{
               // type: GraphQLInt
               type: new GraphQLNonNull(GraphQLInt)
             },
-            contact_id: {
+            Company_id: {
               type: GraphQLInt
             },
             service_id: {
@@ -964,7 +1136,7 @@ export default class Response{
           },
           resolve: (object, args) => {
 
-            // console.log('this.contactsResolver', object, args);
+            // console.log('this.companiesResolver', object, args);
 
             return this.placesResolver(object, args);
           },
@@ -979,7 +1151,7 @@ export default class Response{
             limit: {
               type: new GraphQLNonNull(GraphQLInt),
             },
-            contact_id: {
+            Company_id: {
               type: GraphQLInt
             },
             place_id: {

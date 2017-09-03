@@ -15,13 +15,16 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
     public function initialize(){
          
         # parent::initialize();
-        // $this->modx->log(1, var_dump($this->properties, 1), "FILE");
+        $this->modx->log(1, print_r($this->properties, 1), "FILE");
         // $this->modx->log(1, print_r($_REQUEST, 1), "FILE");
         # return true; 
         
         $this->setDefaultProperties(array(
-            "sort"  => "avg_rating DESC, {$this->classKey}.menutitle",
-            "dir"   => "ASC",
+            // "sort"  => "avg_rating DESC, {$this->classKey}.menutitle",
+            // "dir"   => "ASC",
+            "format"    => "json",
+            "sort"  => "id",
+            "dir"   => "DESC",
             "with_coors_only"   => false,       // Только с координатами
             "approved_only"     => false,       // Только одобренные
         ));
@@ -30,19 +33,19 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         
         // Учитываем различные параметры сортировки
         
-        if(
-            $sort_type = $this->getProperty('sort_type')
-            AND $sort_value = $this->getProperty('sort_value')
-        )
+        // if(
+        //     $sort_type = $this->getProperty('sort_type')
+        //     AND $sort_value = $this->getProperty('sort_value')
+        // )
         
-        switch($this->getProperty('sort_type')){
+        // switch($this->getProperty('sort_type')){
             
-            // По рейтингу
-            case 'rating':
-                $this->setProperty("sort",  "{$sort_value}_rating DESC, avg_rating DESC, {$this->classKey}.menutitle");
-                $this->setProperty("dir",  "ASC");
-                break;
-        }
+        //     // По рейтингу
+        //     case 'rating':
+        //         $this->setProperty("sort",  "{$sort_value}_rating DESC, avg_rating DESC, {$this->classKey}.menutitle");
+        //         $this->setProperty("dir",  "ASC");
+        //         break;
+        // }
         
         return parent::initialize();
     }
@@ -75,59 +78,72 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         if($this->getProperty('approved_only')){
             $c->innerJoin("modTemplateVarResource", "approved_only", "approved_only.contentid = {$alias}.id AND approved_only.tmplvarid = 24 AND approved_only.value = '1'");
         }
+
+        // По компании
+        if($company_id = (int)$this->getProperty("company_id")){
+            $where['id'] = $company_id;
+        }
+
+        // По компаниям
+        if($companies = $this->getProperty("companies")){
+            if(!is_array($companies)){
+                $companies = explode(",", $companies);
+            }
+            $where['id:in'] = $companies;
+        }
         
         /*
             Формируем запрос рейтингов
         */
         
-        $ratings_query = $this->modx->newQuery('modResource', array(
-            "parent"    => 1349,
-        ));
+        // $ratings_query = $this->modx->newQuery('modResource', array(
+        //     "parent"    => 1349,
+        // ));
         
-        $ratings_query->select(array(
-            "id",
-            "pagetitle",
-        ));
+        // $ratings_query->select(array(
+        //     "id",
+        //     "pagetitle",
+        // ));
         
 
-        $s = $ratings_query->prepare();
-        $s->execute();
+        // $s = $ratings_query->prepare();
+        // $s->execute();
 
-        // print $ratings_query->toSQL();
+        // // print $ratings_query->toSQL();
         
-        $votes_table = $this->modx->getTableName("SocietyVote");
-        $threads_table = $this->modx->getTableName("SocietyThread");
+        // $votes_table = $this->modx->getTableName("SocietyVote");
+        // $threads_table = $this->modx->getTableName("SocietyThread");
         
-        while($row = $s->fetch(PDO::FETCH_ASSOC)){
-            $rating_id = $row['id'];
-            $rating_title = $row['pagetitle'];
-            # $VotesAlias = "Votes_{$rating_id}";
-            # $c->leftJoin("SocietyVote", $VotesAlias, "{$VotesAlias}.target_class = 'modResource' AND {$VotesAlias}.target_id = {$alias}.rating_id");
-            $c->select(array(
-                "(select round(sum(v.vote_value) / count(distinct v.id), 2) 
-                    from {$votes_table} v
-                    where 
-                        v.type = {$rating_id} 
-                        AND v.target_id = {$alias}.id
-                    )as {$rating_id}_rating",
+        // while($row = $s->fetch(PDO::FETCH_ASSOC)){
+        //     $rating_id = $row['id'];
+        //     $rating_title = $row['pagetitle'];
+        //     # $VotesAlias = "Votes_{$rating_id}";
+        //     # $c->leftJoin("SocietyVote", $VotesAlias, "{$VotesAlias}.target_class = 'modResource' AND {$VotesAlias}.target_id = {$alias}.rating_id");
+        //     $c->select(array(
+        //         "(select round(sum(v.vote_value) / count(distinct v.id), 2) 
+        //             from {$votes_table} v
+        //             where 
+        //                 v.type = {$rating_id} 
+        //                 AND v.target_id = {$alias}.id
+        //             )as {$rating_id}_rating",
                     
-                "'{$rating_title}' as {$rating_id}_rating_title",
-            ));
-        }
+        //         "'{$rating_title}' as {$rating_id}_rating_title",
+        //     ));
+        // }
         
-        // Получаем общее число голосов
-        $c->select(array(
+        // // Получаем общее число голосов
+        // $c->select(array(
             
-            // Средний рейтинг
-            "round(thread.rating / (thread.positive_votes + thread.negative_votes + thread.neutral_votes), 2) as avg_rating",
+        //     // Средний рейтинг
+        //     "round(thread.rating / (thread.positive_votes + thread.negative_votes + thread.neutral_votes), 2) as avg_rating",
             
-            // Всего голосов
-            "(select count(distinct v2.user_id) from {$votes_table} v2 where v2.target_class = 'modResource' AND v2.target_id = {$alias}.id) as total_voters",
+        //     // Всего голосов
+        //     "(select count(distinct v2.user_id) from {$votes_table} v2 where v2.target_class = 'modResource' AND v2.target_id = {$alias}.id) as total_voters",
             
-            // Всего голосовавших
-            "(select sum(t.positive_votes + t.negative_votes + t.neutral_votes) from {$threads_table} as t where t.id = thread.id)as total_votes", 
+        //     // Всего голосовавших
+        //     "(select sum(t.positive_votes + t.negative_votes + t.neutral_votes) from {$threads_table} as t where t.id = thread.id)as total_votes", 
             
-        ));
+        // ));
         
         
         $c->where($where);
@@ -151,6 +167,17 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         ));
         
         return $c;
+    }
+
+    protected function prepareResponse($response){
+        
+        $response = parent::prepareResponse($response);
+        
+        if($this->getProperty("format") == "json"){
+            $response = json_encode($response);
+        }
+
+        return $response;
     }
     
     # public function setSelection(xPDOQuery $c){

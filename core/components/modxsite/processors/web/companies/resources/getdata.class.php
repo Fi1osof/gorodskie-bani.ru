@@ -15,7 +15,7 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
     public function initialize(){
          
         # parent::initialize();
-        $this->modx->log(1, print_r($this->properties, 1), "FILE");
+        // $this->modx->log(1, print_r($this->properties, 1), "FILE");
         // $this->modx->log(1, print_r($_REQUEST, 1), "FILE");
         # return true; 
         
@@ -71,7 +71,10 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         
         // Только с координатами для карты
         if($this->getProperty('with_coors_only')){
-            $c->innerJoin("modTemplateVarResource", "with_coors_only", "with_coors_only.contentid = {$alias}.id AND with_coors_only.tmplvarid = 27 AND with_coors_only.value != ''");
+            $c->innerJoin("modTemplateVarResource", "coords_tv", 
+                "coords_tv.contentid = {$alias}.id AND coords_tv.tmplvarid = 27 AND coords_tv.value != ''"
+            );
+            // $where['coords_tv.id:!='] = null;
         }
         
         // Только одобренные
@@ -164,6 +167,7 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
             "City.id as city_id",
             "City.pagetitle as city",
             "City.uri as city_uri",
+            // "coords_tv.value as coords",
         ));
         
         return $c;
@@ -178,6 +182,19 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         }
 
         return $response;
+    }
+
+    public function afterIteration(array $list){
+
+        $list = parent::afterIteration($list);
+
+        foreach($list as & $l){
+            if(!empty($l['tvs']['ya_coords']['value'])){
+                $l['coords'] = array_map('trim', explode(",", $l['tvs']['ya_coords']['value']));
+            }
+        }
+
+        return $list;
     }
     
     # public function setSelection(xPDOQuery $c){

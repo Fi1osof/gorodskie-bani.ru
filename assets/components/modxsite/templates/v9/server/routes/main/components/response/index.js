@@ -835,6 +835,93 @@ export default class Response{
           name: {
             type: GraphQLString
           },
+          image: {
+            type: GraphQLString
+          },
+          tvs: {
+            type: new GraphQLList(
+              new GraphQLObjectType({
+                name: 'TSvType',
+                fields: {
+                  id: {
+                    type: GraphQLInt,
+                  },
+                  name: {
+                    type: GraphQLString,
+                  },
+                  value: {
+                    type: GraphQLString,
+                  },
+                },
+              })
+            ),
+            resolve: (object) => {
+              let tvs = [];
+
+              if(object.tvs){
+                for(var name in object.tvs){
+
+                  var tv = object.tvs[name];
+
+                  if(tv){
+
+                    var {
+                      tv_id: id,
+                      caption,
+                      value,
+                    } = tv;
+
+                    tvs.push({
+                      id,
+                      name,
+                      caption,
+                      value,
+                    });
+
+                  }
+                }
+              }
+
+              return tvs;
+            },
+          },
+          gallery: {
+            type: new GraphQLList(
+              new GraphQLObjectType({
+                name: 'galleryType',
+                fields: {
+                  image: {
+                    type: GraphQLString,
+                  },
+                },
+              })
+            ),
+            resolve: (object) => {
+              return object.gallery || [];
+            },
+          },
+          coords: {
+            type: new GraphQLObjectType({
+              // new GraphQLObjectType({
+                name: 'coordsType',
+                fields: {
+                  lat: {
+                    type: GraphQLFloat,
+                  },
+                  lng: {
+                    type: GraphQLFloat,
+                  },
+                },
+              // })
+            }),
+            resolve: (object) => {
+
+              return object.coords && {
+                lat: object.coords[0],
+                lng: object.coords[1],
+              } || null;
+            },
+          },
           ratings: {
             type: new GraphQLList(RatingsType),
             resolve: (company) => {

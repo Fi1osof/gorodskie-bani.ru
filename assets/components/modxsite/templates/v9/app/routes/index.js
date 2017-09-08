@@ -6,7 +6,7 @@ import {
   TopicsPage,
   NotFoundPage,
   DbPage,
-  CompanyPage,
+  CompaniesPage,
   // Lesson1,
   // PageGraphiQL,
 } from "modules/Site";
@@ -75,8 +75,8 @@ let routes = {
     {
       // path: "/bani/",
       childRoutes: [{
-        path: "/bani/*/",
-        component: CompanyPage,
+        path: "/bani/:companyId/",
+        component: CompaniesPage,
       }]
     },
     // {

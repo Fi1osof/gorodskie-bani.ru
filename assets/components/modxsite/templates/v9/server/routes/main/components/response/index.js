@@ -357,6 +357,8 @@ export default class Response{
 
   RatingsResolver = (Company, args) => {
 
+    // console.log('RatingsResolver args', args);
+
     const {
       RatingGroupbyEnumList,
     } = this;
@@ -704,7 +706,6 @@ export default class Response{
       RatingGroupbyEnumList,
     } = this;
     
-
     RatingGroupbyEnum = new GraphQLEnumType(RatingGroupbyEnumList);
 
     RatingTypesType = new GraphQLObjectType({
@@ -981,27 +982,54 @@ export default class Response{
           image: {
             type: GraphQLString
           },
+          city_id: {
+            type: GraphQLInt
+          },
+          city: {
+            type: GraphQLString
+          },
+          city_uri: {
+            type: GraphQLString
+          },
           tvs: {
-            type: new GraphQLList(
-              new GraphQLObjectType({
-                name: 'TSvType',
-                fields: {
-                  id: {
-                    type: GraphQLInt,
-                  },
-                  name: {
-                    type: GraphQLString,
-                  },
-                  value: {
-                    type: GraphQLString,
-                  },
+            type: new GraphQLObjectType({
+              name: 'TSvType',
+              fields: {
+                address: {
+                  type: GraphQLString,
+                  description: 'Адрес',
                 },
-              })
-            ),
+                site: {
+                  type: GraphQLString,
+                  description: 'Веб-сайт',
+                },
+                facility_type: {
+                  type: GraphQLString,
+                  description: 'Тип заведения',
+                },
+                phones: {
+                  type: GraphQLString,
+                  description: 'Телефон',
+                },
+                work_time: {
+                  type: GraphQLString,
+                  description: 'Рабочее время',
+                },
+                prices: {
+                  type: GraphQLString,
+                  description: 'Цены',
+                },
+                metro: {
+                  type: GraphQLString,
+                  description: 'Метро',
+                },
+              },
+            }),
             resolve: (object) => {
-              let tvs = [];
+              let tvs = {};
 
               if(object.tvs){
+
                 for(var name in object.tvs){
 
                   var tv = object.tvs[name];
@@ -1014,15 +1042,11 @@ export default class Response{
                       value,
                     } = tv;
 
-                    tvs.push({
-                      id,
-                      name,
-                      caption,
-                      value,
-                    });
+                    tvs[name] = value;
 
                   }
                 }
+                
               }
 
               return tvs;
@@ -1066,18 +1090,105 @@ export default class Response{
             },
           },
           ratings: {
+            description: 'Рейтинги компании',
             type: new GraphQLList(RatingsType),
-            resolve: (company) => {
+            args: {
+              type: {
+                type: GraphQLID
+                // type: new GraphQLNonNull(GraphQLID)
+              },
+              limit: {
+                type : GraphQLInt,
+              },
+              groupBy: {
+                type : RatingGroupbyEnum,
+              },
+            },
+            resolve: (company, args) => {
 
-              console.log('CompanyType ratings resolver', company);
+              // console.log('CompanyType ratings resolver', company, args);
 
               const {
                 id: company_id,
               } = company;
 
-              return this.RatingsResolver(null, {
+              Object.assign(args, {
                 company: company_id,
               });
+
+              return this.RatingsResolver(company, args);
+            },
+          },
+          ratingAvg: {
+            description: 'Суммарный рейтинг',
+            type: new GraphQLList(RatingsType),
+            args: {
+              groupBy: {
+                type : RatingGroupbyEnum,
+              },
+            },
+            resolve: (company, args) => {
+
+              // console.log('CompanyType ratings resolver', company, args);
+
+              const {
+                id: company_id,
+              } = company;
+
+              Object.assign(args, {
+                company: company_id,
+                groupBy: 'company',
+                limit: 1,
+              });
+
+              return this.RatingsResolver(company, args);
+            },
+          },
+          ratingsByType: {
+            description: 'Рейтинг по типам',
+            type: new GraphQLList(RatingsType),
+            args: {
+              groupBy: {
+                type : RatingGroupbyEnum,
+              },
+            },
+            resolve: (company, args) => {
+
+              // console.log('CompanyType ratings resolver', company, args);
+
+              const {
+                id: company_id,
+              } = company;
+
+              Object.assign(args, {
+                company: company_id,
+                groupBy: 'rating_type',
+              });
+
+              return this.RatingsResolver(company, args);
+            },
+          },
+          votes: {
+            description: 'Все голоса за компанию',
+            type: new GraphQLList(RatingsType),
+            args: {
+              groupBy: {
+                type : RatingGroupbyEnum,
+              },
+            },
+            resolve: (company, args) => {
+
+              // console.log('CompanyType ratings resolver', company, args);
+
+              const {
+                id: company_id,
+              } = company;
+
+              Object.assign(args, {
+                company: company_id,
+              });
+
+              return this.RatingsResolver(company, args);
             },
           },
           // places: {

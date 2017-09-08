@@ -47,6 +47,7 @@ export class AppMain extends Component{
     request: PropTypes.func,
     apiRequest: PropTypes.func,
     openCompanyPage: PropTypes.func,
+    loadCompanyFullData: PropTypes.func,
     companiesStore: PropTypes.object,
   };
 
@@ -63,6 +64,7 @@ export class AppMain extends Component{
       request: this.request,
       apiRequest: this.apiRequest,
       openCompanyPage: this.openCompanyPage,
+      loadCompanyFullData: this.loadCompanyFullData,
       companiesStore,
     };
 
@@ -161,6 +163,7 @@ export class AppMain extends Component{
           object {
             id
             name
+            alias
             uri
             image
             coords{
@@ -189,6 +192,103 @@ export class AppMain extends Component{
           } = data.object.companies || {};
 
           companiesStore.getDispatcher().dispatch(companiesStore.actions['SET_DATA'], object || []);
+        }
+      },
+    });
+  }
+
+  loadCompanyFullData = (item) => {
+
+    console.log('loadCompanyFullData item', item)
+
+    if(!item){
+      return false;
+    }
+
+    const {
+      id,
+    } = item;
+
+    const itemId = parseInt(id);
+
+    if(!itemId){
+      return false;
+    }
+
+    this.apiRequest('sitemap', false, 'graphql', {
+      query: JSON.stringify(`query{ 
+        companies(
+          limit: 0
+          id: ${itemId}
+        ) {
+          object{
+            id
+            name
+            longtitle
+            description
+            alias
+            uri
+            coords {
+              lat
+              lng
+            }
+            image
+            gallery {
+              image
+            }
+            tvs {
+              address
+              site
+              facility_type
+              phones
+              prices
+              metro
+            }
+            ratingAvg{
+              rating
+              max_vote
+              min_vote
+              quantity
+            }
+            ratingsByType {
+              rating
+              max_vote
+              min_vote
+              type
+              quantity
+            }
+            votes {
+              rating
+              type
+            }
+          }
+        }
+      }`),
+    },{
+      callback: (data, errors) => {
+
+        let {
+          companiesStore,
+        } = this.state;
+
+        console.log('loadCompanyFullData callback', data, errors);
+
+        if(data.success && data.object){
+          // this.setState({
+          //   resourcesMap: data.object,
+          // });
+
+          const {
+            object,
+          } = data.object.companies || {};
+
+          const dataObject = object && object.find(n => n.id == itemId) || undefined;
+
+          if(dataObject){
+            Object.assign(item, dataObject);
+            companiesStore.getDispatcher().dispatch(companiesStore.actions['UPDATE'], item);
+          }
+
         }
       },
     });
@@ -312,7 +412,11 @@ export class AppMain extends Component{
         <MainMenu 
         />
 
-        {children}
+        <div 
+          id="Module"
+        >
+          {children}
+        </div>
 
       <Informer
         store={notifications_store}

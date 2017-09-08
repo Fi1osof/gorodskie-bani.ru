@@ -42,7 +42,10 @@ export default class MapMainView extends Component{
 	};
 
 	static defaultProps = {
-    center: {lat: 55.75, lng: 37.9},
+    center: {
+    	lat: 55.760046, 
+    	lng: 37.626028,
+    },
     zoom: 11
 	};
 

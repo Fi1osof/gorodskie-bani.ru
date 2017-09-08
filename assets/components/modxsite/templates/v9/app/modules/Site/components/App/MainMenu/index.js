@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 
 import PropTypes from 'prop-types';
 
+import { Link } from 'react-router';
+
 export default class MainMenu extends Component{
 
 	constructor(props){
@@ -21,15 +23,24 @@ export default class MainMenu extends Component{
 			citiesOpened,
 		} = this.state;
 
-		return <div className="navbar navbar-default navbar-fixed-top">
+		return <div 
+      className="navbar navbar-default"
+      style={{
+        marginBottom: 0,
+      }}
+    >
       <div className="container">
         <div className="navbar-header">
-          <a href="{$site_url}" className="navbar-brand">
+          <Link 
+            href="/" 
+            to="/" 
+            className="navbar-brand"
+          >
             <div className="logo">
               <i className="str leaf leaf-l"></i>
               <span className="str">Городские бани</span>
             </div>
-          </a>
+          </Link>
           <button className="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
             <span className="icon-bar"></span>
             <span className="icon-bar"></span>

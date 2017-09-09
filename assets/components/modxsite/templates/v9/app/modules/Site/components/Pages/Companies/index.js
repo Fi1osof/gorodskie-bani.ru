@@ -50,9 +50,6 @@ export default class CompaniesPage extends Page {
 		// console.log('CompaniesPage 2 item', item, companyId);
 
 		return <div>
-			CompaniesPage<br />
-			CompaniesPage<br />
-			CompaniesPage<br />
 
 			{company}
 

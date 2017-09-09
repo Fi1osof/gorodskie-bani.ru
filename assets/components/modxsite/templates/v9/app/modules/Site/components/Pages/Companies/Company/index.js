@@ -6,6 +6,7 @@ import {Link, browserHistory} from 'react-router';
 
 import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
+import Grid from 'material-ui/Grid';
 
 
 export default class CompanyPage extends Component{
@@ -71,6 +72,29 @@ export default class CompanyPage extends Component{
         title={name}
         subheader={address}
 			/>
+
+			<CardContent>
+				
+				<Grid
+					container
+				>
+
+					<Grid
+						item
+					>
+						
+					</Grid>
+
+					<Grid
+						item
+						xs
+					>
+						
+					</Grid>
+
+				</Grid>
+
+			</CardContent>
 
 		</Card>
 	}

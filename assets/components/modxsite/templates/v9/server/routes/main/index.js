@@ -15,7 +15,22 @@ var Model = require('objection').Model;
  
 import Response from './components/response';
 
- 
+import {
+  db as db_config,
+  host,
+} from '../../config/config'; 
+
+
+var debug = require('debug')("server:router/main");
+
+let {
+  connection: {
+    prefix,
+  },
+} = db_config;
+
+const knex = require('knex')(db_config);
+
 
 // import {db as db_config} from '../../config/config';
  
@@ -29,8 +44,6 @@ module.exports = function (options) {
 
   var express = require('express');
   var router = express.Router();
-
-  var debug = require('debug')("server:router/main");
 
   // var querystring = require('querystring');
 
@@ -222,7 +235,7 @@ module.exports = function (options) {
       }
  
 
-      let response = new Response(req, res, request);
+      let response = new Response(req, res, request, knex);
 
       return response.process();
     });
@@ -307,8 +320,9 @@ module.exports = function (options) {
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Hello React</title>
+            <title>Городские бани</title>
             <link rel="stylesheet" href="${assetsUrl}css/main.css">
+            <base href="/" />
             <script type="application/javascript">
               window.REDUX_INITIAL_STATE = ${JSON.stringify(initialState)};
             </script>

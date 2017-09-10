@@ -42,14 +42,14 @@ import {
 
 var knex;
 
-var knexdb = require('knex');
+// var knexdb = require('knex');
 
 export default class Response{
 
-  constructor (req, res, params) {
+  constructor (req, res, params, knexdb) {
  
 
-    knex = knexdb(db_config);
+    knex = knexdb;
 
     this.req = req;
     this.res = res;
@@ -192,6 +192,15 @@ export default class Response{
     return fetch('http://gorodskie-bani.local' + url, options);
   }
 
+  ObjectResolver = (resolver, object, args) => {
+    return new Promise((resolve, reject) => {
+
+      resolver(object, args)
+        .then(result => resolve(result && result[0] || null))
+        .catch(e => reject(e));
+
+    });
+  }
 
   companiesListResolver = (object, args) => {
 
@@ -211,6 +220,7 @@ export default class Response{
         start,
         count,
         voted_companies,
+        search,
       } = args || {};
 
       limit = limit || 0;
@@ -218,12 +228,13 @@ export default class Response{
       let action = 'companies/getdata';
 
       let params = {
-        with_coors_only: true,       // Только с координатами
+        // with_coors_only: false,       // Только с координатами
         company_id: id,
         limit,
         start,
         count: count === undefined ? 1 : count,
         companies: voted_companies,
+        search,
       };
 
       let request = this.SendMODXRequest(action, params); 
@@ -276,11 +287,12 @@ export default class Response{
       let action = 'companies/getdata';
 
       let params = {
-        with_coors_only: true,       // Только с координатами
+        // with_coors_only: false,       // Только с координатами
         company_id: id,
         limit,
         start,
         companies: voted_companies,
+        search,
       };
 
       let request = this.SendMODXRequest(action, params); 
@@ -437,6 +449,7 @@ export default class Response{
         q.select(knex.raw('round(sum(votes.vote_value) / count(*), 2) as rating'));
         q.select(knex.raw('max(votes.vote_value) as max_vote'));
         q.select(knex.raw('min(votes.vote_value) as min_vote'));
+        q.select(knex.raw('count(DISTINCT votes.user_id) as quantity_voters'));
         
         q.select(knex.raw('GROUP_CONCAT(DISTINCT votes.target_id) as voted_companies'));
 
@@ -481,7 +494,7 @@ export default class Response{
         // q.select('1 as quantity');
       }
 
-      // console.log('ratings .toSQL()', q.toSQL());
+      // console.log('ratings .toString()', q.toString());
 
       q.then((result) => { 
         return result;
@@ -708,6 +721,60 @@ export default class Response{
     
     RatingGroupbyEnum = new GraphQLEnumType(RatingGroupbyEnumList);
 
+    const imageType = {
+      type: new GraphQLObjectType({
+        name: 'Images',
+        fields: {
+          original: {
+            type: GraphQLString,
+            resolve: (image) => {
+              return image;
+            },
+          },
+          thumb: {
+            type: GraphQLString,
+            resolve: (image) => {
+              return `images/resized/thumb/${image}`;
+            },
+          },
+          marker_thumb: {
+            type: GraphQLString,
+            resolve: (image) => {
+              return `images/resized/marker_thumb/${image}`;
+            },
+          },
+          small: {
+            type: GraphQLString,
+            resolve: (image) => {
+              return `images/resized/small/${image}`;
+            },
+          },
+          middle: {
+            type: GraphQLString,
+            resolve: (image) => {
+              return `images/resized/middle/${image}`;
+            },
+          },
+          big: {
+            type: GraphQLString,
+            resolve: (image) => {
+              return `images/resized/big/${image}`;
+            },
+          },
+        },
+      }),
+      resolve: (object) => {
+
+        const {
+          image,
+        } = object;
+
+        return image && image.replace(/^\//g, '') || null;
+
+        // return image ? `uploads/${image}` : null;
+      },
+    };
+
     RatingTypesType = new GraphQLObjectType({
       name: 'RatingTypesType',
       description: 'Тип рейтинга (Парилка, Интерьер, Кухня и т.п.)',
@@ -768,8 +835,16 @@ export default class Response{
           quantity: {
             type: GraphQLInt
           },
+          quantity_voters: {
+            type: GraphQLInt,
+            description: 'Количество проголосовавши людей',
+          },
           voted_companies: {
             type: GraphQLString
+          },
+          voters: {
+            type: GraphQLString,
+            description: 'Проголосовавшие люди',
           },
           companies: {
             type: new GraphQLList(CompanyType),
@@ -973,15 +1048,16 @@ export default class Response{
           description: {
             type: GraphQLString
           },
+          content: {
+            type: GraphQLString
+          },
           alias: {
             type: GraphQLString
           },
           uri: {
             type: GraphQLString
           },
-          image: {
-            type: GraphQLString
-          },
+          image: imageType,
           city_id: {
             type: GraphQLInt
           },
@@ -1057,9 +1133,7 @@ export default class Response{
               new GraphQLObjectType({
                 name: 'galleryType',
                 fields: {
-                  image: {
-                    type: GraphQLString,
-                  },
+                  image: imageType,
                 },
               })
             ),
@@ -1121,7 +1195,7 @@ export default class Response{
           },
           ratingAvg: {
             description: 'Суммарный рейтинг',
-            type: new GraphQLList(RatingsType),
+            type: RatingsType,
             args: {
               groupBy: {
                 type : RatingGroupbyEnum,
@@ -1141,7 +1215,7 @@ export default class Response{
                 limit: 1,
               });
 
-              return this.RatingsResolver(company, args);
+              return this.ObjectResolver(this.RatingsResolver, company, args);
             },
           },
           ratingsByType: {
@@ -1435,6 +1509,10 @@ export default class Response{
           args: {
             id: {
               type: GraphQLID
+              // type: new GraphQLNonNull(GraphQLID)
+            },
+            search: {
+              type: GraphQLString
               // type: new GraphQLNonNull(GraphQLID)
             },
             limit: {

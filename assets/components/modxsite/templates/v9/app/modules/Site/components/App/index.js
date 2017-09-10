@@ -47,7 +47,9 @@ export class AppMain extends Component{
     request: PropTypes.func,
     apiRequest: PropTypes.func,
     openCompanyPage: PropTypes.func,
+    loadCompanyMapData: PropTypes.func,
     loadCompanyFullData: PropTypes.func,
+    setPageTitle: PropTypes.func,
     companiesStore: PropTypes.object,
   };
 
@@ -64,7 +66,9 @@ export class AppMain extends Component{
       request: this.request,
       apiRequest: this.apiRequest,
       openCompanyPage: this.openCompanyPage,
+      loadCompanyMapData: this.loadCompanyMapData,
       loadCompanyFullData: this.loadCompanyFullData,
+      setPageTitle: this.setPageTitle,
       companiesStore,
     };
 
@@ -143,6 +147,14 @@ export class AppMain extends Component{
     // }
   }
 
+  setPageTitle = (title) => {
+    if(
+      typeof window !== "undefined"
+      && (window.document.title != title)
+    ){
+      window.document.title = title;
+    }
+  }
 
   loadApiData(){
 
@@ -152,7 +164,7 @@ export class AppMain extends Component{
 
   loadCompanies(){
 
-    this.apiRequest('sitemap', false, 'graphql', {
+    this.apiRequest('companies', false, 'graphql', {
       query: JSON.stringify(`query{
         companies(limit:0) {
           success
@@ -165,7 +177,9 @@ export class AppMain extends Component{
             name
             alias
             uri
-            image
+            image {
+              marker_thumb
+            }
             coords{
               lat,
               lng,
@@ -215,10 +229,10 @@ export class AppMain extends Component{
       return false;
     }
 
-    this.apiRequest('sitemap', false, 'graphql', {
+    this.apiRequest('company', true, 'graphql', {
       query: JSON.stringify(`query{ 
         companies(
-          limit: 0
+          limit: 1
           id: ${itemId}
         ) {
           object{
@@ -226,21 +240,34 @@ export class AppMain extends Component{
             name
             longtitle
             description
+            content
             alias
             uri
+            city
             coords {
               lat
               lng
             }
-            image
+            image {
+              thumb
+              small
+              big
+              marker_thumb
+            }
             gallery {
-              image
+              image {
+                thumb
+                small
+                middle
+                big
+              }
             }
             tvs {
               address
               site
               facility_type
               phones
+              work_time
               prices
               metro
             }
@@ -249,6 +276,7 @@ export class AppMain extends Component{
               max_vote
               min_vote
               quantity
+              quantity_voters
             }
             ratingsByType {
               rating
@@ -256,6 +284,7 @@ export class AppMain extends Component{
               min_vote
               type
               quantity
+              quantity_voters
             }
             votes {
               rating
@@ -272,6 +301,79 @@ export class AppMain extends Component{
         } = this.state;
 
         console.log('loadCompanyFullData callback', data, errors);
+
+        if(data.success && data.object){
+          // this.setState({
+          //   resourcesMap: data.object,
+          // });
+
+          const {
+            object,
+          } = data.object.companies || {};
+
+          const dataObject = object && object.find(n => n.id == itemId) || undefined;
+
+          if(dataObject){
+            Object.assign(item, dataObject);
+            companiesStore.getDispatcher().dispatch(companiesStore.actions['UPDATE'], item);
+          }
+
+        }
+      },
+    });
+  }
+
+  loadCompanyMapData = (item, force) => {
+
+    if(!item){
+      return false;
+    }
+
+    const {
+      id,
+      _mapDataLoaded,
+    } = item;
+
+
+    const itemId = parseInt(id);
+
+    if(!itemId){
+      return false;
+    }
+
+    if(_mapDataLoaded && !force){
+      return;
+    }
+
+    console.log('loadCompanyMapData item', item);
+
+    item._mapDataLoaded = true;
+
+    this.apiRequest(`company_ratings_${id}`, false, 'graphql', {
+      query: JSON.stringify(`query{ 
+        companies(
+          limit: 1
+          id: ${itemId}
+        ) {
+          object {
+            id
+            ratingAvg {
+              rating
+              max_vote
+              min_vote
+              quantity
+            }
+          }
+        }
+      }`),
+    },{
+      callback: (data, errors) => {
+
+        let {
+          companiesStore,
+        } = this.state;
+
+        console.log('loadCompanyMapData callback', data, errors);
 
         if(data.success && data.object){
           // this.setState({

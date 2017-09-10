@@ -19,6 +19,49 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         // $this->modx->log(1, print_r($_REQUEST, 1), "FILE");
         # return true; 
         
+
+        foreach($this->properties as $name => & $value){
+
+            if(is_scalar($value)){
+
+                switch((string)$value){
+
+                    case 'true':
+
+                        $value = true;
+
+                        break;
+
+                    case 'false':
+
+                        $value = false;
+
+                        break;
+
+                    case '0':
+
+                        $value = 0;
+
+                        break;
+
+                    case 'null':
+
+                        $value = null;
+
+                        break;
+
+                    case 'undefined':
+
+                        unset($this->properties[$name]);
+
+                        break;
+                }
+            }
+
+        }
+
+        // var_dump($this->properties);
+
         $this->setDefaultProperties(array(
             // "sort"  => "avg_rating DESC, {$this->classKey}.menutitle",
             // "dir"   => "ASC",

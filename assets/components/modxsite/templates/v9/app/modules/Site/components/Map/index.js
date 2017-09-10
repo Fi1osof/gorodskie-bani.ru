@@ -37,8 +37,10 @@ export default class MapMainView extends Component{
 		// updateItem: PropTypes.func.isRequired,
 		// savePlaceItem: PropTypes.func.isRequired,
 		openCompanyPage: PropTypes.func.isRequired,
+		loadCompanyMapData: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
 		companiesStore: PropTypes.object.isRequired,
+		setPageTitle: PropTypes.func.isRequired,
 	};
 
 	static defaultProps = {
@@ -93,7 +95,7 @@ export default class MapMainView extends Component{
  			zoom,
  		} = router.params;
 
- 		// console.log("lat lng", router, lat, lng, zoom);
+ 		// 
 
  		if(lat && lng && zoom){
  			// this.setMapPosition(lat, lng);
@@ -140,41 +142,49 @@ export default class MapMainView extends Component{
  		return super.componentWillUnmount && super.componentWillUnmount();
 	}
 
-	// componentDidMount(){
+	componentDidMount(){
 
- // 		let {
- // 			router,
- // 		} = this.context;
+ 		// let {
+ 		// 	router,
+ 		// } = this.context;
 
- // 		let {
- // 			lat,
- // 			lng,
- // 		} = router.params;
+ 		// let {
+ 		// 	lat,
+ 		// 	lng,
+ 		// } = router.params;
 
- // 		if(lat && lng){
- // 			// this.setMapPosition(lat, lng);
- //      // defaultCenter={this.props.center}
+ 		// if(lat && lng){
+ 		// 	// this.setMapPosition(lat, lng);
+   //    // defaultCenter={this.props.center}
 
- // 		}
-	// }
+ 		// }
+
+ 		const {
+ 			setPageTitle,
+ 		} = this.context;
+
+ 		setPageTitle("Городские бани");
+
+ 		this.createClusters();
+	}
 
 	// shouldComponentUpdate(a, b, c, d){
 
-	// 	console.log('mapMainView shouldComponentUpdate a', a);
-	// 	console.log('mapMainView shouldComponentUpdate b', b);
-	// 	console.log('mapMainView shouldComponentUpdate c', c);
-	// 	console.log('mapMainView shouldComponentUpdate d', d);
+	// 	
+	// 	
+	// 	
+	// 	
 
 	// 	return true;
 	// }
 
 	componentDidUpdate(prevProps, prevState, prevContext){
 
-		console.log('mapMainView componentDidUpdate', prevProps, prevState);
-		// console.log('mapMainView componentDidUpdate context', this.context);
+		
+		// 
 
-		// console.log('mapMainView componentDidUpdate context', this.context.mapShowContacts);
-		// console.log('mapMainView componentDidUpdate prevContext', prevContext.mapShowContacts);
+		// 
+		// 
 
 		let {
 			// mapShowGeoObjects,
@@ -192,7 +202,7 @@ export default class MapMainView extends Component{
  			zoom,
  		} = router.params || {};
 
- 		// console.log("lat lng", router, lat, lng, zoom);
+ 		// 
 
  		let {
  			center: {
@@ -238,7 +248,7 @@ export default class MapMainView extends Component{
 		// 	)
 
 		// ){
-		// 	// console.log('createClusters');
+		// 	// 
 		// 	this.createClusters();
 		// }
 
@@ -247,7 +257,7 @@ export default class MapMainView extends Component{
 
 	onChildClick(key, props){
 
-		// console.log('onChildClick', props, this);
+		// 
 
 		let {
 			cluster,
@@ -265,7 +275,7 @@ export default class MapMainView extends Component{
 			},
 		} = cluster;
 
-		console.log('onChildClick cluster', cluster, isCluster);
+		
 		// cluster
 
 		if(item){
@@ -290,8 +300,8 @@ export default class MapMainView extends Component{
 		// } = cluster;
 
 
-		// // console.log('onChildClick properties', properties);
-		// // console.log('onChildClick item', item);
+		// // 
+		// // 
 
 		// if(item){
 
@@ -315,7 +325,7 @@ export default class MapMainView extends Component{
 			maps,
 		} = options;
 
-		// console.log('onGoogleApiLoaded', map, maps);
+		// 
 
 		// window.map = map;
 		// window.maps = maps;
@@ -327,7 +337,7 @@ export default class MapMainView extends Component{
 	}
 
  	// onChildMouseDown(key, props, coords){
- 	// 	console.log('onChildMouseDown', key, props, coords);
+ 	// 	
 
  	// 	let {
  	// 		cluster: {
@@ -351,7 +361,7 @@ export default class MapMainView extends Component{
  	// }
 
  	// onChildMouseUp(){
- 	// 	// console.log('onChildMouseUp');
+ 	// 	// 
 
  	// 	this.setState({
  	// 		draggable: true,
@@ -373,11 +383,11 @@ export default class MapMainView extends Component{
  		} = this.context;
 
 
- 		// console.log('newCoords marker', marker);
+ 		// 
 
- 		// console.log('newCoords item', item);
+ 		// 
 
- 		// console.log('newCoords', this, newCoords);
+ 		// 
 
 
 
@@ -385,7 +395,7 @@ export default class MapMainView extends Component{
  	}
 
  	onChildMouseEnter(key, props){
- 		console.log('onChildMouseEnter', key, props);
+ 		
 
  		let {
  			cluster,
@@ -403,7 +413,7 @@ export default class MapMainView extends Component{
  	}
 
  	onChildMouseLeave(key, props){
- 		// console.log('onChildMouseLeave', key, props);
+ 		// 
 
  		let {
  			cluster,
@@ -436,7 +446,7 @@ export default class MapMainView extends Component{
  			lng,
  		} = center;
 
- 		// console.log("handleMapChange", center, zoom, bounds);
+ 		// 
 
  		let {
  			router,
@@ -454,21 +464,21 @@ export default class MapMainView extends Component{
 
  		if(lat && lng){
 
-	 		pathname = location.pathname.replace(/(.*\/)@([\d+\,\.]*)?/, '$1');
+	 		pathname = location.pathname.replace(/(.*\/)@([\d+\,\.\-]*)?/, '$1');
 
 	 		pathname = pathname.replace(/(.*\/)/, `$1@${lat},${lng},${zoom}`);
 
 	 		location.pathname = pathname;
 
-	 		// console.log("pathname", pathname); 
+	 		// 
 
-	 		// console.log("location", location); 
+	 		// 
 
 	 		browserHistory.push(location);
  			
  		}
 
- 		// console.log("new loc", nl);
+ 		// 
 
 
 	  this.setState(
@@ -485,26 +495,25 @@ export default class MapMainView extends Component{
 	    () => {
 
 	    	// browserHistory.replace();
-	      this.createClusters(this.props);
+	      // this.createClusters(this.props);
 	    }
 	  );
 	};
 
 	createClusters = props => {
 
-		// console.log('handleMapChange 2 ', this.state.mapOptions.bounds);
+		console.log('createClusters');
 
-	  this.setState({
-	    // clusters: this.state.mapOptions.bounds
-	    clusters: this.state.bounds
-	      ? this.getClusters(props)
-	      : null,
-	  });
-	};
+		// 
 
-	getClusters = () => {
+	  // this.setState({
+	  //   // clusters: this.state.mapOptions.bounds
+	  //   clusters: this.state.bounds
+	  //     ? this.getClusters(props)
+	  //     : null,
+	  // });
 
-		let {
+	  let {
 			companiesStore,
 		} = this.context;
 
@@ -535,7 +544,7 @@ export default class MapMainView extends Component{
   			lng,
   		} = coords || {};
 
-  		// console.log('companiesStore item',  item);
+  		// 
 
   		if(!lat || !lng){
   			return;
@@ -569,7 +578,7 @@ export default class MapMainView extends Component{
 
   	// window.data = markersData;
 
-  	// console.log("markersData", markersData);
+  	// 
 
   	// window.c = supercluster({
    //      log: true,
@@ -589,7 +598,7 @@ export default class MapMainView extends Component{
         // log: true,
         radius: 60,
         extent: 256,
-        maxZoom: 15
+        // maxZoom: 15,
     }).load(markersData);
 
 
@@ -606,7 +615,20 @@ export default class MapMainView extends Component{
 	  // return clusters.getClusters([-180, -85, 180, 85], 2);
 	  // return clusters.getClusters(this.state.mapOptions);
 
-	  return clusters;
+	  this.setState({
+	  	clusters,
+	  });
+
+	  // return clusters;
+	};
+
+	getClusters = () => {
+
+		const {
+			clusters,
+		} = this.state;
+
+		return clusters;
 	};
 
 
@@ -625,7 +647,7 @@ export default class MapMainView extends Component{
 			maps,
 		} = this.state;
 
-		// console.log('setMapPosition', lat, lng, map, maps);
+		// 
 
 		// map.setCenter(new maps.LatLng(lat, lng));
 
@@ -661,35 +683,74 @@ export default class MapMainView extends Component{
 		// mapProvider2 && mapProvider2._mapDomResizeCallback();
 	}
 
-	isInScreen(item){
+	isInScreen(cluster){
 
 		let {
-			bounds: {
-				nw,
-				se,
-			},
+			bounds,
 		} = this.state;
 
-		let {
-			lat,
-			lng,
-		} = item;
+		const {
+			nw,
+			se,
+		} = bounds || {};
 
-		// console.log("coords", lat, lng, nw, se);
+		let {
+			geometry: {
+				coordinates: {
+					0: lng,
+					1: lat,
+				},
+			}
+		} = cluster;
+
+		// 
 		if(!lat || !lng || !nw || !se){
-			return;
+			return false;
 		}
 
+		let {
+			lat: maxLat,
+			lng: minLng,
+		} = nw,
+		{
+			lat: minLat,
+			lng: maxLng,
+		} = se
+		;
 
+		const latDiff = maxLat - minLat;
+
+		minLat -= latDiff;
+		maxLat += latDiff;
+
+		const lngDiff = maxLng - minLng;
+
+		minLng -= lngDiff;
+		maxLng += lngDiff;
+
+		// console.log('map items isInScreen', minLat, maxLat, latDiff);
+
+		// console.log('map items isInScreen lat lng', lat, lng);
+
+ 
 		if(
-			lat < nw.lat && lat > se.lat
+			lat < maxLat && lat > minLat
 			&&
-			lng > nw.lng && lng < se.lng
+			lng > minLng && lng < maxLng
 		){
 			return true;
 		}
 
 		return false
+	}
+
+	loadCompanyMapData(item, force){
+		
+		const {
+			loadCompanyMapData,
+		} = this.context;
+
+		loadCompanyMapData(item, force);
 	}
 
 	render(){
@@ -711,7 +772,7 @@ export default class MapMainView extends Component{
   		</div>
   	}
 
-		let {
+		const {
 			map,
 			maps,
 			draggable,
@@ -720,7 +781,10 @@ export default class MapMainView extends Component{
 			// sidebarOpen,
 			zoom,
 			cluster_id,
+			bounds,
 		} = this.state;
+
+		// console.log('bounds', bounds);
 
 		let {
 			savePlaceItem,
@@ -732,116 +796,17 @@ export default class MapMainView extends Component{
 
 
 
-
-		// console.log('sidebar_items_list clusters', cluster_id, zoom, clusters);
-
-
-		if(clusters){
-			// clusters.getLeaves();
-			clusters.points && clusters.points.map(point => {
-
-				// console.log('point', point);
-
-				let {
-					properties: {
-						item,
-					},
-				} = point;
-
-				if(item){
-
-	  			// console.log('clusters item', item);
-
-	  			let {
-	  				id,
-	  				name,
-	  				longtitle,
-	  				address,
-	  				type,
-	  				lat: item_lat,
-	  				lng: item_lng,
-	  			} = item;
-
-	  			if(sidebar_items_list.length >= 20){
-
-	  				return;
-	  			}
-
-	  			// Если точка не в рамках карты, пропускаем 
-	  			if(!this.isInScreen(item)){
-	  				return;
-	  			}
-
-	  			// if(!item_lat && !item_lng){
-	  			// 	return;
-	  			// }
-
-	  			let Icon;
-	  			let editUrl;
-
-	  			if(type == "contact"){
-	  				Icon = Texture;
-	  				editUrl = `/db/contacts/${id}/`;
-	  			}
-	  			else{
-	  				Icon = Business;
-	  				editUrl = `/db/places/${id}/`;
-	  			}
-
-
-		  		sidebar_items_list.push(<div
-			  		// key={id || `item_${sidebar_items_list.length}`}
-			  		key={`item_${sidebar_items_list.length}`}
-		  		>
-		  			{sidebar_items_list.length > 0 ? <Divider /> : null}
-
-		  			<ListItem
-			  		>
-			  			
-
-			  			<ListItemIcon>
-			  				<IconButton
-			  					onClick={event => {
-
-										// console.log('setMapPosition 2', lat, lng);
-
-			  						this.setMapPosition(item_lat, item_lng)
-			  					}}
-			  				>
-			  					<Icon
-			  					/>
-			  				</IconButton>
-			  			</ListItemIcon>
-
-			  			<ListItemText 
-			  				primary={longtitle || name}
-			  				secondary={address}
-		  					onClick={event => {
-		  						browserHistory.push(editUrl);
-		  					}}
-		  					style={{
-		  						cursor: 'pointer',
-		  					}}
-			  			/>
-
-			  		</ListItem>
-		  		</div>);
-	  		}
-			});
-		}
-
   	if(cluster_id){
   		
-  		console.log('sidebar_items_list clusters', clusters.getLeaves);
+  		
   	}
 
-
-  	// console.log('clusters', clusters);
+  	// 
 
   	clusters && clusters.getClusters([-180, -85, 180, 85], zoom || 4).map(cluster => {
 
   		if(cluster.properties.type == "Contact"){
-  			// console.log('cluster', cluster);
+  			// 
   		}
 
 
@@ -865,6 +830,15 @@ export default class MapMainView extends Component{
 				id,
 			} = item || {}
 
+			if(item){
+				this.loadCompanyMapData(item);
+			}
+
+			// Если точка не в рамках карты, пропускаем 
+			if(!this.isInScreen(cluster)){
+				return;
+			}
+
   		items.push(<Marker
   			key={id && `${id}_${type}` || `marker_${items.length}`} 
   			lat={lat}
@@ -879,7 +853,9 @@ export default class MapMainView extends Component{
 			return;
   	});
 
-  	// console.log('sidebar_items_list', sidebar_items_list);
+  	// 
+
+  	// console.log('map items', items && items.length);
 
   	// sidebarOpen = sidebarOpen && sidebar_items_list && sidebar_items_list.length ? true : false;
 
@@ -992,6 +968,9 @@ export default class MapMainView extends Component{
 				  // onChildMouseMove={::this.onChildMouseMove}
 				  onChildMouseEnter={::this.onChildMouseEnter}
 				  onChildMouseLeave={::this.onChildMouseLeave}
+				 //  options={{
+					//   scrollwheel: false,
+					// }}
 		    >
 		    	{items}
 		    </GoogleMapReact>

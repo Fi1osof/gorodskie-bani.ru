@@ -7,17 +7,65 @@ class modWebSocietyTopicsCommentsGetdataProcessor extends modWebSocietyCommentsG
     
     
     public function prepareQueryBeforeCount(xPDOQuery $q){
+
+        foreach($this->properties as $name => & $value){
+
+            if(is_scalar($value)){
+
+                switch((string)$value){
+
+                    case 'true':
+
+                        $value = true;
+
+                        break;
+
+                    case 'false':
+
+                        $value = false;
+
+                        break;
+
+                    case '0':
+
+                        $value = 0;
+
+                        break;
+
+                    case 'null':
+
+                        $value = null;
+
+                        break;
+
+                    case 'undefined':
+
+                        unset($this->properties[$name]);
+
+                        break;
+                }
+            }
+
+        }
+
         $q = parent::prepareQueryBeforeCount($q);
         
+        $alias = $q->getAlias();
+
         $where = array(
             "Thread.target_class" => 'modResource',
         );
         
-        $q->where($where);
+        if($thread_id = (int)$this->getProperty("thread_id")){
+
+            $where['Thread.target_id'] = $thread_id;
+        }
         
+        $q->where($where);
+
         return $q;
+
     }
-    
 
     
     public function prepareCountQuery(xPDOQuery & $query){

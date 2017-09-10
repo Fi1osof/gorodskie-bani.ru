@@ -2,6 +2,8 @@
 var debug = require('debug')("server:response");
 
 import moment from 'moment';
+
+moment.locale('ru');
   
 const querystring = require('querystring');
 
@@ -202,6 +204,21 @@ export default class Response{
     });
   }
 
+  ObjectsResolver = (resolver, object, args) => {
+    return new Promise((resolve, reject) => {
+
+      resolver(object, args)
+        .then(result => {
+
+          console.log('ObjectsResolver', result);
+
+          resolve(result.success && result.object || null);
+        })
+        .catch(e => reject(e));
+
+    });
+  }
+
   companiesListResolver = (object, args) => {
 
     return new Promise((resolve, reject) => {
@@ -255,6 +272,76 @@ export default class Response{
         // console.log('Response data', data);
 
         return resolve(data);
+      })
+      .catch((e) => {
+        return reject(e);
+      })
+      ;
+    });
+  }
+
+  commentsListResolver = (object, args) => {
+
+    return new Promise((resolve, reject) => {
+      // Эта функция будет вызвана автоматически
+
+      // В ней можно делать любые асинхронные операции,
+      // А когда они завершатся — нужно вызвать одно из:
+      // resolve(результат) при успешном выполнении
+      // reject(ошибка) при ошибке
+
+      // console.log('companiesResolver args', args);
+
+      let {
+        id,
+        thread: thread_id,
+        limit,
+        start,
+        count,
+        sort,
+        order: dir,
+      } = args || {};
+
+      limit = limit || 0;
+
+      let action = 'comments/getdata';
+
+      let params = {
+        id,
+        thread_id,
+        limit,
+        start,
+        count,
+      };
+
+      if(sort){
+        params.sort = sort;
+      }
+
+      if(dir){
+        params.dir = dir;
+      }
+
+      let request = this.SendMODXRequest(action, params); 
+
+
+      request.then(function(res) {
+        return res.json();
+      })
+      .then((data) => {
+
+        if(!data.success){
+
+          return reject(data.message || "Ошибка выполнения запроса");
+        }
+
+        // delete(data.object);
+
+        // console.log('Response data', data);
+        
+        console.log('commentsListResolver', params, data);
+
+        return resolve(data && data.object || []);
       })
       .catch((e) => {
         return reject(e);
@@ -714,6 +801,7 @@ export default class Response{
     let PlaceType;
     let CompanyType;
     let ServiceType;
+    let CommentType;
 
     const {
       RatingGroupbyEnumList,
@@ -775,6 +863,21 @@ export default class Response{
       },
     };
 
+    const SortType = new GraphQLEnumType({
+      name: "SortType",
+      description: 'Сортировка',
+      values: {
+        asc: {
+          value: 'asc',
+          description: 'В прямом порядке',
+        },
+        desc: {
+          value: 'desc',
+          description: 'В обратном порядке',
+        },
+      },
+    });
+
     RatingTypesType = new GraphQLObjectType({
       name: 'RatingTypesType',
       description: 'Тип рейтинга (Парилка, Интерьер, Кухня и т.п.)',
@@ -806,6 +909,63 @@ export default class Response{
               return this.RatingsResolver(null, args);
             },
           },
+        };
+      },
+    });
+
+    CommentType = new GraphQLObjectType({
+      name: 'CommentType',
+      description: 'Комментарии',
+      fields: () => {
+
+        return {
+          id: {
+            type: GraphQLInt
+          },
+          thread_id: {
+            type: GraphQLString
+          },
+          text: {
+            type: GraphQLString
+          },
+          author_username: {
+            type: GraphQLString
+          },
+          author_fullname: {
+            type: GraphQLString
+          },
+          author_avatar: {
+            type: GraphQLString
+          },
+          parent: {
+            type: GraphQLInt
+          },
+          createdon: {
+            type: GraphQLString,
+            // description: 'Время создания комментария в миллисекундах',
+            resolve: (comment, args) => {
+              return comment.createdon ? moment(comment.createdon).format('MMMM DD, YYYY | HH:mm:ss') : null;
+            },
+          },
+          // ratings: {
+          //   type: new GraphQLList(RatingsType),
+          //   resolve: (rating_type) => {
+
+          //     const {
+          //       id: type,
+          //     } = rating_type;
+
+          //     let args = {
+          //       type,
+          //       groupBy: 'rating_type',
+          //       limit: 0,
+          //     };
+
+          //     console.log('RatingsResolver args', args, rating_type);
+
+          //     return this.RatingsResolver(null, args);
+          //   },
+          // },
         };
       },
     });
@@ -1265,6 +1425,36 @@ export default class Response{
               return this.RatingsResolver(company, args);
             },
           },
+          comments: {
+            type: new GraphQLList(CommentType),
+            description: CommentType.description,
+            args: {
+              order: {
+                type: SortType,
+                description: SortType.description,
+              },
+            },
+            resolve: (company, args) => {
+
+
+              const {
+                id: company_id,
+              } = company;
+
+              args = Object.assign({
+                order: 'asc',
+              }, args, {
+                thread: company_id,
+                // thread: parseInt(company_id),
+              });
+
+              console.log('CompanyType commentsListResolver', args);
+
+              // return this.ObjectsResolver(this.commentsListResolver, company, args);
+
+              return this.commentsListResolver(company, args);
+            },
+          },
           // places: {
           //   type: new GraphQLList(PlaceType),
           //   resolve: (Company) => {
@@ -1403,6 +1593,33 @@ export default class Response{
     const RootType = new GraphQLObjectType({
       name: 'RootType',
       fields: {
+        comments: {
+          type: new GraphQLList(CommentType),
+          description: CommentType.description,
+          args: {
+            id: {
+              type: GraphQLID
+              // type: new GraphQLNonNull(GraphQLID)
+            },
+            thread: {
+              type: GraphQLID,
+              description: 'ID диалоговой ветки',
+            },
+            limit: {
+              type: new GraphQLNonNull(GraphQLInt)
+            },
+            order: {
+              type: SortType,
+              description: SortType.description,
+            },
+          },
+          resolve: (object, args) => {
+
+            // console.log('this.companiesResolver', object, args);
+
+            return this.commentsListResolver(object, args);
+          },
+        },
         rating_types: {
           type: new GraphQLList(RatingTypesType),
           description: RatingTypesType.description,

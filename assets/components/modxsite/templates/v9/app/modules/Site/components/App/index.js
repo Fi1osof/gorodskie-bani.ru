@@ -574,6 +574,15 @@ export class AppMain extends Component{
               rating
               type
             }
+            comments(order:asc){
+              id
+              text
+              parent
+              author_username
+              author_fullname
+              author_avatar
+              createdon
+            }
           }
         }
       }`),

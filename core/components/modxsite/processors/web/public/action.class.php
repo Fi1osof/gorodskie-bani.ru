@@ -25,6 +25,11 @@ class modWebPublicActionProcessor extends modProcessor{
                     self::$actualClassName = 'modWebSocietyTopicsCommentsVotesCreateProcessor';
                     break; 
                 
+                case 'comments/getdata':
+                    require dirname(dirname(__FILE__)) . '/society/topics/comments/getdata.class.php';
+                    self::$actualClassName = 'modWebSocietyTopicsCommentsGetdataProcessor';
+                    break; 
+                
                 // Голос за заведение
                 case 'ratings/company/vote/create':
                     require dirname(dirname(__FILE__)) . '/society/companies/votes/object.class.php';

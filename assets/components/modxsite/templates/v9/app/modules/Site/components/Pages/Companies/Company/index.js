@@ -13,6 +13,7 @@ import IconButton from 'material-ui/IconButton';
 import SaveIcon from 'material-ui-icons/Save';
 
 import ItemMap from 'modules/Site/components/fields/Map';
+import Comments from 'modules/Site/components/Comments';
 
 // import GoogleMapReact from 'google-map-react';
 
@@ -114,6 +115,7 @@ export default class CompanyPage extends Component{
 			content,
 			city,
 			coords,
+			comments,
 			_isDirty,
 		} = item;
 
@@ -233,6 +235,27 @@ export default class CompanyPage extends Component{
 			/>
 
 
+				
+			{comments && comments.length
+				?
+				<CardContent>
+					
+					<Paper
+						style={{
+							padding: 15,
+						}}
+					>
+
+						<Comments 
+							comments={comments}
+						/>
+
+					</Paper>
+
+				</CardContent>
+				:
+				null
+			}
 				
 			<CardContent>
 				

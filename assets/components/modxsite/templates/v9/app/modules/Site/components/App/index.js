@@ -20,7 +20,7 @@ import createPalette from 'material-ui/styles/palette';
 
 import {DataStore, Dispatcher} from 'react-cms-data-view';
 
-import {request} from 'react-cms-data-view/src/Utils';
+import {request, saveItem} from 'react-cms-data-view/src/Utils';
 
 import Informer from 'structor-templates/components/Informer';
 
@@ -49,6 +49,9 @@ export class AppMain extends Component{
     openCompanyPage: PropTypes.func,
     loadCompanyMapData: PropTypes.func,
     loadCompanyFullData: PropTypes.func,
+    updateItem: PropTypes.func,
+    updateContactItem: PropTypes.func,
+    saveContactItem: PropTypes.func,
     setPageTitle: PropTypes.func,
     companiesStore: PropTypes.object,
   };
@@ -68,6 +71,9 @@ export class AppMain extends Component{
       openCompanyPage: this.openCompanyPage,
       loadCompanyMapData: this.loadCompanyMapData,
       loadCompanyFullData: this.loadCompanyFullData,
+      updateItem: this.updateItem,
+      updateContactItem: this.updateContactItem,
+      saveContactItem: this.saveContactItem,
       setPageTitle: this.setPageTitle,
       companiesStore,
     };
@@ -155,6 +161,284 @@ export class AppMain extends Component{
       window.document.title = title;
     }
   }
+
+  updateItem = (item, data, store) => {
+
+    console.log("App updateItem", store, item, data);
+
+    if(!item){
+      console.error("Не указан объект");
+      return false;
+    }
+
+    if(!store){
+      console.error("Не указано хранилище");
+      return false;
+    }
+
+
+    let newState = {};
+
+    Object.assign(newState, data);
+
+    let _isDirty = {};
+
+    item._isDirty && Object.assign(_isDirty, item._isDirty);
+
+    Object.assign(_isDirty, newState);
+
+    newState._isDirty = _isDirty;
+
+    store.getDispatcher().dispatch(store.actions['UPDATE'], item, newState);
+
+    return;
+  }
+
+  updateContactItem = (item, data) => {
+
+    let {
+      companiesStore,
+    } = this.state;
+
+    if(data.coords){
+      Object.assign(data, data.coords);
+    }
+
+    // console.log('new updateContactItem', item, data);
+
+    // console.log('new updateContactItem item finded', ContactsStore.getState().find(n => n === item));
+    // console.log('new updateContactItem item finded by ID', ContactsStore.getState().find(n => n.id == item.id));
+
+
+    this.updateItem(item, data, companiesStore);
+  }
+
+
+
+
+
+  saveContactItem = (item) => {
+    // console.log('saveContactItem', item);
+
+    let {
+      companiesStore: store,
+    } = this.state;
+
+    let {
+      id: itemId,
+    } = item;
+
+    const callback = (data, errors) => { 
+
+      // if(data.success && data.object){
+
+      //   const {
+      //     id,
+      //   } = data.object;
+
+      //   if(id != itemId){
+      //     browserHistory.replace(`/db/contacts/${id}/`);
+      //   }
+
+      //   return;
+      // }
+    }
+
+    this.saveItem(store, item, 'companies/', callback);
+  }
+
+  saveItem = (store, item, connector_path, callback) => {
+
+    console.log("App saveItem store", store);
+    console.log("App saveItem item", item);
+    console.log("App saveItem path", connector_path);
+
+    let {
+      connector_url,
+      documentActions: {
+        addInformerMessage,
+      },
+    } = this.props;
+
+    // console.log('saveItem STORE UPDATE', item, store);
+
+    if(!store){
+
+      console.error("Не было получено хранилище");
+      return;
+    }
+
+    if(
+      !item
+      || item._sending === true
+    ){
+      return;
+    }
+
+    let {
+      id,
+      _isDirty,
+    } = item;
+
+    if(!_isDirty){
+
+      addInformerMessage({
+        text: "Нечего сохранять",
+        autohide: 4000,
+      });
+      return;
+    }
+
+    let dispatcher = store.getDispatcher();
+
+    item._sending = true;
+      
+    var action = id && id > 0 ? 'update' : 'create';
+
+    var options = options || {};
+
+    var body = {};
+
+    body['id'] = id;;
+ 
+
+    for(var i in _isDirty){
+      var value = _isDirty[i];
+
+      if(value === undefined){
+        continue;
+      }
+
+      // Пропускаем свойства-объекты
+      if(
+        typeof value === "object" 
+        && !Array.isArray(value)
+        && value !== null
+      ){
+        continue;
+      }
+
+      // Пропускаем временные свойства
+      // if(/^\_/.test(i)){
+      //   continue;
+      // }
+
+      // console.log('Form item', i, value, Array.isArray(value));
+
+      body[i] = value;
+    };
+
+    this.request(connector_path, false, `${connector_path}${action}`, body, {
+      callback: (data, errors) => {
+        // console.log('DATA', data);
+        // self.setState({items: data.object});
+
+        let newObject = data.object || {};
+
+        var errors = {};
+
+        if(data.success === true){
+
+          // var items = lodash.clone(this.state.items);
+
+   
+
+          Object.assign(newObject, {
+            _isDirty: undefined,
+          });
+
+
+          addInformerMessage({
+            type: "success",
+            text: data.message || "Объект успешно сохранен",
+            autohide: 4000,
+          });
+        }
+        else{
+
+          if(data.data && data.data.length){
+            data.data.map(function(error){
+              var value = error.msg;
+              if(value && value != ''){
+                errors[error.id] = value;
+              }
+            });
+          }
+
+          errors.error_message = data.message;
+
+          // addInformerMessage && 
+
+          //   addInformerMessage({
+          //     text: data.message || "Ошибка выполнения запроса",
+          //     autohide: 4000,
+          //   });
+
+          // this.forceUpdate();
+        }
+
+        // newState.errors = this.state.errors || {};
+
+        // newState.errors[item.id || 0] = errors;
+
+        // item._errors = errors;
+
+        callback && callback(data, errors);
+        
+        // if(callback){
+        // }
+        
+        // this.forceUpdate();
+    
+
+        // item._sending = false;
+
+        // console.log('saveItem STORE UPDATE 2', item, store);
+
+        // this.forceUpdate();
+
+        // TODO store.commit
+
+        Object.assign(newObject, {
+          _errors: errors,
+          _sending: false,
+        });
+        dispatcher.dispatch(store.actions["SAVE"], item, newObject); 
+
+        this.forceUpdate();
+      }
+    });
+
+    // return;
+
+    // fetch(this.props.connector_url + '?pub_action='+ connector_path + action,{
+    //   credentials: 'same-origin',
+    //   method: options.method || "POST",
+    //   body: body,
+    // })
+    //   .then(function (response) {
+
+    //     return response.json()
+    //   })
+    //   .then((data) => {
+
+    //   })
+    //   .catch((error) => {
+    //       console.error('Request failed', error, this); 
+
+    //       item && (item._sending = false);
+
+    //       addInformerMessage && addInformerMessage({
+    //         text: "Ошибка выполнения запроса",
+    //         autohide: 4000,
+    //       });
+    //     }
+    //   );
+
+    this.forceUpdate();
+    return;
+  }
+
 
   loadApiData(){
 

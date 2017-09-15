@@ -39,7 +39,7 @@ export default class MapMainView extends Component{
 		openCompanyPage: PropTypes.func.isRequired,
 		loadCompanyMapData: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
-		companiesStore: PropTypes.object.isRequired,
+		CompaniesStore: PropTypes.object.isRequired,
 		setPageTitle: PropTypes.func.isRequired,
 	};
 
@@ -76,10 +76,10 @@ export default class MapMainView extends Component{
 	componentWillMount(){
 
 		let {
-			companiesStore,
+			CompaniesStore,
 		} = this.context;
 
- 		this.companiesStoreListener = companiesStore.getDispatcher().register(payload => {
+ 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
 
  			this.createClusters();
  		});
@@ -125,17 +125,17 @@ export default class MapMainView extends Component{
 
  		let {
 
-			companiesStore,
+			CompaniesStore,
  		} = this.context;
 
 
-    if(this.companiesStoreListener){
+    if(this.CompaniesStoreListener){
 
-      let dispatch = companiesStore.getDispatcher();
+      let dispatch = CompaniesStore.getDispatcher();
 
-      dispatch._callbacks[this.companiesStoreListener] && dispatch.unregister(this.companiesStoreListener);
+      dispatch._callbacks[this.CompaniesStoreListener] && dispatch.unregister(this.CompaniesStoreListener);
 
-      this.companiesStoreListener = undefined;
+      this.CompaniesStoreListener = undefined;
     }
 
 
@@ -514,7 +514,7 @@ export default class MapMainView extends Component{
 	  // });
 
 	  let {
-			companiesStore,
+			CompaniesStore,
 		} = this.context;
 
 		let {
@@ -530,7 +530,7 @@ export default class MapMainView extends Component{
 
   	let markersData = [];
 
-		companiesStore.getState().map(item => {
+		CompaniesStore.getState().map(item => {
 
 
   		let {

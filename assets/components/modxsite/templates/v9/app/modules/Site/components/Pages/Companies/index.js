@@ -25,7 +25,7 @@ export default class CompaniesPage extends Page {
 			params,
 		} = this.props,
 		{
-			companiesStore,
+			CompaniesStore,
 		} = this.context;
 
 		const {
@@ -36,7 +36,7 @@ export default class CompaniesPage extends Page {
 		let company;
 
 		if(companyId){
-			item = companiesStore.getState().find(n => n.id == companyId || n.alias == companyId);
+			item = CompaniesStore.getState().find(n => n.id == companyId || n.alias == companyId);
 
 			if(item){
 

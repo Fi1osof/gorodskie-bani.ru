@@ -13,18 +13,18 @@ import fetch from 'node-fetch';
 
 var FormData = require('form-data');
 
-import {
-  db as db_config,
-  host,
-} from '../../../../config/config'; 
+// import {
+//   db as db_config,
+//   host,
+// } from '../../../../config/config'; 
 
-debug('config host', host);
+// debug('config host', host);
 
-let {
-  connection: {
-    prefix,
-  },
-} = db_config;
+// let {
+//   connection: {
+//     prefix,
+//   },
+// } = db_config;
 
 import {
   buildSchema,
@@ -43,6 +43,23 @@ import {
 } from 'graphql';
 
 var knex;
+
+import {order} from '../ORM/';
+
+import {
+  SchemaType as CompanyTypePrototype, 
+  getQuery as getCompaniesQuery, 
+  CompanySort, 
+  updateQuery as updateCompanyQuery
+} from '../ORM/Company';
+
+import {
+  SchemaType as CommentTypePrototype, 
+  // getQuery as getCompaniesQuery, 
+  // CompanySort, 
+  // updateQuery as updateCompanyQuery
+} from '../ORM/Comment';
+
 
 // var knexdb = require('knex');
 
@@ -219,66 +236,74 @@ export default class Response{
     });
   }
 
-  companiesListResolver = (object, args) => {
+  // companiesListResolver = (object, args, context) => {
 
-    return new Promise((resolve, reject) => {
-      // Эта функция будет вызвана автоматически
+  //   const {
+  //     db,
+  //   } = context || {};
 
-      // В ней можно делать любые асинхронные операции,
-      // А когда они завершатся — нужно вызвать одно из:
-      // resolve(результат) при успешном выполнении
-      // reject(ошибка) при ошибке
+  //   if(db){
+  //     return db.getCompanies(object, args, context);
+  //   }
 
-      // console.log('companiesResolver args', args);
+  //   return new Promise((resolve, reject) => {
+  //     // Эта функция будет вызвана автоматически
 
-      let {
-        id,
-        limit,
-        start,
-        count,
-        voted_companies,
-        search,
-      } = args || {};
+  //     // В ней можно делать любые асинхронные операции,
+  //     // А когда они завершатся — нужно вызвать одно из:
+  //     // resolve(результат) при успешном выполнении
+  //     // reject(ошибка) при ошибке
 
-      limit = limit || 0;
+  //     // console.log('companiesResolver args', args);
 
-      let action = 'companies/getdata';
+  //     let {
+  //       id,
+  //       limit,
+  //       start,
+  //       count,
+  //       voted_companies,
+  //       search,
+  //     } = args || {};
 
-      let params = {
-        // with_coors_only: false,       // Только с координатами
-        company_id: id,
-        limit,
-        start,
-        count: count === undefined ? 1 : count,
-        companies: voted_companies,
-        search,
-      };
+  //     limit = limit || 0;
 
-      let request = this.SendMODXRequest(action, params); 
+  //     let action = 'companies/getdata';
+
+  //     let params = {
+  //       // with_coors_only: false,       // Только с координатами
+  //       company_id: id,
+  //       limit,
+  //       start,
+  //       count: count === undefined ? 1 : count,
+  //       companies: voted_companies,
+  //       search,
+  //     };
+
+  //     let request = this.SendMODXRequest(action, params); 
 
 
-      request.then(function(res) {
-        return res.json();
-      })
-      .then((data) => {
+  //     request.then(function(res) {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
 
-        if(!data.success){
+  //       if(!data.success){
 
-          return reject(data.message || "Ошибка выполнения запроса");
-        }
+  //         return reject(data.message || "Ошибка выполнения запроса");
+  //       }
 
-        // delete(data.object);
+  //       // delete(data.object);
 
-        // console.log('Response data', data);
+  //       // console.log('Response data', data);
 
-        return resolve(data);
-      })
-      .catch((e) => {
-        return reject(e);
-      })
-      ;
-    });
-  }
+  //       return resolve(data);
+  //     })
+  //     .catch((e) => {
+  //       return reject(e);
+  //     })
+  //     ;
+  //   });
+  // }
 
   commentsListResolver = (object, args) => {
 
@@ -913,7 +938,7 @@ export default class Response{
       },
     });
 
-    CommentType = new GraphQLObjectType({
+    CommentType = new CommentTypePrototype({
       name: 'CommentType',
       description: 'Комментарии',
       fields: () => {
@@ -1191,7 +1216,7 @@ export default class Response{
       },
     }); 
 
-    CompanyType = new GraphQLObjectType({
+    CompanyType = new CompanyTypePrototype({
       name: 'CompanyType',
       fields: () => {
 
@@ -1434,26 +1459,26 @@ export default class Response{
                 description: SortType.description,
               },
             },
-            resolve: (company, args) => {
+            // resolve: (company, args) => {
 
 
-              const {
-                id: company_id,
-              } = company;
+            //   const {
+            //     id: company_id,
+            //   } = company;
 
-              args = Object.assign({
-                order: 'asc',
-              }, args, {
-                thread: company_id,
-                // thread: parseInt(company_id),
-              });
+            //   args = Object.assign({
+            //     order: 'asc',
+            //   }, args, {
+            //     thread: company_id,
+            //     // thread: parseInt(company_id),
+            //   });
 
-              console.log('CompanyType commentsListResolver', args);
+            //   console.log('CompanyType commentsListResolver', args);
 
-              // return this.ObjectsResolver(this.commentsListResolver, company, args);
+            //   // return this.ObjectsResolver(this.commentsListResolver, company, args);
 
-              return this.commentsListResolver(company, args);
-            },
+            //   return this.commentsListResolver(company, args);
+            // },
           },
           // places: {
           //   type: new GraphQLList(PlaceType),
@@ -1743,11 +1768,12 @@ export default class Response{
             //   type: GraphQLInt
             // },
           },
-          resolve: (object, args) => {
-            // console.log('this.companiesResolver', object, args);
+          // resolve: (object, args, context) => {
+          //   console.log('this.companiesResolver', object, args, context);
 
-            return this.companiesListResolver(object, args);
-          },
+          //   // return this.companiesListResolver(object, args, context);
+          //   CompanyType.getCollection(object, args, context);
+          // },
         },
         cities: {
           type: new GraphQLList(CityType),
@@ -1770,12 +1796,12 @@ export default class Response{
             //   type: GraphQLBoolean
             // },
           },
-          resolve: (object, args) => {
+          // resolve: (object, args) => {
 
-            // console.log('this.companiesResolver', object, args);
+          //   // console.log('this.companiesResolver', object, args);
 
-            return this.citiesResolver(object, args);
-          },
+          //   return this.citiesResolver(object, args);
+          // },
         },
         // places: {
         //   type: new GraphQLList(PlaceType),
@@ -1855,6 +1881,25 @@ export default class Response{
 
   process(){  
 
+    // let {
+    //   pub_action,
+    //   ...params 
+    // } = this.getRequestParams();
+
+    // let {
+    //   query,
+    // } = params;
+
+    // try{
+    //   query = JSON.parse(query);
+    // }
+    // catch(e){
+
+    //   console.error("Error parse query", e);
+
+    //   query = {};
+    // }
+
     let {
       pub_action,
       ...params 
@@ -1862,17 +1907,9 @@ export default class Response{
 
     let {
       query,
+      operationName,
+      variables,
     } = params;
-
-    try{
-      query = JSON.parse(query);
-    }
-    catch(e){
-
-      console.error("Error parse query", e);
-
-      query = {};
-    }
 
     // console.log('Query params', params); 
 
@@ -1908,7 +1945,14 @@ export default class Response{
           var schema = this.getSchema();
 
 
-          graphql(schema, query).then((response) => {
+          // graphql(schema, query).then((response) => {
+          graphql({
+            schema, 
+            source: query,
+            operationName,
+            variableValues: variables || undefined,
+            contextValue: this.context,
+          }).then((response) => {
 
             let {
               errors,
@@ -1928,6 +1972,27 @@ export default class Response{
             // else
             return this.success("", response && response.data || null);
           });
+
+
+
+          // graphql(schema, query)
+          //   .then(result => {
+
+              
+
+          //     if(result && !result.errors){
+
+          //       return this.success("", result);
+          //     }
+          //     else{
+          //       return this.failure(result.errors && result.errors[0] && result.errors[0].message || 'Ошибка выполнения запроса', result);
+          //     }
+
+          //   })
+          //   .catch(e => {
+              
+          //     return this.failure(e);
+          //   });
 
           return ;
           break;

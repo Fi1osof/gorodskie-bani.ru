@@ -26,6 +26,30 @@ import Informer from 'structor-templates/components/Informer';
 
 import MainMenu from './MainMenu';
 
+// import ORM from '../ORM';
+
+import RootType from '../ORM';
+import Company from '../ORM/Company';
+
+import {
+  buildSchema,
+  graphql,
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLInt,
+  GraphQLFloat,
+  GraphQLString,
+  GraphQLBoolean,
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLID,
+
+  introspectionQuery, 
+  buildClientSchema, 
+  printSchema,
+} from 'graphql';
+
+
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
@@ -53,7 +77,11 @@ export class AppMain extends Component{
     updateContactItem: PropTypes.func,
     saveContactItem: PropTypes.func,
     setPageTitle: PropTypes.func,
-    companiesStore: PropTypes.object,
+    CompaniesStore: PropTypes.object,
+    // orm: PropTypes.object,
+    schema: PropTypes.object,
+    // db: PropTypes.object,
+    query: PropTypes.func,
   };
 
   getChildContext() {
@@ -62,7 +90,10 @@ export class AppMain extends Component{
     } = this.props;
 
     let {
-      companiesStore,
+      CompaniesStore,
+      // orm,
+      schema,
+      // db,
     } = this.state;
 
     let context = {
@@ -75,7 +106,11 @@ export class AppMain extends Component{
       updateContactItem: this.updateContactItem,
       saveContactItem: this.saveContactItem,
       setPageTitle: this.setPageTitle,
-      companiesStore,
+      CompaniesStore,
+      // orm,
+      schema,
+      // db,
+      query: this.query,
     };
 
     return context;
@@ -87,9 +122,25 @@ export class AppMain extends Component{
 
     let notifications_store = new DataStore(new Dispatcher());
 
+
+    // const orm = new ORM();
+    const schema = this.getSchema();
+
+    // const db = {
+    //   // getCollection: (args, context) => this.getCollection(args, context),
+    //   // getContactsCollection: (args, context) => this.getContactsCollection(args, context),
+    //   // getPlacesCollection: (args, context) => this.getPlacesCollection(args, context),
+    //   // getServicesCollection: (args, context) => this.getServicesCollection(args, context),
+    //   // getPlaceContactsCollection: (args, context) => this.getPlaceContactsCollection(args, context),
+    //   // updateContact: (args, context) => this.updateContact(args, context),
+    // };
+
     this.state = {
       notifications_store: notifications_store,
-      companiesStore: new DataStore(new Dispatcher()),
+      CompaniesStore: new DataStore(new Dispatcher()),
+      // orm,
+      schema,
+      // db,
     }
 
     let {
@@ -104,13 +155,155 @@ export class AppMain extends Component{
     stores.notifications_store = notifications_store;
   }
 
+
+  getSchema(){
+
+    // const RootType = new GraphQLObjectType({
+    //   name: 'RootType',
+    //   description: 'Корневой раздел',
+    //   fields: {
+    //     companies: {
+    //       type: new GraphQLList(new GraphQLObjectType({
+    //         name: 'Company',
+    //         fields: {
+    //           id: {
+    //             type: GraphQLInt,
+    //           },
+    //           name: {
+    //             type: GraphQLString,
+    //           },
+    //         },
+    //       })),
+    //     },
+    //   },
+    // });
+
+    return new GraphQLSchema({
+      query: RootType
+    });
+
+  }
+
+  query = (graphQLParams) => {
+
+    const {
+      schema,
+    } = this.state;
+
+    // var schema = this._getSchema();
+
+    const {
+      query,
+      operationName,
+      variables,
+    } = graphQLParams;
+
+    // return graphql({
+    //   schema, 
+    //   source: query,
+    //   variableValues: variables || undefined,
+    //   contextValue: this.context,
+    // }).then((response) => {
+
+    //   
+    // });
+
+    // graphql({
+    //   schema, 
+    //   source: query,
+    //   variableValues: variables || undefined,
+    //   contextValue: this.context,
+    // }).then((response) => {
+
+    //   this.success("", response);
+    // });
+
+    return new Promise((resolve, reject) => {
+
+      // class user {
+
+      //   constructor(props){
+
+      //     Object.assign(this, props);
+      //   }
+
+      // }
+
+      const {
+        CompaniesStore,
+      } = this.state;
+
+      graphql({
+        schema,
+        operationName,
+        source: query,
+        rootValue: {
+          companies: CompaniesStore.getState(),
+        },
+        variableValues: variables || undefined,
+        contextValue: this.context,
+        fieldResolver: (source, args, context, info) => {
+          // console.log('fieldResolver source', source);
+          // console.log('fieldResolver args', args);
+          // console.log('fieldResolver context', context);
+          // console.log('fieldResolver info', info);
+
+          let result;
+
+          const {
+            fieldName,
+          } = info;
+
+          if(source){
+
+            if(typeof source.fieldResolver === 'function'){
+              result = source.fieldResolver(source, args, context, info);
+            }
+
+            else result = source[fieldName];
+
+          }
+          // else{
+
+          //   result = {
+          //     success: true,
+          //     object: [new user({
+          //       id: 12,
+          //       name: "DSfsdf",
+          //     })],
+          //   };
+
+          // }
+
+          console.log('fieldResolver result', result);
+
+          return result;
+          
+        }
+      }).then((result) => {
+
+        // console.log('response graphiql', response);
+
+        resolve(result);
+      })
+      .catch(e => {
+        // console.error(e);
+        reject(e);
+      });
+
+      // resolve({
+      //   data: {},
+      // });
+    });
+  }
+
   componentWillMount(){
 
     let {
-      companiesStore,
+      CompaniesStore,
     } = this.state;
 
-    companiesStore.getDispatcher().register(payload => {
+    CompaniesStore.getDispatcher().register(payload => {
 
       this.forceUpdate();
     });
@@ -197,7 +390,7 @@ export class AppMain extends Component{
   updateContactItem = (item, data) => {
 
     let {
-      companiesStore,
+      CompaniesStore,
     } = this.state;
 
     if(data.coords){
@@ -210,7 +403,7 @@ export class AppMain extends Component{
     // console.log('new updateContactItem item finded by ID', ContactsStore.getState().find(n => n.id == item.id));
 
 
-    this.updateItem(item, data, companiesStore);
+    this.updateItem(item, data, CompaniesStore);
   }
 
 
@@ -221,7 +414,7 @@ export class AppMain extends Component{
     // console.log('saveContactItem', item);
 
     let {
-      companiesStore: store,
+      CompaniesStore: store,
     } = this.state;
 
     let {
@@ -449,7 +642,7 @@ export class AppMain extends Component{
   loadCompanies(){
 
     this.apiRequest('companies', false, 'graphql', {
-      query: JSON.stringify(`query{
+      query: `query{
         companies(limit:0) {
           success
           message
@@ -470,15 +663,15 @@ export class AppMain extends Component{
             }
           }
         }
-      }`),
+      }`,
     },{
       callback: (data, errors) => {
 
         let {
-          companiesStore,
+          CompaniesStore,
         } = this.state;
 
-        console.log('companiesStore callback', data, errors);
+        console.log('CompaniesStore callback', data, errors);
 
         if(data.success && data.object){
           // this.setState({
@@ -489,7 +682,7 @@ export class AppMain extends Component{
             object,
           } = data.object.companies || {};
 
-          companiesStore.getDispatcher().dispatch(companiesStore.actions['SET_DATA'], object || []);
+          CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], object || []);
         }
       },
     });
@@ -514,7 +707,7 @@ export class AppMain extends Component{
     }
 
     this.apiRequest('company', true, 'graphql', {
-      query: JSON.stringify(`query{ 
+      query: `query{ 
         companies(
           limit: 1
           id: ${itemId}
@@ -585,12 +778,12 @@ export class AppMain extends Component{
             }
           }
         }
-      }`),
+      }`,
     },{
       callback: (data, errors) => {
 
         let {
-          companiesStore,
+          CompaniesStore,
         } = this.state;
 
         console.log('loadCompanyFullData callback', data, errors);
@@ -608,7 +801,7 @@ export class AppMain extends Component{
 
           if(dataObject){
             Object.assign(item, dataObject);
-            companiesStore.getDispatcher().dispatch(companiesStore.actions['UPDATE'], item);
+            CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
           }
 
         }
@@ -643,7 +836,7 @@ export class AppMain extends Component{
     item._mapDataLoaded = true;
 
     this.apiRequest(`company_ratings_${id}`, false, 'graphql', {
-      query: JSON.stringify(`query{ 
+      query: `query{ 
         companies(
           limit: 1
           id: ${itemId}
@@ -658,12 +851,12 @@ export class AppMain extends Component{
             }
           }
         }
-      }`),
+      }`,
     },{
       callback: (data, errors) => {
 
         let {
-          companiesStore,
+          CompaniesStore,
         } = this.state;
 
         console.log('loadCompanyMapData callback', data, errors);
@@ -681,7 +874,7 @@ export class AppMain extends Component{
 
           if(dataObject){
             Object.assign(item, dataObject);
-            companiesStore.getDispatcher().dispatch(companiesStore.actions['UPDATE'], item);
+            CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
           }
 
         }
@@ -775,7 +968,112 @@ export class AppMain extends Component{
     
     options.callback = callback;
 
-    request.call(this, connector_url, connector_path, params, options);
+    // request.call(this, connector_url, connector_path, params, options);
+    return this._request(connector_url, connector_path, params, options);
+  }
+
+  _request(connector_url, connector_path, params, options){
+
+    let defaultOptions = {
+      showErrorMessage: true,
+      callback: null,
+      method: 'POST',
+    };
+
+    options = options || {};
+
+    options = Object.assign(defaultOptions, options);
+
+    let showErrorMessage = options.showErrorMessage;
+    let callback = options.callback;
+    let method = options.method;
+
+    let {addInformerMessage} = this.props.documentActions;
+
+    // var body = new FormData();
+
+    var data = {
+    };
+
+    if(params){
+      Object.assign(data, params);
+    }
+
+    // var body = JSON.stringify(data);
+
+    // console.log('body', body);
+
+    // var body = params;
+
+    // for(var i in data){
+
+    //   var value = data[i];
+
+    //   if(value === null || value === undefined){
+    //     continue;
+    //   }
+
+    //   body.append(i, value);
+    // };
+
+    fetch(connector_url +'?pub_action=' + connector_path,{
+      credentials: 'same-origin',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: method,
+      // body: body,
+      body: JSON.stringify(data),
+    })
+    .then(function (response) {
+
+      return response.json()
+    })
+    .then(function (data) {
+
+      let errors = {};
+
+      if(data.success){
+      }
+      else{
+
+        if(data.data && data.data.length){
+
+          data.data.map(function(error){
+            if(error.msg != ''){
+              errors[error.id] = error.msg;
+            }
+          }, this);
+        }
+
+        var error = data.message || "Ошибка выполнения запроса";
+
+        showErrorMessage && 
+          addInformerMessage && addInformerMessage({
+            text: error,
+            autohide: 4000,
+          });
+      }
+
+      if(callback){
+        callback(data, errors);
+      }
+      
+      this.forceUpdate();
+
+    }.bind(this))
+    .catch((error) => {
+        console.error('Request failed', error);
+        if(callback){
+          callback(data, {});
+        }
+      }
+    );
+
+
+    this.forceUpdate();
+    return;
   }
   
 

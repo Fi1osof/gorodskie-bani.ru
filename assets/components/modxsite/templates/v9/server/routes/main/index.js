@@ -15,13 +15,13 @@ var Model = require('objection').Model;
  
 import Response from './components/response';
 
+var debug = require('debug')("server:router/main");
+
 import {
   db as db_config,
   host,
 } from '../../config/config'; 
 
-
-var debug = require('debug')("server:router/main");
 
 let {
   connection: {
@@ -187,62 +187,105 @@ module.exports = function (options) {
   // }
 
 
-  router.post('/api/', function(req, res) {
+  // router.post('/api/', function(req, res) {
 
-    // debug("Server. Request Requested");
-    // console.log("Server. Request Requested", req.query);
-    // console.log("Server. Request body", req.body);
+  //   // debug("Server. Request Requested");
+  //   // console.log("Server. Request Requested", req.query);
+  //   // console.log("Server. Request body", req.body);
 
-    var body = "";
+  //   var body = "";
 
-    let request = {};
+  //   let request = {};
 
-    req.on('data', chunk => {
-      // console.log('got data chunk', chunk);
-      body += chunk;
-    });
+  //   req.on('data', chunk => {
+  //     // console.log('got data chunk', chunk);
+  //     body += chunk;
+  //   });
 
-    req.on('end', () => {
+  //   req.on('end', () => {
     
-      // var preg = 'Content-Disposition: form-data; name="(.+?)"(.*?)------WebKitFormBoundary';
-      // var preg = 'Content-Disposition: form-data; name="(.+?)"([\s\S]+?)-------';
-      var preg = 'name="(.+?)"([\s\S]+?)------';
+  //     // var preg = 'Content-Disposition: form-data; name="(.+?)"(.*?)------WebKitFormBoundary';
+  //     // var preg = 'Content-Disposition: form-data; name="(.+?)"([\s\S]+?)-------';
+  //     var preg = 'name="(.+?)"([\s\S]+?)------';
 
-      // var match = body.match(new RegExp(preg, 'mgu'));
-      // var match = new RegExp(preg, 'gu').exec(body);
-      var match = body.match(/Content-Disposition: form-data; name="(.+?)"([\s\S]+?)------/g)
+  //     // var match = body.match(new RegExp(preg, 'mgu'));
+  //     // var match = new RegExp(preg, 'gu').exec(body);
+  //     var match = body.match(/Content-Disposition: form-data; name="(.+?)"([\s\S]+?)------/g)
 
-      if(match && match.length){
-        match.map(str => {
-          // let result = str.match(new RegExp(preg, 'mu'));
+  //     if(match && match.length){
+  //       match.map(str => {
+  //         // let result = str.match(new RegExp(preg, 'mu'));
 
-          // let result = str.match(/Content-Disposition: form-data; name="(.+?)"((\s*)(\S*)(\s*)?)------/);
-          let result = str.match(/Content-Disposition: form-data; name="(.+?)"[\s]*(.*)/);
+  //         // let result = str.match(/Content-Disposition: form-data; name="(.+?)"((\s*)(\S*)(\s*)?)------/);
+  //         let result = str.match(/Content-Disposition: form-data; name="(.+?)"[\s]*(.*)/);
 
-          // console.log('result', result);
+  //         // console.log('result', result);
 
-          if(result){
-            let {
-              1: name,
-              2: value,
-            } = result;
+  //         if(result){
+  //           let {
+  //             1: name,
+  //             2: value,
+  //           } = result;
 
-            // value = value.replace(//);
+  //           // value = value.replace(//);
 
-            request[name] = value;
-          }
-        });
-      }
+  //           request[name] = value;
+  //         }
+  //       });
+  //     }
  
 
-      let response = new Response(req, res, request, knex);
+  //     let response = new Response(req, res, request, knex);
 
-      return response.process();
-    });
+  //     return response.process();
+  //   });
 
  
+  // });
+
+  router.post('/api/', function (req, res, next) {
+
+
+    const request = Object.assign(req.query, req.body);
+
+    debug("REQUEST /new_api/ 2", request);
+
+    let response = new Response(req, res, request, knex);
+
+    return response.process();
+
+    // try {
+
+    //   if(!req.body){
+    //     res.send("Не было получено тело запроса");
+
+    //     debug("Не было получено тело запроса");
+
+    //     return;
+    //   }
+
+    //   debug("req.body", req.query.pub_action, req.request, req.get, typeof req.body, req.body, req.body.type);
+
+    //   var data = req.body;
+
+    //   switch(data.type){
+
+    //     case 'chat_message':
+    //       var message = data;
+    //       debug("message", message);
+    //       // SendMessageToAll(message);
+    //       SendMessageToUsers(message, message.object.members)
+    //       break;
+
+    //     default: return res.send("Неизвестный тип запроса");
+    //   }
+    // }
+    // catch(e){
+    //   console.error("Request /new_api/ Error", e.message, e.stack);
+    // }
+
+    // res.send("success");
   });
-
 
   router.use('/', function(req, res) {
 

@@ -11,7 +11,7 @@ const defaultProps = {}
 export default class Page extends Component{
 
 	static contextTypes = {
-		companiesStore: PropTypes.object.isRequired,
+		CompaniesStore: PropTypes.object.isRequired,
 	};
 
 	constructor(props){

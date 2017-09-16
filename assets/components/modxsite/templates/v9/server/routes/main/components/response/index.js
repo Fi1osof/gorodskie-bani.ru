@@ -50,7 +50,7 @@ import {
 
 var knex;
 
-// console.log('ObjectsListType', ObjectsListType);
+// 
 
 // var knexdb = require('knex');
 
@@ -221,7 +221,7 @@ export default class Response{
       resolver(object, args)
         .then(result => {
 
-          console.log('ObjectsResolver', result);
+          
 
           resolve(result.success && result.object || null);
         })
@@ -240,7 +240,7 @@ export default class Response{
       // resolve(результат) при успешном выполнении
       // reject(ошибка) при ошибке
 
-      // console.log('companiesResolver args', args);
+      // 
 
       let {
         id,
@@ -280,7 +280,7 @@ export default class Response{
 
         // delete(data.object);
 
-        // console.log('Response data', data);
+        // 
 
         return resolve(data);
       })
@@ -298,14 +298,14 @@ export default class Response{
       this.companiesListResolver(object, args)
         .then((result) => {
 
-          console.log('companyResolver result', result);
+          
 
           if(!result.success){
 
             return reject(result.message || "Ошибка выполнения запроса");
           }
 
-          // console.log('Response data', data);
+          // 
 
           return resolve(result.object && result.object || null);
         })
@@ -323,9 +323,9 @@ export default class Response{
       this.companiesResolver(object, args)
         .then((result) => {
 
-          console.log('companyResolver result', result);
+          
 
-          // console.log('Response data', data);
+          // 
 
           return resolve(result && result[0] || null);
         })
@@ -384,7 +384,7 @@ export default class Response{
         }
       }
 
-      // console.log('commentsListResolver args', args, params);
+      // 
 
       let request = this.SendMODXRequest(action, params); 
 
@@ -399,9 +399,9 @@ export default class Response{
 
           // delete(data.object);
 
-          // console.log('Response data', data);
+          // 
           
-          // console.log('commentsListResolver', params, data);
+          // 
 
           // return resolve(data && data.object || []);
           return resolve(data);
@@ -452,7 +452,7 @@ export default class Response{
         q.limit(limit);
       }
 
-      // console.log('.toSQL()', q.toSQL());
+      // 
 
       q.then((result) => { 
         return result;
@@ -463,7 +463,7 @@ export default class Response{
 
   RatingsResolver = (Company, args) => {
 
-    // console.log('RatingsResolver args', args);
+    // 
 
     const {
       RatingGroupbyEnumList,
@@ -588,7 +588,7 @@ export default class Response{
         // q.select('1 as quantity');
       }
 
-      // console.log('ratings .toString()', q.toString());
+      // 
 
       q.then((result) => { 
         return result;
@@ -635,7 +635,7 @@ export default class Response{
         q.limit(limit);
       }
 
-      // console.log('.toSQL()', q.toSQL());
+      // 
 
       q.orderByRaw("FIELD(cities.id, 1201, 1199, 1197) DESC");
       q.orderBy('pagetitle', 'ASC');
@@ -692,7 +692,7 @@ export default class Response{
         q.limit(limit);
       }
 
-      // console.log('.toSQL()', q.toSQL());
+      // 
 
       q.then((result) => { 
         return result;
@@ -740,7 +740,7 @@ export default class Response{
         q.where('id', id);
       }
 
-      console.log('services .toSQL()', q.toSQL());
+      
 
       q.then((result) => { 
         return result;
@@ -758,7 +758,7 @@ export default class Response{
       .select('users.*') 
       .limit('3')
       ; 
-      // console.log('.toSQL()', q.toSQL());
+      // 
 
       q.then((result) => { 
         return result;
@@ -788,7 +788,7 @@ export default class Response{
       }
       
 
-      // console.log('.toSQL()', q.toSQL());
+      // 
 
       q.then((result) => { 
         return result;
@@ -911,7 +911,7 @@ export default class Response{
                 limit: 0,
               };
 
-              console.log('RatingsResolver args', args, rating_type);
+              
 
               return this.RatingsResolver(null, args);
             },
@@ -974,7 +974,7 @@ export default class Response{
           //       limit: 0,
           //     };
 
-          //     console.log('RatingsResolver args', args, rating_type);
+          //     
 
           //     return this.RatingsResolver(null, args);
           //   },
@@ -1045,7 +1045,7 @@ export default class Response{
                 });
               }
 
-              console.log('this.companiesResolver args', args, rating);
+              
 
               return this.companiesResolver(null, args);
             },
@@ -1353,7 +1353,7 @@ export default class Response{
             },
             resolve: (company, args) => {
 
-              // console.log('CompanyType ratings resolver', company, args);
+              // 
 
               const {
                 id: company_id,
@@ -1376,7 +1376,7 @@ export default class Response{
             },
             resolve: (company, args) => {
 
-              // console.log('CompanyType ratings resolver', company, args);
+              // 
 
               const {
                 id: company_id,
@@ -1401,7 +1401,7 @@ export default class Response{
             },
             resolve: (company, args) => {
 
-              // console.log('CompanyType ratings resolver', company, args);
+              // 
 
               const {
                 id: company_id,
@@ -1425,7 +1425,7 @@ export default class Response{
             },
             resolve: (company, args) => {
 
-              // console.log('CompanyType ratings resolver', company, args);
+              // 
 
               const {
                 id: company_id,
@@ -1462,7 +1462,7 @@ export default class Response{
                 // thread: parseInt(company_id),
               });
 
-              // console.log('CompanyType commentsListResolver', args);
+              // 
 
               // return this.ObjectsResolver(this.commentsListResolver, company, args);
 
@@ -1505,7 +1505,7 @@ export default class Response{
             type: new GraphQLList(PlaceType),
             resolve: (service, args) => {
 
-              // console.log('this.ServiceType placesResolver', service, args);
+              // 
 
               const {
                 id: service_id,
@@ -1515,7 +1515,7 @@ export default class Response{
                 service_id,
               });
 
-              // console.log('this.ServiceType placesResolver 2', {}, args);
+              // 
 
               return this.placesResolver(service, args);
             },
@@ -1533,7 +1533,7 @@ export default class Response{
             // },
             resolve: (service, args) => {
 
-              // console.log('this.ServiceType companiesResolver', service, args);
+              // 
 
               const {
                 id: service_id,
@@ -1543,7 +1543,7 @@ export default class Response{
                 service_id,
               });
 
-              // console.log('this.ServiceType companiesResolver 2', {}, args);
+              // 
 
 
               return this.companiesResolver({}, args);
@@ -1602,7 +1602,7 @@ export default class Response{
         //   },
         //   resolve: (object, args) => {
 
-        //     // console.log('this.companiesResolver', object, args);
+        //     // 
 
         //     return this.commentsListResolver(object, args);
         //   },
@@ -1621,7 +1621,7 @@ export default class Response{
             },
           }, listArgs),
           resolve: (object, args, context) => {
-            // console.log('this.companiesResolver', object, args);
+            // 
 
             return this.commentsListResolver(object, args, context);
           },
@@ -1643,7 +1643,7 @@ export default class Response{
           },
           resolve: (object, args) => {
 
-            // console.log('this.companiesResolver', object, args);
+            // 
 
             return this.RatingTypesResolver(object, args);
           },
@@ -1671,7 +1671,7 @@ export default class Response{
           },
           resolve: (object, args) => {
 
-            // console.log('this.companiesResolver', object, args);
+            // 
 
             return this.RatingsResolver(object, args);
           },
@@ -1684,7 +1684,7 @@ export default class Response{
           }),
           args: listArgs,
           resolve: (object, args) => {
-            // console.log('this.companiesResolver', object, args);
+            // 
 
             return this.companiesListResolver(object, args);
           },
@@ -1699,7 +1699,7 @@ export default class Response{
             },
           },
           resolve: (object, args) => {
-            // console.log('this.companiesResolver', object, args);
+            // 
 
             return this.companyResolver(object, args);
           },
@@ -1727,7 +1727,7 @@ export default class Response{
           },
           resolve: (object, args) => {
 
-            // console.log('this.companiesResolver', object, args);
+            // 
 
             return this.citiesResolver(object, args);
           },
@@ -1755,7 +1755,7 @@ export default class Response{
         //   },
         //   resolve: (object, args) => {
 
-        //     // console.log('this.companiesResolver', object, args);
+        //     // 
 
         //     return this.placesResolver(object, args);
         //   },
@@ -1831,14 +1831,14 @@ export default class Response{
     //   query = {};
     // }
 
-    // console.log('Query params', params); 
+    // 
 
     try{
       switch(pub_action){
 
         case 'schema':
 
-          // console.log('graphql params', query);
+          // 
 
 
           var schema = this.getSchema();
@@ -1859,7 +1859,7 @@ export default class Response{
 
         case 'graphql':
 
-          // console.log('graphql params', query);
+          // 
 
 
           var schema = this.getSchema();

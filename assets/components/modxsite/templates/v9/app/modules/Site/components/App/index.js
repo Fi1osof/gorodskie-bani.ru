@@ -250,7 +250,7 @@ export class AppMain extends Component{
         variableValues: variables || undefined,
         contextValue: this.getChildContext(),
         fieldResolver: (source, args, context, info) => {
-          console.log('appMain fieldResolver', source, args, info);
+          // console.log('appMain fieldResolver', source, args, info);
           // console.log('fieldResolver source', source);
           // console.log('fieldResolver args', args);
           // console.log('fieldResolver context', context);

@@ -172,6 +172,10 @@ export class ObjectsListType extends GraphQLObjectType{
 }
 
 export const listArgs = {
+  ids: {
+    type: new GraphQLList(GraphQLInt),
+    description: 'Список ID',
+  },
   search: {
     type: GraphQLString,
     description: 'Поисковый запрос',
@@ -228,7 +232,7 @@ export class listField {
 
     // return this;
 
-    this.resolve = resolve || this.resolve;
+    this.resolve = resolve || ::this.resolve;
   }
 
   resolve(source, args, context, info){
@@ -245,6 +249,7 @@ export class listField {
       console.log('ObjectsListType fieldResolver result', result);
 
       let {
+        ids,
         offset,
         limit,
         page,
@@ -256,6 +261,10 @@ export class listField {
 
       if(offset){
         result = result.skip(offset);
+      }
+
+      if(ids && ids.length){
+        result = result.filter(n => ids.indexOf(n.id) !== -1);
       }
 
       if(limit){
@@ -285,9 +294,114 @@ export class listField {
 export class RatingsListField extends listField{
 
 
+  groupByCompany(result){
+    var result2 = List();
+
+    const result_grouped = result.groupBy(x => x.company_id);
+
+    result_grouped.map(n => {
+      const first = n.get(0);
+
+      const quantity = n.size;
+
+      let ratings = [];
+
+      n.map(i => {
+        ratings.push(i.rating);
+      });
+
+      let max_vote;
+      let min_vote;
+
+      let rating = ratings.reduce((prev, next) => prev+next) / quantity;
+
+      // console.log('result grouped rating', rating, ratings, ratings.reduce((prev, next) => prev+next), ratings.reduce((prev, next) => prev+next) / quantity);
+
+      result2 = result2.push(Object.assign(first, {
+        quantity,
+        max_vote: Math.max.apply(null, ratings),
+        min_vote: Math.min.apply(null, ratings),
+        rating: parseFloat(rating.toFixed(2)),
+      }));
+    });
+
+    // result.groupBy(x => x.company_id).map(n => {
+    //   n.map(i => {
+    //     i.quantity = n.size;
+    //     result2 = result2.push(i);
+    //   });
+
+    //   console.log('result grouped n', n);
+
+    // });
+
+    return result2;
+  }
+
+  groupByRatingType(result){
+    var result2 = List();
+
+    const result_grouped = result.groupBy(x => x.type);
+
+    result_grouped.map(n => {
+      const first = n.get(0);
+
+      const quantity = n.size;
+
+      let ratings = [];
+
+      let voted_companies = [];
+      // let voters = [];
+
+      n.map(i => {
+        const {
+          rating,
+          company_id,
+        } = i;
+
+        ratings.push(rating);
+
+        if(voted_companies.indexOf(company_id) === -1){
+          voted_companies.push(company_id);
+        }
+
+        // voters.push(i.company_id);
+      });
+
+      let max_vote;
+      let min_vote;
+
+      let rating = ratings.reduce((prev, next) => prev+next) / quantity;
+
+      // console.log('result grouped rating', rating, ratings, ratings.reduce((prev, next) => prev+next), ratings.reduce((prev, next) => prev+next) / quantity);
+
+      result2 = result2.push(Object.assign({}, first, {
+        quantity,
+        voted_companies,
+        max_vote: Math.max.apply(null, ratings),
+        min_vote: Math.min.apply(null, ratings),
+        rating: parseFloat(rating.toFixed(2)),
+      }));
+    });
+
+    // result.groupBy(x => x.company_id).map(n => {
+    //   n.map(i => {
+    //     i.quantity = n.size;
+    //     result2 = result2.push(i);
+    //   });
+
+    //   console.log('result grouped n', n);
+
+    // });
+
+    return result2;
+  }
+
   resolve(source, args, context, info){
     
     // console.log('ObjectsListType fieldResolver', source, args, context, info);
+
+    console.log('result grouped this', this);
 
     const {
       fieldName,
@@ -312,47 +426,21 @@ export class RatingsListField extends listField{
 
           // console.log('result grouped', result.groupBy(x => x.company_id));
 
-          var result2 = List();
+          result = this.groupByCompany(result);
 
-          const result_grouped = result.groupBy(x => x.company_id);
 
-          result_grouped.map(n => {
-            const first = n.get(0);
 
-            const quantity = n.size;
+          // console.log('result grouped result_grouped', result_grouped);
+          // console.log('result grouped', result);
 
-            let ratings = [];
+          break;
 
-            n.map(i => {
-              ratings.push(i.rating);
-            });
+        // case 'rating_type':
+        case 'rating_type':
 
-            let max_vote;
-            let min_vote;
+          // console.log('result grouped', result.groupBy(x => x.company_id));
 
-            let rating = ratings.reduce((prev, next) => prev+next) / quantity;
-
-            // console.log('result grouped rating', rating, ratings, ratings.reduce((prev, next) => prev+next), ratings.reduce((prev, next) => prev+next) / quantity);
-
-            result2 = result2.push(Object.assign(first, {
-              quantity,
-              max_vote: Math.max.apply(null, ratings),
-              min_vote: Math.min.apply(null, ratings),
-              rating: parseFloat(rating.toFixed(2)),
-            }));
-          });
-
-          // result.groupBy(x => x.company_id).map(n => {
-          //   n.map(i => {
-          //     i.quantity = n.size;
-          //     result2 = result2.push(i);
-          //   });
-
-          //   console.log('result grouped n', n);
-
-          // });
-
-          result = result2;
+          result = this.groupByRatingType(result);
 
 
 
@@ -435,44 +523,44 @@ const RatingsList = new RatingsListField({
   args: RatingArgs,
 });
 
-console.log('RatingsList', RatingsList);
+// console.log('RatingsList', RatingsList);
 
 const RootType = new GraphQLObjectType({
   name: 'RootType',
   description: 'Корневой раздел',
   fields: {
-    // companies: listField({
-    //   type: CompanyType,
-    //   name: "Companies",
-    //   description: "Список компаний",
-    // }),
-    // company: {
-    //   type: CompanyType,
-    //   description: "Компания",
-    //   args: {
-    //     id: {
-    //       type: new GraphQLNonNull(GraphQLInt),
-    //     },
-    //   },
-    //   resolve: getCompany,
-    // },
+    companies: new listField({
+      type: CompanyType,
+      name: "Companies",
+      description: "Список компаний",
+    }),
+    company: {
+      type: CompanyType,
+      description: "Компания",
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLInt),
+        },
+      },
+      resolve: getCompany,
+    },
     ratings: RatingsList,
-    // vote: {
-    //   type: RatingType,
-    //   description: "Рейтинг",
-    //   resolve: getRating,
-    // },
-    // comments: listField({
-    //   type: CommentType,
-    //   name: "Comments",
-    //   description: "Список комментариев",
-    //   args: {
-    //     thread: {
-    //       type: GraphQLInt,
-    //       description: 'ID диалоговой ветки',
-    //     },
-    //   },
-    // }),
+    vote: {
+      type: RatingType,
+      description: "Рейтинг",
+      resolve: getRating,
+    },
+    comments: new listField({
+      type: CommentType,
+      name: "Comments",
+      description: "Список комментариев",
+      args: {
+        thread: {
+          type: GraphQLInt,
+          description: 'ID диалоговой ветки',
+        },
+      },
+    }),
     // // ratings: {
     // //   type: new GraphQLList(RatingType),
     // //   name: "RatingsList",

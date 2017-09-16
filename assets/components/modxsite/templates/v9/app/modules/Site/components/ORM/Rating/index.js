@@ -13,6 +13,12 @@ import ModelObject from '../object';
 
 import { List } from 'immutable';
 
+import {
+  CompanyType,
+  getMany as getCompanies,
+} from '../Company';
+
+
 // console.log('List', List);
 
 // import {
@@ -54,8 +60,8 @@ export const RatingArgs = {
 };
 
 export const getMany = function (source, args, context, info){
-  console.log('Ratings getMany', source, args, info);
-  console.log('Ratings getMany context', context);
+  // console.log('Ratings getMany', source, args, info);
+  // console.log('Ratings getMany context', context);
   
   const {
     id,
@@ -76,7 +82,7 @@ export const getMany = function (source, args, context, info){
     } = context;
 
     remoteQuery(`query{
-        ratings(limit: 3) {
+        ratings(limit: 0) {
           rating
           max_vote
           min_vote
@@ -149,37 +155,85 @@ export const RatingType = new GraphQLObjectType({
         type: GraphQLString,
         description: 'Проголосовавшие люди',
       },
-      // companies: {
-      //   type: new GraphQLList(CompanyType),
-      //   resolve: (rating) => {
+      companies: {
+        type: new GraphQLList(CompanyType),
+        resolve: (rating, args, context, info) => {
 
-      //     const {
-      //       company_id,
-      //       voted_companies,
-      //     } = rating;
+          return new Promise((resolve, reject) => {
 
-      //     if(!voted_companies && !company_id){
-      //       return [];
-      //     }
 
-      //     let args = {};
+            const {
+              query,
+            } = context;
 
-      //     if(voted_companies){
-      //       Object.assign(args, {
-      //         voted_companies,
-      //       });
-      //     }
-      //     else{
-      //       Object.assign(args, {
-      //         id: company_id,
-      //       });
-      //     }
+            const {
+              company_id,
+              voted_companies,
+            } = rating;
 
-      //     console.log('this.companiesResolver args', args, rating);
+            if(!voted_companies && !company_id){
+              return null;
+            }
 
-      //     return this.companiesResolver(null, args);
-      //   },
-      // },
+            let ids;
+
+            if(voted_companies){
+              ids = voted_companies;
+            }
+            else{
+              ids = company_id;
+            }
+
+
+            // Object.assign(args, {
+            //   ids,
+            // });
+
+            // console.log('this.companiesResolver args', args, ids);
+
+            // return this.companiesResolver(null, args);
+
+
+
+            const q = `query{
+              companies(
+                limit: 0
+                ids: [ ${ids} ]
+              ) {
+                object {
+                  id
+                  name
+                  longtitle
+                  description
+                  content
+                  alias
+                  uri
+                  city_id
+                  city
+                  city_uri
+                }
+              }
+            }`;
+
+            console.log('query', q);
+
+            query({
+              query: q,
+            })
+              .then(result => {
+
+                const {
+                  companies,
+                } = result.data || {};
+
+                console.log('companiesResolver', q, result);
+                resolve(companies && companies.object || null);
+              })
+              .catch(e => reject(e));
+          });
+
+        },
+      },
       // rating_type: {
       //   type: new GraphQLList(RatingTypesType),
       //   resolve: (rating) => {

@@ -20,8 +20,8 @@ import {
 } from '../Comment';
 
 
-// console.log('Comment', Comment);
-// console.log('SchemaObject', SchemaObject);
+// 
+// 
 
 // import {getQuery as getServiceQuery} from '../Service';
 
@@ -76,7 +76,7 @@ import {
 
 
 export const getMany = function (source, args, context, info){
-  console.log('Company field resolve', source, args, context, info);
+  // 
 
   const {
     CompaniesStore,
@@ -101,7 +101,7 @@ export const getOne = function (source, args, context, info){
   return new Promise((resolve, reject) => {
     getMany(source, args, context, info)
       .then(result => {
-        console.log('result 444', result, result.get(0));
+        
         resolve(result && result.get(0) || null);
       })
   });
@@ -111,7 +111,7 @@ export const getOne = function (source, args, context, info){
 
 // export const updateQuery = function(knex, args, context){
 
-//   console.log('updateQuery(knex, args, context)', knex, args, context);
+//   
 
 //   const {
 //     db,
@@ -142,7 +142,7 @@ export const getOne = function (source, args, context, info){
 //     });    
 //   }
 
-//   console.log('updateQuery toSQL', q.toString());
+//   
 
 //   return q;
 // }
@@ -324,7 +324,7 @@ export const CompanyType = new GraphQLObjectType({
       //   },
       //   resolve: (company, args) => {
 
-      //     // console.log('CompanyType ratings resolver', company, args);
+      //     // 
 
       //     const {
       //       id: company_id,
@@ -347,7 +347,7 @@ export const CompanyType = new GraphQLObjectType({
       //   },
       //   resolve: (company, args) => {
 
-      //     // console.log('CompanyType ratings resolver', company, args);
+      //     // 
 
       //     const {
       //       id: company_id,
@@ -372,7 +372,7 @@ export const CompanyType = new GraphQLObjectType({
       //   },
       //   resolve: (company, args) => {
 
-      //     // console.log('CompanyType ratings resolver', company, args);
+      //     // 
 
       //     const {
       //       id: company_id,
@@ -396,7 +396,7 @@ export const CompanyType = new GraphQLObjectType({
       //   },
       //   resolve: (company, args) => {
 
-      //     // console.log('CompanyType ratings resolver', company, args);
+      //     // 
 
       //     const {
       //       id: company_id,
@@ -432,7 +432,7 @@ export const CompanyType = new GraphQLObjectType({
         //     // thread: parseInt(company_id),
         //   });
 
-        //   console.log('CompanyType commentsListResolver', args);
+        //   
 
         //   // return this.ObjectsResolver(this.commentsListResolver, company, args);
 
@@ -447,8 +447,8 @@ export const CompanyType = new GraphQLObjectType({
 export default class Company extends ModelObject{
 
   fieldResolver(source, args, context, info){
-    console.log('Company fieldResolver', source, args, info);
-    console.log('Company fieldResolver context', context);
+    // 
+    // 
     
     const {
       id,
@@ -501,7 +501,7 @@ export default class Company extends ModelObject{
           }`)
             .then(result => {
 
-              // console.log('result.object', result);
+              // 
 
               const {
                 comments,

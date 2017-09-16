@@ -78,10 +78,12 @@ export class AppMain extends Component{
     saveContactItem: PropTypes.func,
     setPageTitle: PropTypes.func,
     CompaniesStore: PropTypes.object,
+    // CompaniesStore: PropTypes.object,
     // orm: PropTypes.object,
     schema: PropTypes.object,
     // db: PropTypes.object,
     query: PropTypes.func,
+    remoteQuery: PropTypes.func,
   };
 
   getChildContext() {
@@ -111,6 +113,7 @@ export class AppMain extends Component{
       schema,
       // db,
       query: this.query,
+      remoteQuery: this.remoteQuery,
     };
 
     return context;
@@ -239,10 +242,10 @@ export class AppMain extends Component{
         source: query,
         rootValue: {
           companies: CompaniesStore.getState(),
-          comments: CompaniesStore.getState(),
+          // comments: CompaniesStore.getState(),
         },
         variableValues: variables || undefined,
-        contextValue: this.context,
+        contextValue: this.getChildContext(),
         fieldResolver: (source, args, context, info) => {
           // console.log('fieldResolver source', source);
           // console.log('fieldResolver args', args);
@@ -296,6 +299,48 @@ export class AppMain extends Component{
       //   data: {},
       // });
     });
+  }
+
+
+
+  remoteQuery = (query) => {
+
+    return new Promise((resolve, reject) => {
+
+      this.apiRequest(null, true, 'graphql', {
+        query: query,
+      },{
+        callback: (data, errors) => {
+
+          // let {
+          //   CompaniesStore,
+          // } = this.state;
+
+          console.log('remoteQuery callback', data, errors);
+
+          if(data.success){
+            // this.setState({
+            //   resourcesMap: data.object,
+            // });
+
+            // const {
+            //   object,
+            // } = data.object.companies || {};
+
+            // let companies = object && object.map(n => new Company(n)) || [];
+
+            // CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+
+            return resolve(data);
+          }
+          else{
+            return reject(data);
+          }
+        },
+      });
+
+    });
+
   }
 
   componentWillMount(){
@@ -681,7 +726,9 @@ export class AppMain extends Component{
             object,
           } = data.object.companies || {};
 
-          CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], object || []);
+          let companies = object && object.map(n => new Company(n)) || [];
+
+          CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
         }
       },
     });

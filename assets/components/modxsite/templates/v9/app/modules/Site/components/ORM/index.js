@@ -1,4 +1,5 @@
 import {
+  GraphQLInputObjectType,
   GraphQLObjectType,
   GraphQLList,
   GraphQLNonNull,
@@ -10,12 +11,42 @@ import {
 
 // import type from 'graphql';
 
-import {
-  GraphQLField,
-} from 'graphql/type/';
+// import {
+//   GraphQLField,
+// } from 'graphql/type/';
 
-console.log('GraphQLField', GraphQLField);
+// console.log('GraphQLField', GraphQLField);
 // console.log('GraphQLField type', type);
+
+// export class ModelObject{
+
+//   constructor(props){
+
+//     Object.assign(this, props);
+
+//   }
+
+//   fieldResolver(source, args, context, info) {
+    
+//     const {
+//       fieldName,
+//     } = info;
+          
+//     return source && source[fieldName] || undefined;
+
+//   }
+
+// }
+
+import {
+  CompanyType,
+  getMany as getCompanies,
+  getOne as getCompany,
+} from './Company';
+
+import {
+  CommentType,
+} from './Comment';
 
 export const order = {
   type: new GraphQLEnumType({
@@ -34,38 +65,46 @@ export const order = {
   description: 'Порядок сортировки',
 };
 
+export const SortBy = new GraphQLInputObjectType({
+  name: "SortBy",
+  fields: {
+    by: {
+      type: new GraphQLEnumType({
+        name: 'SortByValues',
+        values: {
+          id: {
+            value: 'id',
+            description: 'По ID',
+          },
+          rand: {
+            value: 'rand()',
+            description: 'В случайном порядке',
+          },
+        },
+      }),
+      description: 'Способ сортировки',
+    },
+    dir: order,
+  },
+});
 
-export class SchemaObject extends GraphQLObjectType{
-
-  constructor(props){
-
-    props = Object.assign({
-    }, props);
-
-    super(Props);
-  }
-}
+export const SortField = {
+  type: new GraphQLList(SortBy),
+};
 
 
-export class ModelObject{
+// export class SchemaObject extends GraphQLObjectType{
 
-  constructor(props){
+//   constructor(props){
 
-    Object.assign(this, props);
+//     props = Object.assign({
+//     }, props);
 
-  }
+//     super(Props);
+//   }
+// }
 
-  fieldResolver(source, args, context, info) {
-    
-    const {
-      fieldName,
-    } = info;
-          
-    return source && source[fieldName] || undefined;
 
-  }
-
-}
 
 export class ObjectsListType extends GraphQLObjectType{
 
@@ -123,10 +162,11 @@ export class ObjectsListType extends GraphQLObjectType{
 }
 
 export const listArgs = {
-  offset: {
-    type: GraphQLInt,
-    description: 'Сколько записей пропустить',
+  search: {
+    type: GraphQLString,
+    description: 'Поисковый запрос',
   },
+  sort: SortField,
   limit: {
     type: new GraphQLNonNull(GraphQLInt),
     description: 'Лимит записей',
@@ -135,26 +175,29 @@ export const listArgs = {
     type: GraphQLInt,
     description: 'Страница',
   },
-  search: {
-    type: GraphQLString,
-    description: 'Поисковый запрос',
+  offset: {
+    type: GraphQLInt,
+    description: 'Сколько записей пропустить',
   },
 };
 
 
 const listField = function (props) {
 
-  const {
+  let {
     description,
+    args,
     ...other
   } = props;
+
+  args = Object.assign(listArgs, args || {});
 
   return {
     type: new ObjectsListType({
       ...other,
     }),
     description,
-    args: listArgs,
+    args,
     resolve: (source, args, context, info) => {
       
       console.log('ObjectsListType fieldResolver', source, args, context, info);
@@ -208,29 +251,29 @@ const listField = function (props) {
 }
 
 
-const CompanyType = new GraphQLObjectType({
-  name: 'Company',
-  fields: {
-    id: {
-      type: GraphQLInt,
-    },
-    name: {
-      type: GraphQLString,
-    },
-  },
-});
+// const CompanyType = new GraphQLObjectType({
+//   name: 'Company',
+//   fields: {
+//     id: {
+//       type: GraphQLInt,
+//     },
+//     name: {
+//       type: GraphQLString,
+//     },
+//   },
+// });
 
-const CommentType = new GraphQLObjectType({
-  name: 'Comment',
-  fields: {
-    id: {
-      type: GraphQLInt,
-    },
-    name: {
-      type: GraphQLString,
-    },
-  },
-});
+// const CommentType = new GraphQLObjectType({
+//   name: 'Comment',
+//   fields: {
+//     id: {
+//       type: GraphQLInt,
+//     },
+//     name: {
+//       type: GraphQLString,
+//     },
+//   },
+// });
 
 
 const RootType = new GraphQLObjectType({
@@ -242,10 +285,26 @@ const RootType = new GraphQLObjectType({
       name: "Companies",
       description: "Список компаний",
     }),
+    company: {
+      type: CompanyType,
+      description: "Компания",
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLInt),
+        },
+      },
+      resolve: getCompany,
+    },
     comments: listField({
       type: CommentType,
       name: "Comments",
       description: "Список комментариев",
+      args: {
+        thread: {
+          type: GraphQLInt,
+          description: 'ID диалоговой ветки',
+        },
+      },
     }),
   },
 });

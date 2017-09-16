@@ -300,7 +300,6 @@ export default class Response{
       // resolve(результат) при успешном выполнении
       // reject(ошибка) при ошибке
 
-      // console.log('companiesResolver args', args);
 
       let {
         id,
@@ -308,9 +307,14 @@ export default class Response{
         limit,
         start,
         count,
-        sort,
-        order: dir,
+        sort: sortParams,
+        // order: dir,
       } = args || {};
+
+      const {
+        by: sort,
+        dir,
+      } = sortParams && sortParams[0] || {};
 
       limit = limit || 0;
 
@@ -322,15 +326,19 @@ export default class Response{
         limit,
         start,
         count,
+        // sort,
+        // dir,
       };
 
       if(sort){
         params.sort = sort;
+
+        if(dir){
+          params.dir = dir;
+        }
       }
 
-      if(dir){
-        params.dir = dir;
-      }
+      // console.log('commentsListResolver args', args, params);
 
       let request = this.SendMODXRequest(action, params); 
 
@@ -349,9 +357,10 @@ export default class Response{
 
         // console.log('Response data', data);
         
-        console.log('commentsListResolver', params, data);
+        // console.log('commentsListResolver', params, data);
 
-        return resolve(data && data.object || []);
+        // return resolve(data && data.object || []);
+        return resolve(data);
       })
       .catch((e) => {
         return reject(e);
@@ -873,20 +882,20 @@ export default class Response{
       },
     };
 
-    const SortType = new GraphQLEnumType({
-      name: "SortType",
-      description: 'Сортировка',
-      values: {
-        asc: {
-          value: 'asc',
-          description: 'В прямом порядке',
-        },
-        desc: {
-          value: 'desc',
-          description: 'В обратном порядке',
-        },
-      },
-    });
+    // const SortType = new GraphQLEnumType({
+    //   name: "__SortType",
+    //   description: 'Сортировка',
+    //   values: {
+    //     asc: {
+    //       value: 'asc',
+    //       description: 'В прямом порядке',
+    //     },
+    //     desc: {
+    //       value: 'desc',
+    //       description: 'В обратном порядке',
+    //     },
+    //   },
+    // });
 
     RatingTypesType = new GraphQLObjectType({
       name: 'RatingTypesType',
@@ -948,6 +957,12 @@ export default class Response{
             type: GraphQLString
           },
           parent: {
+            type: GraphQLInt
+          },
+          published: {
+            type: GraphQLInt
+          },
+          deleted: {
             type: GraphQLInt
           },
           createdon: {
@@ -1438,12 +1453,12 @@ export default class Response{
           comments: {
             type: new GraphQLList(CommentType),
             description: CommentType.description,
-            args: {
-              order: {
-                type: SortType,
-                description: SortType.description,
-              },
-            },
+            // args: {
+            //   order: {
+            //     type: SortType,
+            //     description: SortType.description,
+            //   },
+            // },
             resolve: (company, args) => {
 
 
@@ -1458,40 +1473,28 @@ export default class Response{
                 // thread: parseInt(company_id),
               });
 
-              console.log('CompanyType commentsListResolver', args);
+              // console.log('CompanyType commentsListResolver', args);
 
               // return this.ObjectsResolver(this.commentsListResolver, company, args);
 
-              return this.commentsListResolver(company, args);
+              return new Promise((resolve, reject) => {
+
+                this.commentsListResolver(company, args)
+                  .then(result => {
+                    // resolve(result && result);
+                    if(result.success){
+                      return resolve(result.object || []);
+                    }
+                    else{
+                      return reject(result.message || 'Ошибка выполнения запроса');
+                    }
+                  })
+                  .catch(e => reject(e));
+              });
+
+              // return this.commentsListResolver(company, args);
             },
           },
-          // places: {
-          //   type: new GraphQLList(PlaceType),
-          //   resolve: (Company) => {
-
-          //     const {
-          //       id: Company_id,
-          //     } = Company;
-
-          //     return this.placesResolver(null, {
-          //       Company_id,
-          //     });
-          //   },
-          // },
-          // services: {
-          //   type: new GraphQLList(ServiceType),
-          //   resolve: (Company, args) => {
-
-          //     const {
-          //       id: Company_id,
-          //     } = Company;
-
-          //     return this.servicesResolver(null, {
-          //       Company_id,
-          //       limit: 0,
-          //     });
-          //   },
-          // },
         }
       }
     });
@@ -1603,33 +1606,39 @@ export default class Response{
     const RootType = new GraphQLObjectType({
       name: 'RootType',
       fields: {
+        // comments: {
+        //   type: new GraphQLList(CommentType),
+        //   description: CommentType.description,
+        //   args: {
+        //   },
+        //   resolve: (object, args) => {
+
+        //     // console.log('this.companiesResolver', object, args);
+
+        //     return this.commentsListResolver(object, args);
+        //   },
+        // },
+
         comments: {
-          type: new GraphQLList(CommentType),
-          description: CommentType.description,
-          args: {
-            id: {
-              type: GraphQLID
-              // type: new GraphQLNonNull(GraphQLID)
-            },
+          type: new ObjectsListType({
+            name: "CommentsList",
+            type: CommentType,
+            description: 'Список комментариев',
+          }),
+          args: Object.assign({
             thread: {
               type: GraphQLID,
               description: 'ID диалоговой ветки',
             },
-            limit: {
-              type: new GraphQLNonNull(GraphQLInt)
-            },
-            order: {
-              type: SortType,
-              description: SortType.description,
-            },
-          },
-          resolve: (object, args) => {
-
+          }, listArgs),
+          resolve: (object, args, context) => {
             // console.log('this.companiesResolver', object, args);
 
-            return this.commentsListResolver(object, args);
+            return this.commentsListResolver(object, args, context);
           },
         },
+
+
         rating_types: {
           type: new GraphQLList(RatingTypesType),
           description: RatingTypesType.description,
@@ -1678,91 +1687,11 @@ export default class Response{
             return this.RatingsResolver(object, args);
           },
         },
-        // companies: {
-        //   type: new GraphQLList(CompanyType),
-        //   args: {
-        //     id: {
-        //       type: GraphQLID
-        //       // type: new GraphQLNonNull(GraphQLID)
-        //     },
-        //     limit: {
-        //       type: new GraphQLNonNull(GraphQLInt)
-        //       // type: GraphQLInt
-        //     },
-        //     service_id: {
-        //       type: GraphQLInt
-        //     },
-        //     place_id: {
-        //       type: GraphQLInt
-        //     },
-        //   },
-        //   resolve: (object, args) => {
-
-        //     // console.log('this.companiesResolver', object, args);
-
-        //     return this.companiesResolver(object, args);
-        //   },
-        // },
         companies: {
-          // type: new GraphQLObjectType({
-          //   name: "CompaniesList",
-          //   fields: {
-          //     success: {
-          //       type: GraphQLBoolean,
-          //     },
-          //     message: {
-          //       type: GraphQLString,
-          //     },
-          //     total: {
-          //       type: GraphQLInt,
-          //     },
-          //     limit: {
-          //       type: GraphQLInt,
-          //     },
-          //     page: {
-          //       type: GraphQLInt,
-          //     },
-          //     object: {
-          //       type: new GraphQLList(CompanyType),
-          //       resolve: (response, args) => {
-
-          //         // console.log('this.CompanyType Resolver', response, args);
-
-          //         return response && response.success && response.object || [];
-          //       },
-          //     },
-          //   },
-          // }),
           type: new ObjectsListType({
             name: "CompaniesList",
             type: CompanyType,
             description: 'Список компаний',
-            // fields: {
-            //   // success: {
-            //   //   type: GraphQLBoolean,
-            //   // },
-            //   // message: {
-            //   //   type: GraphQLString,
-            //   // },
-            //   // total: {
-            //   //   type: GraphQLInt,
-            //   // },
-            //   // limit: {
-            //   //   type: GraphQLInt,
-            //   // },
-            //   // page: {
-            //   //   type: GraphQLInt,
-            //   // },
-            //   // object: {
-            //   //   type: new GraphQLList(CompanyType),
-            //   //   resolve: (response, args) => {
-
-            //   //     // console.log('this.CompanyType Resolver', response, args);
-
-            //   //     return response && response.success && response.object || [];
-            //   //   },
-            //   // },
-            // },
           }),
           args: listArgs,
           resolve: (object, args) => {

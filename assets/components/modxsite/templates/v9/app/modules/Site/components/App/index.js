@@ -754,74 +754,71 @@ export class AppMain extends Component{
 
     this.apiRequest('company', true, 'graphql', {
       query: `query{ 
-        companies(
-          limit: 1
+        company(
           id: ${itemId}
         ) {
-          object{
-            id
-            name
-            longtitle
-            description
-            content
-            alias
-            uri
-            city
-            coords {
-              lat
-              lng
-            }
+          id
+          name
+          longtitle
+          description
+          content
+          alias
+          uri
+          city
+          coords {
+            lat
+            lng
+          }
+          image {
+            thumb
+            small
+            big
+            marker_thumb
+          }
+          gallery {
             image {
               thumb
               small
+              middle
               big
-              marker_thumb
             }
-            gallery {
-              image {
-                thumb
-                small
-                middle
-                big
-              }
-            }
-            tvs {
-              address
-              site
-              facility_type
-              phones
-              work_time
-              prices
-              metro
-            }
-            ratingAvg{
-              rating
-              max_vote
-              min_vote
-              quantity
-              quantity_voters
-            }
-            ratingsByType {
-              rating
-              max_vote
-              min_vote
-              type
-              quantity
-              quantity_voters
-            }
-            votes {
-              rating
-              type
-            }
-            comments(order:asc){
-              id
-              text
-              parent
-              author_username
-              author_fullname
-              author_avatar
-              createdon
-            }
+          }
+          tvs {
+            address
+            site
+            facility_type
+            phones
+            work_time
+            prices
+            metro
+          }
+          ratingAvg{
+            rating
+            max_vote
+            min_vote
+            quantity
+            quantity_voters
+          }
+          ratingsByType {
+            rating
+            max_vote
+            min_vote
+            type
+            quantity
+            quantity_voters
+          }
+          votes {
+            rating
+            type
+          }
+          comments(limit:0 sort:{by: id, dir:asc}){
+            id
+            text
+            parent
+            author_username
+            author_fullname
+            author_avatar
+            createdon
           }
         }
       }`,
@@ -840,13 +837,11 @@ export class AppMain extends Component{
           // });
 
           const {
-            object,
-          } = data.object.companies || {};
+            company,
+          } = data.object;
 
-          const dataObject = object && object.find(n => n.id == itemId) || undefined;
-
-          if(dataObject){
-            Object.assign(item, dataObject);
+          if(company){
+            Object.assign(item, company);
             CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
           }
 
@@ -877,24 +872,21 @@ export class AppMain extends Component{
       return;
     }
 
-    console.log('loadCompanyMapData item', item);
+    // console.log('loadCompanyMapData item', item);
 
     item._mapDataLoaded = true;
 
     this.apiRequest(`company_ratings_${id}`, false, 'graphql', {
       query: `query{ 
-        companies(
-          limit: 1
+        company(
           id: ${itemId}
         ) {
-          object {
-            id
-            ratingAvg {
-              rating
-              max_vote
-              min_vote
-              quantity
-            }
+          id
+          ratingAvg {
+            rating
+            max_vote
+            min_vote
+            quantity
           }
         }
       }`,
@@ -913,13 +905,11 @@ export class AppMain extends Component{
           // });
 
           const {
-            object,
-          } = data.object.companies || {};
+            company,
+          } = data.object || {};
 
-          const dataObject = object && object.find(n => n.id == itemId) || undefined;
-
-          if(dataObject){
-            Object.assign(item, dataObject);
+          if(company){
+            Object.assign(item, company);
             CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
           }
 

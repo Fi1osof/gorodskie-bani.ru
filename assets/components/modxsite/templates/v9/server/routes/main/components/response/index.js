@@ -199,7 +199,10 @@ export default class Response{
     debug("options", options);
 
 
-    return fetch('http://gorodskie-bani.local' + url, options);
+    return fetch('http://gorodskie-bani.local' + url, options)
+      .then(function(res) {
+        return res.json();
+      });
   }
 
   ObjectResolver = (resolver, object, args) => {
@@ -267,9 +270,7 @@ export default class Response{
       let request = this.SendMODXRequest(action, params); 
 
 
-      request.then(function(res) {
-        return res.json();
-      })
+      request
       .then((data) => {
 
         if(!data.success){
@@ -286,6 +287,51 @@ export default class Response{
       .catch((e) => {
         return reject(e);
       })
+      ;
+    });
+  }
+
+  companiesResolver = (object, args) => {
+
+    return new Promise((resolve, reject) => {
+
+      this.companiesListResolver(object, args)
+        .then((result) => {
+
+          console.log('companyResolver result', result);
+
+          if(!result.success){
+
+            return reject(result.message || "Ошибка выполнения запроса");
+          }
+
+          // console.log('Response data', data);
+
+          return resolve(result.object && result.object || null);
+        })
+        .catch((e) => {
+          return reject(e);
+        })
+      ;
+    });
+  }
+
+  companyResolver = (object, args) => {
+
+    return new Promise((resolve, reject) => {
+
+      this.companiesResolver(object, args)
+        .then((result) => {
+
+          console.log('companyResolver result', result);
+
+          // console.log('Response data', data);
+
+          return resolve(result && result[0] || null);
+        })
+        .catch((e) => {
+          return reject(e);
+        })
       ;
     });
   }
@@ -343,84 +389,26 @@ export default class Response{
       let request = this.SendMODXRequest(action, params); 
 
 
-      request.then(function(res) {
-        return res.json();
-      })
-      .then((data) => {
+      request
+        .then((data) => {
 
-        if(!data.success){
+          if(!data.success){
 
-          return reject(data.message || "Ошибка выполнения запроса");
-        }
+            return reject(data.message || "Ошибка выполнения запроса");
+          }
 
-        // delete(data.object);
+          // delete(data.object);
 
-        // console.log('Response data', data);
-        
-        // console.log('commentsListResolver', params, data);
+          // console.log('Response data', data);
+          
+          // console.log('commentsListResolver', params, data);
 
-        // return resolve(data && data.object || []);
-        return resolve(data);
-      })
-      .catch((e) => {
-        return reject(e);
-      })
-      ;
-    });
-  }
-
-  companiesResolver = (object, args) => {
-
-    return new Promise((resolve, reject) => {
-      // Эта функция будет вызвана автоматически
-
-      // В ней можно делать любые асинхронные операции,
-      // А когда они завершатся — нужно вызвать одно из:
-      // resolve(результат) при успешном выполнении
-      // reject(ошибка) при ошибке
-
-      // console.log('companiesResolver args', args);
-
-      let {
-        id,
-        limit,
-        start,
-        voted_companies,
-      } = args || {};
-
-      limit = limit || 0;
-
-      let action = 'companies/getdata';
-
-      let params = {
-        // with_coors_only: false,       // Только с координатами
-        company_id: id,
-        limit,
-        start,
-        companies: voted_companies,
-        search,
-      };
-
-      let request = this.SendMODXRequest(action, params); 
-
-
-      request.then(function(res) {
-        return res.json();
-      })
-      .then((data) => {
-
-        if(!data.success){
-
-          return reject(data.message || "Ошибка выполнения запроса");
-        }
-
-        // console.log('Response data', data);
-
-        return resolve(data.object || []);
-      })
-      .catch((e) => {
-        return reject(e);
-      })
+          // return resolve(data && data.object || []);
+          return resolve(data);
+        })
+        .catch((e) => {
+          return reject(e);
+        })
       ;
     });
   }
@@ -1459,6 +1447,7 @@ export default class Response{
             //     description: SortType.description,
             //   },
             // },
+            args: listArgs,
             resolve: (company, args) => {
 
 
@@ -1698,6 +1687,21 @@ export default class Response{
             // console.log('this.companiesResolver', object, args);
 
             return this.companiesListResolver(object, args);
+          },
+        },
+        company: {
+          type: CompanyType,
+          name: "CompaniesList",
+          description: CompanyType.description,
+          args: {
+            id: {
+              type: new GraphQLNonNull(GraphQLInt),
+            },
+          },
+          resolve: (object, args) => {
+            // console.log('this.companiesResolver', object, args);
+
+            return this.companyResolver(object, args);
           },
         },
         cities: {

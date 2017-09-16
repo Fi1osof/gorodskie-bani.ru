@@ -45,6 +45,12 @@ import {
 } from './Company';
 
 import {
+  RatingType,
+  getMany as getRatings,
+  getOne as getRating,
+} from './Rating';
+
+import {
   CommentType,
 } from './Comment';
 
@@ -294,6 +300,18 @@ const RootType = new GraphQLObjectType({
         },
       },
       resolve: getCompany,
+    },
+    ratings: {
+      type: new GraphQLList(RatingType),
+      name: "RatingsList",
+      description: RatingType.description,
+      args: listArgs,
+      resolve: getRatings,
+    },
+    vote: {
+      type: RatingType,
+      description: "Рейтинг",
+      resolve: getRating,
     },
     comments: listField({
       type: CommentType,

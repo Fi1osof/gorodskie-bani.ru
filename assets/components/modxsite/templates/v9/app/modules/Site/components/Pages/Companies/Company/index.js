@@ -234,28 +234,6 @@ export default class CompanyPage extends Component{
 				/>}
 			/>
 
-
-				
-			{comments && comments.length
-				?
-				<CardContent>
-					
-					<Paper
-						style={{
-							padding: 15,
-						}}
-					>
-
-						<Comments 
-							comments={comments}
-						/>
-
-					</Paper>
-
-				</CardContent>
-				:
-				null
-			}
 				
 			<CardContent>
 				
@@ -445,6 +423,30 @@ export default class CompanyPage extends Component{
 				:
 				null
 			}
+
+			
+				
+			{comments && comments.length
+				?
+				<CardContent>
+					
+					<Paper
+						style={{
+							padding: 15,
+						}}
+					>
+
+						<Comments 
+							comments={comments}
+						/>
+
+					</Paper>
+
+				</CardContent>
+				:
+				null
+			}
+
 
 		</Card>
 	}

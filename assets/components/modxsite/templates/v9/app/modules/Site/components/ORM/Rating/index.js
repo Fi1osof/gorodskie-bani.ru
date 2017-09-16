@@ -1,4 +1,5 @@
 import {
+  GraphQLID,
   GraphQLInt,
   GraphQLString,
   GraphQLList,
@@ -18,6 +19,39 @@ import { List } from 'immutable';
 //   CommentType,
 // } from '../Comment';
 
+const RatingGroupbyEnumList = {
+  name : 'RatingGroupbyEnum',
+  description : 'Способ группировки рейтингов',
+  values : {
+    company: {
+      value: 'company',
+      description : 'Сгруппировать по компаниям (общий рейтинг)'
+    },
+    rating_type: {
+      value: 'rating_type',
+      description : 'Сгруппировать по типам рейтингов (по каким рейтингам сколько голосов всего и по количеству компаний)'
+    },
+    company_and_rating_type: {
+      value: 'company_and_rating_type',
+      description : 'Сгруппировать по компаниям и типам рейтингов (средний балл на каждую компанию по типу рейтинга)'
+    },
+    // rating_type_and_company: {
+    //   value: 'rating_type_and_company',
+    //   description : 'Сгруппировать по компаниям и типам рейтингов в них'
+    // },
+  }
+};
+
+const RatingGroupbyEnum = new GraphQLEnumType(RatingGroupbyEnumList);
+
+export const RatingArgs = {
+  type: {
+    type: GraphQLID,
+  },
+  groupBy: {
+    type : RatingGroupbyEnum,
+  },
+};
 
 export const getMany = function (source, args, context, info){
   console.log('Ratings getMany', source, args, info);

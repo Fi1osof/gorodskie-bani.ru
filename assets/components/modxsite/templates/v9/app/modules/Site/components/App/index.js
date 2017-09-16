@@ -141,6 +141,7 @@ export class AppMain extends Component{
     this.state = {
       notifications_store: notifications_store,
       CompaniesStore: new DataStore(new Dispatcher()),
+      RatingsStore: new DataStore(new Dispatcher()),
       // orm,
       schema,
       // db,
@@ -234,6 +235,7 @@ export class AppMain extends Component{
 
       const {
         CompaniesStore,
+        RatingsStore,
       } = this.state;
 
       graphql({
@@ -243,10 +245,12 @@ export class AppMain extends Component{
         rootValue: {
           companies: CompaniesStore.getState(),
           // comments: CompaniesStore.getState(),
+          ratings: RatingsStore.getState(),
         },
         variableValues: variables || undefined,
         contextValue: this.getChildContext(),
         fieldResolver: (source, args, context, info) => {
+          console.log('appMain fieldResolver', source, args, info);
           // console.log('fieldResolver source', source);
           // console.log('fieldResolver args', args);
           // console.log('fieldResolver context', context);
@@ -279,7 +283,7 @@ export class AppMain extends Component{
 
           // }
 
-          console.log('fieldResolver result', result);
+          // console.log('fieldResolver result', result);
 
           return result;
           
@@ -347,9 +351,15 @@ export class AppMain extends Component{
 
     let {
       CompaniesStore,
+      RatingsStore,
     } = this.state;
 
     CompaniesStore.getDispatcher().register(payload => {
+
+      this.forceUpdate();
+    });
+
+    RatingsStore.getDispatcher().register(payload => {
 
       this.forceUpdate();
     });
@@ -682,6 +692,7 @@ export class AppMain extends Component{
   loadApiData(){
 
     this.loadCompanies();
+    this.loadRatings();
   }
 
 
@@ -715,7 +726,7 @@ export class AppMain extends Component{
           CompaniesStore,
         } = this.state;
 
-        console.log('CompaniesStore callback', data, errors);
+        // console.log('CompaniesStore callback', data, errors);
 
         if(data.success && data.object){
           // this.setState({
@@ -732,6 +743,44 @@ export class AppMain extends Component{
         }
       },
     });
+  }
+
+  loadRatings(){
+
+    return new Promise((resolve, reject) => {
+
+      const query = `query{ 
+        ratings(limit:0) {
+          rating
+          type
+          company_id
+        }
+      }`;
+
+      this.remoteQuery(query)
+        .then(result => {
+
+          console.log('loadRatings result', result);
+
+          let {
+            RatingsStore,
+          } = this.state;
+
+          if(result.success){
+
+            const {
+              ratings,
+            } = result.object || {};
+
+            RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
+          }
+
+          resolve(ratings);
+        })
+        .catch(e => reject(e));
+
+    });
+
   }
 
   loadCompanyFullData = (item) => {

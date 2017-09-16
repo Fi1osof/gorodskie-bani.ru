@@ -9,6 +9,9 @@ import {
   GraphQLBoolean,
 } from 'graphql';
 
+
+import { List } from 'immutable';
+
 // import type from 'graphql';
 
 // import {
@@ -46,6 +49,7 @@ import {
 
 import {
   RatingType,
+  RatingArgs,
   getMany as getRatings,
   getOne as getRating,
 } from './Rating';
@@ -188,74 +192,216 @@ export const listArgs = {
 };
 
 
-const listField = function (props) {
+export class listField {
 
-  let {
-    description,
-    args,
-    ...other
-  } = props;
+  constructor(props){
 
-  args = Object.assign(listArgs, args || {});
+    // Object.assign(this, props);
 
-  return {
-    type: new ObjectsListType({
-      ...other,
-    }),
-    description,
-    args,
-    resolve: (source, args, context, info) => {
+
+    let {
+      description,
+      args,
+      resolve,
+      ...other
+    } = props;
+
+    args = Object.assign(listArgs, args || {});
+
+    Object.assign(this, {
+      description,
+      args,
+    });
+
+    // var a = {
+    //   // type: new ObjectsListType({
+    //   //   ...other,
+    //   // }),
+    //   // description,
+    //   // args,
       
-      console.log('ObjectsListType fieldResolver', source, args, context, info);
+    // }
 
-      const {
-        fieldName,
-      } = info;
-            
-      let result = source && source[fieldName] || undefined;
+    this.type = new ObjectsListType({
+      ...other,
+    });
 
-      if(result){
-        console.log('ObjectsListType fieldResolver result', result);
+    // return this;
 
-        let {
-          offset,
-          limit,
-          page,
-        } = args;
+    this.resolve = resolve || this.resolve;
+  }
 
-        page = page || 1;
+  resolve(source, args, context, info){
+    
+    console.log('ObjectsListType fieldResolver', source, args, context, info);
 
-        const total = result.size;
+    const {
+      fieldName,
+    } = info;
+          
+    let result = source && source[fieldName] || undefined;
 
-        if(offset){
-          result = result.skip(offset);
-        }
+    if(result){
+      console.log('ObjectsListType fieldResolver result', result);
 
-        if(limit){
+      let {
+        offset,
+        limit,
+        page,
+      } = args;
 
-          if(page > 1){
-            result = result.skip(limit * (page - 1));
-          }
+      page = page || 1;
 
-          result = result.take(limit);
-        }
+      const total = result.size;
 
-        result = {
-          success: true,
-          message: '',
-          count: result.size,
-          total,
-          limit,
-          page,
-          object: result,
-        };
+      if(offset){
+        result = result.skip(offset);
       }
 
-      return result;
-    },
+      if(limit){
+
+        if(page > 1){
+          result = result.skip(limit * (page - 1));
+        }
+
+        result = result.take(limit);
+      }
+
+      result = {
+        success: true,
+        message: '',
+        count: result.size,
+        total,
+        limit,
+        page,
+        object: result,
+      };
+    }
+
+    return result;
   }
 }
 
+export class RatingsListField extends listField{
+
+
+  resolve(source, args, context, info){
+    
+    // console.log('ObjectsListType fieldResolver', source, args, context, info);
+
+    const {
+      fieldName,
+    } = info;
+          
+    let result = source && source[fieldName] || undefined;
+
+    if(result){
+      // console.log('ObjectsListType fieldResolver result', result);
+
+      let {
+        groupBy,
+      } = args;
+
+      console.log('groupBy', groupBy);
+
+      // Способ группировки
+      switch(groupBy){
+
+        // case 'rating_type':
+        case 'company':
+
+          // console.log('result grouped', result.groupBy(x => x.company_id));
+
+          var result2 = List();
+
+          const result_grouped = result.groupBy(x => x.company_id);
+
+          result_grouped.map(n => {
+            const first = n.get(0);
+
+            const quantity = n.size;
+
+            let ratings = [];
+
+            n.map(i => {
+              ratings.push(i.rating);
+            });
+
+            let max_vote;
+            let min_vote;
+
+            let rating = ratings.reduce((prev, next) => prev+next) / quantity;
+
+            // console.log('result grouped rating', rating, ratings, ratings.reduce((prev, next) => prev+next), ratings.reduce((prev, next) => prev+next) / quantity);
+
+            result2 = result2.push(Object.assign(first, {
+              quantity,
+              max_vote: Math.max.apply(null, ratings),
+              min_vote: Math.min.apply(null, ratings),
+              rating: parseFloat(rating.toFixed(2)),
+            }));
+          });
+
+          // result.groupBy(x => x.company_id).map(n => {
+          //   n.map(i => {
+          //     i.quantity = n.size;
+          //     result2 = result2.push(i);
+          //   });
+
+          //   console.log('result grouped n', n);
+
+          // });
+
+          result = result2;
+
+
+
+          // console.log('result grouped result_grouped', result_grouped);
+          // console.log('result grouped', result);
+
+          break;
+
+      }
+
+      // page = page || 1;
+
+      // const total = result.size;
+
+      // if(offset){
+      //   result = result.skip(offset);
+      // }
+
+      // if(limit){
+
+      //   if(page > 1){
+      //     result = result.skip(limit * (page - 1));
+      //   }
+
+      //   result = result.take(limit);
+      // }
+
+      // result = {
+      //   success: true,
+      //   message: '',
+      //   count: result.size,
+      //   total,
+      //   limit,
+      //   page,
+      //   object: result,
+      // };
+      
+      // source.ratings = List([{
+      //   rating: 3,
+      // }]);
+
+      source.ratings = result;
+    }
+
+
+    return super.resolve(source, args, context, info);
+  }
+
+}
 
 // const CompanyType = new GraphQLObjectType({
 //   name: 'Company',
@@ -282,48 +428,58 @@ const listField = function (props) {
 // });
 
 
+const RatingsList = new RatingsListField({
+  type: RatingType,
+  name: "Ratings",
+  description: RatingType.description,
+  args: RatingArgs,
+});
+
+console.log('RatingsList', RatingsList);
+
 const RootType = new GraphQLObjectType({
   name: 'RootType',
   description: 'Корневой раздел',
   fields: {
-    companies: listField({
-      type: CompanyType,
-      name: "Companies",
-      description: "Список компаний",
-    }),
-    company: {
-      type: CompanyType,
-      description: "Компания",
-      args: {
-        id: {
-          type: new GraphQLNonNull(GraphQLInt),
-        },
-      },
-      resolve: getCompany,
-    },
-    ratings: {
-      type: new GraphQLList(RatingType),
-      name: "RatingsList",
-      description: RatingType.description,
-      args: listArgs,
-      resolve: getRatings,
-    },
-    vote: {
-      type: RatingType,
-      description: "Рейтинг",
-      resolve: getRating,
-    },
-    comments: listField({
-      type: CommentType,
-      name: "Comments",
-      description: "Список комментариев",
-      args: {
-        thread: {
-          type: GraphQLInt,
-          description: 'ID диалоговой ветки',
-        },
-      },
-    }),
+    // companies: listField({
+    //   type: CompanyType,
+    //   name: "Companies",
+    //   description: "Список компаний",
+    // }),
+    // company: {
+    //   type: CompanyType,
+    //   description: "Компания",
+    //   args: {
+    //     id: {
+    //       type: new GraphQLNonNull(GraphQLInt),
+    //     },
+    //   },
+    //   resolve: getCompany,
+    // },
+    ratings: RatingsList,
+    // vote: {
+    //   type: RatingType,
+    //   description: "Рейтинг",
+    //   resolve: getRating,
+    // },
+    // comments: listField({
+    //   type: CommentType,
+    //   name: "Comments",
+    //   description: "Список комментариев",
+    //   args: {
+    //     thread: {
+    //       type: GraphQLInt,
+    //       description: 'ID диалоговой ветки',
+    //     },
+    //   },
+    // }),
+    // // ratings: {
+    // //   type: new GraphQLList(RatingType),
+    // //   name: "RatingsList",
+    // //   description: RatingType.description,
+    // //   args: listArgs,
+    // //   // resolve: getRatings,
+    // // },
   },
 });
 

@@ -13,18 +13,18 @@ import fetch from 'node-fetch';
 
 var FormData = require('form-data');
 
-// import {
-//   db as db_config,
-//   host,
-// } from '../../../../config/config'; 
+import {
+  db as db_config,
+  host,
+} from '../../../../config/config'; 
 
-// debug('config host', host);
+debug('config host', host);
 
-// let {
-//   connection: {
-//     prefix,
-//   },
-// } = db_config;
+let {
+  connection: {
+    prefix,
+  },
+} = db_config;
 
 import {
   buildSchema,
@@ -42,24 +42,15 @@ import {
   GraphQLEnumType,
 } from 'graphql';
 
+
+import {
+  listArgs,
+  ObjectsListType,
+} from 'modules/Site/components/ORM';
+
 var knex;
 
-import {order} from '../ORM/';
-
-import {
-  SchemaType as CompanyTypePrototype, 
-  getQuery as getCompaniesQuery, 
-  CompanySort, 
-  updateQuery as updateCompanyQuery
-} from '../ORM/Company';
-
-import {
-  SchemaType as CommentTypePrototype, 
-  // getQuery as getCompaniesQuery, 
-  // CompanySort, 
-  // updateQuery as updateCompanyQuery
-} from '../ORM/Comment';
-
+// console.log('ObjectsListType', ObjectsListType);
 
 // var knexdb = require('knex');
 
@@ -236,74 +227,68 @@ export default class Response{
     });
   }
 
-  // companiesListResolver = (object, args, context) => {
+  companiesListResolver = (object, args) => {
 
-  //   const {
-  //     db,
-  //   } = context || {};
+    return new Promise((resolve, reject) => {
+      // Эта функция будет вызвана автоматически
 
-  //   if(db){
-  //     return db.getCompanies(object, args, context);
-  //   }
+      // В ней можно делать любые асинхронные операции,
+      // А когда они завершатся — нужно вызвать одно из:
+      // resolve(результат) при успешном выполнении
+      // reject(ошибка) при ошибке
 
-  //   return new Promise((resolve, reject) => {
-  //     // Эта функция будет вызвана автоматически
+      // console.log('companiesResolver args', args);
 
-  //     // В ней можно делать любые асинхронные операции,
-  //     // А когда они завершатся — нужно вызвать одно из:
-  //     // resolve(результат) при успешном выполнении
-  //     // reject(ошибка) при ошибке
+      let {
+        id,
+        limit,
+        page,
+        offset: start,
+        count,
+        voted_companies,
+        search,
+      } = args || {};
 
-  //     // console.log('companiesResolver args', args);
+      limit = limit || 0;
 
-  //     let {
-  //       id,
-  //       limit,
-  //       start,
-  //       count,
-  //       voted_companies,
-  //       search,
-  //     } = args || {};
+      let action = 'companies/getdata';
 
-  //     limit = limit || 0;
+      let params = {
+        // with_coors_only: false,       // Только с координатами
+        company_id: id,
+        limit,
+        page,
+        start,
+        count: count === undefined ? 1 : count,
+        companies: voted_companies,
+        search,
+      };
 
-  //     let action = 'companies/getdata';
-
-  //     let params = {
-  //       // with_coors_only: false,       // Только с координатами
-  //       company_id: id,
-  //       limit,
-  //       start,
-  //       count: count === undefined ? 1 : count,
-  //       companies: voted_companies,
-  //       search,
-  //     };
-
-  //     let request = this.SendMODXRequest(action, params); 
+      let request = this.SendMODXRequest(action, params); 
 
 
-  //     request.then(function(res) {
-  //       return res.json();
-  //     })
-  //     .then((data) => {
+      request.then(function(res) {
+        return res.json();
+      })
+      .then((data) => {
 
-  //       if(!data.success){
+        if(!data.success){
 
-  //         return reject(data.message || "Ошибка выполнения запроса");
-  //       }
+          return reject(data.message || "Ошибка выполнения запроса");
+        }
 
-  //       // delete(data.object);
+        // delete(data.object);
 
-  //       // console.log('Response data', data);
+        // console.log('Response data', data);
 
-  //       return resolve(data);
-  //     })
-  //     .catch((e) => {
-  //       return reject(e);
-  //     })
-  //     ;
-  //   });
-  // }
+        return resolve(data);
+      })
+      .catch((e) => {
+        return reject(e);
+      })
+      ;
+    });
+  }
 
   commentsListResolver = (object, args) => {
 
@@ -938,7 +923,7 @@ export default class Response{
       },
     });
 
-    CommentType = new CommentTypePrototype({
+    CommentType = new GraphQLObjectType({
       name: 'CommentType',
       description: 'Комментарии',
       fields: () => {
@@ -1216,7 +1201,7 @@ export default class Response{
       },
     }); 
 
-    CompanyType = new CompanyTypePrototype({
+    CompanyType = new GraphQLObjectType({
       name: 'CompanyType',
       fields: () => {
 
@@ -1459,26 +1444,26 @@ export default class Response{
                 description: SortType.description,
               },
             },
-            // resolve: (company, args) => {
+            resolve: (company, args) => {
 
 
-            //   const {
-            //     id: company_id,
-            //   } = company;
+              const {
+                id: company_id,
+              } = company;
 
-            //   args = Object.assign({
-            //     order: 'asc',
-            //   }, args, {
-            //     thread: company_id,
-            //     // thread: parseInt(company_id),
-            //   });
+              args = Object.assign({
+                order: 'asc',
+              }, args, {
+                thread: company_id,
+                // thread: parseInt(company_id),
+              });
 
-            //   console.log('CompanyType commentsListResolver', args);
+              console.log('CompanyType commentsListResolver', args);
 
-            //   // return this.ObjectsResolver(this.commentsListResolver, company, args);
+              // return this.ObjectsResolver(this.commentsListResolver, company, args);
 
-            //   return this.commentsListResolver(company, args);
-            // },
+              return this.commentsListResolver(company, args);
+            },
           },
           // places: {
           //   type: new GraphQLList(PlaceType),
@@ -1719,61 +1704,72 @@ export default class Response{
         //   },
         // },
         companies: {
-          type: new GraphQLObjectType({
+          // type: new GraphQLObjectType({
+          //   name: "CompaniesList",
+          //   fields: {
+          //     success: {
+          //       type: GraphQLBoolean,
+          //     },
+          //     message: {
+          //       type: GraphQLString,
+          //     },
+          //     total: {
+          //       type: GraphQLInt,
+          //     },
+          //     limit: {
+          //       type: GraphQLInt,
+          //     },
+          //     page: {
+          //       type: GraphQLInt,
+          //     },
+          //     object: {
+          //       type: new GraphQLList(CompanyType),
+          //       resolve: (response, args) => {
+
+          //         // console.log('this.CompanyType Resolver', response, args);
+
+          //         return response && response.success && response.object || [];
+          //       },
+          //     },
+          //   },
+          // }),
+          type: new ObjectsListType({
             name: "CompaniesList",
-            fields: {
-              success: {
-                type: GraphQLBoolean,
-              },
-              message: {
-                type: GraphQLString,
-              },
-              total: {
-                type: GraphQLInt,
-              },
-              limit: {
-                type: GraphQLInt,
-              },
-              page: {
-                type: GraphQLInt,
-              },
-              object: {
-                type: new GraphQLList(CompanyType),
-                resolve: (response, args) => {
+            type: CompanyType,
+            description: 'Список компаний',
+            // fields: {
+            //   // success: {
+            //   //   type: GraphQLBoolean,
+            //   // },
+            //   // message: {
+            //   //   type: GraphQLString,
+            //   // },
+            //   // total: {
+            //   //   type: GraphQLInt,
+            //   // },
+            //   // limit: {
+            //   //   type: GraphQLInt,
+            //   // },
+            //   // page: {
+            //   //   type: GraphQLInt,
+            //   // },
+            //   // object: {
+            //   //   type: new GraphQLList(CompanyType),
+            //   //   resolve: (response, args) => {
 
-                  // console.log('this.CompanyType Resolver', response, args);
+            //   //     // console.log('this.CompanyType Resolver', response, args);
 
-                  return response && response.success && response.object || [];
-                },
-              },
-            },
+            //   //     return response && response.success && response.object || [];
+            //   //   },
+            //   // },
+            // },
           }),
-          args: {
-            id: {
-              type: GraphQLID
-              // type: new GraphQLNonNull(GraphQLID)
-            },
-            search: {
-              type: GraphQLString
-              // type: new GraphQLNonNull(GraphQLID)
-            },
-            limit: {
-              type: new GraphQLNonNull(GraphQLInt)
-              // type: GraphQLInt
-            },
-            // service_id: {
-            //   type: GraphQLInt
-            // },
-            // place_id: {
-            //   type: GraphQLInt
-            // },
-          },
-          // resolve: (object, args, context) => {
-          //   console.log('this.companiesResolver', object, args, context);
+          args: listArgs,
+          resolve: (object, args) => {
+            // console.log('this.companiesResolver', object, args);
 
-          //   // return this.companiesListResolver(object, args, context);
-          //   CompanyType.getCollection(object, args, context);
-          // },
+            return this.companiesListResolver(object, args);
+          },
         },
         cities: {
           type: new GraphQLList(CityType),
@@ -1796,12 +1792,12 @@ export default class Response{
             //   type: GraphQLBoolean
             // },
           },
-          // resolve: (object, args) => {
+          resolve: (object, args) => {
 
-          //   // console.log('this.companiesResolver', object, args);
+            // console.log('this.companiesResolver', object, args);
 
-          //   return this.citiesResolver(object, args);
-          // },
+            return this.citiesResolver(object, args);
+          },
         },
         // places: {
         //   type: new GraphQLList(PlaceType),
@@ -1881,14 +1877,16 @@ export default class Response{
 
   process(){  
 
-    // let {
-    //   pub_action,
-    //   ...params 
-    // } = this.getRequestParams();
+    let {
+      pub_action,
+      ...params 
+    } = this.getRequestParams();
 
-    // let {
-    //   query,
-    // } = params;
+    let {
+      query,
+      variables,
+      operationName,
+    } = params;
 
     // try{
     //   query = JSON.parse(query);
@@ -1899,17 +1897,6 @@ export default class Response{
 
     //   query = {};
     // }
-
-    let {
-      pub_action,
-      ...params 
-    } = this.getRequestParams();
-
-    let {
-      query,
-      operationName,
-      variables,
-    } = params;
 
     // console.log('Query params', params); 
 
@@ -1945,13 +1932,12 @@ export default class Response{
           var schema = this.getSchema();
 
 
-          // graphql(schema, query).then((response) => {
           graphql({
             schema, 
             source: query,
-            operationName,
             variableValues: variables || undefined,
             contextValue: this.context,
+            operationName,
           }).then((response) => {
 
             let {
@@ -1972,27 +1958,6 @@ export default class Response{
             // else
             return this.success("", response && response.data || null);
           });
-
-
-
-          // graphql(schema, query)
-          //   .then(result => {
-
-              
-
-          //     if(result && !result.errors){
-
-          //       return this.success("", result);
-          //     }
-          //     else{
-          //       return this.failure(result.errors && result.errors[0] && result.errors[0].message || 'Ошибка выполнения запроса', result);
-          //     }
-
-          //   })
-          //   .catch(e => {
-              
-          //     return this.failure(e);
-          //   });
 
           return ;
           break;

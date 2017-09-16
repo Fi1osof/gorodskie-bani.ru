@@ -239,6 +239,7 @@ export class AppMain extends Component{
         source: query,
         rootValue: {
           companies: CompaniesStore.getState(),
+          comments: CompaniesStore.getState(),
         },
         variableValues: variables || undefined,
         contextValue: this.context,
@@ -644,8 +645,6 @@ export class AppMain extends Component{
     this.apiRequest('companies', false, 'graphql', {
       query: `query{
         companies(limit:0) {
-          success
-          message
           total
           limit
           page

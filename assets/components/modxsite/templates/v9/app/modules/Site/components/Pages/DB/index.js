@@ -119,8 +119,8 @@ export default class PageGraphiQL extends Component{
   componentDidMount(){
 
 
-    // this.loadSchema();
-    this.getSchema();
+    this.loadSchema();
+    // this.getSchema();
   }
  
 
@@ -144,12 +144,12 @@ export default class PageGraphiQL extends Component{
   //   return schema;
   // }
 
-  getSchema(){
+  // getSchema(){
 
-    // this.setState({
-    //   schema: new ORM().getSchema(),
-    // });
-  }
+  //   // this.setState({
+  //   //   schema: new ORM().getSchema(),
+  //   // });
+  // }
 
   // getSchema(){
 
@@ -179,30 +179,31 @@ export default class PageGraphiQL extends Component{
     return apiRequest(null, true, path, params, options);
   }
 
-  // loadSchema(){
+  loadSchema(){
 
-  //   this.apiRequest('schema', {}, {
-  //     callback: (data, errors) => {
+    this.apiRequest('schema', {}, {
+      callback: (data, errors) => {
 
-  //       
+        
 
-  //       if(data.success && data.object){
+        if(data.success && data.object){
 
-  //         let {
-  //           data: introspectionSchema,
-  //         } = data.object;
+          let {
+            data: introspectionSchema,
+          } = data.object;
 
-  //         var schema = buildClientSchema(introspectionSchema);
+          var schema = buildClientSchema(introspectionSchema);
+          // var schema = introspectionSchema;
 
-  //         this.setState({
-  //           schema,
-  //         });
-  //       }
+          this.setState({
+            schema,
+          });
+        }
 
-  //       return;
-  //     }
-  //   })
-  // }
+        return;
+      }
+    })
+  }
 
   _graphQLFetcher(graphQLParams, a,b,c){
     
@@ -433,11 +434,21 @@ export default class PageGraphiQL extends Component{
     
     const {
       storage,
+      schema: remoteSchema,
     } = this.state;
  
+    let schema;
+
     const {
-      schema,
+      schema: localSchema,
     } = this.context;
+
+    if(storage === 'local'){
+      schema = localSchema;
+    }
+    else{
+      schema = remoteSchema;
+    }
 
     if(!schema){
 

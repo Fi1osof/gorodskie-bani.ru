@@ -760,7 +760,7 @@ export class AppMain extends Component{
       this.remoteQuery(query)
         .then(result => {
 
-          console.log('loadRatings result', result);
+          // console.log('loadRatings result', result);
 
           let {
             RatingsStore,
@@ -773,9 +773,11 @@ export class AppMain extends Component{
             } = result.object || {};
 
             RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
+
+            resolve(ratings);
           }
 
-          resolve(ratings);
+          else reject(result);
         })
         .catch(e => reject(e));
 

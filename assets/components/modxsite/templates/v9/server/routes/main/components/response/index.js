@@ -46,7 +46,7 @@ import {
 import {
   listArgs,
   ObjectsListType,
-} from 'modules/Site/components/ORM';
+} from 'modules/Site/components/ORM/fields';
 
 var knex;
 
@@ -71,7 +71,7 @@ export default class Response{
   prepareSchema(){
 
     this.RatingGroupbyEnumList = {
-      name : 'RatingGroupbyEnum',
+      name : 'RatingGroupbyEnum2',
       description : 'Способ группировки рейтингов',
       values : {
         company: {

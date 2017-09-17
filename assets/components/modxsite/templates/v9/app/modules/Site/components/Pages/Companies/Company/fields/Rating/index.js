@@ -6,6 +6,12 @@ import PropTypes from 'prop-types';
 import ThumbUpIcon from 'material-ui-icons/ThumbUp';
 import PeopleIcon from 'material-ui-icons/People';
 
+import Avatar from 'material-ui/Avatar';
+import Chip from 'material-ui/Chip';
+import FaceIcon from 'material-ui-icons/Face';
+
+import { Link, browserHistory } from 'react-router';
+
 import Stars from './Stars';
 
 export default class Rating extends Component{
@@ -23,8 +29,19 @@ export default class Rating extends Component{
 		super(props);
 
 		this.state = {
-
+			votersOpen: false,
 		};
+	}
+
+	toggleVoters(){
+
+		const {
+			votersOpen,
+		} = this.state;
+
+		this.setState({
+			votersOpen: !votersOpen,
+		});
 	}
 
 	render(){
@@ -36,6 +53,10 @@ export default class Rating extends Component{
 		if(!item){
 			return null;
 		}
+
+		const {
+			votersOpen,
+		} = this.state;
 
 		const {
 			ratingAvg,
@@ -69,23 +90,83 @@ export default class Rating extends Component{
 			Voters = <a 
 				href="javascript:;"
 				className="no-underline"
+				onClick={event => {
+					event.stopPropagation();
+					event.preventDefault();
+
+					this.toggleVoters();
+				}}
 			>{Voters}</a>
 
 		}
 
-		return <div
-			style={{
-				display: 'flex',
-				flexDirection: 'row',
-				alignItems: 'center',
-			}}
-		>
-			<Stars 
-				value={parseFloat(rating) || 0}
-				allowEdit={true}
-			/> <ThumbUpIcon 
-				style={iconStyle}
-			/> {quantity || 0} {Voters}
+		return <div>
+			<div
+				style={{
+					display: 'flex',
+					flexDirection: 'row',
+					alignItems: 'center',
+				}}
+			>
+				<Stars 
+					value={parseFloat(rating) || 0}
+					allowEdit={true}
+				/> <ThumbUpIcon 
+					style={iconStyle}
+				/> {quantity || 0} {Voters}
+			</div>
+
+			{votersOpen && voters && voters.length
+				?
+					<div
+						className="flex direction-row align-center"
+						style={{
+							// border: '1px solid red',
+							flexWrap: 'wrap',
+							marginTop: 20,
+						}}
+					>
+						{voters.map(voter => {
+
+							const {
+								id,
+								username,
+								fullname,
+								image,
+							} = voter;
+
+							const {
+								thumb,
+							} = image || {};
+
+							return <Link
+								key={id}
+								to={`/profile/${username}`}
+								href={`/profile/${username}`}
+								title={fullname || username}
+								className="no-underline"
+							>
+								<Chip
+									style={{
+										margin: 5,
+										backgroundColor: '#2fa4e7',
+										color: '#fff',
+									}}
+					        avatar={
+					          <Avatar
+					          	src={thumb}
+					          />
+					        }
+					        label={fullname || username || ""}
+					      />
+							</Link>
+						})}
+					</div>
+				:
+				null
+			}
+
+
 		</div>
 	}
 }

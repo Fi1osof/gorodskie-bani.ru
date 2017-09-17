@@ -20,11 +20,14 @@ import {
 
 import {
   CompanyType,
-  getMany as getCompanies,
 } from '../Company';
 
+import {
+  UserType,
+} from '../User';
 
-// console.log('List', List);
+
+// 
 
 // import {
 //   CommentType,
@@ -65,8 +68,8 @@ export const RatingArgs = {
 };
 
 export const getMany = function (source, args, context, info){
-  // console.log('Ratings getMany', source, args, info);
-  // console.log('Ratings getMany context', context);
+  // 
+  // 
   
   const {
     id,
@@ -101,7 +104,7 @@ export const getMany = function (source, args, context, info){
       }`)
       .then(result => {
 
-        // console.log('result.object', result);
+        // 
 
         const {
           ratings,
@@ -118,7 +121,7 @@ export const getOne = function (source, args, context, info){
   return new Promise((resolve, reject) => {
     getMany(source, args, context, info)
       .then(result => {
-        console.log('result 444', result, result.get(0));
+        
         resolve(result && result.get(0) || null);
       })
   });
@@ -156,13 +159,115 @@ export const RatingType = new GraphQLObjectType({
       voted_companies: {
         type: GraphQLString
       },
+      voted_users: {
+        type: GraphQLString
+      },
       voter: {
         type: GraphQLInt,
         description: 'Проголосовавший пользователь',
       },
+      // voters: {
+      //   type: GraphQLString
+      // },
       voters: {
-        type: GraphQLString,
-        description: 'Проголосовавшие люди',
+        type: new GraphQLList(UserType),
+        resolve: (rating, args, context, info) => {
+
+          return new Promise((resolve, reject) => {
+
+
+            const {
+              localQuery,
+            } = context;
+
+            const {
+              voter,
+              voted_users,
+            } = rating;
+
+            if(!voted_users && !voter){
+              return null;
+            }
+
+            let ids;
+
+            if(voted_users){
+              ids = voted_users;
+            }
+            else{
+              ids = voter;
+            }
+
+            if(ids && typeof ids === 'string'){
+              ids = ids.split(",");
+            }
+
+            Object.assign(args, {
+              ids,
+              limit: 0,
+            });
+
+            const q = `
+            fragment user on UserType {
+              id
+              username
+              fullname
+              email
+              active
+              sudo
+              blocked
+              image {
+                original
+                thumb
+                marker_thumb
+                small
+                middle
+                big
+              }
+            }
+            query users(
+              $limit: Int!
+              $ids:[Int]!
+            ) {
+              
+              users(
+                limit:$limit
+                ids:$ids
+              ){
+                count
+                total
+                limit
+                page
+                object {
+                  ...user
+                }
+              }
+            }`;
+
+
+            // 
+            //   query: q,
+            //   variables: args,
+            // });
+
+            localQuery({
+              query: q,
+              variables: args,
+            })
+              .then(result => {
+
+                // 
+
+                const {
+                  users,
+                } = result.data || {};
+
+                resolve(users && users.object || null);
+              })
+              .catch(e => reject(e));
+          });
+
+        },
       },
       companies: {
         type: new GraphQLList(CompanyType),
@@ -172,7 +277,7 @@ export const RatingType = new GraphQLObjectType({
 
 
             const {
-              query,
+              localQuery,
             } = context;
 
             const {
@@ -222,23 +327,31 @@ export const RatingType = new GraphQLObjectType({
                   city_id
                   city
                   city_uri
+                  image {
+                    original
+                    thumb
+                    marker_thumb
+                    small
+                    middle
+                    big
+                  }
                 }
               }
             }`;
 
 
-            // console.log('ratings comp q', {
+            // 
             //   query: q,
             //   variables: args,
             // });
 
-            query({
+            localQuery({
               query: q,
               variables: args,
             })
               .then(result => {
 
-                // console.log('ratings comp result', result);
+                // 
 
                 const {
                   companies,
@@ -259,8 +372,8 @@ export const RatingType = new GraphQLObjectType({
 export default class Rating extends ModelObject{
 
   fieldResolver(source, args, context, info){
-    console.log('Rating fieldResolver', source, args, info);
-    console.log('Rating fieldResolver context', context);
+    // 
+    // 
     
     const {
       id,
@@ -313,7 +426,7 @@ export default class Rating extends ModelObject{
     //       }`)
     //         .then(result => {
 
-    //           // console.log('result.object', result);
+    //           // 
 
     //           const {
     //             comments,
@@ -353,8 +466,22 @@ export class RatingsListField extends listField{
 
       let ratings = [];
 
+      let voted_users = [];
+
       n.map(i => {
-        ratings.push(i.rating);
+
+        const {
+          rating,
+          company_id,
+          voter,
+        } = i;
+
+        ratings.push(rating);
+
+        if(voter && voted_users.indexOf(voter) === -1){
+          voted_users.push(voter);
+        }
+
       });
 
       let max_vote;
@@ -362,10 +489,12 @@ export class RatingsListField extends listField{
 
       let rating = ratings.reduce((prev, next) => prev+next) / quantity;
 
-      // console.log('result grouped rating', rating, ratings, ratings.reduce((prev, next) => prev+next), ratings.reduce((prev, next) => prev+next) / quantity);
+      // 
 
-      result2 = result2.push(Object.assign(first, {
+      result2 = result2.push(Object.assign({}, first, {
         quantity,
+        voted_users,
+        quantity_voters: voted_users && voted_users.length || 0,
         max_vote: Math.max.apply(null, ratings),
         min_vote: Math.min.apply(null, ratings),
         rating: parseFloat(rating.toFixed(2)),
@@ -378,7 +507,7 @@ export class RatingsListField extends listField{
     //     result2 = result2.push(i);
     //   });
 
-    //   console.log('result grouped n', n);
+    //   
 
     // });
 
@@ -398,18 +527,23 @@ export class RatingsListField extends listField{
       let ratings = [];
 
       let voted_companies = [];
-      // let voters = [];
+      let voted_users = [];
 
       n.map(i => {
         const {
           rating,
           company_id,
+          voter,
         } = i;
 
         ratings.push(rating);
 
-        if(voted_companies.indexOf(company_id) === -1){
+        if(company_id && voted_companies.indexOf(company_id) === -1){
           voted_companies.push(company_id);
+        }
+
+        if(voter && voted_users.indexOf(voter) === -1){
+          voted_users.push(voter);
         }
 
         // voters.push(i.company_id);
@@ -420,11 +554,12 @@ export class RatingsListField extends listField{
 
       let rating = ratings.reduce((prev, next) => prev+next) / quantity;
 
-      // console.log('result grouped rating', rating, ratings, ratings.reduce((prev, next) => prev+next), ratings.reduce((prev, next) => prev+next) / quantity);
+      // 
 
       result2 = result2.push(Object.assign({}, first, {
         quantity,
         voted_companies,
+        voted_users,
         max_vote: Math.max.apply(null, ratings),
         min_vote: Math.min.apply(null, ratings),
         rating: parseFloat(rating.toFixed(2)),
@@ -437,7 +572,7 @@ export class RatingsListField extends listField{
     //     result2 = result2.push(i);
     //   });
 
-    //   console.log('result grouped n', n);
+    //   
 
     // });
 
@@ -479,7 +614,7 @@ export class RatingsListField extends listField{
 
       let rating = ratings.reduce((prev, next) => prev+next) / quantity;
 
-      // console.log('result grouped rating', rating, ratings, ratings.reduce((prev, next) => prev+next), ratings.reduce((prev, next) => prev+next) / quantity);
+      // 
 
       result2 = result2.push(Object.assign({}, first, {
         quantity,
@@ -496,7 +631,7 @@ export class RatingsListField extends listField{
     //     result2 = result2.push(i);
     //   });
 
-    //   console.log('result grouped n', n);
+    //   
 
     // });
 
@@ -509,17 +644,17 @@ export class RatingsListField extends listField{
       thread: company_id,
     } = args;
 
-    console.log('beforeCount', args);
+    
 
     if(company_id){
       
-      console.log('beforeCount', args);
+      
 
       source = source.filter(n => n.company_id === company_id);
     }
 
     
-    console.log('result grouped this', this);
+    // 
 
     const {
       fieldName,
@@ -528,13 +663,13 @@ export class RatingsListField extends listField{
     // let result = source && source[fieldName] || undefined;
 
     if(source){
-      // console.log('ObjectsListType fieldResolver result', result);
+      // 
 
       let {
         groupBy,
       } = args;
 
-      console.log('groupBy', groupBy);
+      
 
       // Способ группировки
       switch(groupBy){
@@ -567,9 +702,9 @@ export class RatingsListField extends listField{
 
   // resolve(source, args, context, info){
     
-  //   // console.log('ObjectsListType fieldResolver', source, args, context, info);
+  //   // 
 
-  //   console.log('result grouped this', this);
+  //   
 
   //   const {
   //     fieldName,
@@ -578,13 +713,13 @@ export class RatingsListField extends listField{
   //   let result = source && source[fieldName] || undefined;
 
   //   if(result){
-  //     // console.log('ObjectsListType fieldResolver result', result);
+  //     // 
 
   //     let {
   //       groupBy,
   //     } = args;
 
-  //     console.log('groupBy', groupBy);
+  //     
 
   //     // Способ группировки
   //     switch(groupBy){

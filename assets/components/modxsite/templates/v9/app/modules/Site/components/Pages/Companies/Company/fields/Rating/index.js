@@ -47,11 +47,31 @@ export default class Rating extends Component{
       min_vote,
       quantity,
       quantity_voters,
+      voters,
 		} = ratingAvg || {};
+
+		// const quantity_voters = voters && voters.length || 0;
 
 		const iconStyle={
 			height: 17,
 		};
+
+		let Voters = <span
+			className="flex direction-row align-center"
+		>
+			<PeopleIcon 
+				style={iconStyle}
+			/> {quantity_voters || 0}
+		</span>
+
+		if(voters && voters.length){
+
+			Voters = <a 
+				href="javascript:;"
+				className="no-underline"
+			>{Voters}</a>
+
+		}
 
 		return <div
 			style={{
@@ -65,9 +85,7 @@ export default class Rating extends Component{
 				allowEdit={true}
 			/> <ThumbUpIcon 
 				style={iconStyle}
-			/> {quantity || 0} <PeopleIcon 
-				style={iconStyle}
-			/> {quantity_voters || 0}
+			/> {quantity || 0} {Voters}
 		</div>
 	}
 }

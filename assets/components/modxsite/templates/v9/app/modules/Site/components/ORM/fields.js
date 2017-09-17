@@ -116,7 +116,7 @@ export class ObjectsListType extends GraphQLObjectType{
         type: new GraphQLList(type),
         // resolve: (response, args) => {
 
-        //   // console.log('this.CompanyType Resolver', response, args);
+        //   // 
 
         //   return response && response.success && response.object || [];
         // },
@@ -187,7 +187,7 @@ export class listField {
 
   resolve(source, args, context, info){
     
-    console.log('ObjectsListType fieldResolver', source, args, context, info);
+    
 
     const {
       fieldName,
@@ -196,7 +196,7 @@ export class listField {
     let result = source && source[fieldName] || undefined;
 
     if(result){
-      console.log('ObjectsListType fieldResolver result', result);
+      
 
       let {
         ids,
@@ -246,7 +246,7 @@ const imageFields = {
     type: GraphQLString,
     resolve: (image) => {
 
-    	console.log('imageType image', image);
+    	// 
       return image && image.original || image || null;
     },
   },

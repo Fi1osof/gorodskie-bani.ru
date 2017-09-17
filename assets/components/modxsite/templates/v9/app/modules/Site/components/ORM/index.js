@@ -69,7 +69,7 @@ import {
 } from './User';
 
 
-console.log('UserType', UserType, CompanyType);
+// console.log('UserType', UserType, CompanyType);
 
 
 // export class SchemaObject extends GraphQLObjectType{

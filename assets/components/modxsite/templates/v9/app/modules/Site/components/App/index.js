@@ -918,13 +918,6 @@ export class AppMain extends Component{
             prices
             metro
           }
-          ratingAvg{
-            rating
-            max_vote
-            min_vote
-            quantity
-            quantity_voters
-          }
           ratingsByType {
             rating
             max_vote
@@ -1046,7 +1039,27 @@ export class AppMain extends Component{
     return new Promise((resolve, reject) => {
 
       this.localQuery({
-        query: `query{ 
+        query: `
+
+        fragment user on UserType {
+          id
+          username
+          fullname
+          email
+          active
+          sudo
+          blocked
+          image {
+            original
+            thumb
+            marker_thumb
+            small
+            middle
+            big
+          }
+        }
+
+        query{ 
           company(
             id: ${id}
           ) {
@@ -1059,13 +1072,28 @@ export class AppMain extends Component{
               middle
               big
             }
+            ratingAvg {
+              rating
+              max_vote
+              min_vote
+              type
+              company_id
+              quantity
+              quantity_voters
+              voted_companies
+              voted_users
+              voter
+              voters{
+                ...user
+              }
+            }
           }
         }`,
       })
         .then(result => {
 
           // console.log('prepareCompaniesLocalData', result);
-          console.log('prepareCompaniesLocalData');
+          // console.log('prepareCompaniesLocalData');
 
           const {
             company,

@@ -55,6 +55,8 @@ export default class CompanyPage extends Component{
 
 		setPageTitle(name);
 
+		console.log('Company componentDidMount', item);
+
 		this.loadCompanyFullData();
 	}
 
@@ -68,7 +70,7 @@ export default class CompanyPage extends Component{
 			item,
 		} = this.props;
 
-		// console.log('loadCompanyFullData page', item);
+		// 
 
 		loadCompanyFullData(item);
 	}
@@ -128,7 +130,7 @@ export default class CompanyPage extends Component{
 			prices,
 		} = tvs || {};
 
-		console.log('CompanyPage', item);
+		
 
 		let addresses = [];
 

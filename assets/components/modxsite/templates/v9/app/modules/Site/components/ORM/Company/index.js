@@ -583,7 +583,7 @@ export default class Company extends ModelObject{
 
       // case 'image': 
           
-      //   console.log('Company imageType image', source, this);
+      //   
 
       //   return source.image && source.image.original || null;
 
@@ -647,7 +647,7 @@ export default class Company extends ModelObject{
               quantity
               quantity_voters
               voted_companies
-              voters
+              voted_users
               voter
             }
           }
@@ -658,7 +658,7 @@ export default class Company extends ModelObject{
 
           // 
 
-          console.log('localQuery', result);
+          // 
 
           const {
             ratings,
@@ -696,7 +696,7 @@ export default class Company extends ModelObject{
 
           // 
 
-          console.log('localQuery', result);
+          // 
 
           // const {
           //   ratings,

@@ -751,21 +751,86 @@ export default class Response{
   }
 
 
-  usersResolver = (project) => {
+  // usersListResolver = (project) => {
 
-    var q = knex(`${prefix}users as users`)
-      .innerJoin(`${prefix}user_attributes as profile`, 'users.id', 'profile.internalKey')
-      .select('profile.*')
-      .select('users.*') 
-      .limit('3')
-      ; 
+  //   var q = knex(`${prefix}users as users`)
+  //     .innerJoin(`${prefix}user_attributes as profile`, 'users.id', 'profile.internalKey')
+  //     .select('profile.*')
+  //     .select('users.*') 
+  //     .limit('3')
+  //     ; 
+  //     // 
+
+  //     q.then((result) => { 
+  //       return result;
+  //     });
+
+  //   return q; 
+  // }
+
+
+  usersListResolver = (object, args, context, info) => {
+
+    return new Promise((resolve, reject) => {
+      // Эта функция будет вызвана автоматически
+
+      // В ней можно делать любые асинхронные операции,
+      // А когда они завершатся — нужно вызвать одно из:
+      // resolve(результат) при успешном выполнении
+      // reject(ошибка) при ошибке
+
       // 
 
-      q.then((result) => { 
-        return result;
-      });
+      let {
+        ids,
+        limit,
+        page,
+        offset: start,
+        count,
+        // voted_companies,
+        search,
+      } = args || {};
 
-    return q; 
+      limit = limit || 0;
+
+      let action = 'users/getdata';
+
+      let params = {
+        // with_coors_only: false,       // Только с координатами
+        format: "json",
+        ids,
+        limit,
+        page,
+        start,
+        count: count === undefined ? 1 : count,
+        // companies: voted_companies,
+        search,
+      };
+
+      let request = this.SendMODXRequest(action, params); 
+
+
+      request
+      .then((data) => {
+
+        // console.log('users data', data);
+
+        if(!data.success){
+
+          return reject(data.message || "Ошибка выполнения запроса");
+        }
+
+        // delete(data.object);
+
+        // 
+
+        return resolve(data);
+      })
+      .catch((e) => {
+        return reject(e);
+      })
+      ;
+    });
   }
 
   resourcesResolver = (author) => {  
@@ -1578,6 +1643,7 @@ export default class Response{
 
     const UserType = new GraphQLObjectType({
       name: 'UserType',
+      description: 'Пользователь',
       fields: {
         id: {
           type: GraphQLInt
@@ -1588,12 +1654,33 @@ export default class Response{
         fullname: {
           type: GraphQLString
         },
-        resources: {
-          type: new GraphQLList(DocumentType),
-          resolve: (author) => {
-            return this.resourcesResolver(author);
+        email: {
+          type: GraphQLString
+        },
+        photo: {
+          type: GraphQLString,
+          resolve: user => {
+            return user.photo && user.photo.replace(/^\//g,'') || null;
           },
-        }
+        },
+        active: {
+          type: GraphQLBoolean,
+          resolve: user => {
+            return user.active === null ? null : parseInt(user.active);
+          },
+        },
+        sudo: {
+          type: GraphQLBoolean,
+          resolve: user => {
+            return user.sudo === null ? null : parseInt(user.sudo);
+          },
+        },
+        blocked: {
+          type: GraphQLBoolean,
+          resolve: user => {
+            return user.blocked === null ? null : parseInt(user.blocked);
+          },
+        },
       }
     });
 
@@ -1790,9 +1877,16 @@ export default class Response{
         //   },
         // },
         users: {
-          type: new GraphQLList(UserType),
-          resolve: () => {
-            return this.usersResolver();
+          type: new ObjectsListType({
+            name: "UsersList",
+            type: UserType,
+            description: 'Список пользователей',
+          }),
+          args: listArgs,
+          resolve: (object, args, context) => {
+            // 
+
+            return this.usersListResolver(object, args, context);
           },
         },
         resources: {

@@ -102,6 +102,11 @@ class modWebPublicActionProcessor extends modProcessor{
                     require_once dirname(dirname(__FILE__)) . '/society/users/login.class.php';
                     self::$actualClassName = "modWebSocietyUsersLoginProcessor";
                     break;
+
+                case 'users/getdata':
+                    require __DIR__ . '/../users/getdata.class.php';
+                    self::$actualClassName = 'modWebUsersGetdataProcessor';
+                    break;
                     
                 
                 default:;

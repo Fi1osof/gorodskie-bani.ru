@@ -15,10 +15,10 @@ var FormData = require('form-data');
 
 import {
   db as db_config,
-  host,
+  site_url,
 } from '../../../../config/config'; 
 
-debug('config host', host);
+// debug('config host', host);
 
 let {
   connection: {
@@ -199,7 +199,7 @@ export default class Response{
     debug("options", options);
 
 
-    return fetch('http://gorodskie-bani.local' + url, options)
+    return fetch(site_url + url, options)
       .then(function(res) {
         return res.json();
       });
@@ -485,6 +485,7 @@ export default class Response{
       
       .select('votes.type')
       .select('votes.target_id as company_id')
+      .select('votes.user_id as voter')
       .select('votes.vote_value as rating')
       // .limit('3')
       ;
@@ -1014,6 +1015,10 @@ export default class Response{
           },
           voted_companies: {
             type: GraphQLString
+          },
+          voter: {
+            type: GraphQLInt,
+            description: 'Проголосовавший пользователь',
           },
           voters: {
             type: GraphQLString,

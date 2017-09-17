@@ -1,8 +1,10 @@
 export default class ModelObject{
 
-  constructor(props){
+  constructor(props, app){
 
     Object.assign(this, props);
+
+    this._app = app;
 
   }
 

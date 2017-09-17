@@ -452,12 +452,46 @@ export const CompanyType = new GraphQLObjectType({
         type: new GraphQLList(RatingType),
         description: RatingType.description,
       },
+      ratingAvg: {
+        description: 'Суммарный рейтинг',
+        type: RatingType,
+        // args: {
+        //   groupBy: {
+        //     type : RatingGroupbyEnum,
+        //   },
+        // },
+        // resolve: (company, args) => {
+
+        //   // 
+
+        //   const {
+        //     id: company_id,
+        //   } = company;
+
+        //   Object.assign(args, {
+        //     company: company_id,
+        //     groupBy: 'company',
+        //     limit: 1,
+        //   });
+
+        //   return this.ObjectResolver(this.RatingsResolver, company, args);
+        // },
+      },
     }
   }
 });
 
 
 export default class Company extends ModelObject{
+
+  constructor(props, app){
+
+    super(props, app);
+
+    this.getRatings = ::this.getRatings;
+    this.getRatingsAvr = ::this.getRatingsAvr;
+
+  }
 
   fieldResolver(source, args, context, info){
     // 
@@ -537,75 +571,137 @@ export default class Company extends ModelObject{
 
       case 'ratings': 
 
-        if(!id){
-          return null;
-        }
+        // return this.getRatings(source, args, context, info);
+        return this.getRatings(args);
 
-        Object.assign(args, {
-          thread: id,
-        });
+      case 'ratingAvg': 
 
-        return new Promise((resolve, reject) => {
-          // resolve([{
-          //   id: 345,
-          //   text: "DSFdsf",
-          // }]);
-
-          const {
-            remoteQuery,
-          } = context;
-
-          localQuery({
-            query: `query ratings(
-              $thread:Int!
-              $groupBy:RatingGroupbyEnum
-            ){
-              ratings(
-                limit:0
-                thread:$thread
-                groupBy:$groupBy
-              ) {
-                count
-                total
-                limit
-                page
-                object {
-                  rating
-                  max_vote
-                  min_vote
-                  type
-                  company_id
-                  quantity
-                  quantity_voters
-                  voted_companies
-                  voters
-                }
-              }
-            }`,
-            variables: args,
-          })
-            .then(result => {
-
-              // 
-
-              console.log('localQuery', result);
-
-              const {
-                ratings,
-              } = result.data;
-
-              return resolve(ratings && ratings.object || null);
-              // return resolve(ratings && ratings.object || null);
-            })
-            .catch(e => reject(e));
-
-        });
+        // return this.getRatings(source, args, context, info);
+        return this.getRatingsAvr(args);
 
         break;
 
     }
 
     return super.fieldResolver(source, args, context, info);
+  }
+
+
+  // Рейтинги компании
+  getRatings(args = {}){
+
+    const {
+      localQuery,
+      remoteQuery,
+    } = this._app.getChildContext();
+    
+    const {
+      id,
+    } = this;
+
+    if(!id){
+      return null;
+    }
+
+    Object.assign(args, {
+      thread: id,
+    });
+
+    return new Promise((resolve, reject) => {
+      // resolve([{
+      //   id: 345,
+      //   text: "DSFdsf",
+      // }]);
+
+      // const {
+      //   remoteQuery,
+      // } = context;
+
+      localQuery({
+        query: `query ratings(
+          $thread:Int!
+          $groupBy:RatingGroupbyEnum
+        ){
+          ratings(
+            limit:0
+            thread:$thread
+            groupBy:$groupBy
+          ) {
+            count
+            total
+            limit
+            page
+            object {
+              rating
+              max_vote
+              min_vote
+              type
+              company_id
+              quantity
+              quantity_voters
+              voted_companies
+              voters
+              voter
+            }
+          }
+        }`,
+        variables: args,
+      })
+        .then(result => {
+
+          // 
+
+          console.log('localQuery', result);
+
+          const {
+            ratings,
+          } = result.data;
+
+          return resolve(ratings && ratings.object || null);
+          // return resolve(ratings && ratings.object || null);
+        })
+        .catch(e => reject(e));
+
+    });
+  }
+
+  // Средний рейтинг
+  getRatingsAvr(args = {}){
+
+    Object.assign(args, {
+      groupBy: "company",
+    });
+
+
+
+    return new Promise((resolve, reject) => {
+      // resolve([{
+      //   id: 345,
+      //   text: "DSFdsf",
+      // }]);
+
+      // const {
+      //   remoteQuery,
+      // } = context;
+
+      this.getRatings(args)
+        .then(result => {
+
+          // 
+
+          console.log('localQuery', result);
+
+          // const {
+          //   ratings,
+          // } = result.data;
+
+          return resolve(result && result[0] || null);
+          // return resolve(ratings && ratings.object || null);
+        })
+        .catch(e => reject(e));
+
+    });
+
   }
 
 }

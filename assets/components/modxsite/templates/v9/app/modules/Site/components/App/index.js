@@ -749,6 +749,7 @@ export class AppMain extends Component{
           rating
           type
           company_id
+          voter
         }
       }`,
     },{
@@ -776,7 +777,7 @@ export class AppMain extends Component{
           } = data.object || {};
 
           // let companies = object && object.map(n => new Company(n)) || [];
-          companies = companies && companies.object && companies.object.map(n => new Company(n)) || [];
+          companies = companies && companies.object && companies.object.map(n => this.createStoreObject(Company, n)) || [];
           // ratings = ratings && ratings.object || [];
 
           CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
@@ -789,6 +790,10 @@ export class AppMain extends Component{
         }
       },
     });
+  }
+
+  createStoreObject(Class, data){
+    return new Class(data, this);
   }
 
   loadRatings(){

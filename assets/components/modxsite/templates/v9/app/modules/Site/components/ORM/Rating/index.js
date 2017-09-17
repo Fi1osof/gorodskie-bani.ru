@@ -156,6 +156,10 @@ export const RatingType = new GraphQLObjectType({
       voted_companies: {
         type: GraphQLString
       },
+      voter: {
+        type: GraphQLInt,
+        description: 'Проголосовавший пользователь',
+      },
       voters: {
         type: GraphQLString,
         description: 'Проголосовавшие люди',

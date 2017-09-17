@@ -464,7 +464,7 @@ export default class Company extends ModelObject{
     // 
 
     const {
-      query: localQuery,
+      localQuery,
       remoteQuery,
     } = context;
     

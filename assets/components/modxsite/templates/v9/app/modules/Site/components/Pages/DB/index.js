@@ -101,7 +101,7 @@ export default class PageGraphiQL extends Component{
   static contextTypes = {
     loadItems: PropTypes.func,
     apiRequest: PropTypes.func.isRequired,
-    query: PropTypes.func.isRequired,
+    localQuery: PropTypes.func.isRequired,
     // orm: PropTypes.object.isRequired,
     schema: PropTypes.object.isRequired,
     // db: PropTypes.object.isRequired,
@@ -256,10 +256,10 @@ export default class PageGraphiQL extends Component{
     
  
     const {
-      query,
+      localQuery,
     } = this.context;
 
-    return query(graphQLParams); 
+    return localQuery(graphQLParams); 
     
  
     // const {

@@ -82,7 +82,7 @@ export class AppMain extends Component{
     // orm: PropTypes.object,
     schema: PropTypes.object,
     // db: PropTypes.object,
-    query: PropTypes.func,
+    localQuery: PropTypes.func,
     remoteQuery: PropTypes.func,
   };
 
@@ -112,7 +112,7 @@ export class AppMain extends Component{
       // orm,
       schema,
       // db,
-      query: this.query,
+      localQuery: this.localQuery,
       remoteQuery: this.remoteQuery,
     };
 
@@ -188,7 +188,7 @@ export class AppMain extends Component{
 
   }
 
-  query = (graphQLParams) => {
+  localQuery = (graphQLParams) => {
 
     const {
       schema,
@@ -320,7 +320,20 @@ export class AppMain extends Component{
 
 
 
-  remoteQuery = (query, variables) => {
+  // remoteQuery = (query, variables) => {
+  remoteQuery = (graphQLParams) => {
+
+    if(typeof graphQLParams !== 'object'){
+      graphQLParams = {
+        query: graphQLParams,
+      };
+    }
+
+    const {
+      query,
+      operationName,
+      variables,
+    } = graphQLParams;
 
     return new Promise((resolve, reject) => {
 
@@ -1003,7 +1016,7 @@ export class AppMain extends Component{
 
     return new Promise((resolve, reject) => {
 
-      this.query({
+      this.localQuery({
         query: `query{ 
           company(
             id: ${id}

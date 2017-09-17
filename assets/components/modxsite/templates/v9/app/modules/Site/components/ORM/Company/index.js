@@ -581,6 +581,13 @@ export default class Company extends ModelObject{
 
         break;
 
+      // case 'image': 
+          
+      //   console.log('Company imageType image', source, this);
+
+      //   return source.image && source.image.original || null;
+
+      //   break;
     }
 
     return super.fieldResolver(source, args, context, info);

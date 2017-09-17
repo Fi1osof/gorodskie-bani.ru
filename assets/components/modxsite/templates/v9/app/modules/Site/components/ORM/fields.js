@@ -240,47 +240,52 @@ export class listField {
   }
 }
 
+
+const imageFields = {
+  original: {
+    type: GraphQLString,
+    resolve: (image) => {
+
+    	console.log('imageType image', image);
+      return image && image.original || image || null;
+    },
+  },
+  thumb: {
+    type: GraphQLString,
+    resolve: (image) => {
+      return `images/resized/thumb/${image.original}`;
+    },
+  },
+  marker_thumb: {
+    type: GraphQLString,
+    resolve: (image) => {
+      return `images/resized/marker_thumb/${image.original}`;
+    },
+  },
+  small: {
+    type: GraphQLString,
+    resolve: (image) => {
+      return `images/resized/small/${image.original}`;
+    },
+  },
+  middle: {
+    type: GraphQLString,
+    resolve: (image) => {
+      return `images/resized/middle/${image.original}`;
+    },
+  },
+  big: {
+    type: GraphQLString,
+    resolve: (image) => {
+      return `images/resized/big/${image.original}`;
+    },
+  },
+};
+
 export const imageType = {
   type: new GraphQLObjectType({
     name: 'Images',
-    fields: {
-      original: {
-        type: GraphQLString,
-        // resolve: (image) => {
-        //   return image;
-        // },
-      },
-      thumb: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/thumb/${image.original}`;
-        },
-      },
-      marker_thumb: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/marker_thumb/${image.original}`;
-        },
-      },
-      small: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/small/${image.original}`;
-        },
-      },
-      middle: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/middle/${image.original}`;
-        },
-      },
-      big: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/big/${image.original}`;
-        },
-      },
-    },
+    fields: imageFields,
   }),
   // resolve: (object) => {
 

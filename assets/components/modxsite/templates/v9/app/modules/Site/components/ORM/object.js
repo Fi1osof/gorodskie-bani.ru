@@ -14,8 +14,23 @@ export default class ModelObject{
       fieldName,
     } = info;
           
-    return source && source[fieldName] || undefined;
+    let value = source && source[fieldName] || undefined;
 
+
+
+    // switch(fieldName){
+
+    //   case 'image': 
+          
+    //     console.log('Company imageType image', source, value, this);
+
+    //     // value = value && value.image && value.image.original || null;
+    //     value = value && value.original || null;
+
+    //     break;
+    // }
+
+    return value;
   }
 
 }

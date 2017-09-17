@@ -820,10 +820,6 @@ export default class Response{
           return reject(data.message || "Ошибка выполнения запроса");
         }
 
-        // delete(data.object);
-
-        // 
-
         return resolve(data);
       })
       .catch((e) => {
@@ -1657,12 +1653,13 @@ export default class Response{
         email: {
           type: GraphQLString
         },
-        photo: {
-          type: GraphQLString,
-          resolve: user => {
-            return user.photo && user.photo.replace(/^\//g,'') || null;
-          },
-        },
+        // photo: {
+        //   type: GraphQLString,
+        //   resolve: user => {
+        //     return user.photo && user.photo.replace(/^\//g,'') || null;
+        //   },
+        // },
+        image: imageType,
         active: {
           type: GraphQLBoolean,
           resolve: user => {

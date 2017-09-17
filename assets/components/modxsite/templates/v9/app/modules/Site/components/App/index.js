@@ -30,6 +30,7 @@ import MainMenu from './MainMenu';
 
 import RootType from '../ORM';
 import Company from '../ORM/Company';
+import User from '../ORM/User';
 
 import {
   buildSchema,
@@ -142,6 +143,7 @@ export class AppMain extends Component{
       notifications_store: notifications_store,
       CompaniesStore: new DataStore(new Dispatcher()),
       RatingsStore: new DataStore(new Dispatcher()),
+      UsersStore: new DataStore(new Dispatcher()),
       // orm,
       schema,
       // db,
@@ -236,6 +238,7 @@ export class AppMain extends Component{
       const {
         CompaniesStore,
         RatingsStore,
+        UsersStore,
       } = this.state;
 
       graphql({
@@ -244,7 +247,7 @@ export class AppMain extends Component{
         source: query,
         rootValue: {
           companies: CompaniesStore.getState(),
-          // comments: CompaniesStore.getState(),
+          users: UsersStore.getState(),
           ratings: RatingsStore.getState(),
         },
         variableValues: variables || undefined,
@@ -751,6 +754,23 @@ export class AppMain extends Component{
           company_id
           voter
         }
+        users(limit:0) {
+          count
+          total
+          limit
+          page
+          object {
+            id
+            username
+            fullname
+            email
+            image {
+              original
+            } 
+            active
+            blocked
+          }
+        }
       }`,
     },{
       callback: (data, errors) => {
@@ -758,6 +778,7 @@ export class AppMain extends Component{
         let {
           CompaniesStore,
           RatingsStore,
+          UsersStore,
         } = this.state;
 
         // 
@@ -773,14 +794,17 @@ export class AppMain extends Component{
 
           let {
             companies,
+            users,
             ratings,
           } = data.object || {};
 
           // let companies = object && object.map(n => new Company(n)) || [];
           companies = companies && companies.object && companies.object.map(n => this.createStoreObject(Company, n)) || [];
+          users = users && users.object && users.object.map(n => this.createStoreObject(User, n)) || [];
           // ratings = ratings && ratings.object || [];
 
           CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+          UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
           RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
 
           // Устанавливаем сразу локальные данные для компаний

@@ -64,7 +64,12 @@ import {
   CommentType,
 } from './Comment';
 
+import {
+  UserType,
+} from './User';
 
+
+console.log('UserType', UserType, CompanyType);
 
 
 // export class SchemaObject extends GraphQLObjectType{
@@ -153,6 +158,11 @@ const RootType = new GraphQLObjectType({
           description: 'ID диалоговой ветки',
         },
       },
+    }),
+    users: new listField({
+      type: UserType,
+      name: "Users",
+      description: "Список пользователей",
     }),
     // // ratings: {
     // //   type: new GraphQLList(RatingType),

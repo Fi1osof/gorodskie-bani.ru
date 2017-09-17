@@ -474,11 +474,7 @@ export default class PageGraphiQL extends Component{
       <GraphiQL
         schema={schema}
         defaultQuery="query{
-          users {
-            id
-            username
-            fullname
-          }
+          
         }"
         fetcher={::this._graphQLFetcher}
         // fetcher={::this.graphQLFetcherLocal}

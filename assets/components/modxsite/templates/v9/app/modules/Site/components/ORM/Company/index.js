@@ -5,6 +5,7 @@ import {
   GraphQLObjectType,
   GraphQLInputObjectType,
   GraphQLEnumType,
+  GraphQLFloat,
 } from 'graphql';
 
 // import {
@@ -18,6 +19,14 @@ import ModelObject from '../object';
 import {
   CommentType,
 } from '../Comment';
+
+import {
+  RatingType,
+} from '../Rating';
+
+import {
+  imageType,
+} from '../fields';
 
 
 // 
@@ -201,7 +210,7 @@ export const CompanyType = new GraphQLObjectType({
       uri: {
         type: GraphQLString
       },
-      // image: imageType,
+      image: imageType,
       city_id: {
         type: GraphQLInt
       },
@@ -285,28 +294,28 @@ export const CompanyType = new GraphQLObjectType({
       //     return object.gallery || [];
       //   },
       // },
-      // coords: {
-      //   type: new GraphQLObjectType({
-      //     // new GraphQLObjectType({
-      //       name: 'coordsType',
-      //       fields: {
-      //         lat: {
-      //           type: GraphQLFloat,
-      //         },
-      //         lng: {
-      //           type: GraphQLFloat,
-      //         },
-      //       },
-      //     // })
-      //   }),
-      //   resolve: (object) => {
+      coords: {
+        type: new GraphQLObjectType({
+          // new GraphQLObjectType({
+            name: 'coordsType',
+            fields: {
+              lat: {
+                type: GraphQLFloat,
+              },
+              lng: {
+                type: GraphQLFloat,
+              },
+            },
+          // })
+        }),
+        // resolve: (object) => {
 
-      //     return object.coords && {
-      //       lat: object.coords[1],
-      //       lng: object.coords[0],
-      //     } || null;
-      //   },
-      // },
+        //   return object.coords && {
+        //     lat: object.coords[1],
+        //     lng: object.coords[0],
+        //   } || null;
+        // },
+      },
       // ratings: {
       //   description: 'Рейтинги компании',
       //   type: new GraphQLList(RatingsType),
@@ -439,6 +448,10 @@ export const CompanyType = new GraphQLObjectType({
         //   return this.commentsListResolver(company, args);
         // },
       },
+      ratings: {
+        type: new GraphQLList(RatingType),
+        description: RatingType.description,
+      },
     }
   }
 });
@@ -449,6 +462,11 @@ export default class Company extends ModelObject{
   fieldResolver(source, args, context, info){
     // 
     // 
+
+    const {
+      query: localQuery,
+      remoteQuery,
+    } = context;
     
     const {
       id,
@@ -466,20 +484,22 @@ export default class Company extends ModelObject{
           return null;
         }
 
+        Object.assign(args, {
+          thread: id,
+        });
+
         return new Promise((resolve, reject) => {
           // resolve([{
           //   id: 345,
           //   text: "DSFdsf",
           // }]);
 
-          const {
-            remoteQuery,
-          } = context;
-
-          remoteQuery(`query{
+          remoteQuery(`query comments(
+            $thread: Int!
+          ){
             comments(
               limit: 0
-              thread: ${id}
+              thread: $thread
               sort:{by:id, dir: desc}
             ) {
               count
@@ -498,7 +518,7 @@ export default class Company extends ModelObject{
                 deleted
               }
             }
-          }`)
+          }`, args)
             .then(result => {
 
               // 
@@ -508,6 +528,74 @@ export default class Company extends ModelObject{
               } = result.object;
 
               return resolve(comments && comments.object || null);
+            })
+            .catch(e => reject(e));
+
+        });
+
+        break;
+
+      case 'ratings': 
+
+        if(!id){
+          return null;
+        }
+
+        Object.assign(args, {
+          thread: id,
+        });
+
+        return new Promise((resolve, reject) => {
+          // resolve([{
+          //   id: 345,
+          //   text: "DSFdsf",
+          // }]);
+
+          const {
+            remoteQuery,
+          } = context;
+
+          localQuery({
+            query: `query ratings(
+              $thread:Int!
+              $groupBy:RatingGroupbyEnum
+            ){
+              ratings(
+                limit:0
+                thread:$thread
+                groupBy:$groupBy
+              ) {
+                count
+                total
+                limit
+                page
+                object {
+                  rating
+                  max_vote
+                  min_vote
+                  type
+                  company_id
+                  quantity
+                  quantity_voters
+                  voted_companies
+                  voters
+                }
+              }
+            }`,
+            variables: args,
+          })
+            .then(result => {
+
+              // 
+
+              console.log('localQuery', result);
+
+              const {
+                ratings,
+              } = result.data;
+
+              return resolve(ratings && ratings.object || null);
+              // return resolve(ratings && ratings.object || null);
             })
             .catch(e => reject(e));
 

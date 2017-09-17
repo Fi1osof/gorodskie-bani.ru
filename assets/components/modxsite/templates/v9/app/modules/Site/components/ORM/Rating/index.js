@@ -189,22 +189,24 @@ export const RatingType = new GraphQLObjectType({
               ids = company_id;
             }
 
+            Object.assign(args, {
+              ids,
+              limit: 0,
+            });
 
-            // Object.assign(args, {
-            //   ids,
-            // });
-
-            // console.log('this.companiesResolver args', args, ids);
-
-            // return this.companiesResolver(null, args);
-
-
-
-            const q = `query{
+            const q = `query companies(
+              $limit: Int!
+              $ids:[Int]!
+            ) {
+              
               companies(
-                limit: 0
-                ids: [ ${ids} ]
-              ) {
+                limit:$limit
+                ids:$ids
+              ){
+                count
+                total
+                limit
+                page
                 object {
                   id
                   name
@@ -220,18 +222,24 @@ export const RatingType = new GraphQLObjectType({
               }
             }`;
 
-            console.log('query', q);
+
+            // console.log('ratings comp q', {
+            //   query: q,
+            //   variables: args,
+            // });
 
             query({
               query: q,
+              variables: args,
             })
               .then(result => {
+
+                // console.log('ratings comp result', result);
 
                 const {
                   companies,
                 } = result.data || {};
 
-                console.log('companiesResolver', q, result);
                 resolve(companies && companies.object || null);
               })
               .catch(e => reject(e));
@@ -239,22 +247,6 @@ export const RatingType = new GraphQLObjectType({
 
         },
       },
-      // rating_type: {
-      //   type: new GraphQLList(RatingTypesType),
-      //   resolve: (rating) => {
-
-      //     const {
-      //       type,
-      //     } = rating;
-
-      //     let args = {
-      //       id: type,
-      //       limit: 0,
-      //     };
-
-      //     return this.RatingTypesResolver(null, args);
-      //   },
-      // },
     };
   },
 });

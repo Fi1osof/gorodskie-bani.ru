@@ -71,7 +71,7 @@ export class AppMain extends Component{
     request: PropTypes.func,
     apiRequest: PropTypes.func,
     openCompanyPage: PropTypes.func,
-    loadCompanyMapData: PropTypes.func,
+    // prepareCompaniesLocalData: PropTypes.func,
     loadCompanyFullData: PropTypes.func,
     updateItem: PropTypes.func,
     updateContactItem: PropTypes.func,
@@ -102,7 +102,7 @@ export class AppMain extends Component{
       request: this.request,
       apiRequest: this.apiRequest,
       openCompanyPage: this.openCompanyPage,
-      loadCompanyMapData: this.loadCompanyMapData,
+      // prepareCompaniesLocalData: this.prepareCompaniesLocalData,
       loadCompanyFullData: this.loadCompanyFullData,
       updateItem: this.updateItem,
       updateContactItem: this.updateContactItem,
@@ -250,11 +250,11 @@ export class AppMain extends Component{
         variableValues: variables || undefined,
         contextValue: this.getChildContext(),
         fieldResolver: (source, args, context, info) => {
-          // console.log('appMain fieldResolver', source, args, info);
-          // console.log('fieldResolver source', source);
-          // console.log('fieldResolver args', args);
-          // console.log('fieldResolver context', context);
-          // console.log('fieldResolver info', info);
+          // 
+          // 
+          // 
+          // 
+          // 
 
           let result;
 
@@ -283,14 +283,27 @@ export class AppMain extends Component{
 
           // }
 
-          // console.log('fieldResolver result', result);
+          // 
 
           return result;
           
         }
       }).then((result) => {
 
-        // console.log('response graphiql', response);
+        
+
+        let {
+          errors,
+        } = result;
+
+        if(errors && errors.length){
+          let {
+            message,
+            ...other
+          } = errors[0];
+
+          return reject(message, {...other});
+        }
 
         resolve(result);
       })
@@ -307,12 +320,13 @@ export class AppMain extends Component{
 
 
 
-  remoteQuery = (query) => {
+  remoteQuery = (query, variables) => {
 
     return new Promise((resolve, reject) => {
 
       this.apiRequest(null, true, 'graphql', {
-        query: query,
+        query,
+        variables,
       },{
         callback: (data, errors) => {
 
@@ -320,7 +334,7 @@ export class AppMain extends Component{
           //   CompaniesStore,
           // } = this.state;
 
-          console.log('remoteQuery callback', data, errors);
+          
 
           if(data.success){
             // this.setState({
@@ -391,9 +405,9 @@ export class AppMain extends Component{
     //   }
     // } = prevProps;
 
-    // // console.log('componentDidUpdate', prevProps.user, user);
+    // // 
 
-    // // console.log('loadApiData componentDidUpdate', user, prevUser);
+    // // 
     
     // // Если пользователь авторизовался, то перезагружаем данные зависимые
     
@@ -413,7 +427,7 @@ export class AppMain extends Component{
 
   updateItem = (item, data, store) => {
 
-    console.log("App updateItem", store, item, data);
+    
 
     if(!item){
       console.error("Не указан объект");
@@ -453,10 +467,10 @@ export class AppMain extends Component{
       Object.assign(data, data.coords);
     }
 
-    // console.log('new updateContactItem', item, data);
+    // 
 
-    // console.log('new updateContactItem item finded', ContactsStore.getState().find(n => n === item));
-    // console.log('new updateContactItem item finded by ID', ContactsStore.getState().find(n => n.id == item.id));
+    // 
+    // 
 
 
     this.updateItem(item, data, CompaniesStore);
@@ -467,7 +481,7 @@ export class AppMain extends Component{
 
 
   saveContactItem = (item) => {
-    // console.log('saveContactItem', item);
+    // 
 
     let {
       CompaniesStore: store,
@@ -498,9 +512,9 @@ export class AppMain extends Component{
 
   saveItem = (store, item, connector_path, callback) => {
 
-    console.log("App saveItem store", store);
-    console.log("App saveItem item", item);
-    console.log("App saveItem path", connector_path);
+    
+    
+    
 
     let {
       connector_url,
@@ -509,7 +523,7 @@ export class AppMain extends Component{
       },
     } = this.props;
 
-    // console.log('saveItem STORE UPDATE', item, store);
+    // 
 
     if(!store){
 
@@ -572,14 +586,14 @@ export class AppMain extends Component{
       //   continue;
       // }
 
-      // console.log('Form item', i, value, Array.isArray(value));
+      // 
 
       body[i] = value;
     };
 
     this.request(connector_path, false, `${connector_path}${action}`, body, {
       callback: (data, errors) => {
-        // console.log('DATA', data);
+        // 
         // self.setState({items: data.object});
 
         let newObject = data.object || {};
@@ -642,7 +656,7 @@ export class AppMain extends Component{
 
         // item._sending = false;
 
-        // console.log('saveItem STORE UPDATE 2', item, store);
+        // 
 
         // this.forceUpdate();
 
@@ -692,7 +706,7 @@ export class AppMain extends Component{
   loadApiData(){
 
     this.loadCompanies();
-    this.loadRatings();
+    // this.loadRatings();
   }
 
 
@@ -710,7 +724,7 @@ export class AppMain extends Component{
             alias
             uri
             image {
-              marker_thumb
+              original
             }
             coords{
               lat,
@@ -718,28 +732,47 @@ export class AppMain extends Component{
             }
           }
         }
+        ratings(limit:0) {
+          rating
+          type
+          company_id
+        }
       }`,
     },{
       callback: (data, errors) => {
 
         let {
           CompaniesStore,
+          RatingsStore,
         } = this.state;
 
-        // console.log('CompaniesStore callback', data, errors);
+        // 
 
         if(data.success && data.object){
           // this.setState({
           //   resourcesMap: data.object,
           // });
 
-          const {
-            object,
-          } = data.object.companies || {};
+          // const {
+          //   object,
+          // } = data.object.companies || {};
 
-          let companies = object && object.map(n => new Company(n)) || [];
+          let {
+            companies,
+            ratings,
+          } = data.object || {};
+
+          // let companies = object && object.map(n => new Company(n)) || [];
+          companies = companies && companies.object && companies.object.map(n => new Company(n)) || [];
+          // ratings = ratings && ratings.object || [];
 
           CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+          RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
+
+          // Устанавливаем сразу локальные данные для компаний
+          companies.map(n => {
+            this.prepareCompaniesLocalData(n);
+          });
         }
       },
     });
@@ -760,7 +793,7 @@ export class AppMain extends Component{
       this.remoteQuery(query)
         .then(result => {
 
-          // console.log('loadRatings result', result);
+          // 
 
           let {
             RatingsStore,
@@ -787,7 +820,7 @@ export class AppMain extends Component{
 
   loadCompanyFullData = (item) => {
 
-    console.log('loadCompanyFullData item', item)
+    
 
     if(!item){
       return false;
@@ -880,7 +913,7 @@ export class AppMain extends Component{
           CompaniesStore,
         } = this.state;
 
-        console.log('loadCompanyFullData callback', data, errors);
+        
 
         if(data.success && data.object){
           // this.setState({
@@ -901,7 +934,7 @@ export class AppMain extends Component{
     });
   }
 
-  loadCompanyMapData = (item, force) => {
+  prepareCompaniesLocalData = (item, force) => {
 
     if(!item){
       return false;
@@ -909,63 +942,104 @@ export class AppMain extends Component{
 
     const {
       id,
-      _mapDataLoaded,
+      // _mapDataLoaded,
     } = item;
 
 
-    const itemId = parseInt(id);
+    // const itemId = parseInt(id);
 
-    if(!itemId){
-      return false;
-    }
+    // if(!itemId){
+    //   return false;
+    // }
 
-    if(_mapDataLoaded && !force){
-      return;
-    }
+    // if(_mapDataLoaded && !force){
+    //   return;
+    // }
 
-    // console.log('loadCompanyMapData item', item);
+    // // 
 
-    item._mapDataLoaded = true;
+    // item._mapDataLoaded = true;
 
-    this.apiRequest(`company_ratings_${id}`, false, 'graphql', {
-      query: `query{ 
-        company(
-          id: ${itemId}
-        ) {
-          id
-          ratingAvg {
-            rating
-            max_vote
-            min_vote
-            quantity
+    // this.apiRequest(`company_ratings_${id}`, false, 'graphql', {
+    //   query: `query{ 
+    //     company(
+    //       id: ${itemId}
+    //     ) {
+    //       id
+    //       ratingAvg {
+    //         rating
+    //         max_vote
+    //         min_vote
+    //         quantity
+    //       }
+    //     }
+    //   }`,
+    // },{
+    //   callback: (data, errors) => {
+
+    //     let {
+    //       CompaniesStore,
+    //     } = this.state;
+
+        
+
+    //     if(data.success && data.object){
+    //       // this.setState({
+    //       //   resourcesMap: data.object,
+    //       // });
+
+    //       const {
+    //         company,
+    //       } = data.object || {};
+
+    //       if(company){
+    //         Object.assign(item, company);
+    //         CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
+    //       }
+
+    //     }
+    //   },
+    // });
+
+    return new Promise((resolve, reject) => {
+
+      this.query({
+        query: `query{ 
+          company(
+            id: ${id}
+          ) {
+            id
+            image {
+              original
+              thumb
+              marker_thumb
+              small
+              middle
+              big
+            }
           }
-        }
-      }`,
-    },{
-      callback: (data, errors) => {
+        }`,
+      })
+        .then(result => {
 
-        let {
-          CompaniesStore,
-        } = this.state;
-
-        console.log('loadCompanyMapData callback', data, errors);
-
-        if(data.success && data.object){
-          // this.setState({
-          //   resourcesMap: data.object,
-          // });
+          // console.log('prepareCompaniesLocalData', result);
+          console.log('prepareCompaniesLocalData');
 
           const {
             company,
-          } = data.object || {};
+          } = result.data || {};
 
           if(company){
             Object.assign(item, company);
-            CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
+            // CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
+            // this.updateContactItem(item, company, true);
           }
 
-        }
-      },
+          resolve(company);
+
+        })
+        .catch(e => reject(e));
+
     });
   }
 
@@ -1088,7 +1162,7 @@ export class AppMain extends Component{
 
     // var body = JSON.stringify(data);
 
-    // console.log('body', body);
+    // 
 
     // var body = params;
 

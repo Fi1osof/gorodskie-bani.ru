@@ -37,7 +37,7 @@ export default class MapMainView extends Component{
 		// updateItem: PropTypes.func.isRequired,
 		// savePlaceItem: PropTypes.func.isRequired,
 		openCompanyPage: PropTypes.func.isRequired,
-		loadCompanyMapData: PropTypes.func.isRequired,
+		// loadCompanyMapData: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
 		CompaniesStore: PropTypes.object.isRequired,
 		setPageTitle: PropTypes.func.isRequired,
@@ -502,7 +502,7 @@ export default class MapMainView extends Component{
 
 	createClusters = props => {
 
-		console.log('createClusters');
+		
 
 		// 
 
@@ -728,9 +728,9 @@ export default class MapMainView extends Component{
 		minLng -= lngDiff;
 		maxLng += lngDiff;
 
-		// console.log('map items isInScreen', minLat, maxLat, latDiff);
+		// 
 
-		// console.log('map items isInScreen lat lng', lat, lng);
+		// 
 
  
 		if(
@@ -744,14 +744,14 @@ export default class MapMainView extends Component{
 		return false
 	}
 
-	loadCompanyMapData(item, force){
+	// loadCompanyMapData(item, force){
 		
-		const {
-			loadCompanyMapData,
-		} = this.context;
+	// 	const {
+	// 		loadCompanyMapData,
+	// 	} = this.context;
 
-		loadCompanyMapData(item, force);
-	}
+	// 	loadCompanyMapData(item, force);
+	// }
 
 	render(){
 
@@ -784,7 +784,7 @@ export default class MapMainView extends Component{
 			bounds,
 		} = this.state;
 
-		// console.log('bounds', bounds);
+		// 
 
 		let {
 			savePlaceItem,
@@ -830,9 +830,9 @@ export default class MapMainView extends Component{
 				id,
 			} = item || {}
 
-			if(item){
-				this.loadCompanyMapData(item);
-			}
+			// if(item){
+			// 	this.loadCompanyMapData(item);
+			// }
 
 			// Если точка не в рамках карты, пропускаем 
 			if(!this.isInScreen(cluster)){
@@ -855,7 +855,7 @@ export default class MapMainView extends Component{
 
   	// 
 
-  	// console.log('map items', items && items.length);
+  	// 
 
   	// sidebarOpen = sidebarOpen && sidebar_items_list && sidebar_items_list.length ? true : false;
 

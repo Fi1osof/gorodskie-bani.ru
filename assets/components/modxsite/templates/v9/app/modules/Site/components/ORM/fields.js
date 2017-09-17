@@ -239,3 +239,57 @@ export class listField {
     return result;
   }
 }
+
+export const imageType = {
+  type: new GraphQLObjectType({
+    name: 'Images',
+    fields: {
+      original: {
+        type: GraphQLString,
+        // resolve: (image) => {
+        //   return image;
+        // },
+      },
+      thumb: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/thumb/${image.original}`;
+        },
+      },
+      marker_thumb: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/marker_thumb/${image.original}`;
+        },
+      },
+      small: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/small/${image.original}`;
+        },
+      },
+      middle: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/middle/${image.original}`;
+        },
+      },
+      big: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/big/${image.original}`;
+        },
+      },
+    },
+  }),
+  // resolve: (object) => {
+
+  //   const {
+  //     image,
+  //   } = object;
+
+  //   return image && image.replace(/^\//g, '') || null;
+
+  //   // return image ? `uploads/${image}` : null;
+  // },
+};

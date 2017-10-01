@@ -103,128 +103,188 @@ import ModelObject from '../model';
 //   return q;
 // }
 
-export class SchemaType extends ObjectType{
+// export class SchemaType extends ObjectType{
 
-  constructor(props, knex){
-
-    
-
-    let Props = Object.assign({
-
-      fields: () => {
-
-        return {
-          id: {
-            type: GraphQLInt
-          },
-          name: {
-            type: GraphQLString
-          },
-        };
-      },
-    }, props);
-
-    super(Props, knex);
-  }
-
-
-  // getCollection(object, args, context){
+//   constructor(props, knex){
 
     
-  //   console.log('CompanyType getCollection', object, args, context);
-  //   console.log('CompanyType getCollection this', this);
 
-  //   return [{
-  //     id: 234,
-  //     name: "SDfdsf",
-  //   }];
+//     let Props = Object.assign({
 
-  //   return;
-  //   const {
-  //     db,
-  //   } = context || {};
+//       fields: () => {
 
-  //   const {
-  //     getContacts,
-  //   } = db || {};
+//         return {
+//           id: {
+//             type: GraphQLInt
+//           },
+//           name: {
+//             type: GraphQLString
+//           },
+//         };
+//       },
+//     }, props);
 
-  //   if(getContacts){
-  //     return getContacts(object, args, context);
-  //   }
+//     super(Props, knex);
+//   }
 
-  //   // else
 
-  //   let {
-  //     id,
-  //     limit,
-  //     start,
-  //     sort,
-  //     // service_id,   // Поиск по услуге
-  //     // services,   // Поиск по услугам
-  //     // place_id,     // Поиск по геообъекту
-  //     // parent,
-  //     // filialsOnly,
-  //     // withFilialsOnly,
-  //     // withServicesOnly,
-  //     search,
-  //   } = args || {};
+//   // getCollection(object, args, context){
 
-  //   const q = knex(`${prefix}modxsite_companies as companies`)
-  //     // .innerJoin(`${prefix}user_attributes as profile`, 'users.id', 'profile.internalKey')
-  //     // .select('profile.*')
-  //     .select('companies.*') 
-  //     // .limit('3')
-  //     ; 
+    
+//   //   console.log('CompanyType getCollection', object, args, context);
+//   //   console.log('CompanyType getCollection this', this);
+
+//   //   return [{
+//   //     id: 234,
+//   //     name: "SDfdsf",
+//   //   }];
+
+//   //   return;
+//   //   const {
+//   //     db,
+//   //   } = context || {};
+
+//   //   const {
+//   //     getContacts,
+//   //   } = db || {};
+
+//   //   if(getContacts){
+//   //     return getContacts(object, args, context);
+//   //   }
+
+//   //   // else
+
+//   //   let {
+//   //     id,
+//   //     limit,
+//   //     start,
+//   //     sort,
+//   //     // service_id,   // Поиск по услуге
+//   //     // services,   // Поиск по услугам
+//   //     // place_id,     // Поиск по геообъекту
+//   //     // parent,
+//   //     // filialsOnly,
+//   //     // withFilialsOnly,
+//   //     // withServicesOnly,
+//   //     search,
+//   //   } = args || {};
+
+//   //   const q = knex(`${prefix}modxsite_companies as companies`)
+//   //     // .innerJoin(`${prefix}user_attributes as profile`, 'users.id', 'profile.internalKey')
+//   //     // .select('profile.*')
+//   //     .select('companies.*') 
+//   //     // .limit('3')
+//   //     ; 
    
 
-  //     if(id){
-  //       q.where('companies.id', id);
-  //     } 
-  //     if(search){
-  //       q.where('companies.name', 'like', `%${search}%`);
-  //     }
+//   //     if(id){
+//   //       q.where('companies.id', id);
+//   //     } 
+//   //     if(search){
+//   //       q.where('companies.name', 'like', `%${search}%`);
+//   //     }
    
 
-  //     if(sort){
-  //       sort.map(n => {
+//   //     if(sort){
+//   //       sort.map(n => {
 
-  //         let {
-  //           by,
-  //           dir,
-  //         } = n;
+//   //         let {
+//   //           by,
+//   //           dir,
+//   //         } = n;
 
-  //         if(by){
+//   //         if(by){
 
-  //         // $c->sortby("if(Parent.id > 0, Parent.name, {$alias}.name) ASC, if(Parent.id > 0, {$alias}.name, '')", "ASC");
+//   //         // $c->sortby("if(Parent.id > 0, Parent.name, {$alias}.name) ASC, if(Parent.id > 0, {$alias}.name, '')", "ASC");
 
-  //           switch(by){
+//   //           switch(by){
 
-  //             case 'rand()':
+//   //             case 'rand()':
 
-  //               by = knex.raw('RAND()');
+//   //               by = knex.raw('RAND()');
 
-  //               break;
+//   //               break;
               
-  //             default:;
-  //           }
+//   //             default:;
+//   //           }
 
-  //           q.orderBy(by, dir || 'ASC');
-  //         }
+//   //           q.orderBy(by, dir || 'ASC');
+//   //         }
 
-  //       });
-  //     }
+//   //       });
+//   //     }
 
-  //     if(limit > 0){
-  //       q.limit(limit);
-  //     }
+//   //     if(limit > 0){
+//   //       q.limit(limit);
+//   //     }
 
-  //   // console.log("Contacts query toString()", q.toString());
+//   //   // console.log("Contacts query toString()", q.toString());
       
 
-  //   return q; 
-  // }
-}
+//   //   return q; 
+//   // }
+// }
 
-export default class Comment extends ModelObject{
+// export default class Comment extends ModelObject{
 
+// }
+
+
+export const getList = (object, args, context, info) => {
+
+  const {
+    SendMODXRequest,
+  } = context;
+
+  return new Promise((resolve, reject) => { 
+
+    // 
+
+    let {
+      id,
+      limit,
+      page,
+      offset: start,
+      count,
+      // voted_companies,
+      search,
+    } = args || {};
+
+    limit = limit || 0;
+
+    let action = 'comments/getdata';
+
+    let params = {
+      // with_coors_only: false,       // Только с координатами
+      // company_id: id,
+      id,
+      limit,
+      page,
+      start,
+      count: count === undefined ? 1 : count,
+      // companies: voted_companies,
+      search,
+    };
+
+    let request = SendMODXRequest(action, params); 
+
+
+    request
+    .then((data) => {
+    
+      // console.log("Company result", data);
+
+      if(!data.success){
+
+        return reject(data.message || "Ошибка выполнения запроса");
+      }
+ 
+
+      return resolve(data);
+    })
+    .catch((e) => {
+      return reject(e);
+    })
+    ;
+  });
 }

@@ -39,8 +39,17 @@ import {
 } from 'modules/Site/components/ORM/User';
 
 import {
-	getList as getUsersList,
+  getList as getUsersList,
 } from './User';
+
+
+import {
+  CommentType,
+} from 'modules/Site/components/ORM/Comment';
+
+import {
+	getList as getCommentsList,
+} from './Comment';
 
 
 const rootResolver = async (source, args, context, info) => {
@@ -219,6 +228,20 @@ const getObjectsList = async (ofType, source, args, context, info) => {
     // console.log("ofType 2", ofType);
 
     await getUsersList(source, args, context, info)
+      .then(r => {
+        object = r;
+      })
+      .catch(e => {
+        console.error(e);
+      });
+
+  }
+
+  else if(ofType === CommentType){
+
+    // console.log("ofType 2", ofType);
+
+    await getCommentsList(source, args, context, info)
       .then(r => {
         object = r;
       })

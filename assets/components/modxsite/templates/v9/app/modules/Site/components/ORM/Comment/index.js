@@ -165,31 +165,77 @@ export const CommentType = new GraphQLObjectType({
       deleted: {
         type: GraphQLInt
       },
+      createdby: {
+        type: GraphQLInt,
+        description: "ID автора комментария",
+      },
+      resource_id: {
+        type: GraphQLInt,
+        description: "ID ресурса",
+      },
       createdon: {
+        type: GraphQLString,
+        description: 'Время создания комментария в секундах',
+      },
+      createdonFormatted: {
         type: GraphQLString,
         // description: 'Время создания комментария в миллисекундах',
         resolve: (comment, args) => {
           return comment.createdon ? moment(comment.createdon).format('MMMM DD, YYYY | HH:mm:ss') : null;
         },
       },
-      company: {
+      Company: {
         type: CompanyType,
-        // resolve: (rating_type) => {
+        description: CompanyType.description,
+        resolve: async (source, args, context, info) => {
 
-        //   const {
-        //     id: type,
-        //   } = rating_type;
+          const {
+            fieldName,
+          } = info;
 
-        //   let args = {
-        //     type,
-        //     groupBy: 'rating_type',
-        //     limit: 0,
-        //   };
+          const {
+            localQuery,
+          } = context;
 
-        //   console.log('RatingsResolver args', args, rating_type);
+          let result = source && source[fieldName];
 
-        //   return this.RatingsResolver(null, args);
-        // },
+          if(!result){
+
+            const {
+              localQuery,
+            } = context;
+
+            const {
+              resource_id: company_id,
+            } = source;
+
+            if(!company_id){
+              return null;
+            }
+
+            Object.assign(args, {
+              company_id,
+            });
+   
+ 
+            await localQuery({
+              operationName: "Company",
+              variables: args,
+            })
+            .then(r => {
+              console.log('Ratings Companies args', args, r);
+
+              const {
+                company,
+              } = r.data;
+
+              result = company;
+
+            }); 
+          }
+          
+          return result;
+        },
       },
       // ratings: {
       //   type: new GraphQLList(RatingsType),
@@ -243,3 +289,14 @@ export default class Comment extends ModelObject{
   }
 
 }
+
+
+export const getList = async (source, args, context, info) => {
+
+  const {
+    CommentsStore,
+  } = context.state;
+
+  return CommentsStore.getState();
+
+};

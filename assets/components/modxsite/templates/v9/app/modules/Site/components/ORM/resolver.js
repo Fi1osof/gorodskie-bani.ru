@@ -30,6 +30,14 @@ import {
 	getList as getUsersList,
 } from './User';
 
+
+import {
+  CommentType,
+	getList as getCommentsList,
+} from './Comment';
+
+
+
 // const rootResolver = async (source, args, context, info) => {
 
 

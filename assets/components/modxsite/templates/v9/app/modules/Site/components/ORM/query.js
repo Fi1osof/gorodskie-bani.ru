@@ -26,6 +26,9 @@ query apiData(
   users(limit:$limit) {
     ...User
   }
+  comments(limit:$limit) {
+    ...Comment
+  }
 }
 
 
@@ -79,6 +82,37 @@ query Ratings(
     groupBy:$ratingsGroupBy
   ) {
     ...Rating
+  }
+}
+
+query Comments(
+  $limit:Int!
+  $getCompanyFullData:Boolean = false
+  $getImageFormats:Boolean = false
+  $getCompanyComments:Boolean = false
+  $getCommentCompany:Boolean = false
+  $getRatingsAvg:Boolean = false
+){
+  comments(
+    limit: $limit
+  ){
+    ...Comment
+  }
+}
+
+fragment Comment on CommentType{
+  id
+  thread_id
+  text
+  parent
+  published
+  deleted
+  createdon
+  createdby
+  resource_id
+  Company @include(if:$getCommentCompany)
+  {
+    ...Company
   }
 }
 
@@ -168,7 +202,7 @@ fragment Company on Company{
     published
     deleted
     createdon
-    company @include(if:$getCommentCompany)
+    Company @include(if:$getCommentCompany)
     {
       ...CompanyFields
     }

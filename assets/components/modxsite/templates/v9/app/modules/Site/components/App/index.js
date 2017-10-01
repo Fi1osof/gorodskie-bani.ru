@@ -151,6 +151,7 @@ export class AppMain extends Component{
       CompaniesStore: new DataStore(new Dispatcher()),
       RatingsStore: new DataStore(new Dispatcher()),
       UsersStore: new DataStore(new Dispatcher()),
+      CommentsStore: new DataStore(new Dispatcher()),
       // orm,
       schema,
       // db,
@@ -531,7 +532,10 @@ export class AppMain extends Component{
   }
 
 
-  componentWillMount(){
+  // componentWillMount(){
+  // }
+
+  componentDidMount(){
 
     let {
       CompaniesStore,
@@ -547,9 +551,6 @@ export class AppMain extends Component{
 
       this.forceUpdate();
     });
-  }
-
-  componentDidMount(){
 
     let {
       documentActions,
@@ -890,6 +891,7 @@ export class AppMain extends Component{
         CompaniesStore,
         RatingsStore,
         UsersStore,
+        CommentsStore,
       } = this.state;
 
       // 
@@ -899,16 +901,19 @@ export class AppMain extends Component{
           companies,
           users,
           ratings,
+          comments,
         } = data.object || {};
 
         // let companies = object && object.map(n => new Company(n)) || [];
         companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
         users = users && users.map(n => this.createStoreObject(User, n)) || [];
         ratings = ratings || [];
+        comments = comments || [];
 
         CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
         UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
         RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
+        CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
 
         // Устанавливаем сразу локальные данные для компаний
         // companies.map(n => {

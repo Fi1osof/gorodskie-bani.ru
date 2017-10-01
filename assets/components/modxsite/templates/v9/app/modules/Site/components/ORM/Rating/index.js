@@ -88,8 +88,16 @@ export const RatingType = new GraphQLObjectType({
       type: {
         type: GraphQLInt,
       },
-      company_id: {
+      // company_id: {
+      //   type: GraphQLInt,
+      // },
+      target_id: {
         type: GraphQLInt,
+        description: "ID цели",
+      },
+      target_class: {
+        type: GraphQLString,
+        description: "Класс целевого объекта",
       },
       quantity: {
         type: GraphQLInt,
@@ -191,7 +199,7 @@ export const RatingType = new GraphQLObjectType({
             } = context;
 
             const {
-              company_id,
+              target_id: company_id,
             } = source;
 
             if(!company_id){
@@ -243,7 +251,7 @@ export const RatingType = new GraphQLObjectType({
             } = context;
 
             const {
-              company_id,
+              target_id:company_id,
               voted_companies,
             } = source;
 
@@ -324,254 +332,256 @@ export default class Rating extends ModelObject{
 }
 
 
+
+const groupByCompany = function(result){
+  var result2 = List();
+
+  const result_grouped = result.groupBy(x => x.target_id);
+
+  result_grouped.map(n => {
+    const first = n.get(0);
+
+    const quantity = n.size;
+
+    let ratings = [];
+
+    let voted_users = [];
+
+    n.map(i => {
+
+      const {
+        rating,
+        target_id,
+        voter,
+      } = i;
+
+      ratings.push(rating);
+
+      if(voter && voted_users.indexOf(voter) === -1){
+        voted_users.push(voter);
+      }
+
+    });
+
+    let max_vote;
+    let min_vote;
+
+    let rating = ratings.reduce((prev, next) => prev+next) / quantity;
+
+    // 
+
+    result2 = result2.push(Object.assign({}, first, {
+      quantity,
+      voted_users,
+      quantity_voters: voted_users && voted_users.length || 0,
+      max_vote: Math.max.apply(null, ratings),
+      min_vote: Math.min.apply(null, ratings),
+      rating: parseFloat(rating.toFixed(2)),
+    }));
+  });
+
+  // result.groupBy(x => x.company_id).map(n => {
+  //   n.map(i => {
+  //     i.quantity = n.size;
+  //     result2 = result2.push(i);
+  //   });
+
+  //   
+
+  // });
+
+  return result2;
+}
+
+const groupByRatingType = function(result){
+  var result2 = List();
+
+  const result_grouped = result.groupBy(x => x.type);
+
+  result_grouped.map(n => {
+    const first = n.get(0);
+
+    const quantity = n.size;
+
+    let ratings = [];
+
+    let voted_companies = [];
+    let voted_users = [];
+
+    n.map(i => {
+      const {
+        rating,
+        target_id,
+        voter,
+      } = i;
+
+      ratings.push(rating);
+
+      if(target_id && voted_companies.indexOf(target_id) === -1){
+        voted_companies.push(target_id);
+      }
+
+      if(voter && voted_users.indexOf(voter) === -1){
+        voted_users.push(voter);
+      }
+
+      // voters.push(i.company_id);
+    });
+
+    let max_vote;
+    let min_vote;
+
+    let rating = ratings.reduce((prev, next) => prev+next) / quantity;
+
+    // 
+
+    result2 = result2.push(Object.assign({}, first, {
+      quantity,
+      voted_companies,
+      voted_users,
+      max_vote: Math.max.apply(null, ratings),
+      min_vote: Math.min.apply(null, ratings),
+      rating: parseFloat(rating.toFixed(2)),
+    }));
+  });
+
+  // result.groupBy(x => x.company_id).map(n => {
+  //   n.map(i => {
+  //     i.quantity = n.size;
+  //     result2 = result2.push(i);
+  //   });
+
+  //   
+
+  // });
+
+  return result2;
+}
+
+const groupByCompanyAndRatingType = function(result){
+  var result2 = List();
+
+  const result_grouped = result.groupBy(x => `${x.type}_${x.target_id}`);
+
+  result_grouped.map(n => {
+    const first = n.get(0);
+
+    const quantity = n.size;
+
+    let ratings = [];
+
+    let voted_companies = [];
+    // let voters = [];
+
+    n.map(i => {
+      const {
+        rating,
+        target_id,
+      } = i;
+
+      ratings.push(rating);
+
+      if(voted_companies.indexOf(target_id) === -1){
+        voted_companies.push(target_id);
+      }
+
+      // voters.push(i.company_id);
+    });
+
+    let max_vote;
+    let min_vote;
+
+    let rating = ratings.reduce((prev, next) => prev+next) / quantity;
+
+    // 
+
+    result2 = result2.push(Object.assign({}, first, {
+      quantity,
+      voted_companies,
+      max_vote: Math.max.apply(null, ratings),
+      min_vote: Math.min.apply(null, ratings),
+      rating: parseFloat(rating.toFixed(2)),
+    }));
+  });
+
+  // result.groupBy(x => x.company_id).map(n => {
+  //   n.map(i => {
+  //     i.quantity = n.size;
+  //     result2 = result2.push(i);
+  //   });
+
+  //   
+
+  // });
+
+  return result2;
+}
+
+
 export class RatingsListField extends listField{
 
 
-  groupByCompany(result){
-    var result2 = List();
+  // beforeCount(source, args, context, info){
 
-    const result_grouped = result.groupBy(x => x.company_id);
-
-    result_grouped.map(n => {
-      const first = n.get(0);
-
-      const quantity = n.size;
-
-      let ratings = [];
-
-      let voted_users = [];
-
-      n.map(i => {
-
-        const {
-          rating,
-          company_id,
-          voter,
-        } = i;
-
-        ratings.push(rating);
-
-        if(voter && voted_users.indexOf(voter) === -1){
-          voted_users.push(voter);
-        }
-
-      });
-
-      let max_vote;
-      let min_vote;
-
-      let rating = ratings.reduce((prev, next) => prev+next) / quantity;
-
-      // 
-
-      result2 = result2.push(Object.assign({}, first, {
-        quantity,
-        voted_users,
-        quantity_voters: voted_users && voted_users.length || 0,
-        max_vote: Math.max.apply(null, ratings),
-        min_vote: Math.min.apply(null, ratings),
-        rating: parseFloat(rating.toFixed(2)),
-      }));
-    });
-
-    // result.groupBy(x => x.company_id).map(n => {
-    //   n.map(i => {
-    //     i.quantity = n.size;
-    //     result2 = result2.push(i);
-    //   });
-
-    //   
-
-    // });
-
-    return result2;
-  }
-
-  groupByRatingType(result){
-    var result2 = List();
-
-    const result_grouped = result.groupBy(x => x.type);
-
-    result_grouped.map(n => {
-      const first = n.get(0);
-
-      const quantity = n.size;
-
-      let ratings = [];
-
-      let voted_companies = [];
-      let voted_users = [];
-
-      n.map(i => {
-        const {
-          rating,
-          company_id,
-          voter,
-        } = i;
-
-        ratings.push(rating);
-
-        if(company_id && voted_companies.indexOf(company_id) === -1){
-          voted_companies.push(company_id);
-        }
-
-        if(voter && voted_users.indexOf(voter) === -1){
-          voted_users.push(voter);
-        }
-
-        // voters.push(i.company_id);
-      });
-
-      let max_vote;
-      let min_vote;
-
-      let rating = ratings.reduce((prev, next) => prev+next) / quantity;
-
-      // 
-
-      result2 = result2.push(Object.assign({}, first, {
-        quantity,
-        voted_companies,
-        voted_users,
-        max_vote: Math.max.apply(null, ratings),
-        min_vote: Math.min.apply(null, ratings),
-        rating: parseFloat(rating.toFixed(2)),
-      }));
-    });
-
-    // result.groupBy(x => x.company_id).map(n => {
-    //   n.map(i => {
-    //     i.quantity = n.size;
-    //     result2 = result2.push(i);
-    //   });
-
-    //   
-
-    // });
-
-    return result2;
-  }
-
-  groupByCompanyAndRatingType(result){
-    var result2 = List();
-
-    const result_grouped = result.groupBy(x => `${x.type}_${x.company_id}`);
-
-    result_grouped.map(n => {
-      const first = n.get(0);
-
-      const quantity = n.size;
-
-      let ratings = [];
-
-      let voted_companies = [];
-      // let voters = [];
-
-      n.map(i => {
-        const {
-          rating,
-          company_id,
-        } = i;
-
-        ratings.push(rating);
-
-        if(voted_companies.indexOf(company_id) === -1){
-          voted_companies.push(company_id);
-        }
-
-        // voters.push(i.company_id);
-      });
-
-      let max_vote;
-      let min_vote;
-
-      let rating = ratings.reduce((prev, next) => prev+next) / quantity;
-
-      // 
-
-      result2 = result2.push(Object.assign({}, first, {
-        quantity,
-        voted_companies,
-        max_vote: Math.max.apply(null, ratings),
-        min_vote: Math.min.apply(null, ratings),
-        rating: parseFloat(rating.toFixed(2)),
-      }));
-    });
-
-    // result.groupBy(x => x.company_id).map(n => {
-    //   n.map(i => {
-    //     i.quantity = n.size;
-    //     result2 = result2.push(i);
-    //   });
-
-    //   
-
-    // });
-
-    return result2;
-  }
-
-  beforeCount(source, args, context, info){
-
-    let {
-      thread: company_id,
-    } = args;
+  //   let {
+  //     thread: company_id,
+  //   } = args;
 
     
 
-    if(company_id){
+  //   if(company_id){
       
       
 
-      source = source.filter(n => n.company_id === company_id);
-    }
+  //     source = source.filter(n => n.company_id === company_id);
+  //   }
 
     
-    // 
+  //   // 
 
-    const {
-      fieldName,
-    } = info;
+  //   const {
+  //     fieldName,
+  //   } = info;
           
-    // let result = source && source[fieldName] || undefined;
+  //   // let result = source && source[fieldName] || undefined;
 
-    if(source){
-      // 
+  //   if(source){
+  //     // 
 
-      let {
-        groupBy,
-      } = args;
+  //     let {
+  //       groupBy,
+  //     } = args;
 
       
 
-      // Способ группировки
-      switch(groupBy){
+  //     // Способ группировки
+  //     switch(groupBy){
 
-        case 'company':
+  //       case 'company':
 
-          source = this.groupByCompany(source);
+  //         source = this.groupByCompany(source);
 
-          break;
+  //         break;
 
-        case 'rating_type':
+  //       case 'rating_type':
 
-          source = this.groupByRatingType(source);
+  //         source = this.groupByRatingType(source);
 
-          break;
+  //         break;
 
-        case 'company_and_rating_type':
+  //       case 'company_and_rating_type':
 
-          source = this.groupByCompanyAndRatingType(source);
+  //         source = this.groupByCompanyAndRatingType(source);
 
-          break;
+  //         break;
 
-      }
+  //     }
 
-      // source.ratings = result;
-    }
+  //     // source.ratings = result;
+  //   }
 
-    return super.beforeCount(source, args, context, info);
-  }
+  //   return super.beforeCount(source, args, context, info);
+  // }
 
   // resolve(source, args, context, info){
     
@@ -627,65 +637,65 @@ export class RatingsListField extends listField{
 }
 
 
-export const getMany = function (source, args, context, info){
-  // 
-  // 
+// export const getMany = function (source, args, context, info){
+//   // 
+//   // 
   
-  const {
-    id,
-  } = source;
+//   const {
+//     id,
+//   } = source;
 
-  const {
-    fieldName,
-  } = info;
+//   const {
+//     fieldName,
+//   } = info;
 
-  return new Promise((resolve, reject) => {
-    // resolve([{
-    //   id: 345,
-    //   text: "DSFdsf",
-    // }]);
+//   return new Promise((resolve, reject) => {
+//     // resolve([{
+//     //   id: 345,
+//     //   text: "DSFdsf",
+//     // }]);
 
-    const {
-      remoteQuery,
-    } = context;
+//     const {
+//       remoteQuery,
+//     } = context;
 
-    remoteQuery(`query{
-        ratings(limit: 0) {
-          rating
-          max_vote
-          min_vote
-          type
-          company_id
-          quantity
-          quantity_voters
-          voted_companies
-          voters
-        }
-      }`)
-      .then(result => {
+//     remoteQuery(`query{
+//         ratings(limit: 0) {
+//           rating
+//           max_vote
+//           min_vote
+//           type
+//           company_id
+//           quantity
+//           quantity_voters
+//           voted_companies
+//           voters
+//         }
+//       }`)
+//       .then(result => {
 
-        // 
+//         // 
 
-        const {
-          ratings,
-        } = result.object;
+//         const {
+//           ratings,
+//         } = result.object;
 
-        return resolve(List(ratings));
-      })
-      .catch(e => reject(e));
+//         return resolve(List(ratings));
+//       })
+//       .catch(e => reject(e));
 
-  });
-}
+//   });
+// }
 
-export const getOne = function (source, args, context, info){
-  return new Promise((resolve, reject) => {
-    getMany(source, args, context, info)
-      .then(result => {
+// export const getOne = function (source, args, context, info){
+//   return new Promise((resolve, reject) => {
+//     getMany(source, args, context, info)
+//       .then(result => {
         
-        resolve(result && result.get(0) || null);
-      })
-  });
-}
+//         resolve(result && result.get(0) || null);
+//       })
+//   });
+// }
 
 
 export const getList = async (source, args, context, info) => {
@@ -700,14 +710,120 @@ export const getList = async (source, args, context, info) => {
     fieldNodes: {
       0: {
         selectionSet,
-      }
+      },
     },
   } = info;
 
-  // console.log('getList selectionSet', selectionSet);
+  const {
+    groupBy,
+    resource_id,
+  } = args;
+
+  // console.log('getList groupBy', groupBy, args);
 
   // console.log('getList selectionSet total', selectionSet && selectionSet.selections.find(n => n && n.name && n.name.value === "total"));
 
-  return RatingsStore.getState();
+  let state = RatingsStore.getState();
 
+
+  // Сортируем по целевому объекту
+  if(resource_id){
+
+    state = state.filter(n => n.target_class === "modResource" && n.target_id === resource_id);
+
+  }
+
+
+  // Способ группировки
+  switch(groupBy){
+
+    case 'company':
+
+      state = groupByCompany(state);
+
+      break;
+
+    case 'rating_type':
+
+      state = groupByRatingType(state);
+
+      break;
+
+    case 'company_and_rating_type':
+
+      state = groupByCompanyAndRatingType(state);
+
+      break;
+
+    default:;
+  }
+  // if(groupBy){
+
+  //   switch(groupBy){
+
+  //     // По компании
+  //     case 'company':
+
+  //       var result2 = List();
+
+  //       const result_grouped = state.groupBy(x => x.company_id);
+
+  //       result_grouped.map(n => {
+  //         const first = n.get(0);
+
+  //         const quantity = n.size;
+
+  //         let ratings = [];
+
+  //         let voted_users = [];
+
+  //         n.map(i => {
+
+  //           const {
+  //             rating,
+  //             company_id,
+  //             voter,
+  //           } = i;
+
+  //           ratings.push(rating);
+
+  //           if(voter && voted_users.indexOf(voter) === -1){
+  //             voted_users.push(voter);
+  //           }
+
+  //         });
+
+  //         let max_vote;
+  //         let min_vote;
+
+  //         let rating = ratings.reduce((prev, next) => prev+next) / quantity;
+
+  //         // 
+
+  //         result2 = result2.push(Object.assign({}, first, {
+  //           quantity,
+  //           voted_users,
+  //           quantity_voters: voted_users && voted_users.length || 0,
+  //           max_vote: Math.max.apply(null, ratings),
+  //           min_vote: Math.min.apply(null, ratings),
+  //           rating: parseFloat(rating.toFixed(2)),
+  //         }));
+  //       });
+
+  //       state = result2;
+
+  //       break;
+      
+
+  //     // По типу рейтинга
+  //     case 'rating_type':
+ 
+
+  //       break;
+
+  //   }
+
+  // }
+
+  return state;
 };

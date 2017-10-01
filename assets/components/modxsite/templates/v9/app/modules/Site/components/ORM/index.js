@@ -153,7 +153,12 @@ const RootType = new GraphQLObjectType({
     ratings: {
       type: new GraphQLList(RatingType),
       description: "Список комментариев",
-      args: listArgs,
+      args: Object.assign({
+        resource_id: {
+          type: GraphQLInt,
+          description: "ID ресурса, к которому комментарий оставлен",
+        },
+      }, listArgs),
     },
     vote: {
       type: RatingType,

@@ -468,22 +468,62 @@ export const CompanyType = new GraphQLObjectType({
         //     type : RatingGroupbyEnum,
         //   },
         // },
-        // resolve: (company, args) => {
+        resolve: async (source, args, context, info) => {
 
-        //   // 
+          // 
 
-        //   const {
-        //     id: company_id,
-        //   } = company;
+          let result;
 
-        //   Object.assign(args, {
-        //     company: company_id,
-        //     groupBy: 'company',
-        //     limit: 1,
-        //   });
+          const {
+            localQuery,
+          } = context;
 
-        //   return this.ObjectResolver(this.RatingsResolver, company, args);
-        // },
+          const {
+            id: ratingCompanyId,
+          } = source;
+
+          Object.assign(args, {
+            ratingCompanyId,
+          });
+
+          await localQuery({
+            operationName: "CompanyAvgRatings",
+            variables: args,
+          })
+            .then(r => {
+
+              const {
+                ratings,
+              } = r.data;
+
+              // console.log('CompanyAvgRatings', r);
+
+              // result = ratings && ratings[0];
+
+              // console.log('CompanyAvgRatings', result = ratings && ratings[0]);
+
+              result = ratings && ratings[0];
+
+              return result;
+
+            }).catch(e => {
+              console.error(e);
+            });
+
+          return result;
+
+          // const {
+          //   id: company_id,
+          // } = company;
+
+          // Object.assign(args, {
+          //   company: company_id,
+          //   groupBy: 'company',
+          //   limit: 1,
+          // });
+
+          // return this.ObjectResolver(this.RatingsResolver, company, args);
+        },
       },
     }
   }

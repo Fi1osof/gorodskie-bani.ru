@@ -46,7 +46,9 @@ export const getList = async (Company, args, context, info) => {
   var q = knex(`${prefix}society_votes as votes`)
     
     .select('votes.type')
-    .select('votes.target_id as company_id')
+    // .select('votes.target_id as company_id')
+    .select('votes.target_id')
+    .select('votes.target_class')
     .select('votes.user_id as voter')
     .select('votes.vote_value as rating')
     ;

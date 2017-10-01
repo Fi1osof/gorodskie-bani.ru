@@ -225,67 +225,85 @@ export const CompanyType = new GraphQLObjectType({
       city_uri: {
         type: GraphQLString
       },
-      // tvs: {
-      //   type: new GraphQLObjectType({
-      //     name: 'TSvType',
-      //     fields: {
-      //       address: {
-      //         type: GraphQLString,
-      //         description: 'Адрес',
-      //       },
-      //       site: {
-      //         type: GraphQLString,
-      //         description: 'Веб-сайт',
-      //       },
-      //       facility_type: {
-      //         type: GraphQLString,
-      //         description: 'Тип заведения',
-      //       },
-      //       phones: {
-      //         type: GraphQLString,
-      //         description: 'Телефон',
-      //       },
-      //       work_time: {
-      //         type: GraphQLString,
-      //         description: 'Рабочее время',
-      //       },
-      //       prices: {
-      //         type: GraphQLString,
-      //         description: 'Цены',
-      //       },
-      //       metro: {
-      //         type: GraphQLString,
-      //         description: 'Метро',
-      //       },
-      //     },
-      //   }),
-      //   resolve: (object) => {
-      //     let tvs = {};
+      tvs: {
+        type: new GraphQLObjectType({
+          name: 'TSvType',
+          fields: {
+            address: {
+              type: GraphQLString,
+              description: 'Адрес',
+            },
+            site: {
+              type: GraphQLString,
+              description: 'Веб-сайт',
+            },
+            facility_type: {
+              type: GraphQLString,
+              description: 'Тип заведения',
+            },
+            phones: {
+              type: GraphQLString,
+              description: 'Телефон',
+            },
+            work_time: {
+              type: GraphQLString,
+              description: 'Рабочее время',
+            },
+            prices: {
+              type: GraphQLString,
+              description: 'Цены',
+            },
+            metro: {
+              type: GraphQLString,
+              description: 'Метро',
+            },
+          },
+        }),
+        resolve: (object) => {
+          let tvs = {};
 
-      //     if(object.tvs){
+          if(object.tvs){
 
-      //       for(var name in object.tvs){
+            // if(object.tvs.address !== undefined){
+            //   tvs = object.tvs;
+            // }
+            // else{
 
-      //         var tv = object.tvs[name];
+              // console.log('tvs', object.tvs);
 
-      //         if(tv){
+              for(var name in object.tvs){
 
-      //           var {
-      //             tv_id: id,
-      //             caption,
-      //             value,
-      //           } = tv;
+                var tv = object.tvs[name];
 
-      //           tvs[name] = value;
+                if(tv){
 
-      //         }
-      //       }
-            
-      //     }
+                  let v;
 
-      //     return tvs;
-      //   },
-      // },
+                  if(tv.tv_id === undefined){
+                    tvs[name] = tv;
+                  }
+                  else{
+
+                    let {
+                      tv_id: id,
+                      caption,
+                      value,
+                    } = tv;
+                    
+                    tvs[name] = value;
+
+                  }
+
+                }
+              }
+
+            // }
+
+          }
+
+          return tvs;
+        },
+      },
       gallery: {
         type: new GraphQLList(
           new GraphQLObjectType({
@@ -383,30 +401,54 @@ export const CompanyType = new GraphQLObjectType({
       //     return this.ObjectResolver(this.RatingsResolver, company, args);
       //   },
       // },
-      // ratingsByType: {
-      //   description: 'Рейтинг по типам',
-      //   type: new GraphQLList(RatingsType),
-      //   args: {
-      //     groupBy: {
-      //       type : RatingGroupbyEnum,
-      //     },
-      //   },
-      //   resolve: (company, args) => {
+      ratingsByType: {
+        description: 'Рейтинг по типам',
+        type: new GraphQLList(RatingType),
+        // args: {
+        //   groupBy: {
+        //     type : RatingGroupbyEnum,
+        //   },
+        // },
+        resolve: async (company, args, context, info) => {
 
-      //     // 
+          // 
 
-      //     const {
-      //       id: company_id,
-      //     } = company;
+          const {
+            localQuery,
+          } = context;
 
-      //     Object.assign(args, {
-      //       company: company_id,
-      //       groupBy: 'rating_type',
-      //     });
+          const {
+            id: company_id,
+          } = company;
 
-      //     return this.RatingsResolver(company, args);
-      //   },
-      // },
+          Object.assign(args, {
+            ratingCompanyId: company_id,
+            getByTypeRatings: true,
+          });
+
+          let result;
+
+          await localQuery({
+            operationName: "CompanyRatings",
+            variables: args,
+          })
+            .then(r => {
+
+              const {
+                ratingsByType,
+              } = r.data;
+
+              // console.log("CompanyRatings", args, r);
+
+              result = ratingsByType;
+
+            });
+
+          return result;
+
+          // return this.RatingsResolver(company, args);
+        },
+      },
       // votes: {
       //   description: 'Все голоса за компанию',
       //   type: new GraphQLList(RatingsType),

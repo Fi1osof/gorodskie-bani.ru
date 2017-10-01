@@ -395,7 +395,7 @@ export class AppMain extends Component{
     // var schema = this._getSchema();
 
 
-    // console.log('rootResolver', rootResolver);
+    console.log('app localQuery', graphQLParams);
 
     // 
 

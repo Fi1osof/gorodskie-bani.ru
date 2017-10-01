@@ -68,7 +68,7 @@ export const RatingArgs = {
 };
 
 export const RatingType = new GraphQLObjectType({
-  name: 'RatingsType',
+  name: 'RatingType',
   description: 'Рейтинги бань (с возможностью группировки по типам рейтингов и компаний)',
   fields: () => {
 
@@ -153,7 +153,7 @@ export const RatingType = new GraphQLObjectType({
             }
 
             Object.assign(args, {
-              ids,
+              userIds: ids,
               limit: 0,
             });
 
@@ -166,11 +166,13 @@ export const RatingType = new GraphQLObjectType({
 
                 // 
 
+                // console.log("Voters", args, result);
+
                 const {
-                  users,
+                  users: voters,
                 } = result.data || {};
 
-                resolve(users && users.object || null);
+                resolve(voters);
               })
               .catch(e => reject(e));
           });

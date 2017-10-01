@@ -2,6 +2,7 @@
 const defaultQuery = `
 
 
+
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -10,6 +11,7 @@ query apiData(
   $getCommentCompany:Boolean = false
   $getCompanyFullData:Boolean = false
   $getCompanyGallery:Boolean = true
+  $getTVs:Boolean = true
 ){
   companies(
     limit:$limit
@@ -44,12 +46,26 @@ query Companies (
   $getCompanyFullData:Boolean = false
   $companyIds:[Int]
   $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
+  $withPagination:Boolean = false
 ){
   companies(
     limit:$limit
     ids:$companyIds
-  ){
+  ) @skip(if:$withPagination)
+  {
     ...Company
+  }
+  companiesList(
+    limit:$limit
+    ids:$companyIds
+  ) @include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...Company
+    }
   }
 }
 
@@ -61,11 +77,20 @@ query Company(
   $getCommentCompany:Boolean = false
   $getCompanyFullData:Boolean = true
   $getCompanyGallery:Boolean = true
+  $getTVs:Boolean = true
 ){
   company(
     id: $id
   ) {
     ...Company
+    ratingsByType {
+      rating
+      max_vote
+      min_vote
+      type
+      quantity
+      quantity_voters
+    }
   }
 }
 
@@ -84,6 +109,7 @@ query Ratings(
   $withPagination:Boolean = false
   $ratingsResourceId:Int
   $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
 ){ 
   ratings(
     limit:$limit
@@ -117,6 +143,7 @@ query Comments(
   $withPagination:Boolean = false
   $commentsResourceId:Int
   $commentParent:Int
+  $getTVs:Boolean = false
 ){
   commentsList(
     limit: $limit
@@ -150,6 +177,7 @@ query MapCompanies (
   $getRatingsAvg:Boolean = true
   $withPagination:Boolean = false
   $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
 ){
   companiesList(
     limit:$limit
@@ -185,12 +213,28 @@ query CompanyRatings(
   $getCommentCompany:Boolean = false
   $getRatingsAvg:Boolean = false
   $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
+  $getAllRatings:Boolean = true
+  $getByTypeRatings:Boolean = false
 ){
   ratings(  
     limit:$limit
     groupBy:$groupBy
     resource_id:$ratingCompanyId
-  ) {
+  ) 
+  @include(if:$getAllRatings)
+  @skip(if:$getByTypeRatings)
+  {
+    ...Rating
+  }
+  
+  #по типу
+  ratingsByType:ratings(  
+    limit:$limit
+    groupBy:rating_type
+    resource_id:$ratingCompanyId
+  ) @include(if:$getByTypeRatings)
+  {
     ...Rating
   }
 }
@@ -206,6 +250,7 @@ query CompanyComments(
   $getRatingsAvg:Boolean = false
   $getCompanyGallery:Boolean = false
   $withPagination:Boolean = false
+  $getTVs:Boolean = false
 ){
   comments(  
     limit:$limit
@@ -239,6 +284,7 @@ query CompanyAvgRatings(
   $getCommentCompany:Boolean = false
   $getRatingsAvg:Boolean = false
   $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
 ){
   ratings(  
     limit:1
@@ -252,10 +298,12 @@ query CompanyAvgRatings(
 query Users(
   $limit: Int!
   $getImageFormats:Boolean = false
+  $userIds:[Int]
 ) {
   
   users(
     limit:$limit
+    ids:$userIds
   ){
     ...User
   }
@@ -278,18 +326,23 @@ fragment Comment on CommentType{
   }
 }
 
-fragment Rating on RatingsType{
+fragment Rating on RatingType{
   rating
   max_vote
   min_vote
   type
   target_id
   target_class
-  ... on RatingsType @include(if:$getRatingFullInfo)
+  voter
+  ... on RatingType @include(if:$getRatingFullInfo)
   {
     quantity
     quantity_voters
     voted_companies
+    voted_users
+    voters{
+      ...User
+    }
     companies @include(if:$getRatingCompanies)
     {
       ...Company
@@ -328,6 +381,16 @@ fragment Company on Company{
   coords{
     lat
     lng
+  }
+  tvs @include(if:$getTVs)
+  {
+    address
+    site
+    facility_type
+    phones
+    work_time
+    prices
+    metro
   }
   ... on Company @include(if:$getCompanyFullData)
   {
@@ -402,6 +465,7 @@ fragment User on UserType {
     big
   }
 }
+
 
 
 

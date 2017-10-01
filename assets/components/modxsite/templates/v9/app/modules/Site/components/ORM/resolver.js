@@ -493,9 +493,13 @@ const getObjectsList = async (ofType, source, args, context, info) => {
   // Получаем список пользователей
 	else if(ofType === UserType){
 
+  
 
     await ObjectsListResolver(getUsersList, source, args, context, info)
     	.then(r => {
+  			
+  			// console.log("ofType2 UserType", args, r);
+
     		result = r;
     	});
 
@@ -504,7 +508,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
   // Получаем список пользователей
 	else if(ofType === CommentType){
   
-  	console.log("ofType2", ofType);
+  	// console.log("ofType2", ofType);
 
 
     await ObjectsListResolver(getCommentsList, source, args, context, info)

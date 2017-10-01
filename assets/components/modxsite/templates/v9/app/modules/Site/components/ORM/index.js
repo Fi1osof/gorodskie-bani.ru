@@ -122,6 +122,18 @@ const RatingsList = new RatingsListField({
   args: RatingArgs,
 });
 
+
+const commentsArgs = Object.assign({
+  resource_id: {
+    type: GraphQLInt,
+    description: 'ID ресурса',
+  },
+  parent: {
+    type: GraphQLInt,
+    description: 'ID родительского комментария',
+  },
+}, listArgs);
+
 // console.log('RatingsList', RatingsList);
 
 const RootType = new GraphQLObjectType({
@@ -170,16 +182,17 @@ const RootType = new GraphQLObjectType({
       },
       // resolve: getRating,
     },
+    commentsList: new listField({
+      type: CommentType,
+      name: "commentsList",
+      description: "Список комментариев с постраничностью",
+      args: commentsArgs,
+    }),
     comments: {
       type: new GraphQLList(CommentType),
       name: "Comments",
       description: "Список комментариев",
-      args: Object.assign({
-        thread: {
-          type: GraphQLInt,
-          description: 'ID диалоговой ветки',
-        },
-      }, listArgs),
+      args: commentsArgs,
     },
     users: {
       type: new GraphQLList(UserType),

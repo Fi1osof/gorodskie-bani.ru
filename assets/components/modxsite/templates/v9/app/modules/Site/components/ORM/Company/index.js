@@ -286,19 +286,23 @@ export const CompanyType = new GraphQLObjectType({
       //     return tvs;
       //   },
       // },
-      // gallery: {
-      //   type: new GraphQLList(
-      //     new GraphQLObjectType({
-      //       name: 'galleryType',
-      //       fields: {
-      //         image: imageType,
-      //       },
-      //     })
-      //   ),
-      //   resolve: (object) => {
-      //     return object.gallery || [];
-      //   },
-      // },
+      gallery: {
+        type: new GraphQLList(
+          new GraphQLObjectType({
+            name: 'galleryType',
+            fields: {
+              image: {
+                type: GraphQLString,
+              },
+              imageFormats: imageType,
+              // image: imageType,
+            },
+          })
+        ),
+        resolve: (object) => {
+          return object.gallery || [];
+        },
+      },
       coords: {
         type: coordsType,
         resolve: (source) => {
@@ -455,6 +459,43 @@ export const CompanyType = new GraphQLObjectType({
 
         //   return this.commentsListResolver(company, args);
         // },
+        resolve: async (source, args, context, info) => {
+ 
+          let result;
+
+          const {
+            localQuery,
+          } = context;
+
+          const {
+            id: commentsCompanyId,
+          } = source;
+
+          if(!commentsCompanyId){
+            return null;
+          }
+
+          Object.assign(args, {
+            commentsCompanyId,
+          });
+
+          await localQuery({
+            // query: q,
+            operationName: "CompanyComments",
+            variables: args,
+          })
+            .then(r => {
+
+              const {
+                comments,
+              } = r.data;
+
+              result = comments;
+
+            });
+
+          return result;
+        },
       },
       ratings: {
         type: new GraphQLList(RatingType),

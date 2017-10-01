@@ -144,6 +144,14 @@ export const CommentType = new GraphQLObjectType({
       thread_id: {
         type: GraphQLString
       },
+      target_id: {
+        type: GraphQLInt,
+        description: "ID цели",
+      },
+      target_class: {
+        type: GraphQLString,
+        description: "Класс целевого объекта",
+      },
       text: {
         type: GraphQLString
       },
@@ -172,6 +180,15 @@ export const CommentType = new GraphQLObjectType({
       resource_id: {
         type: GraphQLInt,
         description: "ID ресурса",
+        resolve: (source) => {
+
+          const {
+            target_id,
+            target_class,
+          } = source;
+
+          return target_class === "modResource" && target_id;
+        },
       },
       createdon: {
         type: GraphQLString,
@@ -297,6 +314,28 @@ export const getList = async (source, args, context, info) => {
     CommentsStore,
   } = context.state;
 
-  return CommentsStore.getState();
+  const {
+    resource_id,
+    parent,
+  } = args;
+
+  let state = CommentsStore.getState();
+
+
+  // Фильтр по документу
+  if(resource_id){
+
+    state = state.filter(n => n.resource_id === resource_id);
+
+  }
+
+  // Фильтр по родителю
+  if(parent){
+
+    state = state.filter(n => n.parent === parent);
+
+  }
+
+  return state;
 
 };

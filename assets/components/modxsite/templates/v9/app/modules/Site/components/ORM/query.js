@@ -1,5 +1,7 @@
 
 const defaultQuery = `
+
+
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -7,6 +9,7 @@ query apiData(
   $getCompanyComments:Boolean = false
   $getCommentCompany:Boolean = false
   $getCompanyFullData:Boolean = false
+  $getCompanyGallery:Boolean = true
 ){
   companies(
     limit:$limit
@@ -40,6 +43,7 @@ query Companies (
   $getCommentCompany:Boolean = false
   $getCompanyFullData:Boolean = false
   $companyIds:[Int]
+  $getCompanyGallery:Boolean = false
 ){
   companies(
     limit:$limit
@@ -51,11 +55,12 @@ query Companies (
 
 query Company(
   $id:Int!
-  $getRatingsAvg:Boolean = false
-  $getImageFormats:Boolean = false
-  $getCompanyComments:Boolean = false
+  $getRatingsAvg:Boolean = true
+  $getImageFormats:Boolean = true
+  $getCompanyComments:Boolean = true
   $getCommentCompany:Boolean = false
-  $getCompanyFullData:Boolean = false
+  $getCompanyFullData:Boolean = true
+  $getCompanyGallery:Boolean = true
 ){
   company(
     id: $id
@@ -78,6 +83,7 @@ query Ratings(
   $getRatingFullInfo:Boolean = false
   $withPagination:Boolean = false
   $ratingsResourceId:Int
+  $getCompanyGallery:Boolean = false
 ){ 
   ratings(
     limit:$limit
@@ -107,10 +113,29 @@ query Comments(
   $getCompanyComments:Boolean = false
   $getCommentCompany:Boolean = false
   $getRatingsAvg:Boolean = false
+  $getCompanyGallery:Boolean = false
+  $withPagination:Boolean = false
+  $commentsResourceId:Int
+  $commentParent:Int
 ){
+  commentsList(
+    limit: $limit
+    resource_id:$commentsResourceId
+    parent:$commentParent
+  )@include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...Comment
+    }
+  }
   comments(
     limit: $limit
-  ){
+    resource_id:$commentsResourceId
+    parent:$commentParent
+  )@skip(if:$withPagination)
+  {
     ...Comment
   }
 }
@@ -124,6 +149,7 @@ query MapCompanies (
   $getCommentCompany:Boolean = false
   $getRatingsAvg:Boolean = true
   $withPagination:Boolean = false
+  $getCompanyGallery:Boolean = false
 ){
   companiesList(
     limit:$limit
@@ -145,16 +171,107 @@ query MapCompanies (
   }
 }
 
+# Получаем рейтинг конкретной компании
+query CompanyRatings(
+  $limit:Int = 0
+  $ratingCompanyId:Int!
+  $groupBy:RatingGroupbyEnum
+  $getRatingFullInfo:Boolean = true
+  $getRatingCompanies:Boolean = false
+  $getRatingCompany:Boolean = false
+  $getCompanyFullData:Boolean = false
+  $getImageFormats:Boolean = false
+  $getCompanyComments:Boolean = false
+  $getCommentCompany:Boolean = false
+  $getRatingsAvg:Boolean = false
+  $getCompanyGallery:Boolean = false
+){
+  ratings(  
+    limit:$limit
+    groupBy:$groupBy
+    resource_id:$ratingCompanyId
+  ) {
+    ...Rating
+  }
+}
+
+# Получаем комментарии конкретной компании
+query CompanyComments(
+  $limit:Int = 0
+  $commentsCompanyId:Int!
+  $getCompanyFullData:Boolean = false
+  $getImageFormats:Boolean = false
+  $getCompanyComments:Boolean = false
+  $getCommentCompany:Boolean = false
+  $getRatingsAvg:Boolean = false
+  $getCompanyGallery:Boolean = false
+  $withPagination:Boolean = false
+){
+  comments(  
+    limit:$limit
+    resource_id:$commentsCompanyId
+  ) @skip(if:$withPagination)
+  {
+    ...Comment
+  }
+  commentsList(  
+    limit:$limit
+    resource_id:$commentsCompanyId
+  ) @include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...Comment
+    }
+  }
+}
+
+# Получаем средний рейтинг по компании
+query CompanyAvgRatings(
+  $ratingCompanyId:Int!
+  $getRatingFullInfo:Boolean = true
+  $getRatingCompanies:Boolean = false
+  $getRatingCompany:Boolean = false
+  $getCompanyFullData:Boolean = false
+  $getImageFormats:Boolean = false
+  $getCompanyComments:Boolean = false
+  $getCommentCompany:Boolean = false
+  $getRatingsAvg:Boolean = false
+  $getCompanyGallery:Boolean = false
+){
+  ratings(  
+    limit:1
+    groupBy:company
+    resource_id:$ratingCompanyId
+  ) {
+    ...Rating
+  }
+}
+
+query Users(
+  $limit: Int!
+  $getImageFormats:Boolean = false
+) {
+  
+  users(
+    limit:$limit
+  ){
+    ...User
+  }
+}
+
 fragment Comment on CommentType{
   id
-  thread_id
+  resource_id  
+  target_id
+  target_class
   text
   parent
   published
   deleted
   createdon
   createdby
-  resource_id
   Company @include(if:$getCommentCompany)
   {
     ...Company
@@ -184,62 +301,6 @@ fragment Rating on RatingsType{
   }
 }
 
-# Получаем рейтинг конкретной компании
-query CompanyRatings(
-  $limit:Int = 0
-  $ratingCompanyId:Int!
-  $groupBy:RatingGroupbyEnum
-  $getRatingFullInfo:Boolean = true
-  $getRatingCompanies:Boolean = false
-  $getRatingCompany:Boolean = false
-  $getCompanyFullData:Boolean = false
-  $getImageFormats:Boolean = false
-  $getCompanyComments:Boolean = false
-  $getCommentCompany:Boolean = false
-  $getRatingsAvg:Boolean = false
-){
-  ratings(  
-    limit:$limit
-    groupBy:$groupBy
-    resource_id:$ratingCompanyId
-  ) {
-    ...Rating
-  }
-}
-
-# Получаем средний рейтинг по компании
-query CompanyAvgRatings(
-  $ratingCompanyId:Int!
-  $getRatingFullInfo:Boolean = true
-  $getRatingCompanies:Boolean = false
-  $getRatingCompany:Boolean = false
-  $getCompanyFullData:Boolean = false
-  $getImageFormats:Boolean = false
-  $getCompanyComments:Boolean = false
-  $getCommentCompany:Boolean = false
-  $getRatingsAvg:Boolean = false
-){
-  ratings(  
-    limit:1
-    groupBy:company
-    resource_id:$ratingCompanyId
-  ) {
-    ...Rating
-  }
-}
-
-query Users(
-  $limit: Int!
-  $getImageFormats:Boolean = false
-) {
-  
-  users(
-    limit:$limit
-  ){
-    ...User
-  }
-}
-
 fragment Company on Company{
   id
   name
@@ -251,6 +312,19 @@ fragment Company on Company{
   city_uri
   image
   ...imageFormats @include(if:$getImageFormats)
+  gallery @include(if:$getCompanyGallery)
+  {
+    image
+    imageFormats @include(if:$getImageFormats)
+    {
+      original
+      thumb
+      marker_thumb
+      small
+      middle
+      big
+    }
+  }
   coords{
     lat
     lng
@@ -328,6 +402,7 @@ fragment User on UserType {
     big
   }
 }
+
 
 
 `;

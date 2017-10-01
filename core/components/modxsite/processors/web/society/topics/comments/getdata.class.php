@@ -163,7 +163,9 @@ class modWebSocietyTopicsCommentsGetdataProcessor extends modWebSocietyCommentsG
         $q->innerJoin('modResource', 'resource', "resource.id = Thread.target_id");
         
         $q->select(array(
-            "Thread.comments_count as thread_comments_count",  
+            "Thread.comments_count as thread_comments_count",
+            "Thread.target_id",
+            "Thread.target_class",
             "resource.id as resource_id",
             "resource.pagetitle as resource_pagetitle",
             "resource.uri as resource_uri",

@@ -159,7 +159,7 @@ export const RatingType = new GraphQLObjectType({
 
             localQuery({
               // query: q,
-              operationsName: "Users",
+              operationName: "Users",
               variables: args,
             })
               .then(result => {

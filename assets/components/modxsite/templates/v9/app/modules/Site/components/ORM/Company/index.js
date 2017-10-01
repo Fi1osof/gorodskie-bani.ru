@@ -24,6 +24,11 @@ import {
   RatingType,
 } from '../Rating';
 
+
+import {
+  ResourceType,
+} from '../Resource';
+
 import {
   imageType,
   coordsType,
@@ -199,6 +204,9 @@ export const CompanyType = new GraphQLObjectType({
       name: {
         type: GraphQLString
       },
+      pagetitle: {
+        type: GraphQLString
+      },
       longtitle: {
         type: GraphQLString
       },
@@ -210,6 +218,12 @@ export const CompanyType = new GraphQLObjectType({
       },
       alias: {
         type: GraphQLString
+      },
+      template: {
+        type: GraphQLInt
+      },
+      parent: {
+        type: GraphQLInt
       },
       uri: {
         type: GraphQLString
@@ -594,11 +608,6 @@ export const CompanyType = new GraphQLObjectType({
       ratingAvg: {
         description: 'Суммарный рейтинг',
         type: RatingType,
-        // args: {
-        //   groupBy: {
-        //     type : RatingGroupbyEnum,
-        //   },
-        // },
         resolve: async (source, args, context, info) => {
 
           // 
@@ -627,12 +636,6 @@ export const CompanyType = new GraphQLObjectType({
                 ratings,
               } = r.data;
 
-              // console.log('CompanyAvgRatings', r);
-
-              // result = ratings && ratings[0];
-
-              // console.log('CompanyAvgRatings', result = ratings && ratings[0]);
-
               result = ratings && ratings[0];
 
               return result;
@@ -642,18 +645,52 @@ export const CompanyType = new GraphQLObjectType({
             });
 
           return result;
+        },
+      },
+      topics: {
+        description: 'Топики компании',
+        type: new GraphQLList(ResourceType),
+        resolve: async (source, args, context, info) => {
 
-          // const {
-          //   id: company_id,
-          // } = company;
+          // 
 
-          // Object.assign(args, {
-          //   company: company_id,
-          //   groupBy: 'company',
-          //   limit: 1,
-          // });
 
-          // return this.ObjectResolver(this.RatingsResolver, company, args);
+          let result;
+
+          const {
+            localQuery,
+          } = context;
+
+          const {
+            id: resourceParent,
+          } = source;
+
+          Object.assign(args, {
+            resourceParent,
+          });
+
+          await localQuery({
+            operationName: "CompanyTopics",
+            variables: args,
+          })
+            .then(r => {
+          
+              // console.log('ResourceType topics', args, r);
+
+
+              const {
+                topics,
+              } = r.data;
+
+              result = topics;
+
+              return result;
+
+            }).catch(e => {
+              console.error(e);
+            });
+
+          return result;
         },
       },
     }

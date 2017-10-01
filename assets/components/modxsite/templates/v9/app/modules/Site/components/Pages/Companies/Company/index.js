@@ -16,6 +16,8 @@ import SaveIcon from 'material-ui-icons/Save';
 import ItemMap from 'modules/Site/components/fields/Map';
 import Comments from 'modules/Site/components/Comments';
 
+import CompanyTopics from './Topics';
+
 // import GoogleMapReact from 'google-map-react';
 
 import RatingField from './fields/Rating';
@@ -164,7 +166,7 @@ export default class CompanyPage extends Component{
 			prices,
 		} = tvs || {};
 
-		
+		// console.log("Company page item", item);
 
 		let addresses = [];
 
@@ -254,6 +256,7 @@ export default class CompanyPage extends Component{
 
 		}
 
+
 		return <Card>
 			
 			<CardHeader 
@@ -282,6 +285,10 @@ export default class CompanyPage extends Component{
         subheader={<RatingField 
 					item={item}
 				/>}
+			/>
+
+			<CompanyTopics 
+				item={item}
 			/>
 
 				

@@ -37,6 +37,12 @@ import {
 } from './Comment';
 
 
+import {
+  ResourceType,
+	getList as getResourcesList,
+} from './Resource';
+
+
 
 // const rootResolver = async (source, args, context, info) => {
 
@@ -512,6 +518,19 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
 
     await ObjectsListResolver(getCommentsList, source, args, context, info)
+    	.then(r => {
+    		result = r;
+    	});
+
+  }
+
+  // Получаем список пользователей
+	else if(ofType === ResourceType){
+  
+  	// console.log("ofType2", ofType);
+
+
+    await ObjectsListResolver(getResourcesList, source, args, context, info)
     	.then(r => {
     		result = r;
     	});

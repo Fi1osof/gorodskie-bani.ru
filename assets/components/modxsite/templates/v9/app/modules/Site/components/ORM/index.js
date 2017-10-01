@@ -144,6 +144,10 @@ const resourcesArgs = Object.assign({
     type: GraphQLInt,
     description: 'ID Шаблона',
   },
+  parent: {
+    type: GraphQLInt,
+    description: 'ID родителя',
+  },
   excludeTemplates: {
     type: new GraphQLList(GraphQLInt),
     description: 'С какими шаблонами надо исключить документы',

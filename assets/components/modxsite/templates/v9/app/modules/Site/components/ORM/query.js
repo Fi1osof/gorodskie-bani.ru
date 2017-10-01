@@ -1,6 +1,7 @@
 
 const defaultQuery = `
 
+
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -17,6 +18,8 @@ query apiData(
   $resourceTemplate:Int
   $resourceExcludeTemplates:[Int] = [27,28,15]
   $resourceType:ResourceTypeEnum
+  $resourceParent:Int
+  $getCompanyTopics:Boolean = false
 ){
   companies(
     limit:$limit
@@ -57,6 +60,7 @@ query Companies (
   $withPagination:Boolean = false
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
 ){
   companies(
     limit:$limit
@@ -89,6 +93,7 @@ query Company(
   $getTVs:Boolean = true
   $companyCommentsSort:[SortBy] = {by: id, dir:asc}
   $getCommentAuthor:Boolean = true
+  $getCompanyTopics:Boolean = true
 ){
   company(
     id: $id
@@ -124,6 +129,7 @@ query Ratings(
   $getTVs:Boolean = false
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
 ){ 
   ratings(
     limit:$limit
@@ -161,6 +167,7 @@ query Comments(
   $commentsSort:[SortBy]
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
 ){
   commentsList(
     limit: $limit
@@ -199,6 +206,7 @@ query MapCompanies (
   $getTVs:Boolean = false
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
 ){
   companiesList(
     limit:$limit
@@ -240,6 +248,7 @@ query CompanyRatings(
   $getByTypeRatings:Boolean = false
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
 ){
   ratings(  
     limit:$limit
@@ -278,6 +287,7 @@ query CompanyComments(
   $commentsSort:[SortBy]
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
 ){
   comments(  
     limit:$limit
@@ -317,6 +327,7 @@ query CompanyAvgRatings(
   $getTVs:Boolean = false
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
 ){
   ratings(  
     limit:1
@@ -325,6 +336,16 @@ query CompanyAvgRatings(
   ) {
     ...Rating
   }
+}
+
+# Получаем средний рейтинг по компании
+query CompanyTopics(
+  $resourcesLimit:Int = 0
+  $resourceParent:Int!
+  $getTVs:Boolean = false
+  $withPagination:Boolean = false
+){
+    ...Topics
 }
 
 query Users(
@@ -375,11 +396,9 @@ query Resources(
 
 query Topics(
   $resourcesLimit:Int = 0
-  # $withPagination:Boolean = false
+  $withPagination:Boolean = false
   $getTVs:Boolean = true
-  # $resourceTemplate:Int
-  # $resourceExcludeTemplates:[Int]
-  # $resourceType:ResourceTypeEnum = topic
+  $resourceParent:Int
 ){
   
   ...Topics
@@ -389,9 +408,28 @@ fragment Topics on RootType{
   topics:resources(
     resourceType:topic
     limit:$resourcesLimit
-  ){
-    ...Resource
+    parent:$resourceParent
+  ) @skip(if:$withPagination)
+  {
+    ...Topic
   }
+  topicsList:resourcesList(
+    resourceType:topic
+    limit:$resourcesLimit
+    parent:$resourceParent
+  ) @include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...Topic
+    }
+  }
+}
+
+
+fragment Topic on ResourceType{
+  ...Resource
 }
 
 fragment ResourcesList on RootType{
@@ -422,6 +460,7 @@ fragment ResourcesList on RootType{
 fragment Resource on ResourceType{
   id
   name
+  pagetitle
   longtitle
   template
   parent
@@ -514,6 +553,7 @@ fragment Company on Company{
   city_id
   city
   city_uri
+  template
   image
   ...imageFormats @include(if:$getImageFormats)
   gallery @include(if:$getCompanyGallery)
@@ -588,6 +628,10 @@ fragment Company on Company{
     voters{
       ...User
     }
+  }
+  topics @include(if:$getCompanyTopics)
+  {
+    ...Topic
   }
 }
 

@@ -86,14 +86,14 @@ export default class Start extends Component{
 						editedRating: i,
 					});
 				}}
-				onClick={event => {
+				// onClick={event => {
 
-					alert("Извините, возможность голосования появится чуть позже.");
+				// 	alert("Извините, возможность голосования появится чуть позже.");
 
-					// this.setState({
-					// 	inEditMode: !inEditMode,
-					// });
-				}}
+				// 	// this.setState({
+				// 	// 	inEditMode: !inEditMode,
+				// 	// });
+				// }}
 			/>
 
 			stars.push(star);

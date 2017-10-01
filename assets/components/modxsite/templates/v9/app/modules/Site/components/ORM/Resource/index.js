@@ -48,6 +48,9 @@ export const ResourceType = new GraphQLObjectType({
           return source.pagetitle;
         },
       },
+      pagetitle: {
+        type: GraphQLString
+      },
       longtitle: {
         type: GraphQLString
       },
@@ -345,8 +348,34 @@ export const getList = async (source, args, context, info) => {
 
   const {
     CompaniesStore,
+    TopicsStore,
   } = context.state;
 
-  return CompaniesStore.getState();
+  const {
+    parent,
+    resourceType,
+  } = args;
+ 
+  let state
+
+  switch(resourceType){
+
+    case 'topic':
+    
+      state = TopicsStore.getState();
+
+      break;
+
+    default: state = CompaniesStore.getState();
+  }
+
+
+  if(parent){
+
+    state = state.filter(n => n.parent === parent);
+
+  }
+
+  return state
 
 };

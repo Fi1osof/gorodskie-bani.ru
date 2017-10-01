@@ -16,16 +16,19 @@ import {
 
 
 import {
-	Company,
 	CompanyType,
 	getList as getCompanyList,
 } from './Company';
 
 import {
-	Rating,
 	RatingType,
 	getList as getRatingsList,
 } from './Rating';
+
+import {
+	UserType,
+	getList as getUsersList,
+} from './User';
 
 // const rootResolver = async (source, args, context, info) => {
 
@@ -459,56 +462,41 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
 	let result;
 
-  // const {
-  // 	returnType,
-  // } = info;
+	// Поулчаем список компаний
+	if(ofType === CompanyType){
 
-  // const {
-  //   name: returnTypeName,
-  // } = returnType;
+    await ObjectsListResolver(getCompanyList, source, args, context, info)
+    	.then(r => {
+    		result = r;
+    	});
+    	
+  }
 
-  // const {
-  // 	_fields: {
-  // 		object: objectField,
-  // 	},
-  // } = returnType;
-
-
-
-  // if(objectField && objectField.type){
-
-		// const {
-		// 	type: objectType,
-		// } = objectField;
-
-		// const {
-		// 	ofType,
-		// } = objectType || {};
-
-		// Поулчаем список компаний
-		if(ofType === CompanyType){
-
-	    await ObjectsListResolver(getCompanyList, source, args, context, info)
-	    	.then(r => {
-	    		result = r;
-	    	});
-	    	
-	  }
-
-	  // Получаем список рейтингов
-		else if(ofType === RatingType){
-	  
-	  	console.log("ofType2", ofType);
+  // Получаем список рейтингов
+	else if(ofType === RatingType){
+  
+  	// console.log("ofType2", ofType);
 
 
-	    await ObjectsListResolver(getRatingsList, source, args, context, info)
-	    	.then(r => {
-	    		result = r;
-	    	});
+    await ObjectsListResolver(getRatingsList, source, args, context, info)
+    	.then(r => {
+    		result = r;
+    	});
 
-	  }
+  }
 
-  // }
+  // Получаем список пользователей
+	else if(ofType === UserType){
+  
+  	console.log("ofType2", ofType);
+
+
+    await ObjectsListResolver(getUsersList, source, args, context, info)
+    	.then(r => {
+    		result = r;
+    	});
+
+  }
 
 
   return result;

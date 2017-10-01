@@ -694,7 +694,7 @@ export const getList = async (source, args, context, info) => {
     RatingsStore,
   } = context.state;
 
-  console.log('getList rating', args, info);
+  // console.log('getList rating', args, info);
 
   const {
     fieldNodes: {
@@ -704,9 +704,9 @@ export const getList = async (source, args, context, info) => {
     },
   } = info;
 
-  console.log('getList selectionSet', selectionSet);
+  // console.log('getList selectionSet', selectionSet);
 
-  console.log('getList selectionSet total', selectionSet && selectionSet.selections.find(n => n && n.name && n.name.value === "total"));
+  // console.log('getList selectionSet total', selectionSet && selectionSet.selections.find(n => n && n.name && n.name.value === "total"));
 
   return RatingsStore.getState();
 

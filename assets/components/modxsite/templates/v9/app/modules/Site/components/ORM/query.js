@@ -1,10 +1,11 @@
 
 const defaultQuery = `
+
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
   $getImageFormats:Boolean = false
-  $getComments:Boolean = false
+  $getCompanyComments:Boolean = false
   $getCommentCompany:Boolean = false
   $getCompanyFullData:Boolean = false
 ){
@@ -23,9 +24,7 @@ query apiData(
     voter
   }
   users(limit:$limit) {
-    object {
-      ...User
-    }
+    ...User
   }
 }
 
@@ -34,7 +33,7 @@ query Companies (
   $limit:Int!
   $getRatingsAvg:Boolean = false
   $getImageFormats:Boolean = false
-  $getComments:Boolean = false
+  $getCompanyComments:Boolean = false
   $getCommentCompany:Boolean = false
   $getCompanyFullData:Boolean = false
   $companyIds:[Int]
@@ -51,7 +50,7 @@ query Company(
 	$id:Int!
   $getRatingsAvg:Boolean = false
   $getImageFormats:Boolean = false
-  $getComments:Boolean = false
+  $getCompanyComments:Boolean = false
   $getCommentCompany:Boolean = false
   $getCompanyFullData:Boolean = false
 ){
@@ -66,9 +65,10 @@ query Company(
 query Ratings(
   $limit:Int!
   $ratingsGroupBy:RatingGroupbyEnum
+  $getRatingCompanies:Boolean = false
   $getRatingCompany:Boolean = false
   $getCompanyFullData:Boolean = false
-  $getComments:Boolean = false
+  $getCompanyComments:Boolean = false
   $getCommentCompany:Boolean = false
   $getImageFormats:Boolean = false
   $getRatingsAvg:Boolean = false
@@ -93,10 +93,14 @@ fragment Rating on RatingsType{
     quantity
     quantity_voters
     voted_companies
-    companies @include(if:$getRatingCompany)
+    companies @include(if:$getRatingCompanies)
     {
       ...Company
     }
+  }
+  Company @include(if:$getRatingCompany)
+  {
+    ...Company
   }
 }
 
@@ -122,18 +126,13 @@ query CompanyRatings(
 
 query Users(
   $limit: Int!
+  $getImageFormats:Boolean = false
 ) {
   
   users(
     limit:$limit
   ){
-    count
-    total
-    limit
-    page
-    object {
-      ...User
-    }
+    ...User
   }
 }
 
@@ -157,7 +156,7 @@ fragment Company on Company{
     content
     ...imageFormats @include(if:$getImageFormats)
   }
-  comments @include(if:$getComments)
+  comments @include(if:$getCompanyComments)
   {
     id
     thread_id
@@ -216,8 +215,15 @@ fragment User on UserType {
   active
   sudo
   blocked
+  image
+  imageFormats @include(if:$getImageFormats)
+  {
+    thumb
+    small
+    middle
+    big
+  }
 }
-
 
 
 `;

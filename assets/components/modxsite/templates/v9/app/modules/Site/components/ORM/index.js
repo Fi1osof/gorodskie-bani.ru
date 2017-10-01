@@ -176,11 +176,12 @@ const RootType = new GraphQLObjectType({
         },
       }, listArgs),
     },
-    users: new listField({
-      type: UserType,
+    users: {
+      type: new GraphQLList(UserType),
       name: "Users",
       description: "Список пользователей",
-    }),
+      args: listArgs,
+    },
     user: {
       type: UserType,
       name: "User",

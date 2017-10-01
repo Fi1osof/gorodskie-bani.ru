@@ -32,65 +32,87 @@ import {
 
 
 
-export const getMany = function (source, args, context, info){
-  // console.log('Ratings getMany', source, args, info);
-  // console.log('Ratings getMany context', context);
+// export const getList = function (source, args, context, info){
+//   // console.log('Ratings getMany', source, args, info);
+//   // console.log('Ratings getMany context', context);
   
-  const {
-    id,
-  } = source;
+//   const {
+//     id,
+//   } = source;
+
+//   const {
+//     fieldName,
+//   } = info;
+
+//   return new Promise((resolve, reject) => {
+//     // resolve([{
+//     //   id: 345,
+//     //   text: "DSFdsf",
+//     // }]);
+
+//     const {
+//       remoteQuery,
+//     } = context;
+
+//     remoteQuery(`query{
+//         ratings(limit: 0) {
+//           rating
+//           max_vote
+//           min_vote
+//           type
+//           company_id
+//           quantity
+//           quantity_voters
+//           voted_companies
+//           voters
+//         }
+//       }`)
+//       .then(result => {
+
+//         // console.log('result.object', result);
+
+//         const {
+//           ratings,
+//         } = result.object;
+
+//         return resolve(List(ratings));
+//       })
+//       .catch(e => reject(e));
+
+//   });
+// }
+
+// export const getOne = function (source, args, context, info){
+//   return new Promise((resolve, reject) => {
+//     getMany(source, args, context, info)
+//       .then(result => {
+//         console.log('result 444', result, result.get(0));
+//         resolve(result && result.get(0) || null);
+//       })
+//   });
+// }
+
+
+
+export const getList = async (source, args, context, info) => {
 
   const {
-    fieldName,
-  } = info;
+    UsersStore,
+  } = context.state;
 
-  return new Promise((resolve, reject) => {
-    // resolve([{
-    //   id: 345,
-    //   text: "DSFdsf",
-    // }]);
+  // console.log('getList rating', args, info);
 
-    const {
-      remoteQuery,
-    } = context;
+  // const {
+  //   fieldNodes: {
+  //     0: {
+  //       selectionSet,
+  //     }
+  //   },
+  // } = info;
 
-    remoteQuery(`query{
-        ratings(limit: 0) {
-          rating
-          max_vote
-          min_vote
-          type
-          company_id
-          quantity
-          quantity_voters
-          voted_companies
-          voters
-        }
-      }`)
-      .then(result => {
+  return UsersStore.getState();
 
-        // console.log('result.object', result);
-
-        const {
-          ratings,
-        } = result.object;
-
-        return resolve(List(ratings));
-      })
-      .catch(e => reject(e));
-
-  });
-}
-
-export const getOne = function (source, args, context, info){
-  return new Promise((resolve, reject) => {
-    getMany(source, args, context, info)
-      .then(result => {
-        console.log('result 444', result, result.get(0));
-        resolve(result && result.get(0) || null);
-      })
-  });
-}
+};
 
 
 export const UserType = new GraphQLObjectType({
@@ -109,9 +131,12 @@ export const UserType = new GraphQLObjectType({
         type: GraphQLString
       },
       email: {
-        type: GraphQLString
+        type: GraphQLString,
       },
-      // image: imageType,
+      image: {
+        type: GraphQLString,
+      },
+      imageFormats: imageType,
       // photo: {
       //   type: new GraphQLObjectType({
       //     name: "SDfsdf",

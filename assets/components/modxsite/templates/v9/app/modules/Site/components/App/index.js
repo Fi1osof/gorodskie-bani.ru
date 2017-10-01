@@ -885,7 +885,7 @@ export class AppMain extends Component{
     .then(data => {
       
 
-      console.log('loadCompanies', data);
+      // console.log('loadCompanies', data);
 
       let {
         CompaniesStore,

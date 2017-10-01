@@ -542,15 +542,17 @@ export default class MapMainView extends Component{
   		},
   	})
   		.then(r => {
-  			console.log("Map companies", r);
+  			// console.log("Map companies", r);
 
   			const {
-  				object,
-  			} = r.data.companies || {};
+  				companies: result,
+  			} = r.data || {};
 
-  			companies = object;
+  			companies = result;
 
   		});
+		
+		// console.log("Map companies companies", companies);
 
 		companies && companies.map(item => {
 

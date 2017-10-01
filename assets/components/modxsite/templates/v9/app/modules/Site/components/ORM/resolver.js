@@ -389,7 +389,7 @@ export const storeResolver = function(state, args, context, info){
 
   page = page || 1;
 
-  console.log('storeResolver args', args);
+  // console.log('storeResolver args', args);
 
   if(id){
 

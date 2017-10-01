@@ -27,6 +27,7 @@ import {
 import {
   imageType,
   coordsType,
+  SortField,
 } from '../fields';
 
 
@@ -401,14 +402,49 @@ export const CompanyType = new GraphQLObjectType({
       //     return this.ObjectResolver(this.RatingsResolver, company, args);
       //   },
       // },
+      votes: {
+        description: 'Все голоса по компании',
+        type: new GraphQLList(RatingType),
+        resolve: async (company, args, context, info) => {
+
+          const {
+            localQuery,
+          } = context;
+
+          const {
+            id: company_id,
+          } = company;
+
+          Object.assign(args, {
+            ratingCompanyId: company_id,
+          });
+
+          let result;
+
+          await localQuery({
+            operationName: "CompanyRatings",
+            variables: args,
+          })
+            .then(r => {
+
+              const {
+                ratings,
+              } = r.data;
+
+              // console.log("CompanyRatings", args, r);
+
+              result = ratings;
+
+            });
+
+          return result;
+
+          // return this.RatingsResolver(company, args);
+        },
+      },
       ratingsByType: {
         description: 'Рейтинг по типам',
         type: new GraphQLList(RatingType),
-        // args: {
-        //   groupBy: {
-        //     type : RatingGroupbyEnum,
-        //   },
-        // },
         resolve: async (company, args, context, info) => {
 
           // 
@@ -475,12 +511,13 @@ export const CompanyType = new GraphQLObjectType({
       comments: {
         type: new GraphQLList(CommentType),
         description: CommentType.description,
-        // args: {
-        //   order: {
-        //     type: SortType,
-        //     description: SortType.description,
-        //   },
-        // },
+        args: {
+          // order: {
+          //   type: SortType,
+          //   description: SortType.description,
+          // },
+          sort: SortField,
+        },
         // resolve: (company, args) => {
 
 
@@ -517,9 +554,16 @@ export const CompanyType = new GraphQLObjectType({
             return null;
           }
 
+          const {
+            sort: commentsSort,
+          } = args;
+
           Object.assign(args, {
             commentsCompanyId,
+            commentsSort,
           });
+
+          console.log('CompanyComments', args);
 
           await localQuery({
             // query: q,

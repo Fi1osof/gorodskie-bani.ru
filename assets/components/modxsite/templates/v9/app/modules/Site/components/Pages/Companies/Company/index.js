@@ -26,10 +26,11 @@ export default class CompanyPage extends Component{
 	};
 
 	static contextTypes = {
-		loadCompanyFullData: PropTypes.func.isRequired,
+		// loadCompanyFullData: PropTypes.func.isRequired,
 		setPageTitle: PropTypes.func.isRequired,
 		updateContactItem: PropTypes.func.isRequired,
 		saveContactItem: PropTypes.func.isRequired,
+		localQuery: PropTypes.func.isRequired,
 	};
 
 	constructor(props){
@@ -55,24 +56,56 @@ export default class CompanyPage extends Component{
 
 		setPageTitle(name);
 
-		console.log('Company componentDidMount', item);
-
 		this.loadCompanyFullData();
 	}
 
-	loadCompanyFullData(){
-
-		const {
-			loadCompanyFullData,
-		} = this.context;
+	async loadCompanyFullData(){
 
 		const {
 			item,
 		} = this.props;
 
-		// 
+		const {
+			id,
+		} = item;
 
-		loadCompanyFullData(item);
+		if(!id){
+			return;
+		}
+
+		// const {
+		// 	loadCompanyFullData,
+		// } = this.context;
+
+		// // 
+
+		// loadCompanyFullData(item);
+
+		const {
+			localQuery,
+		} = this.context;
+
+		await localQuery({
+			operationName: "Company",
+			variables: {
+				id,
+			},
+		})
+			.then(result => {
+
+				const {
+					company,
+				} = result.data;
+
+				company && Object.assign(item, company);
+
+				console.log('Company componentDidMount', result);
+
+				this.forceUpdate();
+
+			});
+
+		return;
 	}
 
 	updateItem = (item, data) => {
@@ -111,7 +144,7 @@ export default class CompanyPage extends Component{
 			id,
 			name,
 			uri,
-			image,
+			imageFormats: image,
 			gallery,
 			tvs,
 			content,
@@ -179,6 +212,19 @@ export default class CompanyPage extends Component{
 					return;
 				}
 
+				const {
+					imageFormats: image,
+				} = n;
+
+				if(!image){
+					return;
+				}
+
+				const {
+					thumb,
+					big,
+				} = image;
+
 				// if(galleryItem && galleryItem === n.image){
 
 					
@@ -190,14 +236,15 @@ export default class CompanyPage extends Component{
 					item
 					key={index}
 				>
+
 					<img 
-						src={n.image.thumb}
+						src={thumb}
 						style={{
 							cursor: 'pointer',
 						}}
 						onClick={event => {
 							this.setState({
-								galleryItem: n.image.big,
+								galleryItem: big,
 							});
 						}}
 					/>
@@ -291,9 +338,21 @@ export default class CompanyPage extends Component{
 								<b>Сайт: </b> {site}
 							</p> : ''}
 							
-							{work_time ? <p>
-								<b>Время работы: </b> {work_time}
-							</p> : ''}
+							{work_time ? <div
+								style={{
+									overflow: 'hidden',
+								}}
+							>
+								<b
+									style={{
+										float: 'left',
+									}}
+								>Время работы:&nbsp;</b> <div
+									dangerouslySetInnerHTML={{ __html: work_time }}
+								/>
+							</div>
+
+							 : ''}
 
 							{prices
 								?

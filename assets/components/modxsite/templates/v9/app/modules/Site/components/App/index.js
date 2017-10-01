@@ -80,7 +80,7 @@ export class AppMain extends Component{
     apiRequest: PropTypes.func,
     openCompanyPage: PropTypes.func,
     // prepareCompaniesLocalData: PropTypes.func,
-    loadCompanyFullData: PropTypes.func,
+    // loadCompanyFullData: PropTypes.func,
     updateItem: PropTypes.func,
     updateContactItem: PropTypes.func,
     saveContactItem: PropTypes.func,
@@ -111,7 +111,7 @@ export class AppMain extends Component{
       apiRequest: this.apiRequest,
       openCompanyPage: this.openCompanyPage,
       // prepareCompaniesLocalData: this.prepareCompaniesLocalData,
-      loadCompanyFullData: this.loadCompanyFullData,
+      // loadCompanyFullData: this.loadCompanyFullData,
       updateItem: this.updateItem,
       updateContactItem: this.updateContactItem,
       saveContactItem: this.saveContactItem,
@@ -395,7 +395,7 @@ export class AppMain extends Component{
     // var schema = this._getSchema();
 
 
-    console.log('app localQuery', graphQLParams);
+    // console.log('app localQuery', graphQLParams);
 
     // 
 
@@ -1056,114 +1056,114 @@ export class AppMain extends Component{
 
   }
 
-  loadCompanyFullData = (item) => {
+  // loadCompanyFullData = (item) => {
 
     
 
-    if(!item){
-      return false;
-    }
+  //   if(!item){
+  //     return false;
+  //   }
 
-    const {
-      id,
-    } = item;
+  //   const {
+  //     id,
+  //   } = item;
 
-    const itemId = parseInt(id);
+  //   const itemId = parseInt(id);
 
-    if(!itemId){
-      return false;
-    }
+  //   if(!itemId){
+  //     return false;
+  //   }
 
-    this.apiRequest('company', true, 'graphql', {
-      query: `query{ 
-        company(
-          id: ${itemId}
-        ) {
-          id
-          name
-          longtitle
-          description
-          content
-          alias
-          uri
-          city
-          coords {
-            lat
-            lng
-          }
-          image {
-            thumb
-            small
-            big
-            marker_thumb
-          }
-          gallery {
-            image {
-              thumb
-              small
-              middle
-              big
-            }
-          }
-          tvs {
-            address
-            site
-            facility_type
-            phones
-            work_time
-            prices
-            metro
-          }
-          ratingsByType {
-            rating
-            max_vote
-            min_vote
-            type
-            quantity
-            quantity_voters
-          }
-          votes {
-            rating
-            type
-          }
-          comments(limit:0 sort:{by: id, dir:asc}){
-            id
-            text
-            parent
-            author_username
-            author_fullname
-            author_avatar
-            createdon
-          }
-        }
-      }`,
-    },{
-      callback: (data, errors) => {
+  //   this.apiRequest('company', true, 'graphql', {
+  //     query: `query{ 
+  //       company(
+  //         id: ${itemId}
+  //       ) {
+  //         id
+  //         name
+  //         longtitle
+  //         description
+  //         content
+  //         alias
+  //         uri
+  //         city
+  //         coords {
+  //           lat
+  //           lng
+  //         }
+  //         image {
+  //           thumb
+  //           small
+  //           big
+  //           marker_thumb
+  //         }
+  //         gallery {
+  //           image {
+  //             thumb
+  //             small
+  //             middle
+  //             big
+  //           }
+  //         }
+  //         tvs {
+  //           address
+  //           site
+  //           facility_type
+  //           phones
+  //           work_time
+  //           prices
+  //           metro
+  //         }
+  //         ratingsByType {
+  //           rating
+  //           max_vote
+  //           min_vote
+  //           type
+  //           quantity
+  //           quantity_voters
+  //         }
+  //         votes {
+  //           rating
+  //           type
+  //         }
+  //         comments(limit:0 sort:{by: id, dir:asc}){
+  //           id
+  //           text
+  //           parent
+  //           author_username
+  //           author_fullname
+  //           author_avatar
+  //           createdon
+  //         }
+  //       }
+  //     }`,
+  //   },{
+  //     callback: (data, errors) => {
 
-        let {
-          CompaniesStore,
-        } = this.state;
+  //       let {
+  //         CompaniesStore,
+  //       } = this.state;
 
         
 
-        if(data.success && data.object){
-          // this.setState({
-          //   resourcesMap: data.object,
-          // });
+  //       if(data.success && data.object){
+  //         // this.setState({
+  //         //   resourcesMap: data.object,
+  //         // });
 
-          const {
-            company,
-          } = data.object;
+  //         const {
+  //           company,
+  //         } = data.object;
 
-          if(company){
-            Object.assign(item, company);
-            CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
-          }
+  //         if(company){
+  //           Object.assign(item, company);
+  //           CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
+  //         }
 
-        }
-      },
-    });
-  }
+  //       }
+  //     },
+  //   });
+  // }
 
   // prepareCompaniesLocalData = (item, force) => {
 

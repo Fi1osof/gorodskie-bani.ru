@@ -422,26 +422,26 @@ export const storeResolver = function(state, args, context, info){
         return;
       }
 
-      let sortBy;
+      let sortByRules;
 
       switch(by){
 
         case 'id':
 
-          sortBy = n => n.id;
+          sortByRules = n => n.id;
 
           break;
 
         case 'rand()':
 
-          sortBy = n => Math.random();
+          sortByRules = n => Math.random();
 
           break;
       }
 
-      if(sortBy){
+      if(sortByRules){
 
-        state = sortBy(state, sortBy, dir);
+        state = sortBy(state, sortByRules, dir);
 
       };
 

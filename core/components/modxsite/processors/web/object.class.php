@@ -9,41 +9,23 @@ abstract class modWebObjectProcessor extends modSiteWebObjectProcessor{
         return $this->modx->user->id && parent::checkPermissions();
     }
 
+    public function initialize() {
+
+
+        $request_body = file_get_contents('php://input');
+
+        if($request_body AND $data = json_decode($request_body, 1)){
+            $this->setProperties($data);
+        }
+
+        return parent::initialize();
+    }
 }
 
 // abstract class modXObjectProcessor extends modObjectUpdateProcessor{
     
 //     public $logSaveAction = false;
     
-//     public function initialize() {
-        
-        
-//         if(!$this->classKey){
-//             $error = "classKey does not set";
-//             $this->modx->log(xPDO::LOG_LEVEL_ERROR, $error);
-//             return $error;
-//         }
-        
-//         /*
-//             If got PK, get and update object
-//         */
-//         if($primaryKey = $this->getProperty($this->primaryKeyField,false)){
-//             $this->object = $this->modx->getObject($this->classKey,$primaryKey);
-//             if (empty($this->object)){
-//                 return $this->modx->lexicon($this->objectType.'_err_nfs',array($this->primaryKeyField => $primaryKey));
-//             }
-//         }
-//         // else create object
-//         else{
-//             $this->object = $this->modx->newObject($this->classKey);
-//         }
-        
-//         if ($this->checkSavePermission && $this->object instanceof modAccessibleObject && !$this->object->checkPolicy('save')) {
-//             return $this->modx->lexicon('access_denied');
-//         }
-        
-//         return !$this->hasErrors();
-//     }
     
     
 //     public function fireBeforeSaveEvent() {

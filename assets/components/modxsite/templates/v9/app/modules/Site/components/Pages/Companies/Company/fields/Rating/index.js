@@ -54,6 +54,8 @@ export default class Rating extends Component{
 			return null;
 		}
 
+		console.log("Item", item);
+
 		const {
 			votersOpen,
 		} = this.state;
@@ -132,7 +134,7 @@ export default class Rating extends Component{
 								id,
 								username,
 								fullname,
-								image,
+								imageFormats:image,
 							} = voter;
 
 							const {

@@ -48,11 +48,23 @@ export default class Comment extends Component{
 			id,
 			text,
 			parent,
-      author_username,
-      author_fullname,
-      author_avatar,
       createdon,
+      Author,
 		} = item;
+
+		const {
+			
+      username: author_username,
+      fullname: author_fullname,
+      imageFormats,
+		} = Author || {};
+
+		const {
+      thumb: author_avatar,
+		} = imageFormats;
+
+
+		// console.log("Comment", item);
 
 		return <Card
 			style={{

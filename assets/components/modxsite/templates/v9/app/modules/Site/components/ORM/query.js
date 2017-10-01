@@ -2,6 +2,7 @@
 const defaultQuery = `
 
 
+
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -12,6 +13,7 @@ query apiData(
   $getCompanyGallery:Boolean = true
   $companyCommentsSort:[SortBy]
   $getTVs:Boolean = true
+  $getCommentAuthor:Boolean = false
 ){
   companies(
     limit:$limit
@@ -49,6 +51,7 @@ query Companies (
   $getTVs:Boolean = false
   $withPagination:Boolean = false
   $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
 ){
   companies(
     limit:$limit
@@ -80,6 +83,7 @@ query Company(
   $getCompanyGallery:Boolean = true
   $getTVs:Boolean = true
   $companyCommentsSort:[SortBy] = {by: id, dir:asc}
+  $getCommentAuthor:Boolean = true
 ){
   company(
     id: $id
@@ -114,6 +118,7 @@ query Ratings(
   $getCompanyGallery:Boolean = false
   $getTVs:Boolean = false
   $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
 ){ 
   ratings(
     limit:$limit
@@ -150,6 +155,7 @@ query Comments(
   $getTVs:Boolean = false
   $commentsSort:[SortBy]
   $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
 ){
   commentsList(
     limit: $limit
@@ -187,6 +193,7 @@ query MapCompanies (
   $getCompanyGallery:Boolean = false
   $getTVs:Boolean = false
   $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
 ){
   companiesList(
     limit:$limit
@@ -227,6 +234,7 @@ query CompanyRatings(
   $getAllRatings:Boolean = true
   $getByTypeRatings:Boolean = false
   $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
 ){
   ratings(  
     limit:$limit
@@ -264,6 +272,7 @@ query CompanyComments(
   $getTVs:Boolean = false
   $commentsSort:[SortBy]
   $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
 ){
   comments(  
     limit:$limit
@@ -294,14 +303,15 @@ query CompanyAvgRatings(
   $getRatingCompanies:Boolean = false
   $getRatingCompany:Boolean = false
   $getCompanyFullData:Boolean = false
-  $getRatingVoter:Boolean = false
-  $getImageFormats:Boolean = false
+  $getRatingVoter:Boolean = true
+  $getImageFormats:Boolean = true
   $getCompanyComments:Boolean = false
   $getCommentCompany:Boolean = false
   $getRatingsAvg:Boolean = false
   $getCompanyGallery:Boolean = false
   $getTVs:Boolean = false
   $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
 ){
   ratings(  
     limit:1
@@ -326,6 +336,18 @@ query Users(
   }
 }
 
+query User(
+  $userId: Int!
+  $getImageFormats:Boolean = false
+) {
+  
+  user(
+    id:$userId
+  ){
+    ...User
+  }
+}
+
 fragment Comment on CommentType{
   id
   resource_id  
@@ -340,6 +362,10 @@ fragment Comment on CommentType{
   Company @include(if:$getCommentCompany)
   {
     ...Company
+  }
+  Author @include(if:$getCommentAuthor)
+  {
+    ...User
   }
 }
 
@@ -426,6 +452,7 @@ fragment Company on Company{
     author_username
     author_fullname
     author_avatar
+    createdby
     parent
     published
     deleted
@@ -433,6 +460,10 @@ fragment Company on Company{
     Company @include(if:$getCommentCompany)
     {
       ...CompanyFields
+    }
+    Author @include(if:$getCommentAuthor)
+    {
+      ...User
     }
   }
   ratingAvg @include(if: $getRatingsAvg) 
@@ -447,9 +478,9 @@ fragment Company on Company{
     voted_companies
     voted_users
     voter
-    # voters{
-    #   ...User
-    # }
+    voters{
+      ...User
+    }
   }
 }
 
@@ -486,7 +517,6 @@ fragment User on UserType {
     big
   }
 }
-
 
 
 `;

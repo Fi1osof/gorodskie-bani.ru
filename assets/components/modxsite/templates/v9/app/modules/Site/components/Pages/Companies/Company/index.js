@@ -8,6 +8,7 @@ import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-
 import Avatar from 'material-ui/Avatar';
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
+import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 
 import SaveIcon from 'material-ui-icons/Save';
@@ -496,6 +497,12 @@ export default class CompanyPage extends Component{
 							padding: 15,
 						}}
 					>
+
+						<Typography
+							type="title"
+						>
+							{comments.length} комментариев
+						</Typography>
 
 						<Comments 
 							comments={comments}

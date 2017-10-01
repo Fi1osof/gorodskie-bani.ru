@@ -204,6 +204,11 @@ const RootType = new GraphQLObjectType({
       type: UserType,
       name: "User",
       description: UserType.description,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLInt),
+        },
+      },
     },
     // // ratings: {
     // //   type: new GraphQLList(RatingType),

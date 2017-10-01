@@ -80,6 +80,10 @@ import {
   CompanyType,
 } from '../Company';
 
+import {
+  UserType,
+} from '../User';
+
 // console.log('CompanyType', CompanyType);
  
 
@@ -201,6 +205,59 @@ export const CommentType = new GraphQLObjectType({
           return comment.createdon ? moment(comment.createdon).format('MMMM DD, YYYY | HH:mm:ss') : null;
         },
       },
+      Author: {
+        type: UserType,
+        description: UserType.description,
+        resolve: async (source, args, context, info) => {
+
+          const {
+            fieldName,
+          } = info;
+
+          const {
+            localQuery,
+          } = context;
+
+          let result = source && source[fieldName];
+
+          if(!result){
+
+            const {
+              localQuery,
+            } = context;
+
+            const {
+              createdby: userId,
+            } = source;
+
+            if(!userId){
+              return null;
+            }
+
+            Object.assign(args, {
+              userId,
+            });
+   
+ 
+            await localQuery({
+              operationName: "User",
+              variables: args,
+            })
+            .then(r => {
+              // console.log('Comments Author', args, r);
+
+              const {
+                user,
+              } = r.data;
+
+              result = user;
+
+            }); 
+          }
+          
+          return result;
+        },
+      },
       Company: {
         type: CompanyType,
         description: CompanyType.description,
@@ -240,7 +297,7 @@ export const CommentType = new GraphQLObjectType({
               variables: args,
             })
             .then(r => {
-              console.log('Ratings Companies args', args, r);
+              // console.log('Ratings Companies args', args, r);
 
               const {
                 company,

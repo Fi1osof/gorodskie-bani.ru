@@ -41,6 +41,7 @@ export default class MapMainView extends Component{
     router: PropTypes.object.isRequired,
 		CompaniesStore: PropTypes.object.isRequired,
 		setPageTitle: PropTypes.func.isRequired,
+		localQuery: PropTypes.func.isRequired,
 	};
 
 	static defaultProps = {
@@ -500,7 +501,7 @@ export default class MapMainView extends Component{
 	  );
 	};
 
-	createClusters = props => {
+	createClusters = async props => {
 
 		
 
@@ -513,8 +514,9 @@ export default class MapMainView extends Component{
 	  //     : null,
 	  // });
 
-	  let {
-			CompaniesStore,
+	  const {
+			// CompaniesStore,
+			localQuery,
 		} = this.context;
 
 		let {
@@ -530,7 +532,27 @@ export default class MapMainView extends Component{
 
   	let markersData = [];
 
-		CompaniesStore.getState().map(item => {
+  	let companies;
+
+  	await localQuery({
+  		operationName: "Companies",
+  		variables: {
+  			limit: 0,
+  			getImageFormats: true,
+  		},
+  	})
+  		.then(r => {
+  			console.log("Map companies", r);
+
+  			const {
+  				object,
+  			} = r.data.companies || {};
+
+  			companies = object;
+
+  		});
+
+		companies && companies.map(item => {
 
 
   		let {

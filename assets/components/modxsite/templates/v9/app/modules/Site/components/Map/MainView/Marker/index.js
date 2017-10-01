@@ -52,6 +52,7 @@ export default class Marker extends Component{
 			const {
 				name,
 				image,
+				imageFormats,
 				ratingAvg,
 				_isDirty,
 			} = item;
@@ -109,10 +110,10 @@ export default class Marker extends Component{
 						/>
 					</div>
 
-					{image
+					{imageFormats
 						?
 						<img 
-							src={image.marker_thumb}
+							src={imageFormats.marker_thumb}
 						/>
 						:
 						null

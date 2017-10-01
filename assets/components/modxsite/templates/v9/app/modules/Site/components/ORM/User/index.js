@@ -111,7 +111,7 @@ export const UserType = new GraphQLObjectType({
       email: {
         type: GraphQLString
       },
-      image: imageType,
+      // image: imageType,
       // photo: {
       //   type: new GraphQLObjectType({
       //     name: "SDfsdf",

@@ -67,67 +67,6 @@ export const RatingArgs = {
   },
 };
 
-export const getMany = function (source, args, context, info){
-  // 
-  // 
-  
-  const {
-    id,
-  } = source;
-
-  const {
-    fieldName,
-  } = info;
-
-  return new Promise((resolve, reject) => {
-    // resolve([{
-    //   id: 345,
-    //   text: "DSFdsf",
-    // }]);
-
-    const {
-      remoteQuery,
-    } = context;
-
-    remoteQuery(`query{
-        ratings(limit: 0) {
-          rating
-          max_vote
-          min_vote
-          type
-          company_id
-          quantity
-          quantity_voters
-          voted_companies
-          voters
-        }
-      }`)
-      .then(result => {
-
-        // 
-
-        const {
-          ratings,
-        } = result.object;
-
-        return resolve(List(ratings));
-      })
-      .catch(e => reject(e));
-
-  });
-}
-
-export const getOne = function (source, args, context, info){
-  return new Promise((resolve, reject) => {
-    getMany(source, args, context, info)
-      .then(result => {
-        
-        resolve(result && result.get(0) || null);
-      })
-  });
-}
-
-
 export const RatingType = new GraphQLObjectType({
   name: 'RatingsType',
   description: 'Рейтинги бань (с возможностью группировки по типам рейтингов и компаний)',
@@ -207,51 +146,9 @@ export const RatingType = new GraphQLObjectType({
               limit: 0,
             });
 
-            const q = `
-            fragment user on UserType {
-              id
-              username
-              fullname
-              email
-              active
-              sudo
-              blocked
-              image {
-                original
-                thumb
-                marker_thumb
-                small
-                middle
-                big
-              }
-            }
-            query users(
-              $limit: Int!
-              $ids:[Int]!
-            ) {
-              
-              users(
-                limit:$limit
-                ids:$ids
-              ){
-                count
-                total
-                limit
-                page
-                object {
-                  ...user
-                }
-              }
-            }`;
-
-
-            // 
-            //   query: q,
-            //   variables: args,
-            // });
-
             localQuery({
-              query: q,
+              // query: q,
+              operationsName: "Users",
               variables: args,
             })
               .then(result => {
@@ -271,10 +168,111 @@ export const RatingType = new GraphQLObjectType({
       },
       companies: {
         type: new GraphQLList(CompanyType),
-        resolve: (rating, args, context, info) => {
+        // resolve: (rating, args, context, info) => {
 
-          return new Promise((resolve, reject) => {
+        //   return new Promise((resolve, reject) => {
 
+
+        //     const {
+        //       localQuery,
+        //     } = context;
+
+        //     const {
+        //       company_id,
+        //       voted_companies,
+        //     } = rating;
+
+        //     if(!voted_companies && !company_id){
+        //       return null;
+        //     }
+
+        //     let ids;
+
+        //     if(voted_companies){
+        //       ids = voted_companies;
+        //     }
+        //     else{
+        //       ids = company_id;
+        //     }
+
+        //     Object.assign(args, {
+        //       ids,
+        //       limit: 0,
+        //     });
+
+        //     const q = `query companies(
+        //       $limit: Int!
+        //       $ids:[Int]!
+        //     ) {
+              
+        //       companies(
+        //         limit:$limit
+        //         ids:$ids
+        //       ){
+        //         count
+        //         total
+        //         limit
+        //         page
+        //         object {
+        //           id
+        //           name
+        //           longtitle
+        //           description
+        //           content
+        //           alias
+        //           uri
+        //           city_id
+        //           city
+        //           city_uri
+        //           image {
+        //             original
+        //             thumb
+        //             marker_thumb
+        //             small
+        //             middle
+        //             big
+        //           }
+        //         }
+        //       }
+        //     }`;
+
+
+        //     // 
+        //     //   query: q,
+        //     //   variables: args,
+        //     // });
+
+        //     localQuery({
+        //       query: q,
+        //       variables: args,
+        //     })
+        //       .then(result => {
+
+        //         // 
+
+        //         const {
+        //           companies,
+        //         } = result.data || {};
+
+        //         resolve(companies && companies.object || null);
+        //       })
+        //       .catch(e => reject(e));
+        //   });
+
+        // },
+        resolve: async (source, args, context, info) => {
+
+          const {
+            fieldName,
+          } = info;
+
+          const {
+            localQuery,
+          } = context;
+
+          let result = source && source[fieldName];
+
+          if(!result){
 
             const {
               localQuery,
@@ -283,7 +281,7 @@ export const RatingType = new GraphQLObjectType({
             const {
               company_id,
               voted_companies,
-            } = rating;
+            } = source;
 
             if(!voted_companies && !company_id){
               return null;
@@ -300,68 +298,50 @@ export const RatingType = new GraphQLObjectType({
 
             Object.assign(args, {
               ids,
-              limit: 0,
+              limit: 2,
             });
+   
 
-            const q = `query companies(
-              $limit: Int!
-              $ids:[Int]!
-            ) {
-              
-              companies(
-                limit:$limit
-                ids:$ids
-              ){
-                count
-                total
-                limit
-                page
-                object {
+            await localQuery({
+              // operationsName: "Company",
+              variables: args,
+              query: `query companies(
+                $limit: Int!
+              ) {
+                
+                companies(
+                  limit:$limit
+                ){ 
                   id
                   name
-                  longtitle
-                  description
-                  content
-                  alias
-                  uri
-                  city_id
-                  city
-                  city_uri
-                  image {
-                    original
-                    thumb
-                    marker_thumb
-                    small
-                    middle
-                    big
-                  }
                 }
-              }
-            }`;
-
-
-            // 
-            //   query: q,
-            //   variables: args,
-            // });
-
-            localQuery({
-              query: q,
-              variables: args,
+              }`,
             })
-              .then(result => {
+              .then(r => {
 
                 // 
 
+                console.log("CompanyType ratings result", r);
+
                 const {
                   companies,
-                } = result.data || {};
+                } = r.data || {};
 
-                resolve(companies && companies.object || null);
-              })
-              .catch(e => reject(e));
-          });
+                result = companies;
 
+                let data ={};
+
+                data[fieldName] = companies;
+
+                // Object.assign(source, {
+                //   companies,
+                // });
+
+              });
+          }
+
+
+          return result;
         },
       },
     };
@@ -383,72 +363,10 @@ export default class Rating extends ModelObject{
       fieldName,
     } = info;
 
-    // switch(fieldName){
-
-    //   case 'comments': 
-
-    //     if(!id){
-    //       return null;
-    //     }
-
-    //     return new Promise((resolve, reject) => {
-    //       // resolve([{
-    //       //   id: 345,
-    //       //   text: "DSFdsf",
-    //       // }]);
-
-    //       const {
-    //         remoteQuery,
-    //       } = context;
-
-    //       remoteQuery(`query{
-    //         comments(
-    //           limit: 0
-    //           thread: ${id}
-    //           sort:{by:id, dir: desc}
-    //         ) {
-    //           count
-    //           total
-    //           limit
-    //           page
-    //           object {
-    //             id
-    //             text
-    //             parent
-    //             author_username
-    //             author_fullname
-    //             author_avatar
-    //             createdon
-    //             published
-    //             deleted
-    //           }
-    //         }
-    //       }`)
-    //         .then(result => {
-
-    //           // 
-
-    //           const {
-    //             comments,
-    //           } = result.object;
-
-    //           return resolve(comments && comments.object || null);
-    //         })
-    //         .catch(e => reject(e));
-
-    //     });
-
-    //     break;
-
-    // }
-
     return super.fieldResolver(source, args, context, info);
   }
 
 }
-
-
-
 
 
 export class RatingsListField extends listField{
@@ -752,3 +670,89 @@ export class RatingsListField extends listField{
   // }
 
 }
+
+
+export const getMany = function (source, args, context, info){
+  // 
+  // 
+  
+  const {
+    id,
+  } = source;
+
+  const {
+    fieldName,
+  } = info;
+
+  return new Promise((resolve, reject) => {
+    // resolve([{
+    //   id: 345,
+    //   text: "DSFdsf",
+    // }]);
+
+    const {
+      remoteQuery,
+    } = context;
+
+    remoteQuery(`query{
+        ratings(limit: 0) {
+          rating
+          max_vote
+          min_vote
+          type
+          company_id
+          quantity
+          quantity_voters
+          voted_companies
+          voters
+        }
+      }`)
+      .then(result => {
+
+        // 
+
+        const {
+          ratings,
+        } = result.object;
+
+        return resolve(List(ratings));
+      })
+      .catch(e => reject(e));
+
+  });
+}
+
+export const getOne = function (source, args, context, info){
+  return new Promise((resolve, reject) => {
+    getMany(source, args, context, info)
+      .then(result => {
+        
+        resolve(result && result.get(0) || null);
+      })
+  });
+}
+
+
+export const getList = async (source, args, context, info) => {
+
+  const {
+    RatingsStore,
+  } = context.state;
+
+  console.log('getList rating', args, info);
+
+  const {
+    fieldNodes: {
+      0: {
+        selectionSet,
+      }
+    },
+  } = info;
+
+  console.log('getList selectionSet', selectionSet);
+
+  console.log('getList selectionSet total', selectionSet && selectionSet.selections.find(n => n && n.name && n.name.value === "total"));
+
+  return RatingsStore.getState();
+
+};

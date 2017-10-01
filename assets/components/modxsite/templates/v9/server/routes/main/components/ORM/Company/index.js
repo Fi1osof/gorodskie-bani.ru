@@ -22,48 +22,48 @@ import ModelObject from '../model';
 // } = db_config;
  
 
-export const CompanySortBy = new GraphQLInputObjectType({
-  name: "CompanySortBy",
-  fields: {
-    by: {
-      type: new GraphQLEnumType({
-        name: 'CompanySortBy',
-        values: {
-          id: {
-            value: 'contacts.id',
-            description: 'По ID',
-          },
-          name: {
-            value: 'contacts.name',
-            description: 'По названию',
-          },
-          // active: {
-          //   value: 'contacts.active',
-          //   description: 'По активности',
-          // },
-          // parent_name: {
-          //   value: 'Parent.name',
-          //   description: 'По названию родителя',
-          // },
-          rand: {
-            value: 'rand()',
-            description: 'В случайном порядке',
-          },
-        },
-      }),
-      description: 'Способ сортировки',
-    },
-    dir: order,
-  },
-});
+// export const CompanySortBy = new GraphQLInputObjectType({
+//   name: "CompanySortBy",
+//   fields: {
+//     by: {
+//       type: new GraphQLEnumType({
+//         name: 'CompanySortBy',
+//         values: {
+//           id: {
+//             value: 'contacts.id',
+//             description: 'По ID',
+//           },
+//           name: {
+//             value: 'contacts.name',
+//             description: 'По названию',
+//           },
+//           // active: {
+//           //   value: 'contacts.active',
+//           //   description: 'По активности',
+//           // },
+//           // parent_name: {
+//           //   value: 'Parent.name',
+//           //   description: 'По названию родителя',
+//           // },
+//           rand: {
+//             value: 'rand()',
+//             description: 'В случайном порядке',
+//           },
+//         },
+//       }),
+//       description: 'Способ сортировки',
+//     },
+//     dir: order,
+//   },
+// });
 
-export const CompanySort = {
-  type: new GraphQLList(CompanySortBy),
-};
+// export const CompanySort = {
+//   type: new GraphQLList(CompanySortBy),
+// };
 
 
-export const getQuery = function(knex, args, context){
-}
+// export const getQuery = function(knex, args, context){
+// }
 
 // export const updateQuery = function(knex, args, context){
 
@@ -225,37 +225,147 @@ export class SchemaType extends ObjectType{
   }
 }
 
-export default class Company extends ModelObject{
+// export default class Company extends ModelObject{
 
-  fieldResolver(source, args, context, info){
-    console.log('Company fieldResolver', source, args, context, info);
+//   fieldResolver(source, args, context, info){
+//     console.log('Company fieldResolver', source, args, context, info);
     
 
-    const {
-      fieldName,
-    } = info;
+//     const {
+//       fieldName,
+//     } = info;
 
-    switch(fieldName){
+//     switch(fieldName){
 
-      case 'comments': 
+//       case 'comments': 
 
-        return new Promise((resolve, reject) => {
-          resolve([{
-            id: 345,
-            text: "DSFdsf",
-          }]);
-        });
+//         return new Promise((resolve, reject) => {
+//           resolve([{
+//             id: 345,
+//             text: "DSFdsf",
+//           }]);
+//         });
 
-        return [{
-          id: 34543,
-          text: "DSFdsf",
-        }];
+//         return [{
+//           id: 34543,
+//           text: "DSFdsf",
+//         }];
 
-        break;
+//         break;
 
-    }
+//     }
 
-    return super.fieldResolver(source, args, context, info);
-  }
+//     return super.fieldResolver(source, args, context, info);
+//   }
 
+// }
+
+export const getList = (object, args, context, info) => {
+
+  const {
+    SendMODXRequest,
+  } = context;
+
+  return new Promise((resolve, reject) => {
+    // Эта функция будет вызвана автоматически
+
+    // В ней можно делать любые асинхронные операции,
+    // А когда они завершатся — нужно вызвать одно из:
+    // resolve(результат) при успешном выполнении
+    // reject(ошибка) при ошибке
+
+    // 
+
+    let {
+      id,
+      limit,
+      page,
+      offset: start,
+      count,
+      voted_companies,
+      search,
+    } = args || {};
+
+    limit = limit || 0;
+
+    let action = 'companies/getdata';
+
+    let params = {
+      // with_coors_only: false,       // Только с координатами
+      company_id: id,
+      limit,
+      page,
+      start,
+      count: count === undefined ? 1 : count,
+      companies: voted_companies,
+      search,
+    };
+
+    let request = SendMODXRequest(action, params); 
+
+
+    request
+    .then((data) => {
+
+      if(!data.success){
+
+        return reject(data.message || "Ошибка выполнения запроса");
+      }
+
+      // delete(data.object);
+
+      // 
+
+      return resolve(data);
+    })
+    .catch((e) => {
+      return reject(e);
+    })
+    ;
+  });
+}
+
+export const companiesResolver = (object, args) => {
+
+  return new Promise((resolve, reject) => {
+
+    this.companiesListResolver(object, args)
+      .then((result) => {
+
+        
+
+        if(!result.success){
+
+          return reject(result.message || "Ошибка выполнения запроса");
+        }
+
+        // 
+
+        return resolve(result.object && result.object || null);
+      })
+      .catch((e) => {
+        return reject(e);
+      })
+    ;
+  });
+}
+
+export const companyResolver = (object, args) => {
+
+  return new Promise((resolve, reject) => {
+
+    this.companiesResolver(object, args)
+      .then((result) => {
+
+        
+
+        // 
+
+        return resolve(result && result[0] || null);
+      })
+      .catch((e) => {
+        return reject(e);
+      })
+    ;
+  });
 }

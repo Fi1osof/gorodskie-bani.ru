@@ -119,7 +119,7 @@ export default class PageGraphiQL extends Component{
   componentDidMount(){
 
 
-    this.loadSchema();
+    // this.loadSchema();
     // this.getSchema();
   }
  
@@ -179,31 +179,31 @@ export default class PageGraphiQL extends Component{
     return apiRequest(null, true, path, params, options);
   }
 
-  loadSchema(){
+  // loadSchema(){
 
-    this.apiRequest('schema', {}, {
-      callback: (data, errors) => {
+  //   this.apiRequest('schema', {}, {
+  //     callback: (data, errors) => {
 
         
 
-        if(data.success && data.object){
+  //       if(data.success && data.object){
 
-          let {
-            data: introspectionSchema,
-          } = data.object;
+  //         let {
+  //           data: introspectionSchema,
+  //         } = data.object;
 
-          var schema = buildClientSchema(introspectionSchema);
-          // var schema = introspectionSchema;
+  //         var schema = buildClientSchema(introspectionSchema);
+  //         // var schema = introspectionSchema;
 
-          this.setState({
-            schema,
-          });
-        }
+  //         this.setState({
+  //           schema,
+  //         });
+  //       }
 
-        return;
-      }
-    })
-  }
+  //       return;
+  //     }
+  //   })
+  // }
 
   _graphQLFetcher(graphQLParams, a,b,c){
     
@@ -238,6 +238,11 @@ export default class PageGraphiQL extends Component{
     //   // body.append(i, value);
     // };
 
+    const {
+      query,
+      ...other
+    } = graphQLParams;
+
     return fetch('/api/?pub_action=graphql', {
       method: 'POST',
       credentials: 'same-origin',
@@ -245,7 +250,7 @@ export default class PageGraphiQL extends Component{
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(graphQLParams),
+      body: JSON.stringify({...other}),
       // body: JSON.stringify(body),
       // body: body,
     }).then(response => response.json());
@@ -443,12 +448,14 @@ export default class PageGraphiQL extends Component{
       schema: localSchema,
     } = this.context;
 
-    if(storage === 'local'){
-      schema = localSchema;
-    }
-    else{
-      schema = remoteSchema;
-    }
+    schema = localSchema;
+
+    // if(storage === 'local'){
+    //   schema = localSchema;
+    // }
+    // else{
+    //   schema = remoteSchema;
+    // }
 
     if(!schema){
 

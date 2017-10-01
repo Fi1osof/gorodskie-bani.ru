@@ -26,6 +26,7 @@ import {
 
 import {
   imageType,
+  coordsType,
 } from '../fields';
 
 
@@ -210,7 +211,11 @@ export const CompanyType = new GraphQLObjectType({
       uri: {
         type: GraphQLString
       },
-      image: imageType,
+      image: {
+        type: GraphQLString,
+        description: "Картинка",
+      },
+      imageFormats: imageType,
       city_id: {
         type: GraphQLInt
       },
@@ -295,26 +300,29 @@ export const CompanyType = new GraphQLObjectType({
       //   },
       // },
       coords: {
-        type: new GraphQLObjectType({
-          // new GraphQLObjectType({
-            name: 'coordsType',
-            fields: {
-              lat: {
-                type: GraphQLFloat,
-              },
-              lng: {
-                type: GraphQLFloat,
-              },
-            },
-          // })
-        }),
-        // resolve: (object) => {
+        type: coordsType,
+        resolve: (source) => {
 
-        //   return object.coords && {
-        //     lat: object.coords[1],
-        //     lng: object.coords[0],
-        //   } || null;
-        // },
+          let {
+            coords,
+          } = source;
+
+          if(coords && coords.lat === undefined){
+
+            const {
+              0: lng,
+              1: lat,
+            } = coords;
+
+            coords = {
+              lat,
+              lng,
+            };
+
+          }
+
+          return coords;
+        },
       },
       // ratings: {
       //   description: 'Рейтинги компании',
@@ -493,105 +501,106 @@ export default class Company extends ModelObject{
 
   }
 
-  fieldResolver(source, args, context, info){
-    // 
-    // 
+  // fieldResolver(source, args, context, info){
+  //   // 
+  //   // 
 
-    const {
-      localQuery,
-      remoteQuery,
-    } = context;
+  //   const {
+  //     localQuery,
+  //     remoteQuery,
+  //   } = context;
     
-    const {
-      id,
-    } = source;
+  //   const {
+  //     id,
+  //   } = source;
 
-    const {
-      fieldName,
-    } = info;
+  //   const {
+  //     fieldName,
+  //   } = info;
 
-    switch(fieldName){
+  //   switch(fieldName){
 
-      case 'comments': 
+  //     case 'comments': 
 
-        if(!id){
-          return null;
-        }
+  //       if(!id){
+  //         return null;
+  //       }
 
-        Object.assign(args, {
-          thread: id,
-        });
+  //       Object.assign(args, {
+  //         thread: id,
+  //       });
 
-        return new Promise((resolve, reject) => {
-          // resolve([{
-          //   id: 345,
-          //   text: "DSFdsf",
-          // }]);
+  //       return new Promise((resolve, reject) => {
+  //         // resolve([{
+  //         //   id: 345,
+  //         //   text: "DSFdsf",
+  //         // }]);
 
-          remoteQuery(`query comments(
-            $thread: Int!
-          ){
-            comments(
-              limit: 0
-              thread: $thread
-              sort:{by:id, dir: desc}
-            ) {
-              count
-              total
-              limit
-              page
-              object {
-                id
-                text
-                parent
-                author_username
-                author_fullname
-                author_avatar
-                createdon
-                published
-                deleted
-              }
-            }
-          }`, args)
-            .then(result => {
+  //         remoteQuery(`query comments(
+  //           $thread: Int!
+  //         ){
+  //           comments(
+  //             limit: 0
+  //             thread: $thread
+  //             sort:{by:id, dir: desc}
+  //           ) {
+  //             count
+  //             total
+  //             limit
+  //             page
+  //             object {
+  //               id
+  //               text
+  //               parent
+  //               author_username
+  //               author_fullname
+  //               author_avatar
+  //               createdon
+  //               published
+  //               deleted
+  //             }
+  //           }
+  //         }`, args)
+  //           .then(result => {
 
-              // 
+  //             // 
 
-              const {
-                comments,
-              } = result.object;
+  //             const {
+  //               comments,
+  //             } = result.object;
 
-              return resolve(comments && comments.object || null);
-            })
-            .catch(e => reject(e));
+  //             return resolve(comments && comments.object || null);
+  //           })
+  //           .catch(e => reject(e));
 
-        });
+  //       });
 
-        break;
+  //       break;
 
-      case 'ratings': 
+  //     case 'ratings': 
 
-        // return this.getRatings(source, args, context, info);
-        return this.getRatings(args);
+  //       // return this.getRatings(source, args, context, info);
+  //       return this.getRatings(args);
 
-      case 'ratingAvg': 
+  //     case 'ratingAvg': 
 
-        // return this.getRatings(source, args, context, info);
-        return this.getRatingsAvr(args);
+  //       // return this.getRatings(source, args, context, info);
+  //       return this.getRatingsAvr(args);
 
-        break;
+  //       break;
 
-      // case 'image': 
+  //     // case 'image': 
           
-      //   
+  //     //   
 
-      //   return source.image && source.image.original || null;
+  //     //   return source.image && source.image.original || null;
 
-      //   break;
-    }
+  //     //   break;
+  //   }
 
-    return super.fieldResolver(source, args, context, info);
-  }
+  //   return super.fieldResolver(source, args, context, info);
+  // }
+
 
 
   // Рейтинги компании
@@ -625,33 +634,34 @@ export default class Company extends ModelObject{
       // } = context;
 
       localQuery({
-        query: `query ratings(
-          $thread:Int!
-          $groupBy:RatingGroupbyEnum
-        ){
-          ratings(
-            limit:0
-            thread:$thread
-            groupBy:$groupBy
-          ) {
-            count
-            total
-            limit
-            page
-            object {
-              rating
-              max_vote
-              min_vote
-              type
-              company_id
-              quantity
-              quantity_voters
-              voted_companies
-              voted_users
-              voter
-            }
-          }
-        }`,
+        // query: `query ratings(
+        //   $thread:Int!
+        //   $groupBy:RatingGroupbyEnum
+        // ){
+        //   ratings(
+        //     limit:0
+        //     thread:$thread
+        //     groupBy:$groupBy
+        //   ) {
+        //     count
+        //     total
+        //     limit
+        //     page
+        //     object {
+        //       rating
+        //       max_vote
+        //       min_vote
+        //       type
+        //       company_id
+        //       quantity
+        //       quantity_voters
+        //       voted_companies
+        //       voted_users
+        //       voter
+        //     }
+        //   }
+        // }`,
+        operationName: "CompanyRatings",
         variables: args,
       })
         .then(result => {
@@ -712,3 +722,13 @@ export default class Company extends ModelObject{
   }
 
 }
+
+export const getList = async (source, args, context, info) => {
+
+  const {
+    CompaniesStore,
+  } = context.state;
+
+  return CompaniesStore.getState();
+
+};

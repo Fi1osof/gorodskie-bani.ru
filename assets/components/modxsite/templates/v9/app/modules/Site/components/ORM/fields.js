@@ -7,6 +7,7 @@ import {
   GraphQLInt,
   GraphQLString,
   GraphQLBoolean,
+  GraphQLFloat,
 } from 'graphql';
 
 
@@ -94,12 +95,12 @@ export class ObjectsListType extends GraphQLObjectType{
     } = props;
 
     fields = Object.assign(fields || {}, {
-      // success: {
-      //   type: GraphQLBoolean,
-      // },
-      // message: {
-      //   type: GraphQLString,
-      // },
+      success: {
+        type: GraphQLBoolean,
+      },
+      message: {
+        type: GraphQLString,
+      },
       count: {
         type: GraphQLInt,
       },
@@ -114,12 +115,6 @@ export class ObjectsListType extends GraphQLObjectType{
       },
       object: {
         type: new GraphQLList(type),
-        // resolve: (response, args) => {
-
-        //   // 
-
-        //   return response && response.success && response.object || [];
-        // },
       },
     });
 
@@ -169,7 +164,7 @@ export class listField {
 
     // return this;
 
-    this.resolve = resolve || ::this.resolve;
+    // this.resolve = resolve || ::this.resolve;
   }
 
   beforeCount(source, args, context, info){
@@ -185,59 +180,59 @@ export class listField {
     return source;
   }
 
-  resolve(source, args, context, info){
+  // resolve(source, args, context, info){
     
     
 
-    const {
-      fieldName,
-    } = info;
+  //   const {
+  //     fieldName,
+  //   } = info;
           
-    let result = source && source[fieldName] || undefined;
+  //   let result = source && source[fieldName] || undefined;
 
-    if(result){
+  //   if(result){
       
 
-      let {
-        ids,
-        offset,
-        limit,
-        page,
-      } = args;
+  //     let {
+  //       ids,
+  //       offset,
+  //       limit,
+  //       page,
+  //     } = args;
 
-      page = page || 1;
+  //     page = page || 1;
 
 
-      result = this.beforeCount(result, args, context, info);
+  //     result = this.beforeCount(result, args, context, info);
 
-      const total = result.size;
+  //     const total = result.size;
       
-      if(offset){
-        result = result.skip(offset);
-      }
+  //     if(offset){
+  //       result = result.skip(offset);
+  //     }
 
-      if(limit){
+  //     if(limit){
 
-        if(page > 1){
-          result = result.skip(limit * (page - 1));
-        }
+  //       if(page > 1){
+  //         result = result.skip(limit * (page - 1));
+  //       }
 
-        result = result.take(limit);
-      }
+  //       result = result.take(limit);
+  //     }
 
-      result = {
-        success: true,
-        message: '',
-        count: result.size,
-        total,
-        limit,
-        page,
-        object: result,
-      };
-    }
+  //     result = {
+  //       success: true,
+  //       message: '',
+  //       count: result.size,
+  //       total,
+  //       limit,
+  //       page,
+  //       object: result,
+  //     };
+  //   }
 
-    return result;
-  }
+  //   return result;
+  // }
 }
 
 
@@ -285,16 +280,65 @@ const imageFields = {
 export const imageType = {
   type: new GraphQLObjectType({
     name: 'Images',
-    fields: imageFields,
+    fields: {
+      original: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return image;
+        },
+      },
+      thumb: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/thumb/${image}`;
+        },
+      },
+      marker_thumb: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/marker_thumb/${image}`;
+        },
+      },
+      small: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/small/${image}`;
+        },
+      },
+      middle: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/middle/${image}`;
+        },
+      },
+      big: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/big/${image}`;
+        },
+      },
+    },
   }),
-  // resolve: (object) => {
+  resolve: (object) => {
 
-  //   const {
-  //     image,
-  //   } = object;
+    const {
+      image,
+    } = object;
 
-  //   return image && image.replace(/^\//g, '') || null;
-
-  //   // return image ? `uploads/${image}` : null;
-  // },
+    return image && image.replace(/^\//g, '') || null;
+  },
 };
+
+export const coordsType = new GraphQLObjectType({
+  name: 'coordsType',
+  description: "Координаты",
+  fields: {
+    lat: {
+      type: GraphQLFloat,
+    },
+    lng: {
+      type: GraphQLFloat,
+    },
+  },
+})
+

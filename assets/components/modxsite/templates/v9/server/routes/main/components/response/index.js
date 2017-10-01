@@ -48,56 +48,101 @@ import {
   ObjectsListType,
 } from 'modules/Site/components/ORM/fields';
 
+
+
+import RootType, {
+  Mutation,
+  rootDirectives,
+} from 'modules/Site/components/ORM';
+
+
+import rootResolver from '../ORM/resolver';
+
+// import Company from 'modules/Site/components/ORM/Company';
+// import User from 'modules/Site/components/ORM/User';
+
+import defaultQuery from 'modules/Site/components/ORM/query';
+
 var knex;
 
 // 
 
 // var knexdb = require('knex');
 
+let schema;
+
 export default class Response{
 
-  constructor (req, res, params, knexdb) {
+  constructor (req, res, params, knexdb, config) {
  
 
-    knex = knexdb;
+    this.db = knex = knexdb;
 
     this.req = req;
     this.res = res;
     this.params = params;
+    this.config = config;
     
-    this.prepareSchema();
-  }
-
-  prepareSchema(){
-
-    this.RatingGroupbyEnumList = {
-      name : 'RatingGroupbyEnum2',
-      description : 'Способ группировки рейтингов',
-      values : {
-        company: {
-          value: 'company',
-          description : 'Сгруппировать по компаниям (общий рейтинг)'
-        },
-        rating_type: {
-          value: 'rating_type',
-          description : 'Сгруппировать по типам рейтингов (по каким рейтингам сколько голосов всего и по количеству компаний)'
-        },
-        company_and_rating_type: {
-          value: 'company_and_rating_type',
-          description : 'Сгруппировать по компаниям и типам рейтингов (средний балл на каждую компанию по типу рейтинга)'
-        },
-        // rating_type_and_company: {
-        //   value: 'rating_type_and_company',
-        //   description : 'Сгруппировать по компаниям и типам рейтингов в них'
-        // },
-      }
-    };
+    // this.prepareSchema();
 
 
-    return;
-  }
+    schema = this.getSchema();
+  };
 
-  SendMODXRequest (action, params) {
+  getConfig = (field) => {
+
+    return this.config[field];
+
+  };
+
+  getPrefix = () => {
+
+    // const db = require('../../../../config/config');
+
+    // let 
+
+    const db_config = this.getConfig("db");
+
+    let {
+      connection: {
+        prefix,
+      },
+    } = db_config || {};
+
+    return prefix;
+  };
+
+
+  // prepareSchema(){
+
+  //   this.RatingGroupbyEnumList = {
+  //     name : 'RatingGroupbyEnum2',
+  //     description : 'Способ группировки рейтингов',
+  //     values : {
+  //       company: {
+  //         value: 'company',
+  //         description : 'Сгруппировать по компаниям (общий рейтинг)'
+  //       },
+  //       rating_type: {
+  //         value: 'rating_type',
+  //         description : 'Сгруппировать по типам рейтингов (по каким рейтингам сколько голосов всего и по количеству компаний)'
+  //       },
+  //       company_and_rating_type: {
+  //         value: 'company_and_rating_type',
+  //         description : 'Сгруппировать по компаниям и типам рейтингов (средний балл на каждую компанию по типу рейтинга)'
+  //       },
+  //       // rating_type_and_company: {
+  //       //   value: 'rating_type_and_company',
+  //       //   description : 'Сгруппировать по компаниям и типам рейтингов в них'
+  //       // },
+  //     }
+  //   };
+
+
+  //   return;
+  // }
+
+  SendMODXRequest = (action, params) => {
 
     const req = this.req;
 
@@ -203,7 +248,7 @@ export default class Response{
       .then(function(res) {
         return res.json();
       });
-  }
+  };
 
   ObjectResolver = (resolver, object, args) => {
     return new Promise((resolve, reject) => {
@@ -230,111 +275,111 @@ export default class Response{
     });
   }
 
-  companiesListResolver = (object, args) => {
+  // companiesListResolver = (object, args) => {
 
-    return new Promise((resolve, reject) => {
-      // Эта функция будет вызвана автоматически
+  //   return new Promise((resolve, reject) => {
+  //     // Эта функция будет вызвана автоматически
 
-      // В ней можно делать любые асинхронные операции,
-      // А когда они завершатся — нужно вызвать одно из:
-      // resolve(результат) при успешном выполнении
-      // reject(ошибка) при ошибке
+  //     // В ней можно делать любые асинхронные операции,
+  //     // А когда они завершатся — нужно вызвать одно из:
+  //     // resolve(результат) при успешном выполнении
+  //     // reject(ошибка) при ошибке
 
-      // 
+  //     // 
 
-      let {
-        id,
-        limit,
-        page,
-        offset: start,
-        count,
-        voted_companies,
-        search,
-      } = args || {};
+  //     let {
+  //       id,
+  //       limit,
+  //       page,
+  //       offset: start,
+  //       count,
+  //       voted_companies,
+  //       search,
+  //     } = args || {};
 
-      limit = limit || 0;
+  //     limit = limit || 0;
 
-      let action = 'companies/getdata';
+  //     let action = 'companies/getdata';
 
-      let params = {
-        // with_coors_only: false,       // Только с координатами
-        company_id: id,
-        limit,
-        page,
-        start,
-        count: count === undefined ? 1 : count,
-        companies: voted_companies,
-        search,
-      };
+  //     let params = {
+  //       // with_coors_only: false,       // Только с координатами
+  //       company_id: id,
+  //       limit,
+  //       page,
+  //       start,
+  //       count: count === undefined ? 1 : count,
+  //       companies: voted_companies,
+  //       search,
+  //     };
 
-      let request = this.SendMODXRequest(action, params); 
+  //     let request = this.SendMODXRequest(action, params); 
 
 
-      request
-      .then((data) => {
+  //     request
+  //     .then((data) => {
 
-        if(!data.success){
+  //       if(!data.success){
 
-          return reject(data.message || "Ошибка выполнения запроса");
-        }
+  //         return reject(data.message || "Ошибка выполнения запроса");
+  //       }
 
-        // delete(data.object);
+  //       // delete(data.object);
 
-        // 
+  //       // 
 
-        return resolve(data);
-      })
-      .catch((e) => {
-        return reject(e);
-      })
-      ;
-    });
-  }
+  //       return resolve(data);
+  //     })
+  //     .catch((e) => {
+  //       return reject(e);
+  //     })
+  //     ;
+  //   });
+  // }
 
-  companiesResolver = (object, args) => {
+  // companiesResolver = (object, args) => {
 
-    return new Promise((resolve, reject) => {
+  //   return new Promise((resolve, reject) => {
 
-      this.companiesListResolver(object, args)
-        .then((result) => {
-
-          
-
-          if(!result.success){
-
-            return reject(result.message || "Ошибка выполнения запроса");
-          }
-
-          // 
-
-          return resolve(result.object && result.object || null);
-        })
-        .catch((e) => {
-          return reject(e);
-        })
-      ;
-    });
-  }
-
-  companyResolver = (object, args) => {
-
-    return new Promise((resolve, reject) => {
-
-      this.companiesResolver(object, args)
-        .then((result) => {
+  //     this.companiesListResolver(object, args)
+  //       .then((result) => {
 
           
 
-          // 
+  //         if(!result.success){
 
-          return resolve(result && result[0] || null);
-        })
-        .catch((e) => {
-          return reject(e);
-        })
-      ;
-    });
-  }
+  //           return reject(result.message || "Ошибка выполнения запроса");
+  //         }
+
+  //         // 
+
+  //         return resolve(result.object && result.object || null);
+  //       })
+  //       .catch((e) => {
+  //         return reject(e);
+  //       })
+  //     ;
+  //   });
+  // }
+
+  // companyResolver = (object, args) => {
+
+  //   return new Promise((resolve, reject) => {
+
+  //     this.companiesResolver(object, args)
+  //       .then((result) => {
+
+          
+
+  //         // 
+
+  //         return resolve(result && result[0] || null);
+  //       })
+  //       .catch((e) => {
+  //         return reject(e);
+  //       })
+  //     ;
+  //   });
+  // }
 
   commentsListResolver = (object, args) => {
 
@@ -450,143 +495,6 @@ export default class Response{
 
       if(limit > 0){
         q.limit(limit);
-      }
-
-      // 
-
-      q.then((result) => { 
-        return result;
-      });
-
-    return q; 
-  }
-
-  RatingsResolver = (Company, args) => {
-
-    // 
-
-    const {
-      RatingGroupbyEnumList,
-    } = this;
-
-    let {
-      type,
-      company,
-      limit,
-      start,
-      sort,
-      groupBy,
-    } = args || {};
-
-    var q = knex(`${prefix}society_votes as votes`)
-      // .innerJoin(`${prefix}user_attributes as profile`, 'users.id', 'profile.internalKey')
-      // .select('profile.*')
-      // .select('round(sum(votes.vote_value) / count(*), 2) as rating')
-      
-      .select('votes.type')
-      .select('votes.target_id as company_id')
-      .select('votes.user_id as voter')
-      .select('votes.vote_value as rating')
-      // .limit('3')
-      ;
-
-      // q.where({
-      // });
-
-      q.where('type', '!=', 0);
-
-      // if(Company_id){
-
-      //   q.innerJoin(`${prefix}modxsite_companies_places as places_companies`, 'places_companies.place_id', 'places.id');
-      //   q.where('places_companies.Company_id', Company_id);
-
-      // }
-
-      if(type){
-        q.where('type', type);
-      }
-
-      if(company){
-        q.where('target_id', company);
-      }
-
-      if(limit > 0){
-        q.limit(limit);
-      }
-
-
-    // this.RatingGroupbyEnumList = {
-    //   name : 'RatingGroupbyEnum',
-    //   description : 'Способ группировки рейтингов',
-    //   values : {
-    //     company: {
-    //       value: 'company',
-    //       description : 'Сгруппировать по компаниям (общий рейтинг)'
-    //     },
-    //     rating_type: {
-    //       value: 'rating_type',
-    //       description : 'Сгруппировать по типам рейтингов (по каким рейтингам сколько голосов всего и по количеству компаний)'
-    //     },
-    //     company_and_rating_type: {
-    //       value: 'company_and_rating_type',
-    //       description : 'Сгруппировать по компаниям и типам рейтингов (средний балл на каждую компанию по типу рейтинга)'
-    //     },
-    //     rating_type_and_company: {
-    //       value: 'rating_type_and_company',
-    //       description : 'Сгруппировать по компаниям и типам рейтингов в них'
-    //     },
-    //   }
-    // };
-
-      if(groupBy){
-        
-        q.count('* as quantity');
-        q.select(knex.raw('round(sum(votes.vote_value) / count(*), 2) as rating'));
-        q.select(knex.raw('max(votes.vote_value) as max_vote'));
-        q.select(knex.raw('min(votes.vote_value) as min_vote'));
-        q.select(knex.raw('count(DISTINCT votes.user_id) as quantity_voters'));
-        
-        q.select(knex.raw('GROUP_CONCAT(DISTINCT votes.target_id) as voted_companies'));
-
-        switch(groupBy){
-          // q.select(knex.raw('round(sum(votes.vote_value) / count(*), 2) as rating'))
-
-          // q.groupBy('type');
-          // q.groupBy('target_id');
-
-          // Сгруппировать по компаниям (общий рейтинг)
-          case 'company':
-
-            q.groupBy('target_id');
-            break;
-
-          case 'rating_type':
-
-            q.groupBy('type');
-            break;
-
-          // Сколько всего 
-          case 'company_and_rating_type':
-      
-            // q.countDistinct('round(sum(votes.vote_value) / count(*), 2) as rating');
-        
-            // q.select(knex.raw('GROUP_CONCAT(votes.target_id) as voted_companies'));
-
-            q.groupBy('target_id');
-            q.groupBy('type');
-            break;
-
-          // case 'rating_type_and_company':
-
-          //   q.groupBy('type');
-          //   break;
-
-          default:;
-        }
-
-      }
-      else{
-        // q.select('1 as quantity');
       }
 
       // 
@@ -860,7 +768,23 @@ export default class Response{
   }
  
 
+
+
   getSchema(){
+
+    return new GraphQLSchema({
+      query: RootType,
+      // mutation: Mutation,
+      // directives: rootDirectives,
+    });
+
+  }
+
+  createStoreObject = (Class, data) => {
+    return new Class(data, this);
+  }
+
+  getSchema__(){
 
     let RatingTypesType;
     let RatingsType;
@@ -989,31 +913,31 @@ export default class Response{
 
         return {
           id: {
-            type: GraphQLInt
+            type: GraphQLInt,
           },
           thread_id: {
-            type: GraphQLString
+            type: GraphQLString,
           },
           text: {
-            type: GraphQLString
+            type: GraphQLString,
           },
           author_username: {
-            type: GraphQLString
+            type: GraphQLString,
           },
           author_fullname: {
-            type: GraphQLString
+            type: GraphQLString,
           },
           author_avatar: {
-            type: GraphQLString
+            type: GraphQLString,
           },
           parent: {
-            type: GraphQLInt
+            type: GraphQLInt,
           },
           published: {
-            type: GraphQLInt
+            type: GraphQLInt,
           },
           deleted: {
-            type: GraphQLInt
+            type: GraphQLInt,
           },
           createdon: {
             type: GraphQLString,
@@ -1681,7 +1605,7 @@ export default class Response{
       }
     });
 
-    const RootType = new GraphQLObjectType({
+    const RootType___ = new GraphQLObjectType({
       name: 'RootType',
       fields: {
         // comments: {
@@ -1904,7 +1828,7 @@ export default class Response{
     return schema;
   }
 
-  process(){  
+  process = async () => {  
 
     let {
       pub_action,
@@ -1929,79 +1853,324 @@ export default class Response{
 
     // 
 
-    try{
-      switch(pub_action){
+    // try{
+    //   switch(pub_action){
 
-        case 'schema':
+    //     case 'schema':
 
-          // 
-
-
-          var schema = this.getSchema();
+    //       // 
 
 
-          // graphql(schema, query).then((response) => {
-
-          //   this.success("", response);
-          // });
-
-          graphql(schema, introspectionQuery).then(result => {
-
-            return this.success("", result);
-          });
-
-          return ;
-          break;
-
-        case 'graphql':
-
-          // 
+    //       // var schema = this.getSchema();
 
 
-          var schema = this.getSchema();
+    //       // // graphql(schema, query).then((response) => {
+
+    //       // //   this.success("", response);
+    //       // // });
+
+    //       // graphql(schema, introspectionQuery).then(result => {
+
+    //       //   return this.success("", result);
+    //       // });
+
+    //       return ;
+    //       break;
+
+    //     case 'graphql':
+
+    //       // 
 
 
-          graphql({
-            schema, 
-            source: query,
-            variableValues: variables || undefined,
-            contextValue: this.context,
-            operationName,
-          }).then((response) => {
+    //       // graphql({
+    //       //   schema, 
+    //       //   source: query || defaultQuery,
+    //       //   operationName,
+    //       //   variableValues: variables || undefined,
+    //       //   contextValue: this,
+    //       //   fieldResolver: this.rootResolver,
+    //       // }).then((response) => {
 
-            let {
-              errors,
-            } = response;
+    //       //   let {
+    //       //     errors,
+    //       //   } = response;
 
-            if(errors && errors.length){
-              let {
-                message,
-                ...other
-              } = errors[0];
+    //       //   if(errors && errors.length){
+    //       //     let {
+    //       //       message,
+    //       //       ...other
+    //       //     } = errors[0];
 
-              return this.failure(message, {...other});
-            }
+    //       //     return this.failure(message, {...other});
+    //       //   }
 
-            // this.success("", response);
+    //       //   // this.success("", response);
 
-            // else
-            return this.success("", response && response.data || null);
-          });
+    //       //   // else
+    //       //   return this.success("", response && response.data || null);
+    //       // });
 
-          return ;
-          break;
+    //       this.localQuery({
+    //         // schema, 
+    //         // source: query || defaultQuery,
+    //         query,
+    //         operationName,
+    //         variableValues: variables || undefined,
+    //       })
+    //       .then((response) => {
+
+    //         let {
+    //           errors,
+    //         } = response;
+
+    //         if(errors && errors.length){
+    //           let {
+    //             message,
+    //             ...other
+    //           } = errors[0];
+
+    //           return this.failure(message, {...other});
+    //         }
+
+    //         // this.success("", response);
+
+    //         // else
+    //         return this.success("", response && response.data || null);
+    //       });
+
+    //       return ;
+    //       break;
         
 
-        default:;
+    //     default:;
+    //   }
+
+    let result;
+
+    await this.localQuery({
+      // schema, 
+      // source: query || defaultQuery,
+      query,
+      operationName,
+      variables,
+    })
+    .then((response) => {
+
+      let {
+        errors,
+      } = response;
+
+      if(errors && errors.length){
+        let {
+          message,
+          ...other
+        } = errors[0];
+
+        result = this.failure(message, {...other});
       }
-    }
-    catch(e){
 
-      return this.failure(e.message, e.stack);
-    }
+      // this.success("", response);
 
-    return this.failure("Неизвестное действие");
+      // else
+      result = this.success("", response && response.data || null);
+    })
+    .catch(e => {
+        result = this.failure(e);
+    });
+    // }
+    // catch(e){
+
+    //   result = this.failure(e.message, e.stack);
+    // }
+
+    return result;
+    // return this.failure("Неизвестное действие");
   }
+
+
+  localQuery = (graphQLParams) => {
+
+    const {
+      query,
+      operationName,
+      variables,
+    } = graphQLParams;
+
+    return new Promise((resolve, reject) => {
+
+      graphql({
+        schema,
+        operationName,
+        source: query || defaultQuery,
+        // rootValue: undefined,
+        variableValues: variables || undefined,
+        // contextValue: this.getChildContext(),
+        contextValue: this,
+        fieldResolver: rootResolver,
+        // directives: rootDirectives,
+      })
+        .then((result) => {
+
+          let {
+            errors,
+          } = result;
+
+          if(errors && errors.length){
+            let {
+              message,
+              ...other
+            } = errors[0];
+
+            console.error("localQuery error", result);
+            return reject(message, {...other});
+          }
+
+          return resolve(result);
+        })
+        .catch(e => {
+          console.error("localQuery error", e);
+          reject(e);
+        });
+    });
+  }
+
+
+  // rootResolver = async(source, args, context, info) =>{
+
+
+  //   let result;
+
+  //   // console.log('fieldResolver source', source);
+  //   // console.log('fieldResolver args', args);
+  //   // console.log('fieldResolver context', context);
+  //   // console.log('fieldResolver info', info);
+
+  //   const {
+  //     fieldName,
+  //     operation,
+  //     returnType,
+  //   } = info;
+
+  //   if(source){
+
+  //     if(typeof source.fieldResolver === 'function'){
+        
+  //       // console.log('fieldResolver source', source);
+        
+  //       result = source.fieldResolver(source, args, context, info);
+  //     }
+
+  //     else result = source[fieldName];
+
+  //   }
+    
+  //   if(!result){
+
+  //     // Резолвим по типу объекта
+  //     // PlaceContact
+
+  //     if(returnType instanceof GraphQLObjectType){
+
+  //       const {
+  //         name: returnTypeName,
+  //       } = returnType;
+
+  //       const {
+  //         id,
+  //       } = args;
+
+  //       // console.log("returnTypeName", returnTypeName);
+
+  //       // switch(returnTypeName){
+
+  //       //   case "PlaceContact":
+
+  //       //     const {
+  //       //       PlaceContactsStore,
+  //       //     } = context.state;
+
+  //       //     // console.log("returnTypeName 2", returnTypeName);
+
+  //       //     if(id){
+  //       //       result = PlaceContactsStore.getState().find(n => n.id === id);
+  //       //     }
+
+  //       //     break;
+ 
+
+  //       // }
+
+  //     }
+
+  //   }
+
+  //   // console.log("PlaceContactUpdateCoords Object result", result);
+
+  //   switch(operation.name.value){
+
+  //     case "PlaceContactUpdateCoords":
+
+
+  //       if(result && (result instanceof PlaceContact)){
+
+  //         // console.log("PlaceContactUpdateCoords Object result", result);
+
+  //         const {
+  //           lat,
+  //           lng,
+  //         } = args;
+
+  //         // Object.assign(result, {
+  //         //   lat,
+  //         //   lng,
+  //         // });
+
+  //         result.update({
+  //           lat,
+  //           lng,
+  //         });
+
+  //       }
+
+  //       break;
+
+  //   }
+
+
+  //   // switch(fieldName){
+
+  //   //   case 'contact_places': 
+        
+  //   //     console.log('Root fieldResolver', fieldName, source, value, this);
+          
+  //   //     // this.id === 492 && console.log('ModelObject Company fieldResolver', fieldName, source, value, this);
+
+  //   //     // value = value && value.image && value.image.original || null;
+  //   //     // value = value && value.original || null;
+
+  //   //     break;
+
+  //   //   default: ;
+      
+  //   // }
+
+  //   // else{
+
+  //   //   result = {
+  //   //     success: true,
+  //   //     object: [new user({
+  //   //       id: 12,
+  //   //       name: "DSfsdf",
+  //   //     })],
+  //   //   };
+
+  //   // }
+
+  //   // 
+
+  //   return result;
+
+  // }
 
   getRequestParams(){
     let params = this.params || {};

@@ -17,17 +17,19 @@ import Response from './components/response';
 
 var debug = require('debug')("server:router/main");
 
-import {
+
+import config, {
   db as db_config,
   host,
+  site_url,
 } from '../../config/config'; 
 
 
-let {
-  connection: {
-    prefix,
-  },
-} = db_config;
+// let {
+//   connection: {
+//     prefix,
+//   },
+// } = db_config;
 
 const knex = require('knex')(db_config);
 
@@ -250,7 +252,7 @@ module.exports = function (options) {
 
     debug("REQUEST /new_api/ 2", request);
 
-    let response = new Response(req, res, request, knex);
+    let response = new Response(req, res, request, knex, config);
 
     return response.process();
 

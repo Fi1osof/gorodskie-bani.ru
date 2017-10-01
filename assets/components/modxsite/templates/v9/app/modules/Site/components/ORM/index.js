@@ -14,6 +14,7 @@ import { List } from 'immutable';
 
 import {
   listField,
+  listArgs,
   // ObjectsListType,
 } from './fields';
 
@@ -116,7 +117,7 @@ import {
 
 const RatingsList = new RatingsListField({
   type: RatingType,
-  name: "Ratings",
+  name: "RatingsList",
   description: RatingType.description,
   args: RatingArgs,
 });
@@ -127,11 +128,17 @@ const RootType = new GraphQLObjectType({
   name: 'RootType',
   description: 'Корневой раздел',
   fields: {
-    companies: new listField({
+    companiesList: new listField({
       type: CompanyType,
+      name: "companiesList",
+      description: "Список компаний с постраничностью",
+    }),
+    companies: {
+      type: new GraphQLList(CompanyType),
       name: "Companies",
       description: "Список компаний",
-    }),
+      args: listArgs,
+    },
     company: {
       type: CompanyType,
       description: "Компания",
@@ -142,28 +149,43 @@ const RootType = new GraphQLObjectType({
       },
       resolve: getCompany,
     },
-    ratings: RatingsList,
+    ratingsList: RatingsList,
+    ratings: {
+      type: new GraphQLList(RatingType),
+      description: "Список комментариев",
+      args: listArgs,
+    },
     vote: {
       type: RatingType,
-      description: "Рейтинг",
-      resolve: getRating,
+      description: "Рейтинг (отдельный голос)",
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLInt),
+        },
+      },
+      // resolve: getRating,
     },
-    comments: new listField({
-      type: CommentType,
+    comments: {
+      type: new GraphQLList(CommentType),
       name: "Comments",
       description: "Список комментариев",
-      args: {
+      args: Object.assign({
         thread: {
           type: GraphQLInt,
           description: 'ID диалоговой ветки',
         },
-      },
-    }),
+      }, listArgs),
+    },
     users: new listField({
       type: UserType,
       name: "Users",
       description: "Список пользователей",
     }),
+    user: {
+      type: UserType,
+      name: "User",
+      description: UserType.description,
+    },
     // // ratings: {
     // //   type: new GraphQLList(RatingType),
     // //   name: "RatingsList",

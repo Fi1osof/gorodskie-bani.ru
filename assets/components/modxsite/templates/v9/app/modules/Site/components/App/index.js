@@ -28,9 +28,16 @@ import MainMenu from './MainMenu';
 
 // import ORM from '../ORM';
 
-import RootType from '../ORM';
+import RootType, {
+  Mutation,
+  rootDirectives,
+} from '../ORM';
+
 import Company from '../ORM/Company';
 import User from '../ORM/User';
+
+import defaultQuery from '../ORM/query';
+import rootResolver from '../ORM/resolver';
 
 import {
   buildSchema,
@@ -185,10 +192,198 @@ export class AppMain extends Component{
     // });
 
     return new GraphQLSchema({
-      query: RootType
+      query: RootType,
+      // mutation: Mutation,
     });
 
   }
+
+  // localQuery = (graphQLParams) => {
+
+  //   const {
+  //     schema,
+  //   } = this.state;
+
+  //   // var schema = this._getSchema();
+
+  //   const {
+  //     query,
+  //     operationName,
+  //     variables,
+  //   } = graphQLParams;
+
+  //   // return graphql({
+  //   //   schema, 
+  //   //   source: query,
+  //   //   variableValues: variables || undefined,
+  //   //   contextValue: this.context,
+  //   // }).then((response) => {
+
+  //   //   
+  //   // });
+
+  //   // graphql({
+  //   //   schema, 
+  //   //   source: query,
+  //   //   variableValues: variables || undefined,
+  //   //   contextValue: this.context,
+  //   // }).then((response) => {
+
+  //   //   this.success("", response);
+  //   // });
+
+  //   return new Promise((resolve, reject) => {
+
+  //     // class user {
+
+  //     //   constructor(props){
+
+  //     //     Object.assign(this, props);
+  //     //   }
+
+  //     // }
+
+  //     const {
+  //       CompaniesStore,
+  //       RatingsStore,
+  //       UsersStore,
+  //     } = this.state;
+
+  //     graphql({
+  //       schema,
+  //       operationName,
+  //       source: query,
+  //       rootValue: {
+  //         companies: CompaniesStore.getState(),
+  //         users: UsersStore.getState(),
+  //         ratings: RatingsStore.getState(),
+  //       },
+  //       variableValues: variables || undefined,
+  //       contextValue: this.getChildContext(),
+  //       fieldResolver: (source, args, context, info) => {
+  //         // 
+  //         // 
+  //         // 
+  //         // 
+  //         // 
+
+  //         let result;
+
+  //         const {
+  //           fieldName,
+  //         } = info;
+
+  //         if(source){
+
+  //           if(typeof source.fieldResolver === 'function'){
+  //             result = source.fieldResolver(source, args, context, info);
+  //           }
+
+  //           else result = source[fieldName];
+
+  //         }
+  //         // else{
+
+  //         //   result = {
+  //         //     success: true,
+  //         //     object: [new user({
+  //         //       id: 12,
+  //         //       name: "DSfsdf",
+  //         //     })],
+  //         //   };
+
+  //         // }
+
+  //         // 
+
+  //         return result;
+          
+  //       }
+  //     }).then((result) => {
+
+        
+
+  //       let {
+  //         errors,
+  //       } = result;
+
+  //       if(errors && errors.length){
+  //         let {
+  //           message,
+  //           ...other
+  //         } = errors[0];
+
+  //         return reject(message, {...other});
+  //       }
+
+  //       resolve(result);
+  //     })
+  //     .catch(e => {
+  //       // console.error(e);
+  //       reject(e);
+  //     });
+
+  //     // resolve({
+  //     //   data: {},
+  //     // });
+  //   });
+  // }
+
+
+
+  // // remoteQuery = (query, variables) => {
+  // remoteQuery = (graphQLParams) => {
+
+  //   if(typeof graphQLParams !== 'object'){
+  //     graphQLParams = {
+  //       query: graphQLParams,
+  //     };
+  //   }
+
+  //   const {
+  //     query,
+  //     operationName,
+  //     variables,
+  //   } = graphQLParams;
+
+  //   return new Promise((resolve, reject) => {
+
+  //     this.apiRequest(null, true, 'graphql', {
+  //       query,
+  //       variables,
+  //     },{
+  //       callback: (data, errors) => {
+
+  //         // let {
+  //         //   CompaniesStore,
+  //         // } = this.state;
+
+          
+
+  //         if(data.success){
+  //           // this.setState({
+  //           //   resourcesMap: data.object,
+  //           // });
+
+  //           // const {
+  //           //   object,
+  //           // } = data.object.companies || {};
+
+  //           // let companies = object && object.map(n => new Company(n)) || [];
+
+  //           // CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+
+  //           return resolve(data);
+  //         }
+  //         else{
+  //           return reject(data);
+  //         }
+  //       },
+  //     });
+
+  //   });
+
+  // }
 
   localQuery = (graphQLParams) => {
 
@@ -197,6 +392,13 @@ export class AppMain extends Component{
     } = this.state;
 
     // var schema = this._getSchema();
+
+
+    // console.log('rootResolver', rootResolver);
+
+    // 
+
+    // return {};
 
     const {
       query,
@@ -224,76 +426,29 @@ export class AppMain extends Component{
     //   this.success("", response);
     // });
 
+    // 
+
+    // return new Promise(resolve => resolve([{}]));
+
     return new Promise((resolve, reject) => {
 
-      // class user {
-
-      //   constructor(props){
-
-      //     Object.assign(this, props);
-      //   }
-
-      // }
-
       const {
-        CompaniesStore,
-        RatingsStore,
-        UsersStore,
+        // ContactsStore,
+        // PlacesStore,
+        // PlaceContactsStore,
       } = this.state;
 
       graphql({
         schema,
         operationName,
-        source: query,
-        rootValue: {
-          companies: CompaniesStore.getState(),
-          users: UsersStore.getState(),
-          ratings: RatingsStore.getState(),
-        },
+        source: query || defaultQuery,
+        // rootValue: undefined,
         variableValues: variables || undefined,
-        contextValue: this.getChildContext(),
-        fieldResolver: (source, args, context, info) => {
-          // 
-          // 
-          // 
-          // 
-          // 
-
-          let result;
-
-          const {
-            fieldName,
-          } = info;
-
-          if(source){
-
-            if(typeof source.fieldResolver === 'function'){
-              result = source.fieldResolver(source, args, context, info);
-            }
-
-            else result = source[fieldName];
-
-          }
-          // else{
-
-          //   result = {
-          //     success: true,
-          //     object: [new user({
-          //       id: 12,
-          //       name: "DSfsdf",
-          //     })],
-          //   };
-
-          // }
-
-          // 
-
-          return result;
-          
-        }
+        // contextValue: this.getChildContext(),
+        contextValue: this,
+        fieldResolver: rootResolver,
+        // directives: rootDirectives,
       }).then((result) => {
-
-        
 
         let {
           errors,
@@ -305,26 +460,23 @@ export class AppMain extends Component{
             ...other
           } = errors[0];
 
+          console.error("localQuery error", result);
           return reject(message, {...other});
         }
 
         resolve(result);
       })
       .catch(e => {
-        // console.error(e);
+        console.error("localQuery error", e);
         reject(e);
       });
-
-      // resolve({
-      //   data: {},
-      // });
     });
   }
 
 
 
   // remoteQuery = (query, variables) => {
-  remoteQuery = (graphQLParams) => {
+  remoteQuery = async (graphQLParams) => {
 
     if(typeof graphQLParams !== 'object'){
       graphQLParams = {
@@ -342,6 +494,7 @@ export class AppMain extends Component{
 
       this.apiRequest(null, true, 'graphql', {
         query,
+        operationName,
         variables,
       },{
         callback: (data, errors) => {
@@ -376,6 +529,7 @@ export class AppMain extends Component{
     });
 
   }
+
 
   componentWillMount(){
 
@@ -719,14 +873,56 @@ export class AppMain extends Component{
   }
 
 
-  loadApiData(){
+  async loadApiData(){
 
-    this.loadCompanies();
-    // this.loadRatings();
+    await this.remoteQuery({
+      operationName: "apiData",
+      variables: {
+        limit: 0,
+      },
+    })
+    .then(data => {
+      
+
+      console.log('loadCompanies', data);
+
+      let {
+        CompaniesStore,
+        RatingsStore,
+        UsersStore,
+      } = this.state;
+
+      // 
+
+      if(data.success && data.object){
+        let {
+          companies,
+          users,
+          ratings,
+        } = data.object || {};
+
+        // let companies = object && object.map(n => new Company(n)) || [];
+        companies = companies && companies.object && companies.object.map(n => this.createStoreObject(Company, n)) || [];
+        users = users && users.object && users.object.map(n => this.createStoreObject(User, n)) || [];
+        ratings = ratings && ratings.object || [];
+
+        CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+        UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
+        RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
+
+        // Устанавливаем сразу локальные данные для компаний
+        // companies.map(n => {
+        //   this.prepareCompaniesLocalData(n);
+        // });
+      }
+    })
+    .catch(e => {
+      console.error(e);
+    });
   }
 
 
-  loadCompanies(){
+  __loadCompanies(){
 
     this.apiRequest('companies', false, 'graphql', {
       query: `query{
@@ -823,16 +1019,11 @@ export class AppMain extends Component{
   loadRatings(){
 
     return new Promise((resolve, reject) => {
+ 
 
-      const query = `query{ 
-        ratings(limit:0) {
-          rating
-          type
-          company_id
-        }
-      }`;
-
-      this.remoteQuery(query)
+      this.remoteQuery({
+        operationName: "Ratings",
+      })
         .then(result => {
 
           // 
@@ -969,149 +1160,40 @@ export class AppMain extends Component{
     });
   }
 
-  prepareCompaniesLocalData = (item, force) => {
+  // prepareCompaniesLocalData = (item, force) => {
 
-    if(!item){
-      return false;
-    }
+  //   if(!item){
+  //     return false;
+  //   }
 
-    const {
-      id,
-      // _mapDataLoaded,
-    } = item;
+  //   const {
+  //     id,
+  //   } = item;
 
+  //   return new Promise((resolve, reject) => {
 
-    // const itemId = parseInt(id);
+  //     this.localQuery({
+  //       operationName: "Company",
+  //       variables: {
+  //         id,
+  //       },
+  //     })
+  //       .then(result => {
+  //         const {
+  //           company,
+  //         } = result.data || {};
 
-    // if(!itemId){
-    //   return false;
-    // }
+  //         if(company){
+  //           Object.assign(item, company);
+  //         }
 
-    // if(_mapDataLoaded && !force){
-    //   return;
-    // }
+  //         resolve(company);
 
-    // // 
+  //       })
+  //       .catch(e => reject(e));
 
-    // item._mapDataLoaded = true;
-
-    // this.apiRequest(`company_ratings_${id}`, false, 'graphql', {
-    //   query: `query{ 
-    //     company(
-    //       id: ${itemId}
-    //     ) {
-    //       id
-    //       ratingAvg {
-    //         rating
-    //         max_vote
-    //         min_vote
-    //         quantity
-    //       }
-    //     }
-    //   }`,
-    // },{
-    //   callback: (data, errors) => {
-
-    //     let {
-    //       CompaniesStore,
-    //     } = this.state;
-
-        
-
-    //     if(data.success && data.object){
-    //       // this.setState({
-    //       //   resourcesMap: data.object,
-    //       // });
-
-    //       const {
-    //         company,
-    //       } = data.object || {};
-
-    //       if(company){
-    //         Object.assign(item, company);
-    //         CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
-    //       }
-
-    //     }
-    //   },
-    // });
-
-    return new Promise((resolve, reject) => {
-
-      this.localQuery({
-        query: `
-
-        fragment user on UserType {
-          id
-          username
-          fullname
-          email
-          active
-          sudo
-          blocked
-          image {
-            original
-            thumb
-            marker_thumb
-            small
-            middle
-            big
-          }
-        }
-
-        query{ 
-          company(
-            id: ${id}
-          ) {
-            id
-            image {
-              original
-              thumb
-              marker_thumb
-              small
-              middle
-              big
-            }
-            ratingAvg {
-              rating
-              max_vote
-              min_vote
-              type
-              company_id
-              quantity
-              quantity_voters
-              voted_companies
-              voted_users
-              voter
-              voters{
-                ...user
-              }
-            }
-          }
-        }`,
-      })
-        .then(result => {
-
-          // console.log('prepareCompaniesLocalData', result);
-          // console.log('prepareCompaniesLocalData');
-
-          const {
-            company,
-          } = result.data || {};
-
-          if(company){
-            Object.assign(item, company);
-            // CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['UPDATE'], item);
-            // this.updateContactItem(item, company, true);
-          }
-
-          resolve(company);
-
-        })
-        .catch(e => reject(e));
-
-    });
-  }
+  //   });
+  // }
 
   openCompanyPage(item){
     if(!item){

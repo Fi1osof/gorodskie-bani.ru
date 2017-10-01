@@ -90,13 +90,20 @@ const rootResolver = async (source, args, context, info) => {
 
       else if(returnType instanceof CompanyType.constructor){
 
-        const {
-          name: returnTypeName,
-        } = returnType;
+      	// console.log('CompanyType.constructor', CompanyType);
 
-        const {
-          id,
-        } = args;
+       //  const {
+       //    name: returnTypeName,
+       //  } = returnType;
+
+       //  const {
+       //    id,
+       //  } = args;
+
+        await getObject(source, args, context, info)
+        	.then(r => {
+        		result = r;
+        	})
 
       }
 
@@ -391,9 +398,9 @@ const getObjects = async (source, args, context, info) => {
 		// Получаем список компаний
 		if(ofType === CompanyType){
   		
-  		console.log("CompanyType list source", source);
-  		console.log("CompanyType list info", info);
-  		console.log("CompanyType list args", args);
+  		// console.log("CompanyType list source", source);
+  		// console.log("CompanyType list info", info);
+  		// console.log("CompanyType list args", args);
 
 	    await ObjectsListResolver(getCompanyList, source, args, context, info)
 	    	.then(r => {
@@ -413,6 +420,69 @@ const getObjects = async (source, args, context, info) => {
 	    // 	});
 
 	  }
+
+  // }
+
+
+  return result;
+
+}
+
+const getObject = async (source, args, context, info) => {
+
+	let result;
+
+  const {
+  	returnType,
+  } = info;
+
+  const {
+    name: returnTypeName,
+  } = returnType;
+
+  // const {
+  // 	_fields: {
+  // 		object: objectField,
+  // 	},
+  // } = returnType;
+
+	const {
+		id,
+	} = args;
+
+	if(!id){
+		throw new Error("Не указан ID объекта", returnType);
+	}
+
+
+  // if(objectField && objectField.type){
+
+	// Получаем список компаний
+	if(returnType === CompanyType){
+		
+		// console.log("CompanyType list source", source);
+		// console.log("CompanyType list info", info);
+		// console.log("CompanyType list args", args);
+
+    await ObjectsListResolver(getCompanyList, source, args, context, info)
+    	.then(r => {
+				// console.log("CompanyType result", r);	
+    		result = r && r.object && r.object.get(0);
+    	});
+  }
+
+  // Получаем список рейтингов
+	else if(returnType === RatingType){
+  
+  	console.log("ofType2", ofType);
+
+
+    // await ObjectsListResolver(getRatingsList, source, args, context, info)
+    // 	.then(r => {
+    // 		result = r;
+    // 	});
+
+  }
 
   // }
 

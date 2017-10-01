@@ -85,37 +85,37 @@ import {
 // };
 
 
-export const getMany = function (source, args, context, info){
-  // 
+// export const getMany = function (source, args, context, info){
+//   // 
 
-  const {
-    CompaniesStore,
-  } = context;
+//   const {
+//     CompaniesStore,
+//   } = context;
 
-  const {
-    id,
-  } = args;
+//   const {
+//     id,
+//   } = args;
 
-  let state = CompaniesStore.getState();
+//   let state = CompaniesStore.getState();
 
-  if(id){
-    state = state.filter(n => n.id === id);
-  }
+//   if(id){
+//     state = state.filter(n => n.id === id);
+//   }
 
-  return new Promise((resolve, reject) => {
-    resolve(state);
-  });
-}
+//   return new Promise((resolve, reject) => {
+//     resolve(state);
+//   });
+// }
 
-export const getOne = function (source, args, context, info){
-  return new Promise((resolve, reject) => {
-    getMany(source, args, context, info)
-      .then(result => {
+// export const getOne = function (source, args, context, info){
+//   return new Promise((resolve, reject) => {
+//     getMany(source, args, context, info)
+//       .then(result => {
         
-        resolve(result && result.get(0) || null);
-      })
-  });
-}
+//         resolve(result && result.get(0) || null);
+//       })
+//   });
+// }
 
 
 

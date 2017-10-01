@@ -49,8 +49,8 @@ import {
 
 import {
   CompanyType,
-  getMany as getCompanies,
-  getOne as getCompany,
+  // getMany as getCompanies,
+  // getOne as getCompany,
 } from './Company';
 
 import {
@@ -147,7 +147,7 @@ const RootType = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLInt),
         },
       },
-      resolve: getCompany,
+      // resolve: getCompany,
     },
     ratingsList: RatingsList,
     ratings: {

@@ -1,6 +1,5 @@
 
 const defaultQuery = `
-
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -124,15 +123,25 @@ query MapCompanies (
   $getCompanyComments:Boolean = false
   $getCommentCompany:Boolean = false
   $getRatingsAvg:Boolean = true
+  $withPagination:Boolean = false
 ){
   companiesList(
     limit:$limit
-  ){
+  )
+  @include(if:$withPagination)
+  {
     count
     total
     object{
       ...Company
     }
+  }
+  companies(
+    limit:$limit
+  )
+  @skip(if:$withPagination)
+  {
+    ...Company
   }
 }
 

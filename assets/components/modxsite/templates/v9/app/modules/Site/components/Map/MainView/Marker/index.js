@@ -65,9 +65,13 @@ export default class Marker extends Component{
 	      // quantity_voters,
 			} = ratingAvg || {};
 
-			if(_isDirty){
-				console.log('_isDirty', item, _isDirty);
-			}
+			// console.log('item', item);
+
+			// ratingAvg && console.log('ratingAvg', ratingAvg);
+
+			// if(_isDirty){
+			// 	console.log('_isDirty', item, _isDirty);
+			// }
 
 
 			let width = hovered ? 40 : 36;

@@ -535,10 +535,9 @@ export default class MapMainView extends Component{
   	let companies;
 
   	await localQuery({
-  		operationName: "Companies",
+  		operationName: "MapCompanies",
   		variables: {
   			limit: 0,
-  			getImageFormats: true,
   		},
   	})
   		.then(r => {
@@ -573,6 +572,8 @@ export default class MapMainView extends Component{
   		if(!lat || !lng){
   			return;
   		}
+
+  		// console.log('Map item', item);
 
 
   		markersData.push({

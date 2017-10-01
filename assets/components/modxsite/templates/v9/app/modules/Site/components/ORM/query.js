@@ -1,6 +1,5 @@
 
 const defaultQuery = `
-
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -13,19 +12,15 @@ query apiData(
     limit:$limit
     # offset:1
   ) {
-    object {
-      ...Company
-    }
+    ...Company
   }
   ratings(
     limit:$limit
   ){
-    object{
-      rating
-      type
-      company_id
-      voter
-    }
+    rating
+    type
+    company_id
+    voter
   }
   users(limit:$limit) {
     object {
@@ -42,17 +37,13 @@ query Companies (
   $getComments:Boolean = false
   $getCommentCompany:Boolean = false
   $getCompanyFullData:Boolean = false
+  $companyIds:[Int]
 ){
   companies(
     limit:$limit
+    ids:$companyIds
   ){
-    count
-    total
-    limit
-    page
-    object{
-      ...Company
-    }
+    ...Company
   }
 }
 
@@ -75,8 +66,6 @@ query Company(
 query Ratings(
   $limit:Int!
   $ratingsGroupBy:RatingGroupbyEnum
-  $ratingThread:Int
-  $countRatings:Boolean = false
   $getRatingCompany:Boolean = false
   $getCompanyFullData:Boolean = false
   $getComments:Boolean = false
@@ -88,15 +77,8 @@ query Ratings(
   ratings(
     limit:$limit
     groupBy:$ratingsGroupBy
-    thread:$ratingThread
   ) {
-    count
-    limit
-    total @include(if:$countRatings)
-    page
-    object{
-      ...Rating
-    }
+    ...Rating
   }
 }
 
@@ -119,41 +101,31 @@ fragment Rating on RatingsType{
 }
 
 query CompanyRatings(
-  $thread:Int!
   $groupBy:RatingGroupbyEnum
 ){
   ratings(
     limit:0
-    thread:$thread
     groupBy:$groupBy
   ) {
-    count
-    total
-    limit
-    page
-    object {
-      rating
-      max_vote
-      min_vote
-      type
-      company_id
-      quantity
-      quantity_voters
-      voted_companies
-      voted_users
-      voter
-    }
+    rating
+    max_vote
+    min_vote
+    type
+    company_id
+    quantity
+    quantity_voters
+    voted_companies
+    voted_users
+    voter
   }
 }
 
 query Users(
   $limit: Int!
-  $ids:[Int]!
 ) {
   
   users(
     limit:$limit
-    ids:$ids
   ){
     count
     total
@@ -174,6 +146,7 @@ fragment Company on Company{
   city_id
   city
   city_uri
+  image
   coords{
     lat
     lng
@@ -182,7 +155,6 @@ fragment Company on Company{
   {
     description 
     content
-    image
     ...imageFormats @include(if:$getImageFormats)
   }
   comments @include(if:$getComments)
@@ -245,6 +217,7 @@ fragment User on UserType {
   sudo
   blocked
 }
+
 
 
 `;

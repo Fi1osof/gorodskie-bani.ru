@@ -306,6 +306,8 @@ export const getList = (object, args, context, info) => {
 
     request
     .then((data) => {
+    
+      // console.log("Company result", data);
 
       if(!data.success){
 
@@ -325,47 +327,47 @@ export const getList = (object, args, context, info) => {
   });
 }
 
-export const companiesResolver = (object, args) => {
+// export const companiesResolver = (object, args) => {
 
-  return new Promise((resolve, reject) => {
+//   return new Promise((resolve, reject) => {
 
-    this.companiesListResolver(object, args)
-      .then((result) => {
-
-        
-
-        if(!result.success){
-
-          return reject(result.message || "Ошибка выполнения запроса");
-        }
-
-        // 
-
-        return resolve(result.object && result.object || null);
-      })
-      .catch((e) => {
-        return reject(e);
-      })
-    ;
-  });
-}
-
-export const companyResolver = (object, args) => {
-
-  return new Promise((resolve, reject) => {
-
-    this.companiesResolver(object, args)
-      .then((result) => {
+//     this.companiesListResolver(object, args)
+//       .then((result) => {
 
         
 
-        // 
+//         if(!result.success){
 
-        return resolve(result && result[0] || null);
-      })
-      .catch((e) => {
-        return reject(e);
-      })
-    ;
-  });
-}
+//           return reject(result.message || "Ошибка выполнения запроса");
+//         }
+
+//         // 
+
+//         return resolve(result.object && result.object || null);
+//       })
+//       .catch((e) => {
+//         return reject(e);
+//       })
+//     ;
+//   });
+// }
+
+// export const companyResolver = (object, args) => {
+
+//   return new Promise((resolve, reject) => {
+
+//     this.companiesResolver(object, args)
+//       .then((result) => {
+
+        
+
+//         // 
+
+//         return resolve(result && result[0] || null);
+//       })
+//       .catch((e) => {
+//         return reject(e);
+//       })
+//     ;
+//   });
+// }

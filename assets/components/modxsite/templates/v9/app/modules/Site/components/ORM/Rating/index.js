@@ -73,33 +73,36 @@ export const RatingType = new GraphQLObjectType({
   fields: () => {
 
     return {
+      id: {
+        type: GraphQLInt,
+      },
       rating: {
-        type: GraphQLFloat
+        type: GraphQLFloat,
       },
       max_vote: {
-        type: GraphQLFloat
+        type: GraphQLFloat,
       },
       min_vote: {
-        type: GraphQLFloat
+        type: GraphQLFloat,
       },
       type: {
-        type: GraphQLInt
+        type: GraphQLInt,
       },
       company_id: {
-        type: GraphQLInt
+        type: GraphQLInt,
       },
       quantity: {
-        type: GraphQLInt
+        type: GraphQLInt,
       },
       quantity_voters: {
         type: GraphQLInt,
         description: 'Количество проголосовавши людей',
       },
       voted_companies: {
-        type: GraphQLString
+        type: GraphQLString,
       },
       voted_users: {
-        type: GraphQLString
+        type: GraphQLString,
       },
       voter: {
         type: GraphQLInt,
@@ -166,100 +169,61 @@ export const RatingType = new GraphQLObjectType({
 
         },
       },
+      Company: {
+        type: CompanyType,
+        description: "Компания, за которую проголосовали",
+        resolve: async (source, args, context, info) => {
+
+          const {
+            fieldName,
+          } = info;
+
+          const {
+            localQuery,
+          } = context;
+
+          let result = source && source[fieldName];
+
+          if(!result){
+
+            const {
+              localQuery,
+            } = context;
+
+            const {
+              company_id,
+            } = source;
+
+            if(!company_id){
+              return null;
+            }
+
+            Object.assign(args, {
+              id: company_id,
+            });
+   
+ 
+            await localQuery({
+              operationName: "Company",
+              variables: args,
+            })
+            .then(r => {
+              console.log('Ratings Companies args', args, r);
+
+              const {
+                company,
+              } = r.data;
+
+              result = company;
+
+            }); 
+          }
+          
+          return result;
+        },
+      },
       companies: {
         type: new GraphQLList(CompanyType),
-        // resolve: (rating, args, context, info) => {
-
-        //   return new Promise((resolve, reject) => {
-
-
-        //     const {
-        //       localQuery,
-        //     } = context;
-
-        //     const {
-        //       company_id,
-        //       voted_companies,
-        //     } = rating;
-
-        //     if(!voted_companies && !company_id){
-        //       return null;
-        //     }
-
-        //     let ids;
-
-        //     if(voted_companies){
-        //       ids = voted_companies;
-        //     }
-        //     else{
-        //       ids = company_id;
-        //     }
-
-        //     Object.assign(args, {
-        //       ids,
-        //       limit: 0,
-        //     });
-
-        //     const q = `query companies(
-        //       $limit: Int!
-        //       $ids:[Int]!
-        //     ) {
-              
-        //       companies(
-        //         limit:$limit
-        //         ids:$ids
-        //       ){
-        //         count
-        //         total
-        //         limit
-        //         page
-        //         object {
-        //           id
-        //           name
-        //           longtitle
-        //           description
-        //           content
-        //           alias
-        //           uri
-        //           city_id
-        //           city
-        //           city_uri
-        //           image {
-        //             original
-        //             thumb
-        //             marker_thumb
-        //             small
-        //             middle
-        //             big
-        //           }
-        //         }
-        //       }
-        //     }`;
-
-
-        //     // 
-        //     //   query: q,
-        //     //   variables: args,
-        //     // });
-
-        //     localQuery({
-        //       query: q,
-        //       variables: args,
-        //     })
-        //       .then(result => {
-
-        //         // 
-
-        //         const {
-        //           companies,
-        //         } = result.data || {};
-
-        //         resolve(companies && companies.object || null);
-        //       })
-        //       .catch(e => reject(e));
-        //   });
-
-        // },
         resolve: async (source, args, context, info) => {
 
           const {
@@ -293,35 +257,26 @@ export const RatingType = new GraphQLObjectType({
               ids = voted_companies;
             }
             else{
-              ids = company_id;
+              ids = [company_id];
             }
 
             Object.assign(args, {
-              ids,
-              limit: 2,
+              companyIds: ids,
+              limit: 10,
             });
    
+            // console.log('Ratings Companies args', args);
 
-            await localQuery({
-              // operationsName: "Company",
-              variables: args,
-              query: `query companies(
-                $limit: Int!
-              ) {
-                
-                companies(
-                  limit:$limit
-                ){ 
-                  id
-                  name
-                }
-              }`,
-            })
+            if(ids && ids.length){
+              await localQuery({
+                operationName: "Companies",
+                variables: args,
+              })
               .then(r => {
 
                 // 
 
-                console.log("CompanyType ratings result", r);
+                // console.log("CompanyType ratings result", r);
 
                 const {
                   companies,
@@ -338,8 +293,8 @@ export const RatingType = new GraphQLObjectType({
                 // });
 
               });
+            }
           }
-
 
           return result;
         },

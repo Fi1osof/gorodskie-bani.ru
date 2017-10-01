@@ -902,9 +902,9 @@ export class AppMain extends Component{
         } = data.object || {};
 
         // let companies = object && object.map(n => new Company(n)) || [];
-        companies = companies && companies.object && companies.object.map(n => this.createStoreObject(Company, n)) || [];
-        users = users && users.object && users.object.map(n => this.createStoreObject(User, n)) || [];
-        ratings = ratings && ratings.object || [];
+        companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
+        users = users && users.map(n => this.createStoreObject(User, n)) || [];
+        ratings = ratings || [];
 
         CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
         UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);

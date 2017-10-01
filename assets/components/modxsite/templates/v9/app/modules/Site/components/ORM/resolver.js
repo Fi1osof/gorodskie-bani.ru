@@ -27,6 +27,120 @@ import {
 	getList as getRatingsList,
 } from './Rating';
 
+// const rootResolver = async (source, args, context, info) => {
+
+
+
+//     let result;
+
+//     // console.log('fieldResolver source', source);
+//     // console.log('fieldResolver args', args);
+//     console.log('fieldResolver info', info);
+
+//     // console.log('fieldResolver context', context);
+
+//     const {
+//       fieldName,
+//       operation,
+//       returnType,
+//     } = info;
+
+//     // const {
+//     //   ofType,
+//     // } = returnType;
+
+//     if(source){
+
+//       if(typeof source.fieldResolver === 'function'){
+        
+//         // console.log('fieldResolver source', source);
+        
+//         result = source.fieldResolver(source, args, context, info);
+//       }
+
+//       else result = source[fieldName];
+
+//     }
+
+//     if(!result){
+
+//       // Резолвим по типу объекта
+
+//       if(returnType instanceof ObjectsListType){
+
+//         await getObjectsList(source, args, context, info)
+//         	.then(r => {
+//         		result = r;
+//         	})
+
+//       }
+
+//       else if(returnType instanceof GraphQLList){
+
+//         // const {
+//         //   id,
+//         // } = args;
+
+//         await getObjects(source, args, context, info)
+//         	.then(r => {
+//         		result = r;
+//         	})
+
+//       }
+
+//       else if(returnType instanceof CompanyType.constructor){
+
+//       	// console.log('CompanyType.constructor', CompanyType);
+
+//        //  const {
+//        //    name: returnTypeName,
+//        //  } = returnType;
+
+//        //  const {
+//        //    id,
+//        //  } = args;
+
+//         await getObject(source, args, context, info)
+//         	.then(r => {
+//         		result = r;
+//         	})
+
+//       }
+
+//     }
+
+//     if(operation && operation.name){
+
+// 	    switch(operation.name.value){
+
+// 	      case "PlaceContactUpdateCoords":
+
+
+// 	        if(result && (result instanceof PlaceContact)){
+
+// 	          const {
+// 	            lat,
+// 	            lng,
+// 	          } = args;
+
+// 	          result.update({
+// 	            lat,
+// 	            lng,
+// 	          });
+
+// 	        }
+
+// 	        break;
+
+// 	    }
+
+//     }
+
+
+//     return result;
+
+// }
+
 const rootResolver = async (source, args, context, info) => {
 
 
@@ -35,7 +149,7 @@ const rootResolver = async (source, args, context, info) => {
 
     // console.log('fieldResolver source', source);
     // console.log('fieldResolver args', args);
-    console.log('fieldResolver info', info);
+    // console.log('fieldResolver info', info);
 
     // console.log('fieldResolver context', context);
 
@@ -66,31 +180,62 @@ const rootResolver = async (source, args, context, info) => {
 
       // Резолвим по типу объекта
 
-      if(returnType instanceof ObjectsListType){
+      const {
+        returnType,
+      } = info;
 
-        await getObjectsList(source, args, context, info)
-        	.then(r => {
-        		result = r;
-        	})
+      const {
+        name: returnTypeName,
+      } = returnType;
+
+
+
+      if(returnType instanceof ObjectsListType){
+        
+        const {
+          _fields: {
+            object: objectField,
+          },
+        } = returnType;
+
+        if(objectField && objectField.type){
+
+          const {
+            type: objectType,
+          } = objectField;
+
+          const {
+            ofType,
+          } = objectType || {};
+ 
+          await getObjectsList(ofType, source, args, context, info)
+            .then(r => {
+              result = r;
+            })
+        }
+
 
       }
 
       else if(returnType instanceof GraphQLList){
 
+        const {
+          ofType,
+        } = returnType;
         // const {
         //   id,
         // } = args;
 
-        await getObjects(source, args, context, info)
-        	.then(r => {
-        		result = r;
-        	})
+        await getObjects(ofType, source, args, context, info)
+          .then(r => {
+            result = r;
+          })
 
       }
 
-      else if(returnType instanceof CompanyType.constructor){
+      else if(returnType instanceof GraphQLObjectType){
 
-      	// console.log('CompanyType.constructor', CompanyType);
+        // console.log('CompanyType.constructor', CompanyType);
 
        //  const {
        //    name: returnTypeName,
@@ -100,10 +245,10 @@ const rootResolver = async (source, args, context, info) => {
        //    id,
        //  } = args;
 
-        await getObject(source, args, context, info)
-        	.then(r => {
-        		result = r;
-        	})
+        await getObject(returnType, source, args, context, info)
+          .then(r => {
+            result = r;
+          })
 
       }
 
@@ -111,28 +256,28 @@ const rootResolver = async (source, args, context, info) => {
 
     if(operation && operation.name){
 
-	    switch(operation.name.value){
+      switch(operation.name.value){
 
-	      case "PlaceContactUpdateCoords":
+        case "PlaceContactUpdateCoords":
 
 
-	        if(result && (result instanceof PlaceContact)){
+          if(result && (result instanceof PlaceContact)){
 
-	          const {
-	            lat,
-	            lng,
-	          } = args;
+            const {
+              lat,
+              lng,
+            } = args;
 
-	          result.update({
-	            lat,
-	            lng,
-	          });
+            result.update({
+              lat,
+              lng,
+            });
 
-	        }
+          }
 
-	        break;
+          break;
 
-	    }
+      }
 
     }
 
@@ -140,8 +285,6 @@ const rootResolver = async (source, args, context, info) => {
     return result;
 
 }
-
-
 
 export const ObjectsListResolver = (resolver, object, args, context, info) => {
 
@@ -312,33 +455,35 @@ export const storeResolver = function(state, args, context, info){
 }
 
 
-const getObjectsList = async (source, args, context, info) => {
+const getObjectsList = async (ofType, source, args, context, info) => {
 
 	let result;
 
-  const {
-  	returnType,
-  } = info;
+  // const {
+  // 	returnType,
+  // } = info;
 
-  const {
-    name: returnTypeName,
-  } = returnType;
+  // const {
+  //   name: returnTypeName,
+  // } = returnType;
 
-  const {
-  	_fields: {
-  		object: objectField,
-  	},
-  } = returnType;
+  // const {
+  // 	_fields: {
+  // 		object: objectField,
+  // 	},
+  // } = returnType;
 
 
-	const {
-		type: objectType,
-		type: {
-			ofType,
-		},
-	} = objectField;
 
-  if(objectField && objectField.type){
+  // if(objectField && objectField.type){
+
+		// const {
+		// 	type: objectType,
+		// } = objectField;
+
+		// const {
+		// 	ofType,
+		// } = objectType || {};
 
 		// Поулчаем список компаний
 		if(ofType === CompanyType){
@@ -363,132 +508,175 @@ const getObjectsList = async (source, args, context, info) => {
 
 	  }
 
-  }
+  // }
 
 
   return result;
 
 }
 
-const getObjects = async (source, args, context, info) => {
+const getObjects = async (ofType, source, args, context, info) => {
 
-	let result;
+  let result;
+
+  await getObjectsList(ofType, source, args, context, info)
+    .then(r => {
+      result = r;
+    });
+    
+  result = result && result.object;
+
+  return result;
+
+}
+
+const getObject = async (ofType, source, args, context, info) => {
+
+  let result;
 
   const {
-  	returnType,
-  } = info;
+    id,
+  } = args;
 
-  const {
-    name: returnTypeName,
-  } = returnType;
+  await getObjects(ofType, source, args, context, info)
+    .then(r => {
+      
+      // console.log("ofType Company result", r);
+      // console.log("ofType Company result", id, r.find(n => n.id == id));
 
-  // const {
-  // 	_fields: {
-  // 		object: objectField,
-  // 	},
-  // } = returnType;
+      result = r;
+    });
+    
+  result = result && result.find(n => n.id === id);
+
+  return result;
+}
+
+// const getObjects = async (source, args, context, info) => {
+
+// 	let result;
+
+//   const {
+//   	returnType,
+//   } = info;
+
+//   const {
+//     name: returnTypeName,
+//   } = returnType;
+
+//   // const {
+//   // 	_fields: {
+//   // 		object: objectField,
+//   // 	},
+//   // } = returnType;
 
 
-	const {
-		ofType,
-	} = returnType;
+// 	const {
+// 		ofType,
+// 	} = returnType;
 
-  // if(objectField && objectField.type){
+//   // if(objectField && objectField.type){
 
-		// Получаем список компаний
-		if(ofType === CompanyType){
+
+
+// 		// Получаем список компаний
+// 		if(ofType === CompanyType){
   		
-  		// console.log("CompanyType list source", source);
-  		// console.log("CompanyType list info", info);
-  		// console.log("CompanyType list args", args);
+//   		// console.log("CompanyType list source", source);
+//   		// console.log("CompanyType list info", info);
+//   		// console.log("CompanyType list args", args);
 
-	    await ObjectsListResolver(getCompanyList, source, args, context, info)
-	    	.then(r => {
-	    		result = r && r.object;
-	    	});
-	  }
+// 	    await ObjectsListResolver(getCompanyList, source, args, context, info)
+// 	    	.then(r => {
+// 	    		result = r;
+// 	    	});
+// 	  }
 
-	  // Получаем список рейтингов
-		else if(ofType === RatingType){
+// 	  // Получаем список рейтингов
+// 		else if(ofType === RatingType){
 	  
-	  	console.log("ofType2", ofType);
+// 	  	console.log("ofType2", ofType);
 
 
-	    // await ObjectsListResolver(getRatingsList, source, args, context, info)
-	    // 	.then(r => {
-	    // 		result = r;
-	    // 	});
+// 	    await ObjectsListResolver(getRatingsList, source, args, context, info)
+// 	    	.then(r => {
+// 	    		result = r;
+// 	    	});
 
-	  }
-
-  // }
-
-
-  return result;
-
-}
-
-const getObject = async (source, args, context, info) => {
-
-	let result;
-
-  const {
-  	returnType,
-  } = info;
-
-  const {
-    name: returnTypeName,
-  } = returnType;
-
-  // const {
-  // 	_fields: {
-  // 		object: objectField,
-  // 	},
-  // } = returnType;
-
-	const {
-		id,
-	} = args;
-
-	if(!id){
-		throw new Error("Не указан ID объекта", returnType);
-	}
-
-
-  // if(objectField && objectField.type){
-
-	// Получаем список компаний
-	if(returnType === CompanyType){
+// 	  }
 		
-		// console.log("CompanyType list source", source);
-		// console.log("CompanyType list info", info);
-		// console.log("CompanyType list args", args);
+// 		result = result && result.object;
 
-    await ObjectsListResolver(getCompanyList, source, args, context, info)
-    	.then(r => {
-				// console.log("CompanyType result", r);	
-    		result = r && r.object && r.object.get(0);
-    	});
-  }
+//   // }
 
-  // Получаем список рейтингов
-	else if(returnType === RatingType){
+
+//   return result;
+
+// }
+
+// const getObject = async (source, args, context, info) => {
+
+// 	let result;
+
+//   const {
+//   	returnType,
+//   } = info;
+
+//   const {
+//     name: returnTypeName,
+//   } = returnType;
+
+//   // const {
+//   // 	_fields: {
+//   // 		object: objectField,
+//   // 	},
+//   // } = returnType;
+
+// 	const {
+// 		id,
+// 	} = args;
+
+// 	if(!id){
+// 		throw new Error("Не указан ID объекта", returnType);
+// 	}
+
+
+//   // if(objectField && objectField.type){
+
+// 	// Получаем список компаний
+// 	if(returnType === CompanyType){
+		
+// 		// console.log("CompanyType list source", source);
+// 		// console.log("CompanyType list info", info);
+// 		// console.log("CompanyType list args", args);
+
+//     await ObjectsListResolver(getCompanyList, source, args, context, info)
+//     	.then(r => {
+// 				// console.log("CompanyType result", r);	
+//     		result = r;
+//     	});
+//   }
+
+//   // Получаем список рейтингов
+// 	else if(returnType === RatingType){
   
-  	console.log("ofType2", ofType);
+//   	// console.log("ofType2", ofType);
 
 
-    // await ObjectsListResolver(getRatingsList, source, args, context, info)
-    // 	.then(r => {
-    // 		result = r;
-    // 	});
+//     await ObjectsListResolver(getRatingsList, source, args, context, info)
+//     	.then(r => {
+//     		result = r;
+//     	});
 
-  }
+//   }
+	
+// 	result = result && result.object && result.object.find(n => n.id === id);
 
-  // }
+//   // }
 
 
-  return result;
+//   return result;
 
-}
+// }
 
 export default rootResolver;

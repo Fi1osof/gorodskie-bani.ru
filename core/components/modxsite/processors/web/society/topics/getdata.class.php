@@ -10,6 +10,7 @@ class modWebSocietyTopicsGetdataProcessor extends modSocietyWebTopicsGetdataProc
         $this->setDefaultProperties(array(
             "showunpublished"   => $this->modx->hasPermission('view_unpublished_topics'),
             "approved"          => false,       // Показывать только все подряд
+            "format"        => "json",
         ));
         
         return parent::initialize();

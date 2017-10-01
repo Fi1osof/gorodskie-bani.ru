@@ -69,6 +69,10 @@ import {
   UserType,
 } from './User';
 
+import {
+  ResourceType,
+} from './Resource';
+
 
 // console.log('UserType', UserType, CompanyType);
 
@@ -134,6 +138,30 @@ const commentsArgs = Object.assign({
   },
 }, listArgs);
 
+
+const resourcesArgs = Object.assign({
+  template: {
+    type: GraphQLInt,
+    description: 'ID Шаблона',
+  },
+  excludeTemplates: {
+    type: new GraphQLList(GraphQLInt),
+    description: 'С какими шаблонами надо исключить документы',
+  },
+  resourceType: {
+    type: new GraphQLEnumType({
+      name: "ResourceTypeEnum",
+      values: {
+        topic: {
+          value: "topic",
+          description: "Топик",
+        },
+      },
+    }),
+    description: 'Тип ресурса',
+  },
+}, listArgs);
+
 // console.log('RatingsList', RatingsList);
 
 const RootType = new GraphQLObjectType({
@@ -144,16 +172,38 @@ const RootType = new GraphQLObjectType({
       type: CompanyType,
       name: "companiesList",
       description: "Список компаний с постраничностью",
+      args: resourcesArgs,
     }),
     companies: {
       type: new GraphQLList(CompanyType),
       name: "Companies",
       description: "Список компаний",
-      args: listArgs,
+      args: resourcesArgs,
     },
     company: {
       type: CompanyType,
       description: "Компания",
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLInt),
+        },
+      },
+    },
+    resourcesList: new listField({
+      type: ResourceType,
+      name: "resourcesList",
+      description: "Список документов с постраничностью",
+      args: resourcesArgs,
+    }),
+    resources: {
+      type: new GraphQLList(ResourceType),
+      name: "Resources",
+      description: "Список документов",
+      args: resourcesArgs,
+    },
+    resource: {
+      type: ResourceType,
+      description: "Документ",
       args: {
         id: {
           type: new GraphQLNonNull(GraphQLInt),

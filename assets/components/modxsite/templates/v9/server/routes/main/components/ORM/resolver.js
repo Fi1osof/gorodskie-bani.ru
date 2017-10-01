@@ -16,13 +16,22 @@ import {
 
 
 import {
-	Company,
-	CompanyType,
+  Company,
+  CompanyType,
 } from 'modules/Site/components/ORM/Company';
 
 import {
   getList as getCompanyList,
 } from './Company';
+
+
+import {
+	ResourceType,
+} from 'modules/Site/components/ORM/Resource';
+
+import {
+  getList as getResourcesList,
+} from './Resource';
 
 
 import {
@@ -203,6 +212,17 @@ const getObjectsList = async (ofType, source, args, context, info) => {
     // console.log("ofType Company", ofType);
 
     await getCompanyList(source, args, context, info)
+      .then(r => {
+        object = r;
+      });
+
+  }
+
+  if(ofType === ResourceType){
+  
+    // console.log("ofType Company", ofType);
+
+    await getResourcesList(source, args, context, info)
     	.then(r => {
     		object = r;
     	});

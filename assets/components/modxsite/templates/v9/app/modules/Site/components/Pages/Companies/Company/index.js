@@ -100,7 +100,7 @@ export default class CompanyPage extends Component{
 
 				company && Object.assign(item, company);
 
-				console.log('Company componentDidMount', result);
+				// console.log('Company componentDidMount', result);
 
 				this.forceUpdate();
 

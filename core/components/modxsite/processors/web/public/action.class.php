@@ -59,6 +59,13 @@ class modWebPublicActionProcessor extends modProcessor{
                     self::$actualClassName = 'modWebSocietyTopicsCommentsCreateProcessor';
                     break; 
                     
+                    
+                
+                case 'topics/getdata':
+                    require dirname(dirname(__FILE__)) . '/society/topics/getdata.class.php';
+                    self::$actualClassName = 'modWebSocietyTopicsGetdataProcessor';
+                    break; 
+                    
                 
                 case 'cities/getdata':
                     require dirname(dirname(__FILE__)) . '/cities/getdata.class.php';
@@ -79,6 +86,11 @@ class modWebPublicActionProcessor extends modProcessor{
                 case 'companies/getdata':
                     require dirname(dirname(__FILE__)) . '/companies/resources/getdata.class.php';
                     self::$actualClassName = 'modWebCompaniesResourcesGetdataProcessor';
+                    break; 
+                
+                case 'resources/getdata':
+                    require dirname(dirname(__FILE__)) . '/resources/getdata.class.php';
+                    self::$actualClassName = 'modWebResourcesGetdataProcessor';
                     break; 
                     
                 

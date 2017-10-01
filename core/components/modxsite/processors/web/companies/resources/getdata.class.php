@@ -70,6 +70,7 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
             "dir"   => "DESC",
             "with_coors_only"   => false,       // Только с координатами
             "approved_only"     => false,       // Только одобренные
+            "summary"   => true,
         ));
         
         

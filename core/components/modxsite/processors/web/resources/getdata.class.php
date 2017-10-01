@@ -6,6 +6,47 @@ class modWebResourcesGetdataProcessor extends modSiteWebResourcesGetdataProcesso
     
     public function initialize(){
         
+
+        foreach($this->properties as $name => & $value){
+
+            if(is_scalar($value)){
+
+                switch((string)$value){
+
+                    case 'true':
+
+                        $value = true;
+
+                        break;
+
+                    case 'false':
+
+                        $value = false;
+
+                        break;
+
+                    case '0':
+
+                        $value = 0;
+
+                        break;
+
+                    case 'null':
+
+                        $value = null;
+
+                        break;
+
+                    case 'undefined':
+
+                        unset($this->properties[$name]);
+
+                        break;
+                }
+            }
+
+        }
+
         $this->setDefaultProperties(array( 
             /*
                 Схема ссылки на картинку.  
@@ -14,13 +55,47 @@ class modWebResourcesGetdataProcessor extends modSiteWebResourcesGetdataProcesso
                 - full  : Будет сформирован полный путь, включая http://
                 
             */
-            'image_url_schema'      => 'base',      
+            'image_url_schema'      => 'base',   
+            "format"    => "json",
         ));
         
+        // $this->modx->log(1, print_r($this->properties, 1), "FILE");
+
         return parent::initialize();
     }
+
+
+
+    public function prepareQueryBeforeCount(xPDOQuery $c){
+        $c = parent::prepareQueryBeforeCount($c);
+        
+        $alias = $c->getAlias();
+        
+        $where = array(
+        );
+
+        
+        if($template = (int)$this->getProperty("template")){
+            $where['template'] = $template;
+        }
+        
+        if($excludeTemplates = $this->getProperty("excludeTemplates")){
+
+            if(!is_array($excludeTemplates)){
+                $excludeTemplates = explode(",", $excludeTemplates);
+            }
+
+            // $this->modx->log(1, print_r($excludeTemplates, 1), "FILE");
+
+            $where['template:not in'] = $excludeTemplates;
+        }
+
+        $c->where($where);
+
+        return $c;
+    }
     
-    //
+
     public function afterIteration(array $list){
         $list = parent::afterIteration($list);
         

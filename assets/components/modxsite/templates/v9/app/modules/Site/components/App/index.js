@@ -86,6 +86,8 @@ export class AppMain extends Component{
     saveContactItem: PropTypes.func,
     setPageTitle: PropTypes.func,
     CompaniesStore: PropTypes.object,
+    ResourcesStore: PropTypes.object,
+    TopicsStore: PropTypes.object,
     // CompaniesStore: PropTypes.object,
     // orm: PropTypes.object,
     schema: PropTypes.object,
@@ -116,6 +118,8 @@ export class AppMain extends Component{
       updateContactItem: this.updateContactItem,
       saveContactItem: this.saveContactItem,
       setPageTitle: this.setPageTitle,
+      ResourcesStore: this.ResourcesStore,
+      TopicsStore: this.TopicsStore,
       CompaniesStore,
       // orm,
       schema,
@@ -152,6 +156,8 @@ export class AppMain extends Component{
       RatingsStore: new DataStore(new Dispatcher()),
       UsersStore: new DataStore(new Dispatcher()),
       CommentsStore: new DataStore(new Dispatcher()),
+      ResourcesStore: new DataStore(new Dispatcher()),
+      TopicsStore: new DataStore(new Dispatcher()),
       // orm,
       schema,
       // db,
@@ -892,6 +898,8 @@ export class AppMain extends Component{
         RatingsStore,
         UsersStore,
         CommentsStore,
+        ResourcesStore,
+        TopicsStore,
       } = this.state;
 
       // 
@@ -902,6 +910,8 @@ export class AppMain extends Component{
           users,
           ratings,
           comments,
+          resources,
+          topics,
         } = data.object || {};
 
         // let companies = object && object.map(n => new Company(n)) || [];
@@ -914,6 +924,8 @@ export class AppMain extends Component{
         UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
         RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
         CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
+        ResourcesStore.getDispatcher().dispatch(ResourcesStore.actions['SET_DATA'], resources || []);
+        TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
 
         // Устанавливаем сразу локальные данные для компаний
         // companies.map(n => {

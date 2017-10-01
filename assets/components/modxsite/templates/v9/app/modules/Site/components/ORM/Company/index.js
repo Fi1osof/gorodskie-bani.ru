@@ -28,6 +28,8 @@ import {
   imageType,
   coordsType,
   SortField,
+  TVsField,
+  GalleryField,
 } from '../fields';
 
 
@@ -226,102 +228,104 @@ export const CompanyType = new GraphQLObjectType({
       city_uri: {
         type: GraphQLString
       },
-      tvs: {
-        type: new GraphQLObjectType({
-          name: 'TSvType',
-          fields: {
-            address: {
-              type: GraphQLString,
-              description: 'Адрес',
-            },
-            site: {
-              type: GraphQLString,
-              description: 'Веб-сайт',
-            },
-            facility_type: {
-              type: GraphQLString,
-              description: 'Тип заведения',
-            },
-            phones: {
-              type: GraphQLString,
-              description: 'Телефон',
-            },
-            work_time: {
-              type: GraphQLString,
-              description: 'Рабочее время',
-            },
-            prices: {
-              type: GraphQLString,
-              description: 'Цены',
-            },
-            metro: {
-              type: GraphQLString,
-              description: 'Метро',
-            },
-          },
-        }),
-        resolve: (object) => {
-          let tvs = {};
+      tvs: TVsField,
+      gallery: GalleryField,
+      // tvs: {
+      //   type: new GraphQLObjectType({
+      //     name: 'TSvType',
+      //     fields: {
+      //       address: {
+      //         type: GraphQLString,
+      //         description: 'Адрес',
+      //       },
+      //       site: {
+      //         type: GraphQLString,
+      //         description: 'Веб-сайт',
+      //       },
+      //       facility_type: {
+      //         type: GraphQLString,
+      //         description: 'Тип заведения',
+      //       },
+      //       phones: {
+      //         type: GraphQLString,
+      //         description: 'Телефон',
+      //       },
+      //       work_time: {
+      //         type: GraphQLString,
+      //         description: 'Рабочее время',
+      //       },
+      //       prices: {
+      //         type: GraphQLString,
+      //         description: 'Цены',
+      //       },
+      //       metro: {
+      //         type: GraphQLString,
+      //         description: 'Метро',
+      //       },
+      //     },
+      //   }),
+      //   resolve: (object) => {
+      //     let tvs = {};
 
-          if(object.tvs){
+      //     if(object.tvs){
 
-            // if(object.tvs.address !== undefined){
-            //   tvs = object.tvs;
-            // }
-            // else{
+      //       // if(object.tvs.address !== undefined){
+      //       //   tvs = object.tvs;
+      //       // }
+      //       // else{
 
-              // console.log('tvs', object.tvs);
+      //         // console.log('tvs', object.tvs);
 
-              for(var name in object.tvs){
+      //         for(var name in object.tvs){
 
-                var tv = object.tvs[name];
+      //           var tv = object.tvs[name];
 
-                if(tv){
+      //           if(tv){
 
-                  let v;
+      //             let v;
 
-                  if(tv.tv_id === undefined){
-                    tvs[name] = tv;
-                  }
-                  else{
+      //             if(tv.tv_id === undefined){
+      //               tvs[name] = tv;
+      //             }
+      //             else{
 
-                    let {
-                      tv_id: id,
-                      caption,
-                      value,
-                    } = tv;
+      //               let {
+      //                 tv_id: id,
+      //                 caption,
+      //                 value,
+      //               } = tv;
                     
-                    tvs[name] = value;
+      //               tvs[name] = value;
 
-                  }
+      //             }
 
-                }
-              }
+      //           }
+      //         }
 
-            // }
+      //       // }
 
-          }
+      //     }
 
-          return tvs;
-        },
-      },
-      gallery: {
-        type: new GraphQLList(
-          new GraphQLObjectType({
-            name: 'galleryType',
-            fields: {
-              image: {
-                type: GraphQLString,
-              },
-              imageFormats: imageType,
-              // image: imageType,
-            },
-          })
-        ),
-        resolve: (object) => {
-          return object.gallery || [];
-        },
-      },
+      //     return tvs;
+      //   },
+      // },
+      // gallery: {
+      //   type: new GraphQLList(
+      //     new GraphQLObjectType({
+      //       name: 'galleryType',
+      //       fields: {
+      //         image: {
+      //           type: GraphQLString,
+      //         },
+      //         imageFormats: imageType,
+      //         // image: imageType,
+      //       },
+      //     })
+      //   ),
+      //   resolve: (object) => {
+      //     return object.gallery || [];
+      //   },
+      // },
       coords: {
         type: coordsType,
         resolve: (source) => {
@@ -563,7 +567,7 @@ export const CompanyType = new GraphQLObjectType({
             commentsSort,
           });
 
-          console.log('CompanyComments', args);
+          // console.log('CompanyComments', args);
 
           await localQuery({
             // query: q,

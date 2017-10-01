@@ -342,3 +342,93 @@ export const coordsType = new GraphQLObjectType({
   },
 })
 
+
+export const TVsField = {
+  type: new GraphQLObjectType({
+    name: 'ResourceTSvType',
+    fields: {
+      address: {
+        type: GraphQLString,
+        description: 'Адрес',
+      },
+      site: {
+        type: GraphQLString,
+        description: 'Веб-сайт',
+      },
+      facility_type: {
+        type: GraphQLString,
+        description: 'Тип заведения',
+      },
+      phones: {
+        type: GraphQLString,
+        description: 'Телефон',
+      },
+      work_time: {
+        type: GraphQLString,
+        description: 'Рабочее время',
+      },
+      prices: {
+        type: GraphQLString,
+        description: 'Цены',
+      },
+      metro: {
+        type: GraphQLString,
+        description: 'Метро',
+      },
+    },
+  }),
+  resolve: (object) => {
+    let tvs = {};
+
+    if(object.tvs){
+
+
+        for(var name in object.tvs){
+
+          var tv = object.tvs[name];
+
+          if(tv){
+
+            let v;
+
+            if(tv.tv_id === undefined){
+              tvs[name] = tv;
+            }
+            else{
+
+              let {
+                tv_id: id,
+                caption,
+                value,
+              } = tv;
+              
+              tvs[name] = value;
+
+            }
+
+          }
+        }
+
+    }
+
+    return tvs;
+  },
+};
+
+export const GalleryField = {
+  type: new GraphQLList(
+    new GraphQLObjectType({
+      name: 'galleryType',
+      fields: {
+        image: {
+          type: GraphQLString,
+        },
+        imageFormats: imageType,
+        // image: imageType,
+      },
+    })
+  ),
+  resolve: (object) => {
+    return object.gallery || [];
+  },
+};

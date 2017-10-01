@@ -54,7 +54,7 @@ export default class Rating extends Component{
 			return null;
 		}
 
-		console.log("Item", item);
+		// console.log("Item", item);
 
 		const {
 			votersOpen,

@@ -1,8 +1,6 @@
 
 const defaultQuery = `
 
-
-
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -14,6 +12,11 @@ query apiData(
   $companyCommentsSort:[SortBy]
   $getTVs:Boolean = true
   $getCommentAuthor:Boolean = false
+  $resourcesLimit:Int = 0
+  $withPagination:Boolean = false
+  $resourceTemplate:Int
+  $resourceExcludeTemplates:[Int] = [27,28,15]
+  $resourceType:ResourceTypeEnum
 ){
   companies(
     limit:$limit
@@ -36,8 +39,10 @@ query apiData(
   comments(limit:$limit) {
     ...Comment
   }
+  
+  ...ResourcesList
+  ...Topics
 }
-
 
 query Companies (
   $limit:Int!
@@ -345,6 +350,108 @@ query User(
     id:$userId
   ){
     ...User
+  }
+}
+
+query Resources(
+  $resourcesLimit:Int = 0
+  $withPagination:Boolean = false
+  $getTVs:Boolean = true
+  $resourceTemplate:Int
+  $resourceExcludeTemplates:[Int] = [27,28,15]
+  $resourceType:ResourceTypeEnum
+){
+  
+  ...ResourcesList
+  # resources(
+  #   limit:$resourcesLimit
+  #   template:$resourceTemplate
+  #   excludeTemplates:$resourceExcludeTemplates
+  # )@skip(if:$withPagination)
+  # {
+  #   ...Resource
+  # }
+}
+
+query Topics(
+  $resourcesLimit:Int = 0
+  # $withPagination:Boolean = false
+  $getTVs:Boolean = true
+  # $resourceTemplate:Int
+  # $resourceExcludeTemplates:[Int]
+  # $resourceType:ResourceTypeEnum = topic
+){
+  
+  ...Topics
+}
+
+fragment Topics on RootType{
+  topics:resources(
+    resourceType:topic
+    limit:$resourcesLimit
+  ){
+    ...Resource
+  }
+}
+
+fragment ResourcesList on RootType{
+  resourcesList(
+    limit:$resourcesLimit
+    template:$resourceTemplate
+    excludeTemplates:$resourceExcludeTemplates
+    resourceType:$resourceType
+  )@include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...Resource
+    }
+  }
+  resources(
+    limit:$resourcesLimit
+    template:$resourceTemplate
+    excludeTemplates:$resourceExcludeTemplates
+    resourceType:$resourceType
+  )@skip(if:$withPagination)
+  {
+    ...Resource
+  }
+}
+
+fragment Resource on ResourceType{
+  id
+  name
+  longtitle
+  template
+  parent
+  description
+  content
+  alias
+  uri
+  deleted
+  published
+  hidemenu
+  short_text
+  topic_tags
+  topic_tags_array
+  image
+  imageFormats{
+    thumb
+    marker_thumb
+    small
+    middle
+    big
+  }
+  tvs @include(if:$getTVs)
+  {
+    address
+    site
+    facility_type
+    phones
+    work_time
+    prices
+    metro
   }
 }
 

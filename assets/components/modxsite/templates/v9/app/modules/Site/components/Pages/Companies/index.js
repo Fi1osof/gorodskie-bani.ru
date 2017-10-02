@@ -19,7 +19,7 @@ export default class CompaniesPage extends Page {
 		});
 	}
 	
-	render(){
+	renderContent(){
 
 		const {
 			params,

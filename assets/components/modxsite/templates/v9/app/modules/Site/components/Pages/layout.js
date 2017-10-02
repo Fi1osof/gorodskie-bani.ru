@@ -12,6 +12,7 @@ export default class Page extends Component{
 
 	static contextTypes = {
 		CompaniesStore: PropTypes.object.isRequired,
+		getCounters: PropTypes.func.isRequired,
 	};
 
 	constructor(props){
@@ -64,25 +65,21 @@ export default class Page extends Component{
 
 	render(){
 
-		let content = this.getContent();
-
+		const {
+			getCounters,
+		} = this.context;
 
 		return <Grid
 			container
+			style={{
+				maxWidth: 1260,
+				margin: "0 auto",
+			}}
 		>
 			
-			<Grid
-				item
-			> 
- 
-			</Grid>
+			{this.renderContent()}
 
-			<Grid
-				item
-				xs
-			> 
-				{content && <div dangerouslySetInnerHTML={{__html: content}}></div>} 
-			</Grid>
+			{getCounters()}
 
 		</Grid>;
 	}

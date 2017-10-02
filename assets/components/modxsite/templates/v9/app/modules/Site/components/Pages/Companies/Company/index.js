@@ -257,7 +257,11 @@ export default class CompanyPage extends Component{
 		}
 
 
-		return <Card>
+		return <Card
+			style={{
+				boxShadow: "none",
+			}}
+		>
 			
 			<CardHeader 
         title={<div

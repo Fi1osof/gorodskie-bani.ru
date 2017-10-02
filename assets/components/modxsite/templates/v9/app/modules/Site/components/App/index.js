@@ -105,9 +105,9 @@ export class AppMain extends Component{
 
     let {
       CompaniesStore,
-      // orm,
+      ResourcesStore,
       schema,
-      // db,
+      TopicsStore,
     } = this.state;
 
     let context = {
@@ -120,13 +120,11 @@ export class AppMain extends Component{
       updateContactItem: this.updateContactItem,
       saveContactItem: this.saveContactItem,
       setPageTitle: this.setPageTitle,
-      ResourcesStore: this.ResourcesStore,
-      TopicsStore: this.TopicsStore,
       getCounters: this.getCounters,
+      TopicsStore,
+      ResourcesStore,
       CompaniesStore,
-      // orm,
       schema,
-      // db,
       localQuery: this.localQuery,
       remoteQuery: this.remoteQuery,
     };
@@ -1001,6 +999,8 @@ export class AppMain extends Component{
     .catch(e => {
       console.error(e);
     });
+
+    this.forceUpdate();
   }
 
 

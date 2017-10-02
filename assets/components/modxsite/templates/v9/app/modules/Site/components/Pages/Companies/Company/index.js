@@ -291,10 +291,6 @@ export default class CompanyPage extends Component{
 				/>}
 			/>
 
-			<CompanyTopics 
-				item={item}
-			/>
-
 				
 			<CardContent>
 				
@@ -497,6 +493,10 @@ export default class CompanyPage extends Component{
 				null
 			}
 
+
+			<CompanyTopics 
+				item={item}
+			/>
 			
 				
 			{comments && comments.length

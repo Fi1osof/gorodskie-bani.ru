@@ -353,6 +353,7 @@ export const getList = async (source, args, context, info) => {
 
   const {
     parent,
+    template,
     resourceType,
   } = args;
  
@@ -376,6 +377,12 @@ export const getList = async (source, args, context, info) => {
 
   }
 
-  return state
+  if(template){
+
+    state = state.filter(n => n.template === template);
+
+  }
+
+  return state;
 
 };

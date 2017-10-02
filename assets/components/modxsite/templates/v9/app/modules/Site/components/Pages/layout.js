@@ -12,6 +12,7 @@ export default class Page extends Component{
 
 	static contextTypes = {
 		CompaniesStore: PropTypes.object.isRequired,
+		TopicsStore: PropTypes.object.isRequired,
 		getCounters: PropTypes.func.isRequired,
 	};
 

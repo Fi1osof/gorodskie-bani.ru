@@ -12,6 +12,8 @@ import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 
+import Topic from './Topic';
+
 export default class CompanyTopics extends Component{
 
 	static propTypes = {
@@ -58,59 +60,23 @@ export default class CompanyTopics extends Component{
 
 		topics.map(topic => {
 
-			console.log("Topic", topic);
+			// console.log("Topic", topic);
 
 			const {
 				id,
-				name:topicName,
-				uri,
-				short_text,
-				summary,
 			} = topic;
 
-			topicsList.push(<div
+			topicsList.push(<Topic
 				key={id}
 				style={{
 					padding: 15,
 				}}
+				item={topic}
+				// topic={topic}
 			>
 					
-			<Card
-			>
 
-				<CardHeader
-					title={<Link
-						to={uri}
-						href={uri}
-					>
-						<Typography
-							type="subheading"
-						>
-							{topicName}
-						</Typography>
-					</Link>}
-	        subheader={<Link
-	        	to={CompanyUri}
-	        	href={CompanyUri}
-	        >
-	        	{CompanyName}
-	        </Link>}
-				>
-					
-				</CardHeader>
-
-				<CardContent>
-
-					
-		 
-
-						<div dangerouslySetInnerHTML={{__html: short_text || summary}}></div>
- 
-					
-				</CardContent>
-			</Card>
-
-			</div>);
+			</Topic>);
 
 		});
 
@@ -123,6 +89,9 @@ export default class CompanyTopics extends Component{
 
 			<Typography
 				type="title"
+				style={{
+					marginLeft: 15,
+				}}
 			>
 				Обзоры заведения
 			</Typography>

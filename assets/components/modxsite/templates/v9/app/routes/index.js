@@ -7,6 +7,7 @@ import {
   NotFoundPage,
   DbPage,
   CompaniesPage,
+  OtzivyPage,
   // Lesson1,
   // PageGraphiQL,
 } from "modules/Site";
@@ -71,6 +72,14 @@ let routes = {
       //     component: Page72
       //   }
       // ]
+    },
+    {
+      path: "/bani-otzivy/",
+      component: OtzivyPage,
+      childRoutes: [{
+        path: "/bani-otzivy/:topicAlias/",
+        // component: CompaniesPage,
+      }]
     },
     {
       // path: "/bani/",

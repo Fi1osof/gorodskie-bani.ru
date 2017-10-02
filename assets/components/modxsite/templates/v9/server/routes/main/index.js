@@ -18,6 +18,8 @@ import Response from './components/response';
 var debug = require('debug')("server:router/main");
 
 
+import fetch from 'node-fetch';
+
 import config, {
   db as db_config,
   host,
@@ -25,11 +27,11 @@ import config, {
 } from '../../config/config'; 
 
 
-// let {
-//   connection: {
-//     prefix,
-//   },
-// } = db_config;
+let {
+  connection: {
+    prefix,
+  },
+} = db_config;
 
 const knex = require('knex')(db_config);
 
@@ -79,6 +81,7 @@ module.exports = function (options) {
   // // var host = options.host;
 
   // var httpServ = (cfg.ssl) ? require('https') : require('http');
+  var httpServ = require('http');
 
   /*
   * API
@@ -245,48 +248,61 @@ module.exports = function (options) {
  
   // });
 
+  // SendMODXRequest = async (action, params) => {
+
+  //   const req = this.req;
+
+  //   const method = 'POST';
+
+  //   let url = `/assets/components/modxsite/connectors/connector.php?pub_action=${action}`;
+
+  //   let options = {
+  //     method,
+  //     headers: {
+  //     },
+  //   };
+
+  //   let form;
+
+  //   if(method == 'POST' && params){
+
+  //     form = new FormData()
+
+  //     for(var i in params){
+        
+  //       var value = params[i];
+
+  //       value = (typeof value !== "undefined") && value.toString && value.toString() || undefined;
+
+  //       if(value !== undefined){
+  //         form.append(i, value);
+  //       }
+  //     }
+
+  //     options.body = form;
+      
+  //   }
+
+
+
+  //   /*
+  //   * Собираем кукисы из оригинального запроса и если передаются куки в параметрах запроса,
+  //   * то объединяем их
+  //   * */
+    
+  // };
+
   router.post('/api/', function (req, res, next) {
 
 
     const request = Object.assign(req.query, req.body);
 
-    debug("REQUEST /new_api/ 2", request);
+    // debug("REQUEST /new_api/ 2", request);
 
     let response = new Response(req, res, request, knex, config);
 
     return response.process();
 
-    // try {
-
-    //   if(!req.body){
-    //     res.send("Не было получено тело запроса");
-
-    //     debug("Не было получено тело запроса");
-
-    //     return;
-    //   }
-
-    //   debug("req.body", req.query.pub_action, req.request, req.get, typeof req.body, req.body, req.body.type);
-
-    //   var data = req.body;
-
-    //   switch(data.type){
-
-    //     case 'chat_message':
-    //       var message = data;
-    //       debug("message", message);
-    //       // SendMessageToAll(message);
-    //       SendMessageToUsers(message, message.object.members)
-    //       break;
-
-    //     default: return res.send("Неизвестный тип запроса");
-    //   }
-    // }
-    // catch(e){
-    //   console.error("Request /new_api/ Error", e.message, e.stack);
-    // }
-
-    // res.send("success");
   });
 
   router.use('/', function(req, res) {
@@ -315,9 +331,9 @@ module.exports = function (options) {
     match({ 
       routes, 
       location: req.url 
-    }, (error, redirectLocation, renderProps) => {
+    }, async (error, redirectLocation, renderProps) => {
 
-      console.log('renderProps', renderProps);
+      // console.log('renderProps', renderProps);
 
       if (redirectLocation) { // Если необходимо сделать redirect
         return res.redirect(301, redirectLocation.pathname + redirectLocation.search);
@@ -328,7 +344,72 @@ module.exports = function (options) {
       }
 
       if (!renderProps) { // мы не определили путь, который бы подошел для URL
-        return res.status(404).send('Not found');
+
+        let prevent;
+
+        await checkRedirect(req, res)
+          .then(r => {
+            prevent = r;
+          })
+          .catch(e => {
+            console.error(e);
+          });
+
+        if(!prevent){
+
+          // debug("knex resreq.headers", req);
+
+          var q = knex(`${prefix}monitor_requests`)
+            .insert({
+              site_url: req.host,
+              url: req.url,
+              http_status: 404,
+              context_key: "web",
+              parent: 0,
+              path: '/www/gorodskie-bani.ru/',
+              uuid: '',
+              ip: '',
+              time: 0,
+              php_error_info: '',
+              referer: '',
+              user_agent: req.headers['user-agent'],
+            })
+            ;
+
+            q.then((result) => { 
+
+              // debug("knex SQL", q.toString());
+              // debug("knex result", result);
+
+            }).catch(e => {
+
+              console.error(e);
+            });
+
+          return res.status(404).send('Not found');
+        }
+
+        
+        // await fetch(site_url + req.url, options)
+        //   .then(function(response) {
+
+        //     console.log('response', response.headers);
+
+        //     let response_headers = response.headers;
+
+        //     if(response_headers && response_headers['location'] && response_headers['location'] != ''){
+
+        //       // res.redirect(301, 'http://yourotherdomain.com' + req.path)
+        //       res.redirect(301, response_headers['location'])
+        //       return;
+        //     }
+
+        //   })
+        //   .catch(e => {
+        //     console.error(e);
+        //   });
+
+
       }
 
 
@@ -345,6 +426,169 @@ module.exports = function (options) {
 
     return;
   });
+
+
+  const checkRedirect = (req, res) => {
+
+    return new Promise((resolve, reject) => {
+
+      var q = knex(`${prefix}redirects as redirects`)
+        .innerJoin(`${prefix}site_content as content`, 'redirects.resource_id', 'content.id')
+        // .select('profile.*')
+        .select('content.uri')
+        // .limit('3')
+        ;
+
+        q.where({
+          "redirects.uri": req.url.replace(/^\/+/, ''),
+        });
+
+        // if(Company_id){
+
+        //   q.innerJoin(`${prefix}modxsite_companies_places as places_companies`, 'places_companies.place_id', 'places.id');
+        //   q.where('places_companies.Company_id', Company_id);
+
+        // }
+
+
+        q.limit(1); 
+        // 
+
+        q.then((result) => { 
+
+          // debug("knex SQL", q.toString());
+          // debug("knex result", result);
+
+          const {
+            uri,
+          } = result && result[0] || {};
+
+          if(uri){
+
+            return res.redirect(301, `/${uri}`);
+          }
+
+          return result;
+          return resolve(false);
+
+        }).catch(e => {
+
+          reject(e);
+        });
+
+
+
+
+
+
+      var cookies = [];
+
+      let cookies_obj;
+
+
+      let options = {
+        // method,
+        
+        url: "http://gorodskie-bani.local:9000/" + req.url,
+
+        // location: req.url,
+        headers: {
+        },
+      };
+
+      if(req.headers && req.headers.cookie){
+        let cooks = req.headers.cookie.split(";");
+
+        cookies_obj = {};
+
+        cooks.map(function(item){
+          var match = item.match(/ *(.+?)=(.+)/);
+          if(match){
+            cookies_obj[match[1]] = match[2];
+          }
+        });
+      }
+
+      if(cookies_obj){
+
+        for(var i in cookies_obj){
+          cookies.push(i + '=' + cookies_obj[i]);
+        }
+      }
+
+      if(cookies){
+        options.headers.Cookie = cookies;
+
+        // debug("options.headers", options.headers);
+      }
+
+      // debug("options.headers", options.headers);
+      // debug("options 1 ", options);
+
+      // debug("req.url", req.url);
+
+      // debug("req.headers", req.headers);
+
+
+      const {
+        host,
+      } = req.headers;
+
+      // Object.assign(options, {
+      //   host,
+      //   port: 9000,
+      // });
+
+
+      let req2 = httpServ.request(options, (request, a, b) => {
+
+        // debug("options 2", options);
+
+        // var str = '';
+        //
+        // //another chunk of data has been recieved, so append it to `str`
+        request.on('data', function (chunk) {
+          // str += chunk;
+        });
+        //
+        // //the whole response has been recieved, so we just print it out here
+        request.on('end', function () {
+
+          // debug("options 3", options);
+          // debug("options 4", a);
+          // debug("options 5", b);
+
+          var response_headers = request.headers;
+
+
+          /*
+           * Отрисовка компонентов
+           * */
+      
+
+          // debug("server response", request.headers);
+
+   
+          if(response_headers['location'] && response_headers['location'] != ''){
+
+            // res.redirect(301, 'http://yourotherdomain.com' + req.path)
+            res.redirect(301, response_headers['location'])
+            
+            return resolve(true);
+          }
+
+          return resolve(false); 
+
+        });
+
+
+      });
+
+      req2.end();
+
+    });
+
+  }
  
   function renderHTML(componentHTML, initialState) {
 

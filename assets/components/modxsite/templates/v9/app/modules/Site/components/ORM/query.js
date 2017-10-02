@@ -20,6 +20,7 @@ query apiData(
   $resourceType:ResourceTypeEnum
   $resourceParent:Int
   $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
 ){
   companies(
     limit:$limit
@@ -61,6 +62,7 @@ query Companies (
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
 ){
   companies(
     limit:$limit
@@ -94,6 +96,7 @@ query Company(
   $companyCommentsSort:[SortBy] = {by: id, dir:asc}
   $getCommentAuthor:Boolean = true
   $getCompanyTopics:Boolean = true
+  $getRatingVoters:Boolean = true
 ){
   company(
     id: $id
@@ -130,6 +133,7 @@ query Ratings(
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
 ){ 
   ratings(
     limit:$limit
@@ -168,6 +172,7 @@ query Comments(
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
 ){
   commentsList(
     limit: $limit
@@ -207,6 +212,7 @@ query MapCompanies (
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
 ){
   companiesList(
     limit:$limit
@@ -249,6 +255,7 @@ query CompanyRatings(
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
 ){
   ratings(  
     limit:$limit
@@ -288,6 +295,7 @@ query CompanyComments(
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
 ){
   comments(  
     limit:$limit
@@ -328,6 +336,7 @@ query CompanyAvgRatings(
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
 ){
   ratings(  
     limit:1
@@ -625,7 +634,8 @@ fragment Company on Company{
     voted_companies
     voted_users
     voter
-    voters{
+    voters @include(if:$getRatingVoters)
+    {
       ...User
     }
   }

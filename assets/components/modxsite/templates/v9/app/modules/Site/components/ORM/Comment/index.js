@@ -365,7 +365,7 @@ export default class Comment extends ModelObject{
 }
 
 
-export const getList = async (source, args, context, info) => {
+export const getList = (source, args, context, info) => {
 
   const {
     CommentsStore,
@@ -378,6 +378,9 @@ export const getList = async (source, args, context, info) => {
 
   let state = CommentsStore.getState();
 
+
+  // Фильтруем неактивные
+  state = state.filter(n => n.published === 1 && n.deleted === 0);
 
   // Фильтр по документу
   if(resource_id){

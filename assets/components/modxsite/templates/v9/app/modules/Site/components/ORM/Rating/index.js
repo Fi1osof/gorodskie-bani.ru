@@ -700,7 +700,7 @@ export class RatingsListField extends listField{
 // }
 
 
-export const getList = async (source, args, context, info) => {
+export const getList = (source, args, context, info) => {
 
   const {
     RatingsStore,

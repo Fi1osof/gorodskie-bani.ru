@@ -43,6 +43,8 @@ import rootResolver from '../ORM/resolver';
 import {
   buildSchema,
   graphql,
+  execute,
+  parse,
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLInt,
@@ -58,6 +60,14 @@ import {
   printSchema,
 } from 'graphql';
 
+
+import {
+  buildExecutionContext,
+  buildResolveInfo,
+  getOperationRootType,
+} from 'graphql/execution/execute';
+
+// console.log('buildExecutionContext', buildExecutionContext);
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
@@ -87,8 +97,10 @@ export class AppMain extends Component{
     saveContactItem: PropTypes.func,
     setPageTitle: PropTypes.func,
     CompaniesStore: PropTypes.object,
+    RatingsStore: PropTypes.object,
     ResourcesStore: PropTypes.object,
     TopicsStore: PropTypes.object,
+    CommentsStore: PropTypes.object,
     // CompaniesStore: PropTypes.object,
     // orm: PropTypes.object,
     schema: PropTypes.object,
@@ -105,9 +117,11 @@ export class AppMain extends Component{
 
     let {
       CompaniesStore,
+      RatingsStore,
       ResourcesStore,
       schema,
       TopicsStore,
+      CommentsStore,
     } = this.state;
 
     let context = {
@@ -122,8 +136,10 @@ export class AppMain extends Component{
       setPageTitle: this.setPageTitle,
       getCounters: this.getCounters,
       TopicsStore,
+      CommentsStore,
       ResourcesStore,
       CompaniesStore,
+      RatingsStore,
       schema,
       localQuery: this.localQuery,
       remoteQuery: this.remoteQuery,
@@ -174,6 +190,8 @@ export class AppMain extends Component{
     user.hasPermission = this.hasPermission;
 
     stores.notifications_store = notifications_store;
+
+    this.rootResolver = rootResolver;
   }
 
   getCounters(){
@@ -500,47 +518,124 @@ export class AppMain extends Component{
 
     // return new Promise(resolve => resolve([{}]));
 
-    return new Promise((resolve, reject) => {
+    // return new Promise((resolve, reject) => {
 
-      const {
-        // ContactsStore,
-        // PlacesStore,
-        // PlaceContactsStore,
-      } = this.state;
+    //   const {
+    //     // ContactsStore,
+    //     // PlacesStore,
+    //     // PlaceContactsStore,
+    //   } = this.state;
 
-      graphql({
-        schema,
-        operationName,
-        source: query || defaultQuery,
-        // rootValue: undefined,
-        variableValues: variables || undefined,
+      // graphql({
+      //   schema,
+      //   operationName,
+      //   source: query || defaultQuery,
+      //   // rootValue: undefined,
+      //   variableValues: variables || undefined,
+      //   // contextValue: this.getChildContext(),
+      //   contextValue: this,
+      //   fieldResolver: rootResolver,
+      //   // directives: rootDirectives,
+      // }).then((result) => {
+
+      //   let {
+      //     errors,
+      //   } = result;
+
+      //   if(errors && errors.length){
+      //     let {
+      //       message,
+      //       ...other
+      //     } = errors[0];
+
+      //     console.error("localQuery error", result);
+      //     return reject(message, {...other});
+      //   }
+
+      //   resolve(result);
+      // })
+      // .catch(e => {
+      //   console.error("localQuery error", e);
+      //   reject(e);
+      // });
+
+      let 
+        // schema,
+        // operationName,
+        source = query || defaultQuery,
+        document = parse(source),
+        rootValue = undefined,
+        variableValues = variables || undefined,
         // contextValue: this.getChildContext(),
-        contextValue: this,
-        fieldResolver: rootResolver,
+        contextValue = this,
+        fieldResolver = rootResolver
         // directives: rootDirectives,
-      }).then((result) => {
+        ;
 
-        let {
-          errors,
-        } = result;
+      // console.log("execute document", document);
 
-        if(errors && errors.length){
-          let {
-            message,
-            ...other
-          } = errors[0];
+      let result = execute(
+        schema,
+        document,
+        rootValue,
+        contextValue,
+        variableValues,
+        operationName,
+        fieldResolver
+      );
 
-          console.error("localQuery error", result);
-          return reject(message, {...other});
-        }
+      // console.log("execute result", result);
 
-        resolve(result);
-      })
-      .catch(e => {
-        console.error("localQuery error", e);
-        reject(e);
-      });
-    });
+      return result;
+
+
+      // let executionContext = buildExecutionContext(
+      //   schema,
+      //   document,
+      //   rootValue,
+      //   contextValue,
+      //   variableValues,
+      //   operationName,
+      //   fieldResolver
+      // )
+
+      // console.log("buildExecutionContext executionContext", executionContext);
+
+
+      // const type = getOperationRootType(executionContext.schema, executionContext.operation);
+
+
+      // console.log("getOperationRootType type", type);
+
+      // return {
+      //   data: {},
+      // };
+
+      // const {
+      //   contextValue: context,
+      //   rootValue: nodeSource,
+      //   fieldResolver: resolver,
+      // } = executionContext;
+
+      // let resolveInfo = buildResolveInfo(executionContext);
+
+      // result = resolver(nodeSource, variables, context, executionContext);
+
+      // console.log("execute result", result);
+
+      // console.log("execute promise.resolve", result.resolve);
+
+      // result
+      //   .then(r => {
+          
+      //     console.log("execute result 2", r);
+
+      //     resolve(r);
+
+      //   })
+      //   .catch(e => reject(e));
+
+    // });
   }
 
 

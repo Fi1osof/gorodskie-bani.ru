@@ -344,7 +344,7 @@ export const ResourceType = new GraphQLObjectType({
 });
 
 
-export const getList = async (source, args, context, info) => {
+export const getList = (source, args, context, info) => {
 
   const {
     CompaniesStore,

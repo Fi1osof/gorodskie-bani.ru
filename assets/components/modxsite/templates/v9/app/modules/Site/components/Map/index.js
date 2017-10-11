@@ -41,6 +41,7 @@ export default class MapMainView extends Component{
 		// loadCompanyMapData: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
 		CompaniesStore: PropTypes.object.isRequired,
+		RatingsStore: PropTypes.object.isRequired,
 		setPageTitle: PropTypes.func.isRequired,
 		localQuery: PropTypes.func.isRequired,
 		getCounters: PropTypes.func.isRequired,
@@ -80,9 +81,15 @@ export default class MapMainView extends Component{
 
 		let {
 			CompaniesStore,
+			RatingsStore,
 		} = this.context;
 
  		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
+
+ 			this.createClusters();
+ 		});
+
+ 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
 
  			this.createClusters();
  		});
@@ -127,8 +134,8 @@ export default class MapMainView extends Component{
 	componentWillUnmount(){
 
  		let {
-
 			CompaniesStore,
+			RatingsStore,
  		} = this.context;
 
 
@@ -139,6 +146,16 @@ export default class MapMainView extends Component{
       dispatch._callbacks[this.CompaniesStoreListener] && dispatch.unregister(this.CompaniesStoreListener);
 
       this.CompaniesStoreListener = undefined;
+    }
+
+
+    if(this.RatingsStoreListener){
+
+      let dispatch = RatingsStore.getDispatcher();
+
+      dispatch._callbacks[this.RatingsStoreListener] && dispatch.unregister(this.RatingsStoreListener);
+
+      this.RatingsStoreListener = undefined;
     }
 
 
@@ -543,7 +560,7 @@ export default class MapMainView extends Component{
   		},
   	})
   		.then(r => {
-  			// console.log("Map companies", r);
+  			console.log("Map companies", r);
 
   			const {
   				companies: result,
@@ -553,7 +570,7 @@ export default class MapMainView extends Component{
 
   		});
 		
-		// console.log("Map companies companies", companies);
+		console.log("Map companies 2 companies", companies);
 
 		companies && companies.map(item => {
 

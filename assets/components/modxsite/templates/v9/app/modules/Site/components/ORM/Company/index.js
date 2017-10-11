@@ -425,37 +425,45 @@ export const CompanyType = new GraphQLObjectType({
         type: new GraphQLList(RatingType),
         resolve: async (company, args, context, info) => {
 
-          const {
-            localQuery,
-          } = context;
+          // const {
+          //   localQuery,
+          // } = context;
 
           const {
             id: company_id,
           } = company;
 
           Object.assign(args, {
-            ratingCompanyId: company_id,
+            // ratingCompanyId: company_id,
+            resource_id: company_id,
           });
 
-          let result;
 
-          await localQuery({
-            operationName: "CompanyRatings",
-            variables: args,
-          })
-            .then(r => {
+          const {
+            rootResolver,
+          } = context;
 
-              const {
-                ratings,
-              } = r.data;
+          return rootResolver(null, args, context, info);
 
-              // console.log("CompanyRatings", args, r);
+          // let result;
 
-              result = ratings;
+          // await localQuery({
+          //   operationName: "CompanyRatings",
+          //   variables: args,
+          // })
+          //   .then(r => {
 
-            });
+          //     const {
+          //       ratings,
+          //     } = r.data;
 
-          return result;
+          //     // console.log("CompanyRatings", args, r);
+
+          //     result = ratings;
+
+          //   });
+
+          // return result;
 
           // return this.RatingsResolver(company, args);
         },
@@ -475,30 +483,39 @@ export const CompanyType = new GraphQLObjectType({
             id: company_id,
           } = company;
 
+
           Object.assign(args, {
-            ratingCompanyId: company_id,
-            getByTypeRatings: true,
+            // ratingCompanyId: company_id,
+            resource_id: company_id,
+            groupBy: "company_and_rating_type",
           });
 
-          let result;
 
-          await localQuery({
-            operationName: "CompanyRatings",
-            variables: args,
-          })
-            .then(r => {
+          const {
+            rootResolver,
+          } = context;
 
-              const {
-                ratingsByType,
-              } = r.data;
+          return rootResolver(null, args, context, info);
 
-              // console.log("CompanyRatings", args, r);
+          // let result;
 
-              result = ratingsByType;
+          // await localQuery({
+          //   operationName: "CompanyRatings",
+          //   variables: args,
+          // })
+          //   .then(r => {
 
-            });
+          //     const {
+          //       ratingsByType,
+          //     } = r.data;
 
-          return result;
+          //     // console.log("CompanyRatings", args, r);
+
+          //     result = ratingsByType;
+
+          //   });
+
+          // return result;
 
           // return this.RatingsResolver(company, args);
         },
@@ -558,7 +575,7 @@ export const CompanyType = new GraphQLObjectType({
         // },
         resolve: async (source, args, context, info) => {
  
-          let result;
+          // let result;
 
           const {
             localQuery,
@@ -577,45 +594,93 @@ export const CompanyType = new GraphQLObjectType({
           } = args;
 
           Object.assign(args, {
-            commentsCompanyId,
-            commentsSort,
+            resource_id: commentsCompanyId,
+            sort: commentsSort,
           });
+
+
+          const {
+            rootResolver,
+          } = context;
+
+          return rootResolver(null, args, context, info);
 
           // console.log('CompanyComments', args);
 
-          await localQuery({
-            // query: q,
-            operationName: "CompanyComments",
-            variables: args,
-          })
-            .then(r => {
+          // await localQuery({
+          //   // query: q,
+          //   operationName: "CompanyComments",
+          //   variables: args,
+          // })
+          //   .then(r => {
 
-              const {
-                comments,
-              } = r.data;
+          //     const {
+          //       comments,
+          //     } = r.data;
 
-              result = comments;
+          //     result = comments;
 
-            });
+          //   });
 
-          return result;
+          // return result;
         },
       },
       ratings: {
         type: new GraphQLList(RatingType),
         description: RatingType.description,
+        resolve: (source, args, context, info) => {
+
+          // 
+
+          // let result;
+
+          const {
+            id: ratingCompanyId,
+          } = source;
+
+          Object.assign(args, {
+            resource_id: ratingCompanyId,
+          });
+
+          const {
+            rootResolver,
+          } = context;
+
+          return rootResolver(null, args, context, info);
+
+
+          // await localQuery({
+          //   operationName: "CompanyAvgRatings",
+          //   variables: args,
+          // })
+          //   .then(r => {
+
+          //     const {
+          //       ratings,
+          //     } = r.data;
+
+          //     result = ratings && ratings[0];
+
+          //     return result;
+
+          //   }).catch(e => {
+          //     console.error(e);
+          //   });
+
+          // return result;
+        },
       },
       ratingAvg: {
         description: 'Суммарный рейтинг',
         type: RatingType,
-        resolve: async (source, args, context, info) => {
+        resolve: (source, args, context, info) => {
 
-          // 
+          console.log("Company ratingAvg resolver", source);
 
           let result;
 
           const {
-            localQuery,
+            rootResolver,
           } = context;
 
           const {
@@ -623,28 +688,68 @@ export const CompanyType = new GraphQLObjectType({
           } = source;
 
           Object.assign(args, {
-            ratingCompanyId,
+            resource_id: ratingCompanyId,
+            groupBy: "company",
           });
 
-          await localQuery({
-            operationName: "CompanyAvgRatings",
-            variables: args,
-          })
-            .then(r => {
 
-              const {
-                ratings,
-              } = r.data;
+          return rootResolver(null, args, context, info);
 
-              result = ratings && ratings[0];
+          // 
 
-              return result;
+          // let result;
 
-            }).catch(e => {
-              console.error(e);
-            });
+          // const {
+          //   localQuery,
+          // } = context;
 
-          return result;
+          // const {
+          //   id: ratingCompanyId,
+          // } = source;
+
+          // Object.assign(args, {
+          //   ratingCompanyId,
+          // });
+
+          // return localQuery({
+          //   operationName: "CompanyAvgRatings",
+          //   variables: args,
+          // })
+          //   .then(r => {
+
+          //     const {
+          //       ratings,
+          //     } = r.data;
+
+          //     result = ratings && ratings[0];
+
+          //     return result;
+
+          //   }).catch(e => {
+          //     console.error(e);
+          //   });
+
+          // return result;
+
+          // await localQuery({
+          //   operationName: "CompanyAvgRatings",
+          //   variables: args,
+          // })
+          //   .then(r => {
+
+          //     const {
+          //       ratings,
+          //     } = r.data;
+
+          //     result = ratings && ratings[0];
+
+          //     return result;
+
+          //   }).catch(e => {
+          //     console.error(e);
+          //   });
+
+          // return result;
         },
       },
       topics: {
@@ -655,7 +760,7 @@ export const CompanyType = new GraphQLObjectType({
           // 
 
 
-          let result;
+          // let result;
 
           const {
             localQuery,
@@ -666,31 +771,39 @@ export const CompanyType = new GraphQLObjectType({
           } = source;
 
           Object.assign(args, {
-            resourceParent,
+            resourceType: "topic",
+            parent: resourceParent,
           });
 
-          await localQuery({
-            operationName: "CompanyTopics",
-            variables: args,
-          })
-            .then(r => {
+
+          const {
+            rootResolver,
+          } = context;
+
+          return rootResolver(null, args, context, info);
+
+          // await localQuery({
+          //   operationName: "CompanyTopics",
+          //   variables: args,
+          // })
+          //   .then(r => {
           
-              // console.log('ResourceType topics', args, r);
+          //     // console.log('ResourceType topics', args, r);
 
 
-              const {
-                topics,
-              } = r.data;
+          //     const {
+          //       topics,
+          //     } = r.data;
 
-              result = topics;
+          //     result = topics;
 
-              return result;
+          //     return result;
 
-            }).catch(e => {
-              console.error(e);
-            });
+          //   }).catch(e => {
+          //     console.error(e);
+          //   });
 
-          return result;
+          // return result;
         },
       },
     }
@@ -931,7 +1044,7 @@ export default class Company extends ModelObject{
 
 }
 
-export const getList = async (source, args, context, info) => {
+export const getList = (source, args, context, info) => {
 
   const {
     CompaniesStore,

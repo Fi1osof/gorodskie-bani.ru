@@ -94,7 +94,7 @@ import {
 
 
 
-export const getList = async (source, args, context, info) => {
+export const getList = (source, args, context, info) => {
 
   const {
     UsersStore,

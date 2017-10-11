@@ -34,6 +34,11 @@ export default class CompanyPage extends Component{
 		updateContactItem: PropTypes.func.isRequired,
 		saveContactItem: PropTypes.func.isRequired,
 		localQuery: PropTypes.func.isRequired,
+		CompaniesStore: PropTypes.object.isRequired,
+		RatingsStore: PropTypes.object.isRequired,
+		TopicsStore: PropTypes.object.isRequired,
+		CommentsStore: PropTypes.object.isRequired,
+		ResourcesStore: PropTypes.object.isRequired,
 	};
 
 	constructor(props){
@@ -59,8 +64,108 @@ export default class CompanyPage extends Component{
 
 		setPageTitle(name);
 
+
+		let {
+			CompaniesStore,
+			RatingsStore,
+			TopicsStore,
+			CommentsStore,
+			ResourcesStore,
+		} = this.context;
+
+ 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
+
+ 			this.loadCompanyFullData();
+ 		});
+
+ 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
+
+ 			this.loadCompanyFullData();
+ 		});
+
+ 		this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
+
+ 			this.loadCompanyFullData();
+ 		});
+
+ 		this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
+
+ 			this.loadCompanyFullData();
+ 		});
+
+ 		this.ResourcesStoreListener = ResourcesStore.getDispatcher().register(payload => {
+
+ 			this.loadCompanyFullData();
+ 		});
+
+
+
 		this.loadCompanyFullData();
 	}
+
+	componentWillUnmount(){
+
+ 		let {
+			CompaniesStore,
+			RatingsStore,
+			TopicsStore,
+			CommentsStore,
+			ResourcesStore,
+ 		} = this.context;
+
+
+    if(this.CompaniesStoreListener){
+
+      let dispatch = CompaniesStore.getDispatcher();
+
+      dispatch._callbacks[this.CompaniesStoreListener] && dispatch.unregister(this.CompaniesStoreListener);
+
+      this.CompaniesStoreListener = undefined;
+    }
+
+
+    if(this.RatingsStoreListener){
+
+      let dispatch = RatingsStore.getDispatcher();
+
+      dispatch._callbacks[this.RatingsStoreListener] && dispatch.unregister(this.RatingsStoreListener);
+
+      this.RatingsStoreListener = undefined;
+    }
+
+
+    if(this.TopicsStoreListener){
+
+      let dispatch = TopicsStore.getDispatcher();
+
+      dispatch._callbacks[this.TopicsStoreListener] && dispatch.unregister(this.TopicsStoreListener);
+
+      this.TopicsStoreListener = undefined;
+    }
+
+    if(this.CommentsStoreListener){
+
+      let dispatch = CommentsStore.getDispatcher();
+
+      dispatch._callbacks[this.CommentsStoreListener] && dispatch.unregister(this.CommentsStoreListener);
+
+      this.CommentsStoreListener = undefined;
+    }
+
+
+    if(this.ResourcesStoreListener){
+
+      let dispatch = ResourcesStore.getDispatcher();
+
+      dispatch._callbacks[this.ResourcesStoreListener] && dispatch.unregister(this.ResourcesStoreListener);
+
+      this.ResourcesStoreListener = undefined;
+    }
+
+
+ 		return super.componentWillUnmount && super.componentWillUnmount();
+	}
+
 
 	async loadCompanyFullData(){
 
@@ -102,7 +207,7 @@ export default class CompanyPage extends Component{
 
 				company && Object.assign(item, company);
 
-				// console.log('Company componentDidMount', result);
+				console.log('Company loadCompanyFullData result', result);
 
 				this.forceUpdate();
 

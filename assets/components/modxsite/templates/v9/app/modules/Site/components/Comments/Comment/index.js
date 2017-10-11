@@ -61,7 +61,7 @@ export default class Comment extends Component{
 
 		const {
       thumb: author_avatar,
-		} = imageFormats;
+		} = imageFormats || {};
 
 
 		// console.log("Comment", item);

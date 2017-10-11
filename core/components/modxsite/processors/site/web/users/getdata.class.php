@@ -15,9 +15,9 @@ class modSiteWebUsersGetdataProcessor extends modSiteWebGetdataProcessor{
     public function initialize()
     {
 
-        $this->setDefaultProperties(array(
+        $this->setProperties(array(
             "showinactive" => false,
-            "showblocked" => false,
+            "showblocked" => true,
         ));
 
         return parent::initialize();

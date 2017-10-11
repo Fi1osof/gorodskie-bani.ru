@@ -96,11 +96,11 @@ export default class Topic extends Component{
 		}
 
 		if(result){
-			this.setState({
-				Parent: result,
-			});
 		}	
 
+		this.setState({
+			Parent: result,
+		});
 		return;
 
 	}

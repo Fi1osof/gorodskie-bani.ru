@@ -1841,115 +1841,9 @@ export default class Response{
       operationName,
     } = params;
 
-    // try{
-    //   query = JSON.parse(query);
-    // }
-    // catch(e){
-
-    //   console.error("Error parse query", e);
-
-    //   query = {};
-    // }
-
-    // 
-
-    // try{
-    //   switch(pub_action){
-
-    //     case 'schema':
-
-    //       // 
-
-
-    //       // var schema = this.getSchema();
-
-
-    //       // // graphql(schema, query).then((response) => {
-
-    //       // //   this.success("", response);
-    //       // // });
-
-    //       // graphql(schema, introspectionQuery).then(result => {
-
-    //       //   return this.success("", result);
-    //       // });
-
-    //       return ;
-    //       break;
-
-    //     case 'graphql':
-
-    //       // 
-
-
-    //       // graphql({
-    //       //   schema, 
-    //       //   source: query || defaultQuery,
-    //       //   operationName,
-    //       //   variableValues: variables || undefined,
-    //       //   contextValue: this,
-    //       //   fieldResolver: this.rootResolver,
-    //       // }).then((response) => {
-
-    //       //   let {
-    //       //     errors,
-    //       //   } = response;
-
-    //       //   if(errors && errors.length){
-    //       //     let {
-    //       //       message,
-    //       //       ...other
-    //       //     } = errors[0];
-
-    //       //     return this.failure(message, {...other});
-    //       //   }
-
-    //       //   // this.success("", response);
-
-    //       //   // else
-    //       //   return this.success("", response && response.data || null);
-    //       // });
-
-    //       this.localQuery({
-    //         // schema, 
-    //         // source: query || defaultQuery,
-    //         query,
-    //         operationName,
-    //         variableValues: variables || undefined,
-    //       })
-    //       .then((response) => {
-
-    //         let {
-    //           errors,
-    //         } = response;
-
-    //         if(errors && errors.length){
-    //           let {
-    //             message,
-    //             ...other
-    //           } = errors[0];
-
-    //           return this.failure(message, {...other});
-    //         }
-
-    //         // this.success("", response);
-
-    //         // else
-    //         return this.success("", response && response.data || null);
-    //       });
-
-    //       return ;
-    //       break;
-        
-
-    //     default:;
-    //   }
-
     let result;
 
     await this.localQuery({
-      // schema, 
-      // source: query || defaultQuery,
       query,
       operationName,
       variables,
@@ -1968,23 +1862,14 @@ export default class Response{
 
         result = this.failure(message, {...other});
       }
-
-      // this.success("", response);
-
       // else
       result = this.success("", response && response.data || null);
     })
     .catch(e => {
         result = this.failure(e);
     });
-    // }
-    // catch(e){
-
-    //   result = this.failure(e.message, e.stack);
-    // }
 
     return result;
-    // return this.failure("Неизвестное действие");
   }
 
 

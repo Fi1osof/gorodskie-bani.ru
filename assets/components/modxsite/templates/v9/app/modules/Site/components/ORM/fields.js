@@ -377,42 +377,42 @@ export const TVsField = {
       },
     },
   }),
-  resolve: (object) => {
-    let tvs = {};
+  // resolve: (object) => {
+  //   let tvs = {};
 
-    if(object.tvs){
+  //   if(object.tvs){
 
 
-        for(var name in object.tvs){
+  //       for(var name in object.tvs){
 
-          var tv = object.tvs[name];
+  //         var tv = object.tvs[name];
 
-          if(tv){
+  //         if(tv){
 
-            let v;
+  //           let v;
 
-            if(tv.tv_id === undefined){
-              tvs[name] = tv;
-            }
-            else{
+  //           if(tv.tv_id === undefined){
+  //             tvs[name] = tv;
+  //           }
+  //           else{
 
-              let {
-                tv_id: id,
-                caption,
-                value,
-              } = tv;
+  //             let {
+  //               tv_id: id,
+  //               caption,
+  //               value,
+  //             } = tv;
               
-              tvs[name] = value;
+  //             tvs[name] = value;
 
-            }
+  //           }
 
-          }
-        }
+  //         }
+  //       }
 
-    }
+  //   }
 
-    return tvs;
-  },
+  //   return tvs;
+  // },
 };
 
 export const GalleryField = {
@@ -428,7 +428,7 @@ export const GalleryField = {
       },
     })
   ),
-  resolve: (object) => {
-    return object.gallery || [];
-  },
+  // resolve: (object) => {
+  //   return object.gallery || [];
+  // },
 };

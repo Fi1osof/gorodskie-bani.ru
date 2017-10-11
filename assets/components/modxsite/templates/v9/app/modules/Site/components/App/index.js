@@ -108,6 +108,9 @@ export class AppMain extends Component{
     localQuery: PropTypes.func,
     remoteQuery: PropTypes.func,
     getCounters: PropTypes.func,
+
+    coords: PropTypes.object,
+    setCoords: PropTypes.func,
   };
 
   getChildContext() {
@@ -122,6 +125,7 @@ export class AppMain extends Component{
       schema,
       TopicsStore,
       CommentsStore,
+      coords,
     } = this.state;
 
     let context = {
@@ -143,6 +147,8 @@ export class AppMain extends Component{
       schema,
       localQuery: this.localQuery,
       remoteQuery: this.remoteQuery,
+      coords,
+      setCoords: this.setCoords,
     };
 
     return context;
@@ -178,6 +184,7 @@ export class AppMain extends Component{
       // orm,
       schema,
       // db,
+      coords: {},
     }
 
     let {
@@ -285,6 +292,14 @@ export class AppMain extends Component{
     });
 
   }
+
+  setCoords = (coords) => {
+
+    this.setState({
+      coords,
+    });
+
+  };
 
   // localQuery = (graphQLParams) => {
 

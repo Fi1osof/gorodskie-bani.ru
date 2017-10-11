@@ -45,6 +45,7 @@ export default class MapMainView extends Component{
 		setPageTitle: PropTypes.func.isRequired,
 		localQuery: PropTypes.func.isRequired,
 		getCounters: PropTypes.func.isRequired,
+		setCoords: PropTypes.func.isRequired,
 	};
 
 	static defaultProps = {
@@ -514,6 +515,16 @@ export default class MapMainView extends Component{
 	    },
 	    () => {
 
+	    	const {
+	    		setCoords,
+	    	} = this.context;
+
+	    	setCoords({
+	    		lat,
+	    		lng,
+	    		zoom,
+	    	});
+
 	    	// browserHistory.replace();
 	      // this.createClusters(this.props);
 	    }
@@ -560,7 +571,7 @@ export default class MapMainView extends Component{
   		},
   	})
   		.then(r => {
-  			console.log("Map companies", r);
+  			// console.log("Map companies", r);
 
   			const {
   				companies: result,
@@ -570,7 +581,7 @@ export default class MapMainView extends Component{
 
   		});
 		
-		console.log("Map companies 2 companies", companies);
+		// console.log("Map companies 2 companies", companies);
 
 		companies && companies.map(item => {
 

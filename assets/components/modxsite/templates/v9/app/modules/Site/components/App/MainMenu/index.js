@@ -6,6 +6,10 @@ import { Link } from 'react-router';
 
 export default class MainMenu extends Component{
 
+  static contextTypes = {
+    coords: PropTypes.object.isRequired,
+  };
+
 	constructor(props){
 
 		super(props);
@@ -18,10 +22,32 @@ export default class MainMenu extends Component{
 
 	render(){
 
+    const {
+      coords,
+    } = this.context;
+
 		let {
 			ratingsOpened,
 			citiesOpened,
 		} = this.state;
+
+    let base_url = "/";
+
+    if(coords){
+
+      const {
+        lat,
+        lng,
+        zoom,
+      } = coords;
+
+      if(lat && lng && zoom){
+
+        base_url += "@" + [lat, lng, zoom].join(",");
+
+      }
+
+    }
 
 		return <div 
       className="navbar navbar-default"
@@ -32,8 +58,8 @@ export default class MainMenu extends Component{
       <div className="container">
         <div className="navbar-header">
           <Link 
-            href="/" 
-            to="/" 
+            href={base_url}
+            to={base_url}
             className="navbar-brand"
           >
             <div className="logo">
@@ -50,8 +76,24 @@ export default class MainMenu extends Component{
         
         <div id="navbar-main" className="collapse navbar-collapse navbar-right">
           <ul className="nav navbar-nav">
-              <li className="first"><a href="bani-otzivy/" title="Обзоры и отзывы">Обзоры и отзывы </a></li>
-
+              <li className="first">
+                <Link 
+                  to="bani-otzivy/" 
+                  href="bani-otzivy/" 
+                  title="Обзоры и отзывы"
+                >
+                  Обзоры и отзывы 
+                </Link>
+              </li>
+              <li className="">
+                <Link 
+                  to="topics/" 
+                  href="topics/" 
+                  title="Новости"
+                >
+                  Новости
+                </Link>
+              </li>
               <li>
               <a 
               	href="javascript:;" 

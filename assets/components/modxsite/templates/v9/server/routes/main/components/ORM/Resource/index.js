@@ -176,7 +176,12 @@ export const getList = (object, args, context, info) => {
 
     // throw(new Error( action)); 
 
-    let params = args;
+    let {
+      // sort,
+      ...other
+    } = args;
+
+    let params = {...other};
 
     let request = SendMODXRequest(action, params); 
 
@@ -187,6 +192,54 @@ export const getList = (object, args, context, info) => {
 
         return reject(data.message || "Ошибка выполнения запроса");
       }
+
+
+      if(data.object && Array.isArray(data.object)){
+
+        data.object.map(object => {
+
+
+          if(object.tvs){
+    
+            let tvs = {};
+
+
+            for(var name in object.tvs){
+
+              var tv = object.tvs[name];
+
+              if(tv){
+
+                let v;
+
+                if(tv.tv_id === undefined){
+                  tvs[name] = tv;
+                }
+                else{
+
+                  let {
+                    tv_id: id,
+                    caption,
+                    value,
+                  } = tv;
+                  
+                  tvs[name] = value;
+
+                }
+
+              }
+            }
+
+            object.tvs = tvs;
+
+            // console.log("object.tvs", object.tvs);
+
+          }
+          
+        });
+
+      }
+
       return resolve(data);
     })
     .catch((e) => {

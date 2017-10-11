@@ -14,6 +14,7 @@ export default class Page extends Component{
 		CompaniesStore: PropTypes.object.isRequired,
 		TopicsStore: PropTypes.object.isRequired,
 		getCounters: PropTypes.func.isRequired,
+		localQuery: PropTypes.func.isRequired,
 	};
 
 	constructor(props){

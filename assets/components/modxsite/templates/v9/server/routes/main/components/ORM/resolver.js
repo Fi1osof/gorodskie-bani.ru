@@ -282,9 +282,50 @@ const getObjectsList = async (ofType, source, args, context, info) => {
   return object;
 }
 
+// const getObjects = async (ofType, source, args, context, info) => {
+
+//   let result;
+
+//   await getObjectsList(ofType, source, args, context, info)
+//     .then(r => {
+//       result = r;
+//     });
+    
+//   result = result && result.object;
+
+//   return result;
+
+// }
+
+// const getObject = async (ofType, source, args, context, info) => {
+
+//   let result;
+
+//   const {
+//     id,
+//   } = args;
+
+//   await getObjects(ofType, source, args, context, info)
+//     .then(r => {
+      
+//       // console.log("ofType Company result", r);
+//       // console.log("ofType Company result", id, r.find(n => n.id == id));
+
+//       result = r;
+//     });
+    
+//   result = result && result.find(n => parseInt(n.id) === id);
+
+//   return result;
+// }
+
+
+
 const getObjects = async (ofType, source, args, context, info) => {
 
   let result;
+
+  // console.log('getObjects', ofType);
 
   await getObjectsList(ofType, source, args, context, info)
     .then(r => {
@@ -299,24 +340,45 @@ const getObjects = async (ofType, source, args, context, info) => {
 
 const getObject = async (ofType, source, args, context, info) => {
 
-  let result;
+  let state;
 
   const {
     id,
+    parent,
   } = args;
+
+  // // console.log('getObject', ofType);
 
   await getObjects(ofType, source, args, context, info)
     .then(r => {
       
-      // console.log("ofType Company result", r);
-      // console.log("ofType Company result", id, r.find(n => n.id == id));
+      // // console.log("ofType Company result", r);
+      // // console.log("ofType Company result", id, r.find(n => n.id == id));
 
-      result = r;
+      state = r;
     });
-    
-  result = result && result.find(n => parseInt(n.id) === id);
 
-  return result;
+  // if(state){
+
+  //   if(id !== undefined){
+    
+  //     state = state.filter(n => n.id === id);
+
+  //   }
+
+  //   if(parent !== undefined){
+      
+  //     state = state.filter(n => n.parent === parent);
+
+  //   }
+    
+  //   // state = state && state.get(0);
+  //   state = state && state.get(0);
+    
+  // }
+
+  return state && state[0];
 }
+ 
 
 export default rootResolver;

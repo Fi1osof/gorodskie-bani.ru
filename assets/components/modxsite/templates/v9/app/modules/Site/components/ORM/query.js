@@ -418,6 +418,10 @@ fragment Topics on RootType{
     resourceType:topic
     limit:$resourcesLimit
     parent:$resourceParent
+    sort:[{
+      by:id
+      dir:desc
+    }]
   ) @skip(if:$withPagination)
   {
     ...Topic
@@ -679,6 +683,55 @@ fragment User on UserType {
   }
 }
 
+query test(
+  $limit:Int = 10
+){
+  companies(
+    limit:$limit
+    ids:[1275]
+  ){
+    id
+    name
+    # topics{
+    #   id
+    #   name
+    # }
+    # ratingsByType{
+    #   id
+    #   rating
+    #   max_vote
+    #   min_vote
+    #   type
+    #   target_id
+    #   quantity
+    #   voted_users
+    # }
+    comments{
+      id
+      published
+      deleted
+      text
+    }
+    # ratingAvg {
+    #   id
+    #   rating
+    #   max_vote
+    #   min_vote
+    #   type
+    #   quantity
+    #   companies{
+    #     id
+    #     name
+    #     pagetitle
+    #     ratings {
+    #       id
+    #       target_id
+    #       target_class
+    #     }
+    #   }
+    # }
+  }
+} 
 
 `;
 

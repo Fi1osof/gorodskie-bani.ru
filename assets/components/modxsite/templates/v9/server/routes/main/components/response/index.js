@@ -87,6 +87,8 @@ export default class Response{
 
 
     schema = this.getSchema();
+
+    this.rootResolver = rootResolver;
   };
 
   getConfig = (field) => {
@@ -165,6 +167,30 @@ export default class Response{
     };
 
     let form;
+
+    let {
+      sort,
+      ...other
+    } = params;
+
+    params = {...other};
+
+    if(sort){
+
+      if(Array.isArray(sort)){
+
+        sort = sort[0];
+
+        if(sort){
+
+          params.sort = sort.by;
+          params.dir = sort.dir || undefined;
+
+        }
+
+      }
+
+    }
 
     if(method == 'POST' && params){
       // var postData = querystring.stringify(params);

@@ -675,7 +675,7 @@ export const CompanyType = new GraphQLObjectType({
         type: RatingType,
         resolve: (source, args, context, info) => {
 
-          console.log("Company ratingAvg resolver", source);
+          // console.log("Company ratingAvg resolver", source);
 
           let result;
 

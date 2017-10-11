@@ -49,7 +49,11 @@ export default class CompaniesPage extends Page {
 
 		// console.log('CompaniesPage 2 item', item, companyId);
 
-		return <div>
+		return <div
+			style={{
+				width: "100%",
+			}}
+		>
 
 			{company}
 

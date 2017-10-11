@@ -30,7 +30,7 @@ let routes = {
     // },
     {
       path: "/@:lat,:lng,:zoom",
-      name: "TopicsPage",
+      name: "MainPage",
       component: MainPage
     },
     {
@@ -78,6 +78,14 @@ let routes = {
       component: OtzivyPage,
       childRoutes: [{
         path: "/bani-otzivy/:topicAlias/",
+        // component: CompaniesPage,
+      }]
+    },
+    {
+      path: "/topics/",
+      component: TopicsPage,
+      childRoutes: [{
+        path: "/topics/:topicAlias/",
         // component: CompaniesPage,
       }]
     },

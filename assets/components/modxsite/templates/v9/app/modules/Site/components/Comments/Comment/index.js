@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import {Link, browserHistory} from 'react-router';
 
 import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
+import UserAvatar from 'modules/Site/components/fields/User/avatar';
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import IconButton from 'material-ui/IconButton';
@@ -59,10 +59,6 @@ export default class Comment extends Component{
       imageFormats,
 		} = Author || {};
 
-		const {
-      thumb: author_avatar,
-		} = imageFormats || {};
-
 
 		// console.log("Comment", item);
 
@@ -75,16 +71,9 @@ export default class Comment extends Component{
 			
 			<CardHeader
         avatar={
-          <Avatar 
-          	aria-label={author_fullname || author_username || undefined}
-          	className=""
-        		src={author_avatar}
-          	style={{
-          		background: '#2fa4e7',
-          	}}
-          >
-            {author_avatar ? undefined : (author_fullname || author_username || '').substr(0,1).toLocaleUpperCase() }
-          </Avatar>
+          <UserAvatar 
+          	user={Author}
+          />
         }
         title={author_fullname || author_username || undefined}
         subheader={createdon && id && <Link

@@ -152,10 +152,10 @@ export const UserType = new GraphQLObjectType({
       active: {
         type: GraphQLBoolean,
       },
-      sudo: {
+      blocked: {
         type: GraphQLBoolean,
       },
-      blocked: {
+      sudo: {
         type: GraphQLBoolean,
       },
     };

@@ -215,47 +215,65 @@ export const CommentType = new GraphQLObjectType({
           } = info;
 
           const {
-            localQuery,
+            rootResolver,
           } = context;
 
-          let result = source && source[fieldName];
+          const {
+            createdby: userId,
+          } = source;
 
-          if(!result){
+          if(!userId){
+            return null;
+          }
 
-            const {
-              localQuery,
-            } = context;
+          Object.assign(args, {
+            id: userId,
+          });
 
-            const {
-              createdby: userId,
-            } = source;
+          return rootResolver(null, args, context, info);
 
-            if(!userId){
-              return null;
-            }
+          // const {
+          //   localQuery,
+          // } = context;
 
-            Object.assign(args, {
-              userId,
-            });
+          // let result = source && source[fieldName];
+
+          // if(!result){
+
+          //   const {
+          //     localQuery,
+          //   } = context;
+
+          //   const {
+          //     createdby: userId,
+          //   } = source;
+
+          //   if(!userId){
+          //     return null;
+          //   }
+
+          //   Object.assign(args, {
+          //     userId,
+          //   });
    
  
-            await localQuery({
-              operationName: "User",
-              variables: args,
-            })
-            .then(r => {
-              // console.log('Comments Author', args, r);
+          //   await localQuery({
+          //     operationName: "User",
+          //     variables: args,
+          //   })
+          //   .then(r => {
+          //     // console.log('Comments Author', args, r);
 
-              const {
-                user,
-              } = r.data;
+          //     const {
+          //       user,
+          //     } = r.data;
 
-              result = user;
+          //     result = user;
 
-            }); 
-          }
+          //   }); 
+          // }
           
-          return result;
+          // return result;
         },
       },
       Company: {

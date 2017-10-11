@@ -85,7 +85,14 @@ let routes = {
       path: "/topics/",
       component: TopicsPage,
       childRoutes: [{
-        path: "/topics/:topicAlias/",
+        path: "/topics/:topicAlias",
+        // component: CompaniesPage,
+      }]
+    },
+    {
+      path: "/profile/",
+      childRoutes: [{
+        path: "/profile/:username",
         // component: CompaniesPage,
       }]
     },

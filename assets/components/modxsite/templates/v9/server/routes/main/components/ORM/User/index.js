@@ -51,6 +51,40 @@ export const getList = (object, args, context, info) => {
         return reject(data.message || "Ошибка выполнения запроса");
       }
 
+      if(data.object){
+
+        if(!Array.isArray(data.object)){
+          data.object = [data.object];
+        }
+
+        data.object.map(user => {
+
+          const {
+            active,
+            blocked,
+            sudo,
+          } = user;
+
+          Object.assign(user, {
+            active: active === '1' ? true : false,
+            blocked: blocked === '1' ? true : false,
+            sudo: sudo === '1' ? true : false,
+          });
+
+        });
+
+        // active: {
+        //   type: GraphQLBoolean,
+        // },
+        // blocked: {
+        //   type: GraphQLBoolean,
+        // },
+        // sudo: {
+        //   type: GraphQLBoolean,
+        // },
+
+      }
+
       return resolve(data);
     })
     .catch((e) => {

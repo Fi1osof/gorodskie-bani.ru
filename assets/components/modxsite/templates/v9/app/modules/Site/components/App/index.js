@@ -488,6 +488,8 @@ export class AppMain extends Component{
 
   // }
 
+
+
   localQuery = (graphQLParams) => {
 
     const {
@@ -496,12 +498,7 @@ export class AppMain extends Component{
 
     // var schema = this._getSchema();
 
-
-    // console.log('app localQuery', graphQLParams);
-
-    // 
-
-    // return {};
+    // console.log('localQuery', graphQLParams);
 
     const {
       query,
@@ -529,129 +526,234 @@ export class AppMain extends Component{
     //   this.success("", response);
     // });
 
-    // 
+    // console.log('graphQLParams', graphQLParams);
 
     // return new Promise(resolve => resolve([{}]));
 
-    // return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
 
-    //   const {
-    //     // ContactsStore,
-    //     // PlacesStore,
-    //     // PlaceContactsStore,
-    //   } = this.state;
+      // class user {
 
-      // graphql({
-      //   schema,
-      //   operationName,
-      //   source: query || defaultQuery,
-      //   // rootValue: undefined,
-      //   variableValues: variables || undefined,
-      //   // contextValue: this.getChildContext(),
-      //   contextValue: this,
-      //   fieldResolver: rootResolver,
-      //   // directives: rootDirectives,
-      // }).then((result) => {
+      //   constructor(props){
 
-      //   let {
-      //     errors,
-      //   } = result;
-
-      //   if(errors && errors.length){
-      //     let {
-      //       message,
-      //       ...other
-      //     } = errors[0];
-
-      //     console.error("localQuery error", result);
-      //     return reject(message, {...other});
+      //     Object.assign(this, props);
       //   }
 
-      //   resolve(result);
-      // })
-      // .catch(e => {
-      //   console.error("localQuery error", e);
-      //   reject(e);
-      // });
+      // }
 
-      let 
-        // schema,
-        // operationName,
-        source = query || defaultQuery,
-        document = parse(source),
-        rootValue = undefined,
-        variableValues = variables || undefined,
-        // contextValue: this.getChildContext(),
-        contextValue = this,
-        fieldResolver = rootResolver
-        // directives: rootDirectives,
-        ;
+      const {
+        ContactsStore,
+        PlacesStore,
+        PlaceContactsStore,
+      } = this.state;
 
-      // console.log("execute document", document);
-
-      let result = execute(
+      graphql({
         schema,
-        document,
-        rootValue,
-        contextValue,
-        variableValues,
         operationName,
-        fieldResolver
-      );
+        source: query || defaultQuery,
+        // rootValue: {
+        //   contacts: ContactsStore.getState(),
+        //   places: PlacesStore.getState(),
+        //   contact_places: PlaceContactsStore.getState(),
+        // },
+        variableValues: variables || undefined,
+        // contextValue: this.getChildContext(),
+        contextValue: this,
+        fieldResolver: rootResolver,
+      }).then((result) => {
 
-      // console.log("execute result", result);
+        
 
-      return result;
+        let {
+          errors,
+        } = result;
 
+        if(errors && errors.length){
+          let {
+            message,
+            ...other
+          } = errors[0];
 
-      // let executionContext = buildExecutionContext(
-      //   schema,
-      //   document,
-      //   rootValue,
-      //   contextValue,
-      //   variableValues,
-      //   operationName,
-      //   fieldResolver
-      // )
+          return reject(message, {...other});
+        }
 
-      // console.log("buildExecutionContext executionContext", executionContext);
+        resolve(result);
+      })
+      .catch(e => {
+        console.error(e);
+        reject(e);
+      });
 
-
-      // const type = getOperationRootType(executionContext.schema, executionContext.operation);
-
-
-      // console.log("getOperationRootType type", type);
-
-      // return {
+      // resolve({
       //   data: {},
-      // };
-
-      // const {
-      //   contextValue: context,
-      //   rootValue: nodeSource,
-      //   fieldResolver: resolver,
-      // } = executionContext;
-
-      // let resolveInfo = buildResolveInfo(executionContext);
-
-      // result = resolver(nodeSource, variables, context, executionContext);
-
-      // console.log("execute result", result);
-
-      // console.log("execute promise.resolve", result.resolve);
-
-      // result
-      //   .then(r => {
-          
-      //     console.log("execute result 2", r);
-
-      //     resolve(r);
-
-      //   })
-      //   .catch(e => reject(e));
-
-    // });
+      // });
+    });
   }
+
+  // localQuery = (graphQLParams) => {
+
+  //   const {
+  //     schema,
+  //   } = this.state;
+
+  //   // var schema = this._getSchema();
+
+
+  //   // console.log('app localQuery', graphQLParams);
+
+  //   // 
+
+  //   // return {};
+
+  //   const {
+  //     query,
+  //     operationName,
+  //     variables,
+  //   } = graphQLParams;
+
+  //   // return graphql({
+  //   //   schema, 
+  //   //   source: query,
+  //   //   variableValues: variables || undefined,
+  //   //   contextValue: this.context,
+  //   // }).then((response) => {
+
+  //   //   
+  //   // });
+
+  //   // graphql({
+  //   //   schema, 
+  //   //   source: query,
+  //   //   variableValues: variables || undefined,
+  //   //   contextValue: this.context,
+  //   // }).then((response) => {
+
+  //   //   this.success("", response);
+  //   // });
+
+  //   // 
+
+  //   // return new Promise(resolve => resolve([{}]));
+
+  //   // return new Promise((resolve, reject) => {
+
+  //   //   const {
+  //   //     // ContactsStore,
+  //   //     // PlacesStore,
+  //   //     // PlaceContactsStore,
+  //   //   } = this.state;
+
+  //     // graphql({
+  //     //   schema,
+  //     //   operationName,
+  //     //   source: query || defaultQuery,
+  //     //   // rootValue: undefined,
+  //     //   variableValues: variables || undefined,
+  //     //   // contextValue: this.getChildContext(),
+  //     //   contextValue: this,
+  //     //   fieldResolver: rootResolver,
+  //     //   // directives: rootDirectives,
+  //     // }).then((result) => {
+
+  //     //   let {
+  //     //     errors,
+  //     //   } = result;
+
+  //     //   if(errors && errors.length){
+  //     //     let {
+  //     //       message,
+  //     //       ...other
+  //     //     } = errors[0];
+
+  //     //     console.error("localQuery error", result);
+  //     //     return reject(message, {...other});
+  //     //   }
+
+  //     //   resolve(result);
+  //     // })
+  //     // .catch(e => {
+  //     //   console.error("localQuery error", e);
+  //     //   reject(e);
+  //     // });
+
+  //     let 
+  //       // schema,
+  //       // operationName,
+  //       source = query || defaultQuery,
+  //       document = parse(source),
+  //       rootValue = undefined,
+  //       variableValues = variables || undefined,
+  //       // contextValue: this.getChildContext(),
+  //       contextValue = this,
+  //       fieldResolver = rootResolver
+  //       // directives: rootDirectives,
+  //       ;
+
+  //     // console.log("execute document", document);
+
+  //     let result = execute(
+  //       schema,
+  //       document,
+  //       rootValue,
+  //       contextValue,
+  //       variableValues,
+  //       operationName,
+  //       fieldResolver
+  //     );
+
+  //     // console.log("execute result", result);
+
+  //     return result;
+
+
+  //     // let executionContext = buildExecutionContext(
+  //     //   schema,
+  //     //   document,
+  //     //   rootValue,
+  //     //   contextValue,
+  //     //   variableValues,
+  //     //   operationName,
+  //     //   fieldResolver
+  //     // )
+
+  //     // console.log("buildExecutionContext executionContext", executionContext);
+
+
+  //     // const type = getOperationRootType(executionContext.schema, executionContext.operation);
+
+
+  //     // console.log("getOperationRootType type", type);
+
+  //     // return {
+  //     //   data: {},
+  //     // };
+
+  //     // const {
+  //     //   contextValue: context,
+  //     //   rootValue: nodeSource,
+  //     //   fieldResolver: resolver,
+  //     // } = executionContext;
+
+  //     // let resolveInfo = buildResolveInfo(executionContext);
+
+  //     // result = resolver(nodeSource, variables, context, executionContext);
+
+  //     // console.log("execute result", result);
+
+  //     // console.log("execute promise.resolve", result.resolve);
+
+  //     // result
+  //     //   .then(r => {
+          
+  //     //     console.log("execute result 2", r);
+
+  //     //     resolve(r);
+
+  //     //   })
+  //     //   .catch(e => reject(e));
+
+  //   // });
+  // }
 
 
 

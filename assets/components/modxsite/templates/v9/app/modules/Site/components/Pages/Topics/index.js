@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 
 import Page from '../layout'; 
 
+import Grid from 'material-ui/Grid';
+import Button from 'material-ui/Button';
+
 import {Link, browserHistory} from 'react-router';
 
 import Topic from './Topic';
@@ -15,8 +18,9 @@ export default class TopicsPage extends Page {
 
 		super(props);
 
-		// Object.assign(this.state, {
-		// });
+		Object.assign(this.state, {
+			limit: 10,
+		});
 	}
 
 	componentDidMount(){
@@ -45,7 +49,10 @@ export default class TopicsPage extends Page {
 		let result = localQuery({
 			operationName: "Topics",
 			variables: {
-				resourcesLimit: 10,
+				// resourcesLimit: 10,
+				resourceGetAuthor: true,
+				resourceGetComments: true,
+				getCommentAuthor: true,
 			},
 		})
 		.then(r => {
@@ -71,13 +78,18 @@ export default class TopicsPage extends Page {
 
 		const {
 			topics,
+			limit,
 		} = this.state;
 
 		console.log("Topic", topics);
 
 		let topicsList = [];
 
-		topics && topics.map(topic => {
+		topics && topics.map((topic, index) => {
+
+			if(limit > 0 && topicsList.length >= limit){
+				return;
+			}
 
 			const {
 				id,
@@ -87,14 +99,45 @@ export default class TopicsPage extends Page {
 			topicsList.push(<Topic
 				key={id}
 				item={topic}
+				open={false}
+				commentOpen={false}
 			>
 				{name}
 			</Topic>);
 
 		});
 
+		let moreButton;
+
+		if(topicsList && topics && topicsList.length < topics.length){
+
+			moreButton = <div
+				style={{
+					textAlign: "center",
+				}}
+			>
+				
+				<Button
+					onClick={event => {
+
+						this.setState({
+							limit: limit + 10,
+						});
+
+					}}
+					raised
+				>
+					Показать еще
+				</Button>
+
+			</div>
+
+		}
+
 		return <div>
 			{topicsList}
+
+			{moreButton}
 		</div>
 
 	}
@@ -126,13 +169,20 @@ export default class TopicsPage extends Page {
 		if(topicAlias){
 			
 			// const item = TopicsStore.getState().find(n => n.id == topicAlias || n.alias == topicAlias);
-			const item = topics.find(n => n.id == topicAlias || n.alias == topicAlias);
+			const item = topics && topics.find(n => n.id == topicAlias || n.alias == topicAlias.replace(".html", ""));
 
 			if(item){
 
-				content = <Topic
-					item={item}
-				/>
+				content = <Grid
+					item
+				>
+					
+					<Topic
+						item={item}
+						open={true}
+					/>
+
+				</Grid>
 
 			}
 			else{

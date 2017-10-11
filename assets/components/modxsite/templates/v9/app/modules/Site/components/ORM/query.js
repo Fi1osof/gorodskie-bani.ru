@@ -21,6 +21,9 @@ query apiData(
   $resourceParent:Int
   $getCompanyTopics:Boolean = false
   $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $resourceIds:[Int]
 ){
   companies(
     limit:$limit
@@ -63,6 +66,8 @@ query Companies (
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
   $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
 ){
   companies(
     limit:$limit
@@ -97,6 +102,8 @@ query Company(
   $getCommentAuthor:Boolean = true
   $getCompanyTopics:Boolean = true
   $getRatingVoters:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
 ){
   company(
     id: $id
@@ -134,6 +141,8 @@ query Ratings(
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
   $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
 ){ 
   ratings(
     limit:$limit
@@ -173,6 +182,8 @@ query Comments(
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
   $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
 ){
   commentsList(
     limit: $limit
@@ -213,6 +224,8 @@ query MapCompanies (
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
   $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
 ){
   companiesList(
     limit:$limit
@@ -256,6 +269,8 @@ query CompanyRatings(
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
   $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
 ){
   ratings(  
     limit:$limit
@@ -296,6 +311,8 @@ query CompanyComments(
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
   $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
 ){
   comments(  
     limit:$limit
@@ -337,6 +354,8 @@ query CompanyAvgRatings(
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
   $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
 ){
   ratings(  
     limit:1
@@ -353,6 +372,11 @@ query CompanyTopics(
   $resourceParent:Int!
   $getTVs:Boolean = false
   $withPagination:Boolean = false
+  $getImageFormats:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $resourceIds:[Int]
+  $getCommentAuthor:Boolean = false
 ){
     ...Topics
 }
@@ -390,6 +414,10 @@ query Resources(
   $resourceTemplate:Int
   $resourceExcludeTemplates:[Int] = [27,28,15]
   $resourceType:ResourceTypeEnum
+  $getImageFormats:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $getCommentAuthor:Boolean = false
 ){
   
   ...ResourcesList
@@ -408,6 +436,11 @@ query Topics(
   $withPagination:Boolean = false
   $getTVs:Boolean = true
   $resourceParent:Int
+  $getImageFormats:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $resourceIds:[Int]
+  $getCommentAuthor:Boolean = false
 ){
   
   ...Topics
@@ -415,6 +448,7 @@ query Topics(
 
 fragment Topics on RootType{
   topics:resources(
+    ids:$resourceIds
     resourceType:topic
     limit:$resourcesLimit
     parent:$resourceParent
@@ -495,6 +529,7 @@ fragment Resource on ResourceType{
     middle
     big
   }
+  createdby
   tvs @include(if:$getTVs)
   {
     address
@@ -505,9 +540,35 @@ fragment Resource on ResourceType{
     prices
     metro
   }
+  Author @include(if:$resourceGetAuthor)
+  {
+    ...User
+  }
+  comments @include(if:$resourceGetComments)
+  {
+    ...CommentFields
+    Author @include(if:$getCommentAuthor)
+    {
+      ...User
+    }
+  }
 }
 
 fragment Comment on CommentType{
+  
+  ...CommentFields
+  
+  Company @include(if:$getCommentCompany)
+  {
+    ...Company
+  }
+  Author @include(if:$getCommentAuthor)
+  {
+    ...User
+  }
+}
+
+fragment CommentFields on CommentType{
   id
   resource_id  
   target_id
@@ -518,14 +579,6 @@ fragment Comment on CommentType{
   deleted
   createdon
   createdby
-  Company @include(if:$getCommentCompany)
-  {
-    ...Company
-  }
-  Author @include(if:$getCommentAuthor)
-  {
-    ...User
-  }
 }
 
 fragment Rating on RatingType{
@@ -732,6 +785,7 @@ query test(
     # }
   }
 } 
+
 
 `;
 

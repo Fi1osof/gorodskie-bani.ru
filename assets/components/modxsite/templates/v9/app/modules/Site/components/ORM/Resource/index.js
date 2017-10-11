@@ -26,6 +26,10 @@ import {
 } from '../Rating';
 
 import {
+  UserType,
+} from '../User';
+
+import {
   imageType,
   coordsType,
   SortField,
@@ -74,6 +78,10 @@ export const ResourceType = new GraphQLObjectType({
       },
       uri: {
         type: GraphQLString
+      },
+      createdby: {
+        type: GraphQLInt,
+        description: "ID автора ресурса",
       },
       image: {
         type: GraphQLString,
@@ -244,17 +252,17 @@ export const ResourceType = new GraphQLObjectType({
         },
         resolve: async (source, args, context, info) => {
  
-          let result;
+          // let result;
 
           const {
             localQuery,
           } = context;
 
           const {
-            id: commentsResourceId,
+            id: commentsCompanyId,
           } = source;
 
-          if(!commentsResourceId){
+          if(!commentsCompanyId){
             return null;
           }
 
@@ -263,29 +271,61 @@ export const ResourceType = new GraphQLObjectType({
           } = args;
 
           Object.assign(args, {
-            commentsResourceId,
-            commentsSort,
+            resource_id: commentsCompanyId,
+            sort: commentsSort,
           });
 
-          console.log('ResourceComments', args);
 
-          await localQuery({
-            // query: q,
-            operationName: "ResourceComments",
-            variables: args,
-          })
-            .then(r => {
+          const {
+            rootResolver,
+          } = context;
 
-              const {
-                comments,
-              } = r.data;
-
-              result = comments;
-
-            });
-
-          return result;
+          return rootResolver(null, args, context, info);
         },
+        // resolve: async (source, args, context, info) => {
+ 
+        //   let result;
+
+        //   const {
+        //     localQuery,
+        //   } = context;
+
+        //   const {
+        //     id: commentsResourceId,
+        //   } = source;
+
+        //   if(!commentsResourceId){
+        //     return null;
+        //   }
+
+        //   const {
+        //     sort: commentsSort,
+        //   } = args;
+
+        //   Object.assign(args, {
+        //     commentsResourceId,
+        //     commentsSort,
+        //   });
+
+        //   console.log('ResourceComments', args);
+
+        //   await localQuery({
+        //     // query: q,
+        //     operationName: "ResourceComments",
+        //     variables: args,
+        //   })
+        //     .then(r => {
+
+        //       const {
+        //         comments,
+        //       } = r.data;
+
+        //       result = comments;
+
+        //     });
+
+        //   return result;
+        // },
       },
       ratings: {
         type: new GraphQLList(RatingType),
@@ -337,6 +377,34 @@ export const ResourceType = new GraphQLObjectType({
 
           return result;
 
+        },
+      },
+      Author: {
+        type: UserType,
+        description: UserType.description,
+        resolve: async (source, args, context, info) => {
+
+          const {
+            fieldName,
+          } = info;
+
+          const {
+            rootResolver,
+          } = context;
+
+          const {
+            createdby: userId,
+          } = source;
+
+          if(!userId){
+            return null;
+          }
+
+          Object.assign(args, {
+            id: userId,
+          });
+
+          return rootResolver(null, args, context, info);
         },
       },
     }

@@ -93,7 +93,21 @@ export default class RatingsPage extends Page {
 			groupByType
 		} = this.state;
 
-		let groupBy = groupByType ? "company_and_rating_type" : "company";
+
+		const {
+			params,
+		} = this.props;
+
+		const {
+			ratingType,
+		} = params || {};
+
+
+		/*
+			Если указан тип рейтинга, то в любом случае группируем по типам.
+			Иначе смотрим от стейта
+		*/
+		let groupBy = groupByType || ratingType ? "company_and_rating_type" : "company";
 
 		let result = localQuery({
 			operationName: "RatingsPageData",
@@ -165,28 +179,50 @@ export default class RatingsPage extends Page {
 	renderContent(){
 
 		const {
-			ratings,
-			ratingTypes,
 			groupByType,
 		} = this.state;
 
-		let ratingTypesList;
+		let {
+			ratings,
+			ratingTypes,
+		} = this.state;
 
-		if(groupByType){
+		const {
+			params,
+		} = this.props;
+
+		const {
+			ratingType,
+		} = params || {};
+
+
+		let ratingTypesList;
+		
+		let ratingContent;
+
+		if(groupByType || ratingType){
 
 			let ratingTypesItems = [];
 
-			ratingTypes && ratingTypes.map(ratingType => {
+			if(ratingType){
+
+				// ratings = ratingTypes && ratingTypes.filter(n => n.Type && n.Type.alias === ratingTypes);
+				ratingTypes = ratingTypes && ratingTypes.filter(n => n.alias === ratingType);
+
+			}
+
+			ratingTypes && ratingTypes.map(type => {
 
 				const {
 					id: type_id,
-				} = ratingType;
+				} = type;
 
 				ratingTypesItems.push(<RatingType 
 					key={type_id}
-					item={ratingType}
+					item={type}
 					ratings={ratings}
 					renderRatings={this.renderRatings}
+					limit={ratingType ? 0 : 6}
 				/>);
 
 			});
@@ -210,14 +246,6 @@ export default class RatingsPage extends Page {
 
 			}
 
-
-		}
-
-		
-		let ratingContent;
-
-		if(groupByType){
-
 		}
 		else{
 
@@ -236,18 +264,36 @@ export default class RatingsPage extends Page {
 					marginTop: 30,
 				}}
 			>
-				<Grid
-					container
-					align="center"
-				>
-					
-					<Switch
-		        checked={groupByType}
-		        onChange={this.toggleTypeGrouping}
-		        aria-label="checkedA"
-		      /> Гурппировать по типам рейтинга
-				
-				</Grid>
+
+
+					{ratingType
+						?
+							<h2
+								style={{
+									marginLeft: 20,
+									marginTop: 15,
+								}}
+							>
+								<Link
+									to={`/ratings/`}
+									href={`/ratings/`}
+								>
+									Смотреть все рейтинги
+								</Link>
+							</h2>
+						:
+						<Grid
+							container
+							align="center"
+							gutter={0}
+						>
+							<Switch
+				        checked={groupByType}
+				        onChange={this.toggleTypeGrouping}
+				        aria-label="checkedA"
+				      /> Сгруппировать по типам рейтинга
+						</Grid>
+					}
 
 			</Grid>
 

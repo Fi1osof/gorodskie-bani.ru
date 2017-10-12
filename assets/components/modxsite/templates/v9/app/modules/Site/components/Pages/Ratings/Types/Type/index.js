@@ -43,6 +43,29 @@ export default class RatingTypesType extends Component{
 		};
 	}
 
+
+	componentDidUpdate(prevProps, prevState){
+
+		const {
+			limit,
+		} = this.props;
+
+		const {
+			limit: prevLimit,
+		} = prevProps;
+
+		// console.log("componentDidUpdate", limit, prevLimit);
+
+		if((limit || prevLimit) && limit !== prevLimit){
+			this.setState({
+				limit,
+			});
+		}
+
+		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState);
+	}
+
+
 	render(){
 
 		const {
@@ -129,7 +152,11 @@ export default class RatingTypesType extends Component{
 				}}
 			>
 
-				<h3>
+				<h3
+					style={{
+						marginBottom: 20
+					}}
+				>
 					
 					<Link
 						to={`/ratings/${type_alias}/`}

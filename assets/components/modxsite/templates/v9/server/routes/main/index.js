@@ -361,7 +361,7 @@ module.exports = function (options) {
 
           var q = knex(`${prefix}monitor_requests`)
             .insert({
-              site_url: req.host,
+              site_url: req.hostname,
               url: req.url,
               http_status: 404,
               context_key: "web",

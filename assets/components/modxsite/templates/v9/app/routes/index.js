@@ -122,10 +122,9 @@ let routes = {
     {
       path: "/ratings/",
       component: RatingsPage,
-      // childRoutes: [{
-      //   path: "/bani/:companyId/",
-      //   component: CompaniesPage,
-      // }]
+      childRoutes: [{
+        path: "/ratings/:ratingType/",
+      }]
     },
     // {
     //   path: "/topics/",

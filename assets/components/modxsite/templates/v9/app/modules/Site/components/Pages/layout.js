@@ -83,6 +83,10 @@ export default class Page extends Component{
     }
   }
 
+  loadData(){
+  	
+  }
+
   getContent(){
 
   	return null;

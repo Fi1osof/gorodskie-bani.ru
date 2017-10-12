@@ -13,8 +13,10 @@ export default class Page extends Component{
 	static contextTypes = {
 		CompaniesStore: PropTypes.object.isRequired,
 		TopicsStore: PropTypes.object.isRequired,
+		ResourcesStore: PropTypes.object.isRequired,
 		CommentsStore: PropTypes.object.isRequired,
 		UsersStore: PropTypes.object.isRequired,
+		RatingsStore: PropTypes.object.isRequired,
 		getCounters: PropTypes.func.isRequired,
 		localQuery: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
@@ -33,6 +35,45 @@ export default class Page extends Component{
 
 	componentDidMount(){
 
+
+		const {
+			CommentsStore,
+			RatingsStore,
+		} = this.context;
+
+		this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
+
+			this.loadData();
+
+		});
+
+		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
+
+			this.loadData();
+
+		});
+
+		const {
+			TopicsStore,
+		} = this.context;
+
+		this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
+
+			this.loadData();
+
+		});
+
+		const {
+			ResourcesStore,
+		} = this.context;
+
+		this.ResourcesStoreListener = ResourcesStore.getDispatcher().register(payload => {
+
+			this.loadData();
+
+		});
+
+		super.componentDidMount && super.componentDidMount();
 	}
 
   componentDidUpdate(){

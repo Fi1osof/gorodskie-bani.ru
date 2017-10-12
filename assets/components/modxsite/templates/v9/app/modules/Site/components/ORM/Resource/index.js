@@ -443,6 +443,7 @@ export const getList = (source, args, context, info) => {
   const {
     CompaniesStore,
     TopicsStore,
+    ResourcesStore,
   } = context.state;
 
   const {
@@ -459,9 +460,13 @@ export const getList = (source, args, context, info) => {
     
       state = TopicsStore.getState();
 
+    case 'company':
+    
+      state = CompaniesStore.getState();
+
       break;
 
-    default: state = CompaniesStore.getState();
+    default: state = ResourcesStore.getState();
   }
 
 

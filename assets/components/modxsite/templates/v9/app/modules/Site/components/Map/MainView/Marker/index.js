@@ -11,7 +11,7 @@ import Business from 'material-ui-icons/Business';
 import Texture from 'material-ui-icons/Texture';
 import EditIcon from 'material-ui-icons/ModeEdit';
 
-import Stars from './../../../Pages/Companies/Company/fields/Rating/Stars';
+import CompanyMiniCart from './Company';
 
 export default class Marker extends Component{
 
@@ -57,13 +57,13 @@ export default class Marker extends Component{
 				_isDirty,
 			} = item;
 
-			const {
-	      rating,
-	      // max_vote,
-	      // min_vote,
-	      // quantity,
-	      // quantity_voters,
-			} = ratingAvg || {};
+			// const {
+	  //     rating,
+	  //     // max_vote,
+	  //     // min_vote,
+	  //     // quantity,
+	  //     // quantity_voters,
+			// } = ratingAvg || {};
 
 			// console.log('item', item);
 
@@ -93,7 +93,40 @@ export default class Marker extends Component{
 			let details;
 
 			if(hovered){
-				details = <div
+				// details = <div
+				// 	style={{
+				// 		position: 'absolute',
+				// 		zIndex: 1,
+				// 		bottom: 50,
+				// 		boxShadow: 'rgba(0,0,0, 0.3) 0px 0px 5px 2px',
+				// 		padding: 5,
+				// 		background: '#fff',
+				// 	}}
+				// >
+				// 	<div
+				// 		style={{
+				// 			paddingBottom: 5,
+				// 			fontSize: 14,
+				// 		}}
+				// 	>
+				// 		{name} <Stars 
+				// 			value={parseFloat(rating) || 0}
+				// 		/>
+				// 	</div>
+
+				// 	{imageFormats
+				// 		?
+				// 		<img 
+				// 			src={imageFormats.marker_thumb}
+				// 		/>
+				// 		:
+				// 		null
+				// 	}
+				// </div>
+
+				details = <CompanyMiniCart 
+					item={item}
+					ratings={ratingAvg}
 					style={{
 						position: 'absolute',
 						zIndex: 1,
@@ -101,28 +134,9 @@ export default class Marker extends Component{
 						boxShadow: 'rgba(0,0,0, 0.3) 0px 0px 5px 2px',
 						padding: 5,
 						background: '#fff',
+						width: 200,
 					}}
-				>
-					<div
-						style={{
-							paddingBottom: 5,
-							fontSize: 14,
-						}}
-					>
-						{name} <Stars 
-							value={parseFloat(rating) || 0}
-						/>
-					</div>
-
-					{imageFormats
-						?
-						<img 
-							src={imageFormats.marker_thumb}
-						/>
-						:
-						null
-					}
-				</div>
+				/>
 			}
 
 			marker = <div

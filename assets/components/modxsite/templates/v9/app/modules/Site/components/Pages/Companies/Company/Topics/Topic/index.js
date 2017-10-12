@@ -43,6 +43,8 @@ export default class Topic extends Component{
 
 		this.loadData();
 
+
+		super.componentDidMount && super.componentDidMount();
 	}
 
 	async loadData(){

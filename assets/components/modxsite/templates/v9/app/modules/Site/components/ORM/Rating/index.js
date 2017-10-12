@@ -26,6 +26,13 @@ import {
   UserType,
 } from '../User';
 
+import {
+  ResourceType,
+} from '../Resource';
+
+import {
+  sortBy,
+} from '../resolver';
 
 // 
 
@@ -182,54 +189,73 @@ export const RatingType = new GraphQLObjectType({
       Company: {
         type: CompanyType,
         description: "Компания, за которую проголосовали",
-        resolve: async (source, args, context, info) => {
+        resolve: (source, args, context, info) => {
 
           const {
             fieldName,
           } = info;
 
           const {
-            localQuery,
+            rootResolver,
           } = context;
 
-          let result = source && source[fieldName];
+          const {
+            target_id: company_id,
+            target_class,
+          } = source;
 
-          if(!result){
+          if(!company_id || target_class !== "modResource"){
+            return null;
+          }
 
-            const {
-              localQuery,
-            } = context;
+          Object.assign(args, {
+            id: company_id,
+          });
 
-            const {
-              target_id: company_id,
-            } = source;
+          return rootResolver(null, args, context, info);
 
-            if(!company_id){
-              return null;
-            }
+          // const {
+          //   localQuery,
+          // } = context;
 
-            Object.assign(args, {
-              id: company_id,
-            });
+          // let result = source && source[fieldName];
+
+          // if(!result){
+
+          //   const {
+          //     localQuery,
+          //   } = context;
+
+          //   const {
+          //     target_id: company_id,
+          //   } = source;
+
+          //   if(!company_id){
+          //     return null;
+          //   }
+
+          //   Object.assign(args, {
+          //     id: company_id,
+          //   });
    
  
-            await localQuery({
-              operationName: "Company",
-              variables: args,
-            })
-            .then(r => {
-              console.log('Ratings Companies args', args, r);
+          //   await localQuery({
+          //     operationName: "Company",
+          //     variables: args,
+          //   })
+          //   .then(r => {
+          //     // console.log('Ratings Companies args', args, r);
 
-              const {
-                company,
-              } = r.data;
+          //     const {
+          //       company,
+          //     } = r.data;
 
-              result = company;
+          //     result = company;
 
-            }); 
-          }
+          //   }); 
+          // }
           
-          return result;
+          // return result;
         },
       },
       companies: {
@@ -307,6 +333,35 @@ export const RatingType = new GraphQLObjectType({
           }
 
           return result;
+        },
+      },
+      Type: {
+        type: ResourceType,
+        description: "Тип рейтинга",
+        resolve: (source, args, context, info) => {
+
+          const {
+            fieldName,
+          } = info;
+
+          const {
+            rootResolver,
+          } = context;
+
+          const {
+            type,
+          } = source;
+
+          if(!type){
+            return null;
+          }
+
+          Object.assign(args, {
+            parent: 1349,
+            id: type,
+          });
+
+          return rootResolver(null, args, context, info);
         },
       },
     };
@@ -717,6 +772,7 @@ export const getList = (source, args, context, info) => {
   } = info;
 
   const {
+    sort,
     groupBy,
     resource_id,
   } = args;
@@ -734,7 +790,6 @@ export const getList = (source, args, context, info) => {
     state = state.filter(n => n.target_class === "modResource" && n.target_id === resource_id);
 
   }
-
 
   // Способ группировки
   switch(groupBy){
@@ -759,6 +814,54 @@ export const getList = (source, args, context, info) => {
 
     default:;
   }
+
+
+  if(sort){
+
+    sort.map(rule => {
+
+      const {
+        by,
+        dir,
+      } = rule;
+
+      if(!by){
+        return;
+      }
+
+      let sortByRules;
+
+      switch(by){
+
+        case 'rating':
+
+          sortByRules = n => n.rating;
+
+          break;
+
+        case 'type':
+
+          sortByRules = n => n.type;
+
+          break;
+
+        case 'company':
+
+          sortByRules = n => n.target_id;
+
+          break;
+      }
+
+      if(sortByRules){
+
+        state = sortBy(state, sortByRules, dir);
+
+      };
+
+    });
+
+  }
+
   // if(groupBy){
 
   //   switch(groupBy){

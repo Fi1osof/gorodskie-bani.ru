@@ -65,6 +65,8 @@ export default class UserPage extends Component {
 		});
 
 		this.loadData();
+
+		super.componentDidMount && super.componentDidMount();
 	}
 
 	loadData(){

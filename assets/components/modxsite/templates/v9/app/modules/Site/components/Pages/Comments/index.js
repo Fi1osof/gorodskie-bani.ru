@@ -37,17 +37,9 @@ export default class CommentsPage extends Page {
 
 	componentDidMount(){
 
-		const {
-			CommentsStore,
-		} = this.context;
-
-		this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
-
-			this.loadData();
-
-		});
-
 		this.loadData();
+
+		super.componentDidMount && super.componentDidMount();
 	}
 
 

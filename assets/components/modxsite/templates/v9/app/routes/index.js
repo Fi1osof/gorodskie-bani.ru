@@ -10,6 +10,7 @@ import {
   OtzivyPage,
   UsersPage,
   CommentsPage,
+  RatingsPage,
   // Lesson1,
   // PageGraphiQL,
 } from "modules/Site";
@@ -117,6 +118,14 @@ let routes = {
         path: "/bani/:companyId/",
         component: CompaniesPage,
       }]
+    },
+    {
+      path: "/ratings/",
+      component: RatingsPage,
+      // childRoutes: [{
+      //   path: "/bani/:companyId/",
+      //   component: CompaniesPage,
+      // }]
     },
     // {
     //   path: "/topics/",

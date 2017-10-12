@@ -36,17 +36,19 @@ export default class UsersPage extends Page {
 
 	componentDidMount(){
 
-		const {
-			TopicsStore,
-		} = this.context;
+		// const {
+		// 	TopicsStore,
+		// } = this.context;
 
-		this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
+		// this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
 
-			this.loadData();
+		// 	this.loadData();
 
-		});
+		// });
 
 		this.loadData();
+
+		super.componentDidMount && super.componentDidMount();
 	}
 
 

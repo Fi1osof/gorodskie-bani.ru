@@ -116,12 +116,14 @@ export default class PageGraphiQL extends Component{
     }
   }
 
-  componentDidMount(){
+  // componentDidMount(){
 
 
-    // this.loadSchema();
-    // this.getSchema();
-  }
+  //   // this.loadSchema();
+  //   // this.getSchema();
+
+  //   super.componentDidMount && super.componentDidMount();
+  // }
  
 
   // getSchema(){

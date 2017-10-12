@@ -147,15 +147,14 @@ query Ratings(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
-){ 
-  ratings(
-    limit:$limit
-    groupBy:$ratingsGroupBy
-    resource_id:$ratingsResourceId
-  )@skip(if:$withPagination)
-  {
-    ...Rating
-  }
+  $ratingGetType:Boolean = false
+){
+  ...RatingsList
+}
+
+fragment RatingsList on RootType{
+  ...Ratings @skip(if:$withPagination)
+  
   ratingsList(
     limit:$limit
     groupBy:$ratingsGroupBy
@@ -166,6 +165,21 @@ query Ratings(
     object{
       ...Rating
     }
+  }
+}
+
+fragment Ratings on RootType{
+  ratings(
+    limit:$limit
+    groupBy:$ratingsGroupBy
+    resource_id:$ratingsResourceId
+    sort:[{
+      by:rating
+      dir:desc
+    }]
+  )
+  {
+    ...Rating
   }
 }
 
@@ -284,6 +298,7 @@ query CompanyRatings(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
+  $ratingGetType:Boolean = false
 ){
   ratings(  
     limit:$limit
@@ -371,6 +386,7 @@ query CompanyAvgRatings(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
+  $ratingGetType:Boolean = false
 ){
   ratings(  
     limit:1
@@ -457,6 +473,7 @@ query Resources(
   $resourceGetComments:Boolean = false
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
+  $resourceParent:Int
 ){
   
   ...ResourcesList
@@ -469,6 +486,64 @@ query Resources(
   #   ...Resource
   # }
 }
+
+# Типы рейтингов
+query RatingTypes(
+  $resourcesLimit:Int = 0
+  $withPagination:Boolean = false
+  $getTVs:Boolean = true
+  $resourceTemplate:Int = 30
+  $resourceExcludeTemplates:[Int]
+  $resourceType:ResourceTypeEnum
+  $getImageFormats:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $getCommentAuthor:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceParent:Int = 1349
+){
+  
+  ...ResourcesList
+}
+
+# Данные для страницы рейтингов
+query RatingsPageData(
+  $resourcesLimit:Int = 0
+  $resourceTemplate:Int = 30
+  $resourceExcludeTemplates:[Int]
+  $resourceType:ResourceTypeEnum
+  $resourceParent:Int = 1349
+  
+  $limit:Int = 0
+  $ratingsGroupBy:RatingGroupbyEnum
+  $getRatingCompanies:Boolean = false
+  $getRatingCompany:Boolean = false
+  $getCompanyFullData:Boolean = false
+  $getCompanyComments:Boolean = false
+  $getCommentCompany:Boolean = false
+  $getImageFormats:Boolean = false
+  $getRatingsAvg:Boolean = false
+  $getRatingFullInfo:Boolean = false
+  $getRatingVoter:Boolean = false
+  $withPagination:Boolean = false
+  $ratingsResourceId:Int
+  $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
+  $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $ratingGetType:Boolean = false
+){
+  
+  ...ResourcesList
+  
+  ...Ratings
+}
+
 
 query Topics(
   $resourcesLimit:Int = 0
@@ -525,6 +600,7 @@ fragment ResourcesList on RootType{
     template:$resourceTemplate
     excludeTemplates:$resourceExcludeTemplates
     resourceType:$resourceType
+    parent:$resourceParent
   )@include(if:$withPagination)
   {
     count
@@ -538,6 +614,7 @@ fragment ResourcesList on RootType{
     template:$resourceTemplate
     excludeTemplates:$resourceExcludeTemplates
     resourceType:$resourceType
+    parent:$resourceParent
   )@skip(if:$withPagination)
   {
     ...Resource
@@ -545,6 +622,24 @@ fragment ResourcesList on RootType{
 }
 
 fragment Resource on ResourceType{
+  
+  ...ResourceFields
+  
+  Author @include(if:$resourceGetAuthor)
+  {
+    ...User
+  }
+  comments @include(if:$resourceGetComments)
+  {
+    ...CommentFields
+    Author @include(if:$getCommentAuthor)
+    {
+      ...User
+    }
+  }
+}
+
+fragment ResourceFields on ResourceType{
   id
   name
   pagetitle
@@ -582,18 +677,6 @@ fragment Resource on ResourceType{
     work_time
     prices
     metro
-  }
-  Author @include(if:$resourceGetAuthor)
-  {
-    ...User
-  }
-  comments @include(if:$resourceGetComments)
-  {
-    ...CommentFields
-    Author @include(if:$getCommentAuthor)
-    {
-      ...User
-    }
   }
 }
 
@@ -650,6 +733,10 @@ fragment Rating on RatingType{
   Company @include(if:$getRatingCompany)
   {
     ...Company
+  }
+  Type @include(if:$ratingGetType)
+  {
+    ...ResourceFields
   }
 }
 
@@ -844,7 +931,6 @@ query test(
     # }
   }
 } 
-
 
 `;
 

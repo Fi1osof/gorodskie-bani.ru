@@ -26,17 +26,9 @@ export default class TopicsPage extends Page {
 
 	componentDidMount(){
 
-		const {
-			TopicsStore,
-		} = this.context;
-
-		this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
-
-			this.loadData();
-
-		});
-
 		this.loadData();
+
+		super.componentDidMount && super.componentDidMount();
 	}
 	
 
@@ -71,6 +63,8 @@ export default class TopicsPage extends Page {
 
 		// console.log("Resources r", result);
 		
+
+		super.componentDidMount && super.componentDidMount();
 		
 	}
 

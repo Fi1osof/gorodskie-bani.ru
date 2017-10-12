@@ -17,7 +17,7 @@ export default class TopicsPage extends Page{
 		});
 	}
 	
-	render(){
+	renderContent(){
 
 		return <div>
 			Страница не найдена. Вернуться <a href="javascript:;" onClick={event => browserHistory.goBack()}>назад</a> или <Link to="/" href="/">на главную</Link>.

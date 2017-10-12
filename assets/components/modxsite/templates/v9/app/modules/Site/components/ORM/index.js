@@ -15,6 +15,7 @@ import { List } from 'immutable';
 import {
   listField,
   listArgs,
+  order,
   // ObjectsListType,
 } from './fields';
 
@@ -164,6 +165,10 @@ const resourcesArgs = Object.assign({
           value: "topic",
           description: "Топик",
         },
+        company: {
+          value: "company",
+          description: "Компания",
+        },
       },
     }),
     description: 'Тип ресурса',
@@ -228,7 +233,44 @@ const RootType = new GraphQLObjectType({
           type: GraphQLInt,
           description: "ID ресурса, к которому комментарий оставлен",
         },
-      }, listArgs),
+      }, listArgs, {
+        sort: {
+          type: new GraphQLList(new GraphQLInputObjectType({
+            name: "RatingsSortBy",
+            fields: {
+              by: {
+                type: new GraphQLEnumType({
+                  name: 'RatingsSortByValues',
+                  values: {
+                    id: {
+                      value: 'id',
+                      description: 'По ID',
+                    },
+                    rating: {
+                      value: 'rating',
+                      description: 'По рейтингу',
+                    },
+                    type: {
+                      value: 'type',
+                      description: 'По типу рейтинга',
+                    },
+                    company: {
+                      value: 'company',
+                      description: 'По компании',
+                    },
+                    rand: {
+                      value: 'rand()',
+                      description: 'В случайном порядке',
+                    },
+                  },
+                }),
+                description: 'Способ сортировки',
+              },
+              dir: order,
+            },
+          })),
+        },
+      }),
     },
     vote: {
       type: RatingType,

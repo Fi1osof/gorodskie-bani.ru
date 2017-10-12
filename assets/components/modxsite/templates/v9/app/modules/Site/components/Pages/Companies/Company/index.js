@@ -101,6 +101,8 @@ export default class CompanyPage extends Component{
 
 
 		this.loadCompanyFullData();
+
+		super.componentDidMount && super.componentDidMount();
 	}
 
 	componentWillUnmount(){

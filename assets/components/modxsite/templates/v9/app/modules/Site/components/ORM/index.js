@@ -165,6 +165,10 @@ const resourcesArgs = Object.assign({
           value: "topic",
           description: "Топик",
         },
+        obzor: {
+          value: "obzor",
+          description: "Обзор заведения",
+        },
         company: {
           value: "company",
           description: "Компания",

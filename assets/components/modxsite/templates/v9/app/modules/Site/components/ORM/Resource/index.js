@@ -460,6 +460,7 @@ export const getList = (source, args, context, info) => {
   switch(resourceType){
 
     case 'topic':
+    case 'obzor':
     
       state = TopicsStore.getState();
       

@@ -447,6 +447,8 @@ query CompanyTopics(
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
+  $resourceType:ResourceTypeEnum = obzor
+  $resourceTemplate:Int
 ){
     ...Topics
 }
@@ -612,6 +614,26 @@ query Topics(
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
+  $resourceType:ResourceTypeEnum = topic
+  $resourceTemplate:Int
+){
+  
+  ...Topics
+}
+
+query ObzoryZavedeniy(
+  $resourcesLimit:Int = 0
+  $resourceParent:Int
+  $getTVs:Boolean = false
+  $withPagination:Boolean = false
+  $getImageFormats:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $resourceIds:[Int]
+  $getCommentAuthor:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceType:ResourceTypeEnum = obzor
+  $resourceTemplate:Int = 28
 ){
   
   ...Topics
@@ -620,7 +642,8 @@ query Topics(
 fragment Topics on RootType{
   topics:resources(
     ids:$resourceIds
-    resourceType:topic
+    resourceType:$resourceType
+    template:$resourceTemplate
     limit:$resourcesLimit
     parent:$resourceParent
     sort:[{
@@ -632,9 +655,15 @@ fragment Topics on RootType{
     ...Topic
   }
   topicsList:resourcesList(
-    resourceType:topic
+    ids:$resourceIds
+    resourceType:$resourceType
+    template:$resourceTemplate
     limit:$resourcesLimit
     parent:$resourceParent
+    sort:[{
+      by:id
+      dir:desc
+    }]
   ) @include(if:$withPagination)
   {
     count

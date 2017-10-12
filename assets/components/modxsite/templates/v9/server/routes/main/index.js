@@ -610,6 +610,8 @@ module.exports = function (options) {
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Городские бани</title>
+          <meta name="robots" content="index, follow" />
+          <link rel="shortcut icon" href="/favicon.ico"/>
           <link rel="stylesheet" href="${assetsUrl}css/main.css">
           <base href="/" />
           <script type="application/javascript">

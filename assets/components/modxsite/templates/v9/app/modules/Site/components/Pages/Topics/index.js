@@ -42,7 +42,7 @@ export default class TopicsPage extends Page {
 		} = this.context;
 
 		let result = localQuery({
-			operationName: "Topics",
+			operationName: this.getOperationName(),
 			variables: {
 				// resourcesLimit: 10,
 				resourceGetAuthor: true,
@@ -65,6 +65,12 @@ export default class TopicsPage extends Page {
 
 		// console.log("Resources r", result);
 		
+	}
+
+	getOperationName(){
+		
+		return "Topics";
+
 	}
 
 

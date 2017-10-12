@@ -12,6 +12,12 @@ import TopicsPage from '../../Topics';
 export default class OtzivyPage extends TopicsPage {
 
 
+	getOperationName(){
+		
+		return "ObzoryZavedeniy";
+
+	}
+
 	// constructor(props){
 
 	// 	super(props);

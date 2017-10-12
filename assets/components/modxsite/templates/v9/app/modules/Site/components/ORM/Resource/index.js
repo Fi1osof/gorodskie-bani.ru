@@ -462,6 +462,8 @@ export const getList = (source, args, context, info) => {
     case 'topic':
     
       state = TopicsStore.getState();
+      
+      break;
 
     case 'company':
     

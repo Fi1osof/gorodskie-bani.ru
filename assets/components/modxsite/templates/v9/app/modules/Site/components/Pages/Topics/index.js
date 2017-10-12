@@ -26,13 +26,15 @@ export default class TopicsPage extends Page {
 
 	componentDidMount(){
 
-		this.loadData();
+		// this.loadData();
 
 		super.componentDidMount && super.componentDidMount();
 	}
 	
 
 	loadData(){
+
+		// console.log("Topics loadData");
 
 
 		const {
@@ -50,7 +52,7 @@ export default class TopicsPage extends Page {
 		})
 		.then(r => {
 
-			console.log("Resources r", r);
+			// console.log("Resources r", r);
 
 			const {
 				topics,
@@ -62,9 +64,6 @@ export default class TopicsPage extends Page {
 		}); 
 
 		// console.log("Resources r", result);
-		
-
-		super.componentDidMount && super.componentDidMount();
 		
 	}
 

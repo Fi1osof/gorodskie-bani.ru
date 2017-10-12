@@ -67,7 +67,9 @@ export default class Page extends Component{
 
 		});
 
-		super.componentDidMount && super.componentDidMount();
+		this.loadData();
+			
+		// super.componentDidMount && super.componentDidMount();
 	}
 
   componentDidUpdate(){
@@ -78,6 +80,8 @@ export default class Page extends Component{
   }
 
   loadData(){
+
+		console.log("Page loadData");
 
   }
 

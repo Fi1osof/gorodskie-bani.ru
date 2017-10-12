@@ -37,6 +37,14 @@ let routes = {
       component: MainPage
     },
     {
+      path: "/city/:city/",
+      component: MainPage
+    },
+    {
+      path: "/city/:city/@:lat,:lng,:zoom",
+      component: MainPage
+    },
+    {
       path: "/db/",
       component: DbPage,
       // childRoutes: [

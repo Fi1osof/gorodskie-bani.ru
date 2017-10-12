@@ -94,15 +94,16 @@ export default class RatingTypesType extends Component{
 
 		let ratingsByTypeList;
 
+		// Допольнительно сортируем по рейтингу
 		if(ratingsByType && ratingsByType.length){
 
 			ratingsByType = List(ratingsByType);
 
-			console.log('ratingsByType', ratingsByType);
+			// console.log('ratingsByType', ratingsByType);
 
 			ratingsByType = sortBy(ratingsByType, n => n.rating, "desc");
 
-			console.log('ratingsByType 2', ratingsByType);
+			// console.log('ratingsByType 2', ratingsByType);
 
 			ratingsByType = ratingsByType.toArray();
 

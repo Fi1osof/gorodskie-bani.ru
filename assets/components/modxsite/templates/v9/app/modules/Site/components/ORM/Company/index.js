@@ -377,28 +377,28 @@ export const CompanyType = new GraphQLObjectType({
       // },
       coords: {
         type: coordsType,
-        resolve: (source) => {
+        // resolve: (source) => {
 
-          let {
-            coords,
-          } = source;
+        //   let {
+        //     coords,
+        //   } = source;
 
-          if(coords && coords.lat === undefined){
+        //   if(coords && coords.lat === undefined){
 
-            const {
-              0: lng,
-              1: lat,
-            } = coords;
+        //     const {
+        //       0: lng,
+        //       1: lat,
+        //     } = coords;
 
-            coords = {
-              lat,
-              lng,
-            };
+        //     coords = {
+        //       lat,
+        //       lng,
+        //     };
 
-          }
+        //   }
 
-          return coords;
-        },
+        //   return coords;
+        // },
       },
       // ratings: {
       //   description: 'Рейтинги компании',

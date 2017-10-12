@@ -152,6 +152,44 @@ query Ratings(
   ...RatingsList
 }
 
+
+
+query MainMenuData(
+  $limit:Int!
+  $ratingsGroupBy:RatingGroupbyEnum = rating_type
+  $getRatingCompanies:Boolean = false
+  $getRatingCompany:Boolean = false
+  $getCompanyFullData:Boolean = false
+  $getCompanyComments:Boolean = false
+  $getCommentCompany:Boolean = false
+  $getImageFormats:Boolean = false
+  $getRatingsAvg:Boolean = false
+  $getRatingFullInfo:Boolean = true
+  $getRatingVoter:Boolean = false
+  $withPagination:Boolean = false
+  $ratingsResourceId:Int
+  $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
+  $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $ratingGetType:Boolean = true
+  
+  $resourcesLimit:Int = 0
+  $resourceTemplate:Int
+  $resourceExcludeTemplates:[Int]
+  $resourceType:ResourceTypeEnum
+  $resourceParent:Int = 1296
+){
+  ...RatingsList
+  
+  ...ResourcesList
+}
+
 fragment RatingsList on RootType{
   ...Ratings @skip(if:$withPagination)
   
@@ -487,6 +525,24 @@ query Resources(
   # }
 }
 
+query Cities(
+  $resourcesLimit:Int = 0
+  $withPagination:Boolean = false
+  $getTVs:Boolean = true
+  $resourceTemplate:Int
+  $resourceExcludeTemplates:[Int]
+  $resourceType:ResourceTypeEnum
+  $getImageFormats:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $getCommentAuthor:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceParent:Int = 1296
+){
+  
+  ...ResourcesList
+}
+
 # Типы рейтингов
 query RatingTypes(
   $resourcesLimit:Int = 0
@@ -677,6 +733,10 @@ fragment ResourceFields on ResourceType{
     work_time
     prices
     metro
+  }
+  coords{
+    lat
+    lng
   }
 }
 

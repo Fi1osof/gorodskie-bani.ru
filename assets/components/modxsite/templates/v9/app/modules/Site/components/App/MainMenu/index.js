@@ -8,6 +8,14 @@ export default class MainMenu extends Component{
 
   static contextTypes = {
     coords: PropTypes.object.isRequired,
+    CompaniesStore: PropTypes.object.isRequired,
+    TopicsStore: PropTypes.object.isRequired,
+    ResourcesStore: PropTypes.object.isRequired,
+    CommentsStore: PropTypes.object.isRequired,
+    UsersStore: PropTypes.object.isRequired,
+    RatingsStore: PropTypes.object.isRequired,
+    localQuery: PropTypes.func.isRequired,
+    router: PropTypes.object.isRequired,
   };
 
 	constructor(props){
@@ -20,6 +28,73 @@ export default class MainMenu extends Component{
 		}
 	}
 
+
+  componentDidMount(){
+
+
+    const {
+      CommentsStore,
+      RatingsStore,
+      TopicsStore,
+      ResourcesStore,
+    } = this.context;
+
+    this.CommentsStoreListener = CommentsStore.getDispatcher().register(this.onStoreUpdate);
+
+    this.RatingsStoreListener = RatingsStore.getDispatcher().register(this.onStoreUpdate);
+
+    this.TopicsStoreListener = TopicsStore.getDispatcher().register(this.onStoreUpdate);
+
+    this.ResourcesStoreListener = ResourcesStore.getDispatcher().register(this.onStoreUpdate);
+
+    this.loadData();
+  }
+
+  onStoreUpdate = payload => {
+
+    switch(payload.type){
+
+      case "SET_DATA":
+
+        this.loadData();
+        break;
+
+      default:;
+
+    }
+  }
+
+
+  loadData(){
+
+    const {
+      localQuery,
+    } = this.context;
+
+
+    localQuery({
+      operationName: "MainMenuData",
+      variables: {
+        limit: 0,
+      },
+    })
+    .then(r => {
+
+      const {
+        ratings,
+        resources: cities,
+      } = r.data;
+
+      this.setState({
+        ratings,
+        cities,
+      });
+
+    });
+
+  }
+
+
 	render(){
 
     const {
@@ -27,6 +102,8 @@ export default class MainMenu extends Component{
     } = this.context;
 
 		let {
+      ratings,
+      cities,
 			ratingsOpened,
 			citiesOpened,
 		} = this.state;
@@ -48,6 +125,84 @@ export default class MainMenu extends Component{
       }
 
     }
+
+    let citiesList = [];
+
+    cities && cities.map(city => {
+
+      const {
+        id,
+        name,
+        coords,
+        alias: city_alias,
+      } = city;
+
+      if(!coords){
+        return;
+      }
+
+      const {
+        lat,
+        lng,
+      } = coords;
+
+      const link = `/city/${city_alias}/@` + [lat,lng,12].join(",");
+
+      citiesList.push(<li
+        key={id}
+      >
+        <Link
+          to={link}
+          href={link}
+          onClick={event => {
+            this.setState({
+              citiesOpened: false,
+            });
+          }}
+        >
+          {name}
+        </Link>
+      </li>);
+
+    });
+
+
+
+    let ratingsList = [];
+
+    ratings && ratings.map(item => {
+
+      const {
+        Type
+      } = item;
+
+      if(!Type){
+        return;
+      }
+
+      const {
+        id,
+        name,
+        uri: link,
+      } = Type;
+
+      ratingsList.push(<li
+        key={id}
+      >
+        <Link
+          to={link}
+          href={link}
+          onClick={event => {
+            this.setState({
+              ratingsOpened: false,
+            });
+          }}
+        >
+          {name}
+        </Link>
+      </li>);
+
+    });
 
 		return <div 
       className="navbar navbar-default"
@@ -109,7 +264,9 @@ export default class MainMenu extends Component{
               		display: ratingsOpened ? 'block' : undefined,
               	}}
               >
-                <li className="first"><a href="ratings/steam/" title="Парилка">Парилка</a></li>
+                {ratingsList}
+
+                {/*<li className="first"><a href="ratings/steam/" title="Парилка">Парилка</a></li>
                 <li><a href="ratings/service/" title="Обслуживание">Обслуживание</a></li>
                 <li><a href="ratings/interior/" title="Интерьер">Интерьер</a></li>
                 <li><a href="ratings/cuisine/" title="Кухня">Кухня</a></li>
@@ -119,7 +276,7 @@ export default class MainMenu extends Component{
                 <li><a href="ratings/cuisine-prices/" title="Стоимость кухни">Стоимость кухни</a></li>
                 <li><a href="ratings/skidki-i-akczii/" title="Скидки и акции">Скидки и акции</a></li>
                 <li><a href="ratings/friendliness/" title="Дружественная атмосфера">Дружественная атмосфера</a></li>
-                <li className="last"><a href="ratings/lgotyi-postoyannyim-posetitelyam/" title="Льготы постоянным посетителям">Льготы постоянным посетителям</a></li>
+                <li className="last"><a href="ratings/lgotyi-postoyannyim-posetitelyam/" title="Льготы постоянным посетителям">Льготы постоянным посетителям</a></li>*/}
               </ul>
               </li>
 
@@ -139,29 +296,9 @@ export default class MainMenu extends Component{
 	              		display: citiesOpened ? 'block' : undefined,
 	              	}}
 	              >
-	                <li className="first"><a href="moscow/" title="Москва">Москва</a></li>
-	                <li><a href="moskovskaya-oblast/" title="Московская область">Московская область</a></li>
-	                <li><a href="st-petersburg/" title="Санкт-Петербург">Санкт-Петербург</a></li>
-	                <li><a href="city/kronshtadt/" title="Кронштадт">Кронштадт</a></li>
-	                <li><a href="city/velikij-novgorod/" title="Великий Новгород">Великий Новгород</a></li>
-	                <li><a href="city/volgograd/" title="Волгоград">Волгоград</a></li>
-	                <li><a href="city/voronezh/" title="Воронеж">Воронеж</a></li>
-	                <li><a href="city/ekaterinburg/" title="Екатеринбург">Екатеринбург</a></li>
-	                <li><a href="city/krasnoyarsk/" title="Красноярск">Красноярск</a></li>
-	                <li><a href="city/novosibirsk/" title="Новосибирск">Новосибирск</a></li>
-	                <li><a href="penza/" title="Пенза">Пенза</a></li>
-	                <li><a href="city/samara/" title="Самара">Самара</a></li>
-	                <li><a href="city/tomsk/" title="Томск">Томск</a></li>
-	                <li><a href="city/ufa/" title="Уфа">Уфа</a></li>
-	                <li><a href="chelyabinsk/" title="Челябинск">Челябинск</a></li>
-	                <li><a href="cherepovecz/" title="Череповец">Череповец</a></li>
-	                <li><a href="city/rostov-na-donu/" title="Ростов-на-Дону">Ростов-на-Дону</a></li>
-	                <li><a href="city/nizhnij-novgorod/" title="Нижний Новгород">Нижний Новгород</a></li>
-	                <li><a href="city/pskov/" title="Псков">Псков</a></li>
-	                <li><a href="city/kursk/" title="Курск">Курск</a></li>
-	                <li><a href="city/tver/" title="Тверь">Тверь</a></li>
-	                <li><a href="city/blagoveshhensk/" title="Благовещенск">Благовещенск</a></li>
-	                <li className="last"><a href="city/kirov/" title="Киров">Киров</a></li>
+
+                  {citiesList}
+
 	              </ul>
               </li>
               <li className="last"><a href="contacts.html" title="Контакты">Контакты</a></li>

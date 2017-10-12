@@ -137,7 +137,13 @@ class modWebResourcesGetdataProcessor extends modSiteWebResourcesGetdataProcesso
                     }
                 }
                 
-            } 
+            }
+
+
+            if(!empty($l['tvs']['ya_coords']['value'])){
+                $l['coords'] = array_map('trim', explode(",", $l['tvs']['ya_coords']['value']));
+            }
+
         }
         
         return $list;

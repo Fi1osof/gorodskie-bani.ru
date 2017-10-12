@@ -162,6 +162,9 @@ export const ResourceType = new GraphQLObjectType({
       },
       tvs: TVsField,
       gallery: GalleryField,
+      coords: {
+        type: coordsType,
+      },
       // coords: {
       //   type: coordsType,
       //   resolve: (source) => {

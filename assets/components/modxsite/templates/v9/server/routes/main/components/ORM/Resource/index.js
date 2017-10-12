@@ -234,6 +234,24 @@ export const getList = (object, args, context, info) => {
 
             // console.log("object.tvs", object.tvs);
 
+            let {
+              coords,
+            } = object;
+
+            if(coords){
+
+              const {
+                0: lng,
+                1: lat,
+              } = coords;
+
+              object.coords = {
+                lat,
+                lng,
+              };
+              
+            }
+
           }
           
         });

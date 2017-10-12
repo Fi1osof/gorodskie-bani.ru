@@ -52,33 +52,29 @@ export default class RatingsPage extends Page {
 	}
 
 
-	// componentDidUpdate(prevProps, prevState, prevContext){
+	componentDidUpdate(prevProps, prevState, prevContext){
 
-	// 	console.log('Users componentDidUpdate', prevProps, prevState, prevContext);
+		const {
+			params: {
+				ratingType,
+			},
+		} = this.props;
 
-	// 	const {
-	// 		router,
-	// 	} = this.context;
+		const {
+			params: {
+				ratingType: prevRatingType,
+			},
+		} = prevProps;
+
+		if((ratingType || prevRatingType) && ratingType !== prevRatingType){
+
+			this.loadData();
+
+		}
 
 
-	// 	const {
-	// 		location: {
-	// 			query,
-	// 		},
-	// 	} = router;
-
-	// 	const {
-	// 		page,
-	// 	} = query || {};
-
-	// 	if(page !== this.state.page){
-	// 		this.setState({
-	// 			page,
-	// 		}, () => this.loadData());
-	// 	}
-
-	// 	super.componentDidUpdate && super.componentDidUpdate();
-	// }
+		super.componentDidUpdate && super.componentDidUpdate();
+	}
 	
 
 	loadData(){
@@ -131,7 +127,7 @@ export default class RatingsPage extends Page {
 		})
 		.then(r => {
 
-			console.log("Resources r", r);
+			// console.log("Resources r", r);
 
 			const {
 				ratings,

@@ -54,8 +54,6 @@ export default class UsersPage extends Page {
 
 	componentDidUpdate(prevProps, prevState, prevContext){
 
-		console.log('Users componentDidUpdate', prevProps, prevState, prevContext);
-
 		const {
 			router,
 		} = this.context;

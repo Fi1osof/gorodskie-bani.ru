@@ -50,8 +50,8 @@ export default class MapMainView extends Component{
 
 	static defaultProps = {
     center: {
-    	lat: 55.760046, 
-    	lng: 37.626028,
+    	lat: 55.752898, 
+    	lng: 37.621908,
     },
     zoom: 11
 	};
@@ -80,54 +80,7 @@ export default class MapMainView extends Component{
 
 	componentWillMount(){
 
-		let {
-			CompaniesStore,
-			RatingsStore,
-		} = this.context;
-
- 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
-
- 			this.createClusters();
- 		});
-
- 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
-
- 			this.createClusters();
- 		});
-
-
- 		let {
- 			router,
- 		} = this.context;
-
- 		let {
- 			lat,
- 			lng,
- 			zoom,
- 		} = router.params;
-
- 		// 
-
- 		if(lat && lng && zoom){
- 			// this.setMapPosition(lat, lng);
-      // defaultCenter={this.props.center}
-
-      let center = {
-      	lat: parseFloat(lat),
-      	lng: parseFloat(lng),
-      };
-
-      zoom = parseFloat(zoom);
-
-      Object.assign(this.state, {
-      	center,
-      	zoom,
-      	mapOptions: {
-	      	center,
-		      zoom,
-      	}
-      });
- 		}
+		this.initCoords();
 
  		return super.componentWillMount && super.componentWillMount();
 	}
@@ -275,6 +228,119 @@ export default class MapMainView extends Component{
 
 		return super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext) || true;
 	}
+
+
+	async initCoords(){
+
+		const {
+			CompaniesStore,
+			RatingsStore,
+			localQuery,
+			router: {
+				params,
+			},
+		} = this.context;
+
+		const {
+			city, 
+		} = params || {};
+
+ 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
+
+ 			this.createClusters();
+ 		});
+
+ 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
+
+ 			this.createClusters();
+ 		});
+
+
+ 		let {
+ 			router,
+ 		} = this.context;
+
+ 		let {
+ 			lat,
+ 			lng,
+ 			zoom,
+ 		} = router.params;
+
+
+ 		if(city && !lat && !lng){
+
+ 			let response = await localQuery({
+ 				operationName: "Cities",
+ 			});
+
+ 			const {
+ 				resources: cities,
+ 			} = response.data;
+
+ 			// console.log('cities', cities);
+
+ 			const currentCity = cities && cities.find(n => n.alias === city);
+
+ 			// console.log('currentCity', currentCity);
+
+ 			if(currentCity && currentCity.coords){
+
+ 				lat = currentCity.coords.lat;
+ 				lng = currentCity.coords.lng;
+
+ 				zoom = 12;
+ 			}
+
+ 		}
+
+ 		// 
+ 			
+		// console.log('lat lng', lat, lng, zoom);
+
+ 		if(lat && lng && zoom){
+ 			// this.setMapPosition(lat, lng);
+      // defaultCenter={this.props.center}
+
+      let center = {
+      	lat: parseFloat(lat),
+      	lng: parseFloat(lng),
+      };
+
+      zoom = parseFloat(zoom);
+
+      // Object.assign(this.state, {
+      // 	center,
+      // 	zoom,
+      // 	mapOptions: {
+	     //  	center,
+		    //   zoom,
+      // 	}
+      // });
+
+      // console.log("map data", {center,
+      // 	zoom,
+      // 	mapOptions: {
+	     //  	center,
+		    //   zoom,
+      // 	}});
+
+      this.setState({
+      	center,
+      	zoom,
+      	mapOptions: {
+	      	center,
+		      zoom,
+      	}
+      });
+ 		}
+
+ 		this.setState({
+    	inited: true,
+    });
+
+		return;
+	}
+
 
 	onChildClick(key, props){
 
@@ -841,7 +907,12 @@ export default class MapMainView extends Component{
 			zoom,
 			cluster_id,
 			bounds,
+			inited,
 		} = this.state;
+
+		if(!inited){
+			return null;
+		}
 
 		// 
 

@@ -39,6 +39,8 @@ export default class Page extends Component{
 		const {
 			CommentsStore,
 			RatingsStore,
+			TopicsStore,
+			ResourcesStore,
 		} = this.context;
 
 		this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
@@ -53,19 +55,11 @@ export default class Page extends Component{
 
 		});
 
-		const {
-			TopicsStore,
-		} = this.context;
-
 		this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
 
 			this.loadData();
 
 		});
-
-		const {
-			ResourcesStore,
-		} = this.context;
 
 		this.ResourcesStoreListener = ResourcesStore.getDispatcher().register(payload => {
 
@@ -84,7 +78,7 @@ export default class Page extends Component{
   }
 
   loadData(){
-  	
+
   }
 
   getContent(){

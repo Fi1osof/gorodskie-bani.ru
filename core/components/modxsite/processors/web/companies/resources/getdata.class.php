@@ -236,9 +236,9 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
             if(!empty($l['tvs']['ya_coords']['value'])){
                 $l['coords'] = array_map('trim', explode(",", $l['tvs']['ya_coords']['value']));
             }
-            else{
-                $l['coords'] = [35,35];
-            }
+            // else{
+            //     $l['coords'] = [35,35];
+            // }
         }
 
         return $list;

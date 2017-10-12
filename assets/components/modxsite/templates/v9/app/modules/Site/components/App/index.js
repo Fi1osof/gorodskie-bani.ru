@@ -1215,7 +1215,11 @@ export class AppMain extends Component{
       console.error(e);
     });
 
-    this.forceUpdate();
+    // this.forceUpdate();
+
+    this.setState({
+      inited: true,
+    });
   }
 
 
@@ -1705,7 +1709,8 @@ export class AppMain extends Component{
     } = this.props;
 
     let {
-      notifications_store
+      inited,
+      notifications_store,
     } = this.state;
 
     return <MuiThemeProvider theme={customStyles}>
@@ -1718,7 +1723,7 @@ export class AppMain extends Component{
         <div 
           id="Module"
         >
-          {children}
+          {inited && children || null}
         </div>
 
       <Informer

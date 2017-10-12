@@ -7,6 +7,7 @@ import NotFoundPage from './components/Pages/NotFound';
 import DbPage from './components/Pages/DB';
 import CompaniesPage from './components/Pages/Companies';
 import OtzivyPage from './components/Pages/Companies/Otzivy';
+import UsersPage from './components/Pages/Users';
 
 export {
   MainApp,
@@ -16,4 +17,5 @@ export {
   DbPage,
   CompaniesPage,
   OtzivyPage,
+  UsersPage,
 };

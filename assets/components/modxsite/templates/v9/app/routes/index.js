@@ -8,6 +8,7 @@ import {
   DbPage,
   CompaniesPage,
   OtzivyPage,
+  UsersPage,
   // Lesson1,
   // PageGraphiQL,
 } from "modules/Site";
@@ -90,11 +91,15 @@ let routes = {
       }]
     },
     {
+      path: "/people",
+      component: UsersPage,
+    },
+    {
       path: "/profile/",
       childRoutes: [{
         path: "/profile/:username",
         // component: CompaniesPage,
-      }]
+      }],
     },
     {
       // path: "/bani/",

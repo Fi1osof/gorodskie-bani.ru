@@ -15,6 +15,10 @@ import ModelObject from '../object';
 import { List } from 'immutable';
 
 import {
+  CommentType,
+} from '../Comment';
+
+import {
   listField,
   // ObjectsListType,
 } from '../fields';
@@ -157,6 +161,31 @@ export const UserType = new GraphQLObjectType({
       },
       sudo: {
         type: GraphQLBoolean,
+      },
+      comments: {
+        type: new GraphQLList(CommentType),
+        description: CommentType.description,
+        resolve: async (source, args, context, info) => {
+
+          const {
+            id,
+          } = source;
+
+          if(!id){
+            return null;
+          }
+
+          Object.assign(args, {
+            createdby: id,
+          });
+
+
+          const {
+            rootResolver,
+          } = context;
+
+          return rootResolver(null, args, context, info);
+        },
       },
     };
   },

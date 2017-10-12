@@ -24,6 +24,7 @@ query apiData(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $resourceIds:[Int]
+  $userGetComments:Boolean = false
 ){
   companies(
     limit:$limit
@@ -68,6 +69,7 @@ query Companies (
   $getRatingVoters:Boolean = false
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
 ){
   companies(
     limit:$limit
@@ -104,6 +106,7 @@ query Company(
   $getRatingVoters:Boolean = true
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
 ){
   company(
     id: $id
@@ -143,6 +146,7 @@ query Ratings(
   $getRatingVoters:Boolean = false
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
 ){ 
   ratings(
     limit:$limit
@@ -184,12 +188,15 @@ query Comments(
   $getRatingVoters:Boolean = false
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
+  $commentsCreatedBy:Int
+  $userGetComments:Boolean = false
 ){
   commentsList(
     limit: $limit
     resource_id:$commentsResourceId
     parent:$commentParent
     sort:$commentsSort
+    createdby:$commentsCreatedBy
   )@include(if:$withPagination)
   {
     count
@@ -203,6 +210,7 @@ query Comments(
     resource_id:$commentsResourceId
     parent:$commentParent
     sort:$commentsSort
+    createdby:$commentsCreatedBy
   )@skip(if:$withPagination)
   {
     ...Comment
@@ -226,6 +234,7 @@ query MapCompanies (
   $getRatingVoters:Boolean = false
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
 ){
   companiesList(
     limit:$limit
@@ -271,6 +280,7 @@ query CompanyRatings(
   $getRatingVoters:Boolean = false
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
 ){
   ratings(  
     limit:$limit
@@ -313,6 +323,7 @@ query CompanyComments(
   $getRatingVoters:Boolean = false
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
 ){
   comments(  
     limit:$limit
@@ -356,6 +367,7 @@ query CompanyAvgRatings(
   $getRatingVoters:Boolean = false
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
 ){
   ratings(  
     limit:1
@@ -377,6 +389,7 @@ query CompanyTopics(
   $resourceGetComments:Boolean = false
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
+  $userGetComments:Boolean = false
 ){
     ...Topics
 }
@@ -385,12 +398,29 @@ query Users(
   $limit: Int!
   $getImageFormats:Boolean = false
   $userIds:[Int]
+  $withPagination:Boolean = false
+  $userGetComments:Boolean = false
+  $usersPage:Int = 1
 ) {
   
+  usersList(
+    limit:$limit
+    ids:$userIds
+    page:$usersPage
+  ) @include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...User
+    }
+  }
   users(
     limit:$limit
     ids:$userIds
-  ){
+    page:$usersPage
+  ) @skip(if:$withPagination)
+  {
     ...User
   }
 }
@@ -398,6 +428,7 @@ query Users(
 query User(
   $userId: Int!
   $getImageFormats:Boolean = false
+  $userGetComments:Boolean = false
 ) {
   
   user(
@@ -418,6 +449,7 @@ query Resources(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $getCommentAuthor:Boolean = false
+  $userGetComments:Boolean = false
 ){
   
   ...ResourcesList
@@ -441,6 +473,7 @@ query Topics(
   $resourceGetComments:Boolean = false
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
+  $userGetComments:Boolean = false
 ){
   
   ...Topics
@@ -734,6 +767,10 @@ fragment User on UserType {
     middle
     big
   }
+  comments @include(if:$userGetComments)
+  {
+    ...CommentFields
+  }
 }
 
 query test(
@@ -785,8 +822,6 @@ query test(
     # }
   }
 } 
-
-
 `;
 
 export default defaultQuery;

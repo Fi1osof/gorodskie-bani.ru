@@ -136,6 +136,10 @@ const commentsArgs = Object.assign({
     type: GraphQLInt,
     description: 'ID родительского комментария',
   },
+  createdby: {
+    type: GraphQLInt,
+    description: 'ID автора комментария',
+  },
 }, listArgs);
 
 
@@ -248,6 +252,12 @@ const RootType = new GraphQLObjectType({
       description: "Список комментариев",
       args: commentsArgs,
     },
+    usersList: new listField({
+      type: UserType,
+      name: "usersList",
+      description: "Список пользователей с постраничностью",
+      args: listArgs,
+    }),
     users: {
       type: new GraphQLList(UserType),
       name: "Users",

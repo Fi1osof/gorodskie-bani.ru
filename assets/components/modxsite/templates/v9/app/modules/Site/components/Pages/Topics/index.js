@@ -20,6 +20,7 @@ export default class TopicsPage extends Page {
 
 		Object.assign(this.state, {
 			limit: 10,
+			limitPerPage: 10,
 		});
 	}
 
@@ -79,6 +80,7 @@ export default class TopicsPage extends Page {
 		const {
 			topics,
 			limit,
+			limitPerPage,
 		} = this.state;
 
 		console.log("Topic", topics);
@@ -109,6 +111,8 @@ export default class TopicsPage extends Page {
 
 		let moreButton;
 
+		const total = topics && topics.length || 0;
+
 		if(topicsList && topics && topicsList.length < topics.length){
 
 			moreButton = <div
@@ -121,13 +125,13 @@ export default class TopicsPage extends Page {
 					onClick={event => {
 
 						this.setState({
-							limit: limit + 10,
+							limit: limit + limitPerPage,
 						});
 
 					}}
 					raised
 				>
-					Показать еще
+					{topicsList.length} из {total}. Показать еще {limitPerPage + topicsList.length > topics.length ? (topics.length - topicsList.length) : limitPerPage}
 				</Button>
 
 			</div>

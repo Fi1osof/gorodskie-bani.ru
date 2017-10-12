@@ -392,6 +392,7 @@ export const getList = (source, args, context, info) => {
   const {
     resource_id,
     parent,
+    createdby,
   } = args;
 
   let state = CommentsStore.getState();
@@ -411,6 +412,13 @@ export const getList = (source, args, context, info) => {
   if(parent){
 
     state = state.filter(n => n.parent === parent);
+
+  }
+
+  // Фильтр по автору
+  if(createdby){
+
+    state = state.filter(n => n.createdby === createdby);
 
   }
 

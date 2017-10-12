@@ -104,6 +104,10 @@ export const getList = (source, args, context, info) => {
     UsersStore,
   } = context.state;
 
+  const {
+    username,
+  } = args;
+
   // console.log('getList rating', args, info);
 
   // const {
@@ -114,8 +118,13 @@ export const getList = (source, args, context, info) => {
   //   },
   // } = info;
 
-  return UsersStore.getState();
+  let state = UsersStore.getState();
 
+  if(username){
+    state = state.filter(n => n.username === username);
+  }
+
+  return state;
 };
 
 

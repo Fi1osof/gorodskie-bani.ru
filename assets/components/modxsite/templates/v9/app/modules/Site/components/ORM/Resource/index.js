@@ -15,6 +15,10 @@ import {
 //   // ModelObject,
 // } from '../';
 
+import moment from 'moment';
+
+// moment.locale('ru');
+
 import ModelObject from '../object';
 
 import {
@@ -125,6 +129,28 @@ export const ResourceType = new GraphQLObjectType({
         description: "Флаг, что документ скрывается в меню",
         resolve: (source) => {
           return parseInt(source.hidemenu) === 1 ? true : false;
+        },
+      },
+      createdon: {
+        type: GraphQLInt,
+        description: "Дата создания в секундах",
+      },
+      publishedon: {
+        type: GraphQLInt,
+        description: "Дата публикации в секундах",
+      },
+      pubdate: {
+        type: GraphQLString,
+        description: 'Дата публикации',
+        resolve: (source, args) => {
+
+          let time = source && (source.publishedon || source.createdon);
+
+          if(!time){
+            return null;
+          }
+
+          return moment(time * 1000).format('YYYY-MM-DD') || null;
         },
       },
       published: {

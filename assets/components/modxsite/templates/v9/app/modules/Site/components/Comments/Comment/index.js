@@ -53,9 +53,8 @@ export default class Comment extends Component{
 		} = item;
 
 		const {
-			
-      username: author_username,
-      fullname: author_fullname,
+      username,
+      fullname,
       imageFormats,
 		} = Author || {};
 
@@ -71,11 +70,21 @@ export default class Comment extends Component{
 			
 			<CardHeader
         avatar={
-          <UserAvatar 
-          	user={Author}
-          />
+          <Link
+          	to={`profile/${username}`}
+          	href={`profile/${username}`}
+          >
+          	<UserAvatar 
+	          	user={Author}
+	          />
+          </Link>
         }
-        title={author_fullname || author_username || undefined}
+        title={<Link
+        	to={`profile/${username}`}
+        	href={`profile/${username}`}
+        >
+        	{fullname || username || undefined}
+        </Link>}
         subheader={createdon && id && <Link
         	to={`/comments/comment-${id}.html`}
         	href={`/comments/comment-${id}.html`}

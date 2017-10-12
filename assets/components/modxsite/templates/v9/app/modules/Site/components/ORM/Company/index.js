@@ -1,3 +1,8 @@
+
+import moment from 'moment';
+
+// moment.locale('ru');
+
 import {
   GraphQLInt,
   GraphQLString,
@@ -6,6 +11,7 @@ import {
   GraphQLInputObjectType,
   GraphQLEnumType,
   GraphQLFloat,
+  GraphQLBoolean,
 } from 'graphql';
 
 // import {
@@ -224,6 +230,35 @@ export const CompanyType = new GraphQLObjectType({
       },
       parent: {
         type: GraphQLInt
+      },
+      createdon: {
+        type: GraphQLInt,
+        description: "Дата создания в секундах",
+      },
+      publishedon: {
+        type: GraphQLInt,
+        description: "Дата публикации в секундах",
+      },
+      pubdate: {
+        type: GraphQLString,
+        description: 'Дата публикации',
+        resolve: (source, args) => {
+
+          let time = source && (source.publishedon || source.createdon);
+
+          if(!time){
+            return null;
+          }
+
+          return moment(time * 1000).format('YYYY-MM-DD') || null;
+        },
+      },
+      published: {
+        type: GraphQLBoolean,
+        description: "Флаг, что компания опубликована",
+        resolve: (source) => {
+          return parseInt(source.published) === 1 ? true : false;
+        },
       },
       uri: {
         type: GraphQLString

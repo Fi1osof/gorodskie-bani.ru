@@ -59,6 +59,7 @@ export default class UserLink extends Component{
 				style={{
 					height:30,
 					width:30,
+					marginRight: 5,
 				}}
 			/> 
 

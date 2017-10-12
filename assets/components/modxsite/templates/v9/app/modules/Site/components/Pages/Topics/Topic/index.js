@@ -140,6 +140,7 @@ export default class Topic extends Component{
 			template,
 			Author,
 			comments,
+			pubdate,
 		} = item;
 
 		
@@ -249,6 +250,18 @@ export default class Topic extends Component{
 						<UserLink 
 							user={Author}
 						/> 
+						
+					</Grid>
+
+					<Grid
+						item
+					>
+
+						| <span
+							style={{
+								paddingLeft: 10,
+							}}
+						>{pubdate}</span>
 						
 					</Grid>
 

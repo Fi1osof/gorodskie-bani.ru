@@ -9,6 +9,7 @@ import {
   CompaniesPage,
   OtzivyPage,
   UsersPage,
+  CommentsPage,
   // Lesson1,
   // PageGraphiQL,
 } from "modules/Site";
@@ -91,15 +92,24 @@ let routes = {
       }]
     },
     {
-      path: "/people",
-      component: UsersPage,
+      path: "/comments/",
+      component: CommentsPage,
+      // childRoutes: [{
+      //   path: "/topics/:topicAlias",
+      //   // component: CompaniesPage,
+      // }]
     },
     {
-      path: "/profile/",
+      path: "/people",
+      component: UsersPage,
       childRoutes: [{
         path: "/profile/:username",
         // component: CompaniesPage,
+        // component: UsersPage,
       }],
+    },
+    {
+      path: "/profile/",
     },
     {
       // path: "/bani/",

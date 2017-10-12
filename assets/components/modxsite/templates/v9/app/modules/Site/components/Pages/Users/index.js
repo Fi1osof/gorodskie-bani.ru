@@ -18,6 +18,8 @@ import UserAvatar from 'modules/Site/components/fields/User/avatar';
 
 import Pagination from 'modules/Site/components/pagination';
 
+import User from './User';
+
 export default class UsersPage extends Page {
 
 
@@ -225,7 +227,14 @@ export default class UsersPage extends Page {
 	// }
 
 	
-	renderContent(){
+	renderUser(username){
+		return <User 
+			username={username}
+		/>;
+	}
+
+
+	renderUsers(){
 
 		const {
 			params,
@@ -241,6 +250,8 @@ export default class UsersPage extends Page {
 			limit,
 			total,
 		} = this.state;
+
+		let content;
 
 		let rows = [];
 
@@ -363,59 +374,39 @@ export default class UsersPage extends Page {
 
 		</div>
 
+	}
 
-		return;
+	renderContent(){
 
-		const {
-			topics,
-		} = this.state;
+		let {
+			params,
+		} = this.props;
 
-		const {
-			topicAlias,
+		let {
+			username,
 		} = params || {};
-
-		// let item;
-		// let company;
 
 		let content;
 
-		if(topicAlias){
+		if(username){
 			
-			// const item = TopicsStore.getState().find(n => n.id == topicAlias || n.alias == topicAlias);
-			const item = topics && topics.find(n => n.id == topicAlias || n.alias == topicAlias.replace(".html", ""));
-
-			if(item){
-
-				content = <Grid
-					item
-				>
-					
-					<Topic
-						item={item}
-						open={true}
-					/>
-
-				</Grid>
-
-			}
-			else{
-				content = <div
-					style={{
-						color: "red",
-					}}
-				>
-					Документ не был найден
-				</div>
-			}
+			content = this.renderUser(username);
 
 		}
 		else{
-			content = this.renderTopics();
+
+			content = this.renderUsers();
+
 		}
 
-		// console.log('CompaniesPage 2 item', item, companyId);
 
-		return <div>
+
+
+		return <div
+			style={{
+				width: "100%",
+			}}
+		>
  			
  			{content}
 

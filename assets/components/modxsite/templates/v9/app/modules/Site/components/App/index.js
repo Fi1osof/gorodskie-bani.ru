@@ -101,6 +101,7 @@ export class AppMain extends Component{
     ResourcesStore: PropTypes.object,
     TopicsStore: PropTypes.object,
     CommentsStore: PropTypes.object,
+    UsersStore: PropTypes.object,
     // CompaniesStore: PropTypes.object,
     // orm: PropTypes.object,
     schema: PropTypes.object,
@@ -125,6 +126,7 @@ export class AppMain extends Component{
       schema,
       TopicsStore,
       CommentsStore,
+      UsersStore,
       coords,
     } = this.state;
 
@@ -144,6 +146,7 @@ export class AppMain extends Component{
       ResourcesStore,
       CompaniesStore,
       RatingsStore,
+      UsersStore,
       schema,
       localQuery: this.localQuery,
       remoteQuery: this.remoteQuery,

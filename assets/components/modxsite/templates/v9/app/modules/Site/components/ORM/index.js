@@ -270,7 +270,11 @@ const RootType = new GraphQLObjectType({
       description: UserType.description,
       args: {
         id: {
-          type: new GraphQLNonNull(GraphQLInt),
+          type: GraphQLInt,
+        },
+        username: {
+          type: GraphQLString,
+          description: "Поиск по юзернейму",
         },
       },
     },

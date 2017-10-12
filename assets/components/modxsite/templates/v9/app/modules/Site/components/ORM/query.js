@@ -190,9 +190,11 @@ query Comments(
   $resourceGetComments:Boolean = false
   $commentsCreatedBy:Int
   $userGetComments:Boolean = false
+  $commentsPage:Int = 1
 ){
   commentsList(
     limit: $limit
+    page:$commentsPage
     resource_id:$commentsResourceId
     parent:$commentParent
     sort:$commentsSort
@@ -207,6 +209,7 @@ query Comments(
   }
   comments(
     limit: $limit
+    page:$commentsPage
     resource_id:$commentsResourceId
     parent:$commentParent
     sort:$commentsSort
@@ -400,6 +403,7 @@ query Users(
   $userIds:[Int]
   $withPagination:Boolean = false
   $userGetComments:Boolean = false
+  $getCommentAuthor:Boolean = false
   $usersPage:Int = 1
 ) {
   
@@ -426,13 +430,16 @@ query Users(
 }
 
 query User(
-  $userId: Int!
+  $userId: Int
   $getImageFormats:Boolean = false
   $userGetComments:Boolean = false
+  $getCommentAuthor:Boolean = false
+  $username:String
 ) {
   
   user(
     id:$userId
+    username:$username
   ){
     ...User
   }
@@ -550,6 +557,9 @@ fragment Resource on ResourceType{
   uri
   deleted
   published
+  publishedon
+  pubdate
+  createdon
   hidemenu
   short_text
   topic_tags
@@ -653,6 +663,10 @@ fragment Company on Company{
   city
   city_uri
   template
+  published
+  publishedon
+  pubdate
+  createdon
   image
   ...imageFormats @include(if:$getImageFormats)
   gallery @include(if:$getCompanyGallery)
@@ -752,6 +766,18 @@ fragment imageFormats on Company{
 }
 
 fragment User on UserType {
+  ...UserFields
+  comments @include(if:$userGetComments)
+  {
+    ...CommentFields
+    Author @include(if:$getCommentAuthor)
+    {
+      ...UserFields
+    }
+  }
+}
+
+fragment UserFields on UserType{
   id
   username
   fullname
@@ -766,10 +792,6 @@ fragment User on UserType {
     small
     middle
     big
-  }
-  comments @include(if:$userGetComments)
-  {
-    ...CommentFields
   }
 }
 
@@ -822,6 +844,8 @@ query test(
     # }
   }
 } 
+
+
 `;
 
 export default defaultQuery;

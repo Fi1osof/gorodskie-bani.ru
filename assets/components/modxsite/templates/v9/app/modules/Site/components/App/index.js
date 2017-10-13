@@ -188,6 +188,7 @@ export class AppMain extends Component{
       schema,
       // db,
       coords: {},
+      inited: typeof window === "undefined",
     }
 
     let {

@@ -10,6 +10,7 @@ import OtzivyPage from './components/Pages/Companies/Otzivy';
 import UsersPage from './components/Pages/Users';
 import CommentsPage from './components/Pages/Comments';
 import RatingsPage from './components/Pages/Ratings';
+import ContactsPage from './components/Pages/Static/Contacts';
 
 export {
   MainApp,
@@ -22,4 +23,5 @@ export {
   UsersPage,
   CommentsPage,
   RatingsPage,
+  ContactsPage,
 };

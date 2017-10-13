@@ -108,6 +108,14 @@ export default class CommentsPage extends Page {
 		} = this.context;
 
 		const {
+			params,
+		} = this.props;
+
+		const {
+			commentId,
+		} = params || {};
+
+		const {
 			page,
 		} = this.state;
 
@@ -115,6 +123,7 @@ export default class CommentsPage extends Page {
 			operationName: "Comments",
 			variables: {
 				limit: 10,
+				commentsIds: commentId && parseInt(commentId) || undefined,
 				commentsPage: page,
 				withPagination: true,
 				getCommentAuthor: true,
@@ -128,7 +137,7 @@ export default class CommentsPage extends Page {
 		})
 		.then(r => {
 
-			console.log("Resources r", r);
+			// console.log("Resources r", r);
 
 			const {
 				commentsList,
@@ -157,6 +166,10 @@ export default class CommentsPage extends Page {
 		const {
 			params,
 		} = this.props;
+
+		const {
+			commentId,
+		} = params || {};
 
 		// {
 		// 	TopicsStore,
@@ -190,19 +203,24 @@ export default class CommentsPage extends Page {
 			
 			{content}
 
-	    <div
-	    	style={{
-	    		textAlign: "center",
-	    	}}
-	    >
-	    	
-	    	<Pagination
-	      	page={parseInt(page) || 1}
-		      limit={limit}
-		      total={total}
-		    />
+	    {!commentId
+	    	?
+	    	<div
+		    	style={{
+		    		textAlign: "center",
+		    	}}
+		    >
+		    	
+		    	<Pagination
+		      	page={parseInt(page) || 1}
+			      limit={limit}
+			      total={total}
+			    />
 
-	    </div>
+		    </div>
+		    :
+		    null
+		  }
 
 		</div>
 

@@ -2,6 +2,7 @@
 const defaultQuery = `
 
 
+
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -243,8 +244,10 @@ query Comments(
   $commentsCreatedBy:Int
   $userGetComments:Boolean = false
   $commentsPage:Int = 1
+  $commentsIds:[Int]
 ){
   commentsList(
+    ids: $commentsIds
     limit: $limit
     page:$commentsPage
     resource_id:$commentsResourceId
@@ -260,6 +263,7 @@ query Comments(
     }
   }
   comments(
+    ids: $commentsIds
     limit: $limit
     page:$commentsPage
     resource_id:$commentsResourceId
@@ -447,8 +451,6 @@ query CompanyTopics(
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
-  $resourceType:ResourceTypeEnum = obzor
-  $resourceTemplate:Int
 ){
     ...Topics
 }
@@ -614,8 +616,6 @@ query Topics(
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
-  $resourceType:ResourceTypeEnum = topic
-  $resourceTemplate:Int
 ){
   
   ...Topics
@@ -632,18 +632,15 @@ query ObzoryZavedeniy(
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
-  $resourceType:ResourceTypeEnum = obzor
-  $resourceTemplate:Int = 28
 ){
   
-  ...Topics
+  ...Obzory
 }
 
 fragment Topics on RootType{
   topics:resources(
     ids:$resourceIds
-    resourceType:$resourceType
-    template:$resourceTemplate
+    resourceType:topic
     limit:$resourcesLimit
     parent:$resourceParent
     sort:[{
@@ -655,11 +652,40 @@ fragment Topics on RootType{
     ...Topic
   }
   topicsList:resourcesList(
-    ids:$resourceIds
-    resourceType:$resourceType
-    template:$resourceTemplate
+    resourceType:topic
     limit:$resourcesLimit
     parent:$resourceParent
+  ) @include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...Topic
+    }
+  }
+}
+
+fragment Obzory on RootType{
+  topics:resources(
+    ids:$resourceIds
+    resourceType:obzor
+    limit:$resourcesLimit
+    parent:$resourceParent
+    template:28
+    sort:[{
+      by:id
+      dir:desc
+    }]
+  ) @skip(if:$withPagination)
+  {
+    ...Topic
+  }
+  topicsList:resourcesList(
+    ids:$resourceIds
+    resourceType:obzor
+    limit:$resourcesLimit
+    parent:$resourceParent
+    template:28
     sort:[{
       by:id
       dir:desc

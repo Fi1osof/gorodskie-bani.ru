@@ -136,6 +136,10 @@ export const getList = (object, args, context, info) => {
     resourceType,
   } = args;
 
+
+  // console.log("Resources args", args);
+
+
   return new Promise((resolve, reject) => {
     // Эта функция будет вызвана автоматически
 
@@ -164,6 +168,7 @@ export const getList = (object, args, context, info) => {
     switch(resourceType){
 
       case 'topic':
+      case 'obzor':
 
         action = 'topics/getdata';
 

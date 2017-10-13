@@ -11,6 +11,7 @@ import {
   UsersPage,
   CommentsPage,
   RatingsPage,
+  ContactsPage,
   // Lesson1,
   // PageGraphiQL,
 } from "modules/Site";
@@ -108,10 +109,10 @@ let routes = {
     {
       path: "/comments/",
       component: CommentsPage,
-      // childRoutes: [{
-      //   path: "/topics/:topicAlias",
-      //   // component: CompaniesPage,
-      // }]
+      childRoutes: [{
+        path: "/comments/comment-:commentId.html",
+        // component: CompaniesPage,
+      }]
     },
     {
       path: "/people",
@@ -139,11 +140,11 @@ let routes = {
         path: "/ratings/:ratingType/",
       }]
     },
-    // {
-    //   path: "/topics/",
-    //   name: "TopicsPage",
-    //   component: TopicsPage
-    // },
+    {
+      path: "/contacts.html",
+      name: "Contacts",
+      component: ContactsPage,
+    },
     // {
     //   path: "/react-lessons/lesson1",
     //   name: "Lesson1",

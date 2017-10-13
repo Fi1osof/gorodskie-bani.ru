@@ -302,7 +302,8 @@ export default class MainMenu extends Component{
 	              </ul>
               </li>
               <li className="last"><a href="contacts.html" title="Контакты">Контакты</a></li>
-              <li className="dropdown">
+              
+              {/*<li className="dropdown">
                   <a id="office" href="#" data-toggle="dropdown" className="dropdown-toggle"><i className="glyphicon glyphicon-user"></i><span className="caret"></span></a>
                   <ul aria-labelledby="office" className="dropdown-menu">
                       <li><a href="profile/">Профиль</a></li>
@@ -310,7 +311,7 @@ export default class MainMenu extends Component{
                       <li className="divider"></li>
                       <li><a href="bani-otzivy/?service=logout"><i className="glyphicon glyphicon-log-out"></i> Выйти</a></li>
                   </ul>
-              </li>
+              </li>*/}
 
           </ul>
         </div>

@@ -17,6 +17,12 @@ import configureStore from "./store";
 const initialState = {};
 const store = configureStore(initialState);
 
+
+browserHistory.listen(function (location) {
+  typeof window !== "undefined" && window.ga('send', 'pageview', location.pathname);
+});
+
+
 const render = () => {
   ReactDOM.render(
     <Provider store={store}>

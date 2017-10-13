@@ -19,6 +19,8 @@ class modWebSocietyUsersGetdataProcessor extends modWebGetdataProcessor{
             "dir"   => "ASC",
             "showinactive"  => false,
             "showblocked"   => false,
+            "cache"             => true,
+            'cache_prefix'      => $this->modx->context->key . "/" . get_class($this) . '/getdata/' . $this->modx->user->id. "/", 
         ));
         
         return parent::initialize();

@@ -9,10 +9,16 @@ class modWebGetdataProcessor extends modSiteWebGetdataProcessor{
         $this->setDefaultProperties(array(
     		"format" => "json",
     		"count"	=> 0,
+            "cache"             => true,
+            'cache_prefix'      => $this->modx->context->key . "/" . get_class($this) . '/getdata/' . $this->modx->user->id. "/",  
         ));
         
+    	
+    	// $this->modx->log(1, print_r($this->properties, 1), "FILE");
+
         return parent::initialize();
     }
+        
 }
 
 return 'modWebGetdataProcessor';

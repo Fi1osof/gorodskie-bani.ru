@@ -71,6 +71,8 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
             "with_coors_only"   => false,       // Только с координатами
             "approved_only"     => false,       // Только одобренные
             "summary"   => true,
+            "cache"             => true,
+            'cache_prefix'      => $this->modx->context->key . "/" . get_class($this) . '/getdata/' . $this->modx->user->id. "/",  
         ));
         
         
@@ -217,16 +219,16 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         return $c;
     }
 
-    protected function prepareResponse($response){
+    // protected function prepareResponse($response){
         
-        $response = parent::prepareResponse($response);
+    //     $response = parent::prepareResponse($response);
         
-        if($this->getProperty("format") == "json"){
-            $response = json_encode($response);
-        }
+    //     if($this->getProperty("format") == "json"){
+    //         $response = json_encode($response);
+    //     }
 
-        return $response;
-    }
+    //     return $response;
+    // }
 
     public function afterIteration(array $list){
 

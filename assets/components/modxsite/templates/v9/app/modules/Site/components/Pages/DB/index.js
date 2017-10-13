@@ -13,6 +13,8 @@ import Switch from 'material-ui/Switch';
 
 // import ORM from '../../ORM';
 
+import defaultQuery from '../../ORM/query';
+
 import {
   buildSchema,
   graphql,
@@ -482,9 +484,7 @@ export default class PageGraphiQL extends Component{
 
       <GraphiQL
         schema={schema}
-        defaultQuery="query{
-          
-        }"
+        defaultQuery={defaultQuery}
         fetcher={::this._graphQLFetcher}
         // fetcher={::this.graphQLFetcherLocal}
       />  

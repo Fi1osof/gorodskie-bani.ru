@@ -64,7 +64,7 @@
     "locale": "^0.1.0",
     "lodash": "^4.17.4",
     "material-ui": "1.0.0-alpha.16",
-    "material-ui-components": "^1.14.10",
+    "material-ui-components": "^1.14.11",
     "material-ui-icons": "^1.0.0-alpha.3",
     "minimist": "1.2.0",
     "moment": "^2.18.1",

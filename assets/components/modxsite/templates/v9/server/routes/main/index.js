@@ -8,6 +8,9 @@ import ReactDom from 'react-dom/server';
 import { match, RouterContext } from 'react-router';
 import { Provider } from "react-redux";
 
+const fs = require('fs');
+// var path = require('path');
+
 import configureStore from '../../../app/store';
 import routes from "../../../app/routes";
 
@@ -42,7 +45,9 @@ let styles = {};
 
 module.exports = function (options) {
 
-
+  const {
+    // webpack,
+  } = options || {};
 
   // var options = options || {};
 
@@ -52,7 +57,6 @@ module.exports = function (options) {
   // var querystring = require('querystring');
 
   // var mime = require('mime-types');
-  // var path = require('path');
 
   // var http = require('http');
 
@@ -594,14 +598,40 @@ module.exports = function (options) {
 
     let assetsUrl;
 
+    let js_src;
+
+    let basePath;
+
     if(process.env.NODE_ENV === 'production'){
       assetsUrl = "/assets/components/modxsite/templates/v9/build/";
+
+      basePath = process.cwd() + "/build/";
+
+      // console.log('assetsUrl', assetsUrl);
+      // console.log('__dirname', __dirname);
+
+      var htmlFileName = "index.html";
+      // var html = fs.readFileSync(Path.join(assetsUrl, htmlFileName), "utf8");
+      var html = fs.readFileSync( `${basePath}${htmlFileName}`, "utf8");
+
+      let match = html.match(/<script .*?src="(.*?)"/);
+
+      if(match){
+        js_src = match[1];
+      }
+
+      // console.log(match);
+
     }
     else{
       assetsUrl = "/build/";
+
+      js_src = `${assetsUrl}main.js`;
     }
 
-    // console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+    // console.log('process.env.NODE_ENV CWD', process.cwd());
+    // console.log('process.env.NODE_ENV', process);
+    // console.log('process.env.NODE_ENV webpack', webpack);
 
     return `
       <!DOCTYPE html>
@@ -658,8 +688,10 @@ module.exports = function (options) {
         </head>
         <body>
           <div id="root">${componentHTML}</div>
-          <script type="application/javascript" src="${assetsUrl}main.js"></script>
         </body>
+        
+        <script type="application/javascript" src="${js_src}"></script>
+
       </html>
     `;
   }

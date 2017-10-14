@@ -19,7 +19,7 @@ const store = configureStore(initialState);
 
 
 browserHistory.listen(function (location) {
-  typeof window !== "undefined" && window.ga('send', 'pageview', location.pathname);
+  typeof window !== "undefined" && window.ga && window.ga('send', 'pageview', location.pathname);
 });
 
 

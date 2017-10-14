@@ -38,6 +38,7 @@ const addDevMiddlewares = (app, webpackConfig) => {
   
   app.use(router({
     app: app,
+    // webpack: compiler,
   }));
 };
 
@@ -52,11 +53,16 @@ const addProdMiddlewares = (app, options) => {
   app.use(compression());
   // app.use(publicPath, express.static(outputPath));
 
+  // console.log("app", app);
+  // console.log("options", options);
+
   // app.get('*', (req, res) => res.sendFile(path.resolve(outputPath, 'index.html')));
 
   app.use(router({
     app: app,
+    // webpack: compiler,
   }));
+  
 };
 
 /**

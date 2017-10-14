@@ -322,6 +322,10 @@ const RootType = new GraphQLObjectType({
           type: GraphQLString,
           description: "Поиск по юзернейму",
         },
+        ownProfile: {
+          type: GraphQLBoolean,
+          description: "Получить текущего пользователя",
+        },
       },
     },
     // // ratings: {

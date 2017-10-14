@@ -27,6 +27,8 @@ import Informer from 'structor-templates/components/Informer';
 
 import MainMenu from './MainMenu';
 
+import Auth from '../Auth';
+
 // import ORM from '../ORM';
 
 import RootType, {
@@ -90,6 +92,8 @@ export class AppMain extends Component{
     request: PropTypes.func,
     apiRequest: PropTypes.func,
     openCompanyPage: PropTypes.func,
+    user: PropTypes.object,
+    userActions: PropTypes.object,
     // prepareCompaniesLocalData: PropTypes.func,
     // loadCompanyFullData: PropTypes.func,
     updateItem: PropTypes.func,
@@ -117,6 +121,8 @@ export class AppMain extends Component{
   getChildContext() {
 
     let {
+      user,
+      userActions,
     } = this.props;
 
     let {
@@ -141,6 +147,8 @@ export class AppMain extends Component{
       saveContactItem: this.saveContactItem,
       setPageTitle: this.setPageTitle,
       getCounters: this.getCounters,
+      user,
+      userActions,
       TopicsStore,
       CommentsStore,
       ResourcesStore,
@@ -1160,12 +1168,17 @@ export class AppMain extends Component{
       if(data.success && data.object){
         let {
           companies,
+          user,
           users,
           ratings,
           comments,
           resources,
           topics,
         } = data.object || {};
+
+        if(user){
+          this.props.userActions.GetOwnDataSuccess(user);
+        }
 
         // let companies = object && object.map(n => new Company(n)) || [];
         companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
@@ -1687,6 +1700,8 @@ export class AppMain extends Component{
       inited,
       notifications_store,
     } = this.state;
+ 
+    let authOpen = user && user.loginModalOpened || false;
 
     return <MuiThemeProvider theme={customStyles}>
       <div
@@ -1701,9 +1716,14 @@ export class AppMain extends Component{
           {inited && children || null}
         </div>
 
-      <Informer
-        store={notifications_store}
-      />  
+
+        <Auth 
+          open={authOpen}
+        />
+
+        <Informer
+          store={notifications_store}
+        />  
 
       </div>
     </MuiThemeProvider>

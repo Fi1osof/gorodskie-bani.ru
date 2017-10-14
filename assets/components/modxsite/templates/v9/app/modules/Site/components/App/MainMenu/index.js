@@ -4,9 +4,16 @@ import PropTypes from 'prop-types';
 
 import { Link } from 'react-router';
 
+import Grid from 'material-ui/Grid';
+import LoginIcon from 'material-ui-icons/PermIdentity';
+
+import WsProxy from 'modules/Site/components/WsProxy';
+
 export default class MainMenu extends Component{
 
   static contextTypes = {
+    user: PropTypes.object.isRequired,
+    userActions: PropTypes.object.isRequired,
     coords: PropTypes.object.isRequired,
     CompaniesStore: PropTypes.object.isRequired,
     TopicsStore: PropTypes.object.isRequired,
@@ -105,7 +112,15 @@ export default class MainMenu extends Component{
 
     const {
       coords,
+      user: {
+        user,
+      },
+      userActions,
     } = this.context;
+
+    const {
+      username,
+    } = user || {};
 
 		let {
       ratings,
@@ -330,17 +345,63 @@ export default class MainMenu extends Component{
                 </Link>
               </li>
               
-              {/*<li className="dropdown">
+              {user
+                ?
+                <li className="dropdown">
                   <a id="office" href="#" data-toggle="dropdown" className="dropdown-toggle"><i className="glyphicon glyphicon-user"></i><span className="caret"></span></a>
                   <ul aria-labelledby="office" className="dropdown-menu">
-                      <li><a href="profile/">Профиль</a></li>
-                      <li><a href="add-topic.html">Написать</a></li>
-                      <li className="divider"></li>
-                      <li><a href="bani-otzivy/?service=logout"><i className="glyphicon glyphicon-log-out"></i> Выйти</a></li>
+                    <li><a href={`/profile/${username}`}>Профиль</a></li>
+                    
+                    {/*<li><a href="add-topic.html">Написать</a></li>*/}
+                    
+                    <li className="divider"></li>
+                    <li>
+                      <a 
+                        href="javascript:;"
+                        onClick={e => {
+                          userActions.logout();
+                        }}
+                      >
+                        <i className="glyphicon glyphicon-log-out"></i> Выйти
+                      </a>
+                    </li>
                   </ul>
-              </li>*/}
+                </li>
+                :
+                <li>
+                  <a 
+                    href="javascript:;" 
+                    rel="nofollow"
+                    onClick={event => {
+                      userActions.loginClicked();
+                    }}
+                  >
+                    <Grid 
+                      container
+                      gutter={0}
+                      align="center"
+                    >
+                      <LoginIcon 
+                        style={{
+                          height: 16,
+                          width: 16,
+                        }}
+                      />  Войти
+                    </Grid>
+                  </a>
+
+
+                </li>
+                
+              }
+
+                
 
           </ul>
+
+          <WsProxy
+          />
+          
         </div>
 
       </div>

@@ -417,15 +417,27 @@ module.exports = function (options) {
       }
 
 
-      const componentHTML = ReactDom.renderToString(
-        <Provider store={store}>
-          <RouterContext {...renderProps} />
-        </Provider>
-      );
 
-      const state = store.getState();
+      let html;
 
-      return res.end(renderHTML(componentHTML, state));
+      try{
+        
+        const componentHTML = ReactDom.renderToString(
+          <Provider store={store}>
+            <RouterContext {...renderProps} />
+          </Provider>
+        );
+
+        const state = store.getState();
+
+        html = renderHTML(componentHTML, state);
+      }
+      catch(e){
+        console.error(e);
+        return res.status(500).send(e.message);
+      };
+
+      return res.end(html);
     });
 
     return;

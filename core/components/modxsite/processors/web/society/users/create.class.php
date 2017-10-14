@@ -23,7 +23,7 @@ class modWebSocietyUsersCreateProcessor extends modUserCreateProcessor{
         ));
         
         $this->setProperties(array(
-            "use_captcha"           => true,
+            "use_captcha"           => false,
             'active'                => true,
             "auto_auth"             => true,   // Автоматическая авторизация пользователя
             "groups"                => array(

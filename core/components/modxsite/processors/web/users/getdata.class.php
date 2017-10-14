@@ -17,7 +17,14 @@ class modWebUsersGetdataProcessor extends modSiteWebUsersGetdataProcessor{
             "format" => "json",
             "showinactive" => $this->modx->hasPermission("view_inactive_users"),
             "showblocked" => $this->modx->hasPermission("view_blocked_users"),
+            "ownProfile"   => false,
+            "cache"             => true,
+            'cache_prefix'      => $this->modx->context->key . "/" . get_class($this) . '/getdata/' . $this->modx->user->id. "/", 
         ));
+
+        if($this->getProperty("ownProfile")){
+            $this->setProperty("cache", false);
+        }
         
         return parent::initialize();
     }
@@ -40,6 +47,14 @@ class modWebUsersGetdataProcessor extends modSiteWebUsersGetdataProcessor{
             $where["{$alias}.id:in"] = $ids;
 
         }
+
+        
+        if($this->getProperty("ownProfile")){
+
+            $where['id'] = $this->modx->user->id;
+
+        }
+
 
         if($where){
             $c->where($where);

@@ -2,6 +2,15 @@
 
 class modWebSocietyUsersLoginProcessor extends modProcessor{
      
+    
+    public function initialize(){
+        
+        $this->setDefaultProperties(array(
+            "username"  => $this->getProperty("login"),
+        ));
+        
+        return parent::initialize();
+    }
      
     public function process(){
         

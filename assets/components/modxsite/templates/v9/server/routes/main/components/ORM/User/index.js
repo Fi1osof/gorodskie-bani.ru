@@ -26,6 +26,7 @@ export const getList = (object, args, context, info) => {
       offset: start,
       count,
       search,
+      ownProfile,
     } = args || {};
 
     limit = limit || 0;
@@ -39,6 +40,7 @@ export const getList = (object, args, context, info) => {
       start,
       count: count === undefined ? 0 : count,
       search,
+      ownProfile,
     };
 
     let request = SendMODXRequest(action, params);
@@ -63,12 +65,14 @@ export const getList = (object, args, context, info) => {
             active,
             blocked,
             sudo,
+            delegate,
           } = user;
 
           Object.assign(user, {
             active: active === '1' ? true : false,
             blocked: blocked === '1' ? true : false,
             sudo: sudo === '1' ? true : false,
+            delegate: delegate === '1' ? true : false,
           });
 
         });

@@ -115,9 +115,26 @@ class modWebPublicActionProcessor extends modProcessor{
                     self::$actualClassName = "modWebSocietyUsersLoginProcessor";
                     break;
 
+                case 'logout':
+                    require_once dirname(dirname(__FILE__)) . '/users/logout.class.php';
+                    self::$actualClassName = "modWebUsersLogoutProcessor";
+                    break;
+
                 case 'users/getdata':
                     require __DIR__ . '/../users/getdata.class.php';
                     self::$actualClassName = 'modWebUsersGetdataProcessor';
+                    break;
+
+
+                case 'users/find_user':
+                    require dirname(dirname(__FILE__)) . '/users/find_user.class.php';
+                    self::$actualClassName = 'modWebUsersFinduserProcessor';
+                    break;
+
+
+                case 'users/get_own_data':
+                    require dirname(dirname(__FILE__)) . '/users/own_profile/getdata.class.php';
+                    self::$actualClassName = 'modWebUsersOwnprofileGetdataProcessor';
                     break;
                     
                 

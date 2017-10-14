@@ -2,7 +2,6 @@
 const defaultQuery = `
 
 
-
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -45,6 +44,13 @@ query apiData(
   users(limit:$limit) {
     ...User
   }
+  
+  user(
+    ownProfile: true
+  ){
+    ...User
+  }
+  
   comments(limit:$limit) {
     ...Comment
   }
@@ -498,6 +504,19 @@ query User(
   user(
     id:$userId
     username:$username
+  ){
+    ...User
+  }
+}
+
+query CurrentUser(
+  $getImageFormats:Boolean = false
+  $userGetComments:Boolean = false
+  $getCommentAuthor:Boolean = false
+) {
+  
+  user(
+    ownProfile: true
   ){
     ...User
   }
@@ -987,6 +1006,7 @@ fragment UserFields on UserType{
   active
   sudo
   blocked
+  delegate
   image
   imageFormats @include(if:$getImageFormats)
   {

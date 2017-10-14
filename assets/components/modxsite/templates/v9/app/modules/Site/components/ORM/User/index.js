@@ -171,6 +171,10 @@ export const UserType = new GraphQLObjectType({
       sudo: {
         type: GraphQLBoolean,
       },
+      delegate: {
+        type: GraphQLBoolean,
+        description: "Флаг того, что пользователь - представитель компании.",
+      },
       comments: {
         type: new GraphQLList(CommentType),
         description: CommentType.description,

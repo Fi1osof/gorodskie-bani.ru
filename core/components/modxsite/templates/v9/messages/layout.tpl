@@ -27,6 +27,6 @@
 {block name=footer}
     <hr />
     С уважением, <br />
-    администрация сайта <a href="{$site_url}">MODX-Клуба</a>.<br />
+    администрация сайта <a href="{$site_url}">{$site_name}</a>.<br />
     
 {/block}

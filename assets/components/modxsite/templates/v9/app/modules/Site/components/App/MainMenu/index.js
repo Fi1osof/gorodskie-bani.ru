@@ -350,7 +350,13 @@ export default class MainMenu extends Component{
                 <li className="dropdown">
                   <a id="office" href="#" data-toggle="dropdown" className="dropdown-toggle"><i className="glyphicon glyphicon-user"></i><span className="caret"></span></a>
                   <ul aria-labelledby="office" className="dropdown-menu">
-                    <li><a href={`/profile/${username}`}>Профиль</a></li>
+                    <li>
+                      <Link 
+                        to={`/profile/${username}`}
+                        href={`/profile/${username}`}
+                      >Профиль
+                      </Link>
+                    </li>
                     
                     {/*<li><a href="add-topic.html">Написать</a></li>*/}
                     

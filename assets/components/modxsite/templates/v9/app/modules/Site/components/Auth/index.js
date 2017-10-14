@@ -7,9 +7,12 @@ import {bindActionCreators} from 'redux';
 import * as userActions from 'modules/Redux/actions/userActions';
 import * as documentActions from 'modules/Redux/actions/documentActions';
 
-import Prototype from 'material-ui-components/src/Auth';
+// import Prototype from 'material-ui-components/src/Auth';
+import Prototype from './Prototype';
 
 import Avatar from 'modules/Site/components/fields/User/avatar.js';
+
+
 
 
 class AuthPrototype extends Prototype{

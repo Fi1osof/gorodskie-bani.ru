@@ -16,6 +16,46 @@ class modWebSocietyUsersCreateProcessor extends modUserCreateProcessor{
     
     public function initialize(){
         
+
+        foreach($this->properties as $name => & $value){
+
+            if(is_scalar($value)){
+
+                switch((string)$value){
+
+                    case 'true':
+
+                        $value = true;
+
+                        break;
+
+                    case 'false':
+
+                        $value = false;
+
+                        break;
+
+                    case '0':
+
+                        $value = 0;
+
+                        break;
+
+                    case 'null':
+
+                        $value = null;
+
+                        break;
+
+                    case 'undefined':
+
+                        unset($this->properties[$name]);
+
+                        break;
+                }
+            }
+
+        }
         
         $this->setDefaultProperties(array(
             "passwordnotifymethod"  => "this",
@@ -110,6 +150,10 @@ class modWebSocietyUsersCreateProcessor extends modUserCreateProcessor{
          
         $user =& $this->object;
         
+        if(!isset($user->delegate)){
+            $this->addFieldError("delegate", "Укажите являетесь ли вы представителем компании");
+        }
+
         $user->SocietyProfile = $this->modx->newObject('SocietyUserProfile', array(
             "createdon" => time(),
         ));

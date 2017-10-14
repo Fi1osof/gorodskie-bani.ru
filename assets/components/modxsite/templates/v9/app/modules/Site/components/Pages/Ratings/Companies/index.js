@@ -110,6 +110,7 @@ export default class RatingCompanies extends Component{
 
 		return companies && companies.length ? <Grid
 			container
+      gutter={0}
 		>
 			{companies}
 		</Grid> : null;

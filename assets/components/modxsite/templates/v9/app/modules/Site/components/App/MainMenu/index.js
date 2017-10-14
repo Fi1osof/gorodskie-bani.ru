@@ -94,6 +94,12 @@ export default class MainMenu extends Component{
 
   }
 
+  closeMenu(){
+
+    $('#navbar-main').removeClass("in");
+
+  }
+
 
 	render(){
 
@@ -155,9 +161,10 @@ export default class MainMenu extends Component{
           to={link}
           href={link}
           onClick={event => {
-            this.setState({
-              citiesOpened: false,
-            });
+            // this.setState({
+            //   citiesOpened: false,
+            // });
+            this.closeMenu();
           }}
         >
           {name}
@@ -193,9 +200,10 @@ export default class MainMenu extends Component{
           to={link}
           href={link}
           onClick={event => {
-            this.setState({
-              ratingsOpened: false,
-            });
+            // this.setState({
+            //   ratingsOpened: false,
+            // });
+            this.closeMenu();
           }}
         >
           {name}
@@ -205,7 +213,8 @@ export default class MainMenu extends Component{
     });
 
 		return <div 
-      className="navbar navbar-default"
+      // className="navbar navbar-default"
+      className="navbar navbar-default navbar-fixed-top"
       style={{
         marginBottom: 0,
       }}
@@ -236,6 +245,9 @@ export default class MainMenu extends Component{
                   to="bani-otzivy/" 
                   href="bani-otzivy/" 
                   title="Обзоры и отзывы"
+                  onClick={event => {
+                    this.closeMenu();
+                  }}
                 >
                   Обзоры и отзывы 
                 </Link>
@@ -245,6 +257,9 @@ export default class MainMenu extends Component{
                   to="topics/" 
                   href="topics/" 
                   title="Новости"
+                  onClick={event => {
+                    this.closeMenu();
+                  }}
                 >
                   Новости
                 </Link>
@@ -254,9 +269,10 @@ export default class MainMenu extends Component{
               	href="javascript:;" 
               	title="Рейтинги заведений" 
               	className="dropdown-toggle"
-              	onClick={event => this.setState({
-              		ratingsOpened: !ratingsOpened,
-              	})}
+                data-toggle="dropdown"
+              	// onClick={event => this.setState({
+              	// 	ratingsOpened: !ratingsOpened,
+              	// })}
               >Рейтинги заведений <i className="fa fa-angle-down"></i></a>
               <ul 
               	className="dropdown-menu"
@@ -286,9 +302,9 @@ export default class MainMenu extends Component{
               		title="Города" 
               		className="dropdown-toggle" 
               		data-toggle="dropdown"
-	              	onClick={event => this.setState({
-	              		citiesOpened: !citiesOpened,
-	              	})}
+	              	// onClick={event => this.setState({
+	              	// 	citiesOpened: !citiesOpened,
+	              	// })}
               	>Города <i className="fa fa-angle-down"></i></a>
 	              <ul 
 	              	className="dropdown-menu"
@@ -301,7 +317,18 @@ export default class MainMenu extends Component{
 
 	              </ul>
               </li>
-              <li className="last"><a href="contacts.html" title="Контакты">Контакты</a></li>
+              <li className="last">
+                <Link 
+                  to="contacts.html" 
+                  href="contacts.html" 
+                  title="Контакты"
+                  onClick={event => {
+                    this.closeMenu();
+                  }}
+                >
+                  Контакты
+                </Link>
+              </li>
               
               {/*<li className="dropdown">
                   <a id="office" href="#" data-toggle="dropdown" className="dropdown-toggle"><i className="glyphicon glyphicon-user"></i><span className="caret"></span></a>

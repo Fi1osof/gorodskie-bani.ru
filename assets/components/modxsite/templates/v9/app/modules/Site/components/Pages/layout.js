@@ -119,6 +119,7 @@ export default class Page extends Component{
 
 		return <Grid
 			container
+      gutter={0}
 			style={{
 				maxWidth: 1260,
 				margin: "0 auto",

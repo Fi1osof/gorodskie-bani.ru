@@ -240,6 +240,7 @@ export default class Topic extends Component{
 
 				<Grid
 					container
+      		gutter={0}
 					align="center"
 				>
 

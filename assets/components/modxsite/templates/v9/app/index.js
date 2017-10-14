@@ -17,6 +17,23 @@ import configureStore from "./store";
 const initialState = {};
 const store = configureStore(initialState);
 
+// alert("sdfsdf");
+
+// import jQuery from 'jquery';
+
+// // global.jQuery = jQuery;
+// // global.$ = jQuery;
+
+// // console.log('jQuery', jQuery);
+
+
+// if(typeof window !== "undefined"){
+//   window.jQuery = jQuery;
+// }
+
+
+// const bootstrap = require('bootstrap')(jQuery);
+import 'bootstrap/dist/js/bootstrap';
 
 browserHistory.listen(function (location) {
   typeof window !== "undefined" && window.ga && window.ga('send', 'pageview', location.pathname);

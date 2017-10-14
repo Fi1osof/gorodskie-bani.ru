@@ -408,6 +408,7 @@ export default class CompanyPage extends Component{
 				>
 					<Grid
 						container
+      			gutter={0}
 					>
 
 						{image
@@ -586,6 +587,7 @@ export default class CompanyPage extends Component{
 
 						<Grid
 							container
+      				gutter={0}
 						>
 
 							{galleryItems}

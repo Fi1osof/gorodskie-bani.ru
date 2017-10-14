@@ -145,6 +145,7 @@ export default class UserPage extends Component {
 			
 			<Grid
 				container
+      	gutter={0}
 				style={{
 					margin: "30px 0",
 				}}

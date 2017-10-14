@@ -273,6 +273,7 @@ export default class UsersPage extends Page {
 
 					<Grid
 						container
+      			gutter={0}
 						align="center"
 					>
 						

@@ -232,6 +232,7 @@ export default class RatingsPage extends Page {
 
 					<Grid
 						container
+      			gutter={0}
 					>
 						
 						{ratingTypesItems}
@@ -252,6 +253,7 @@ export default class RatingsPage extends Page {
 
 		return <Grid
 			container
+      gutter={0}
 		>
 			<Grid
 				item

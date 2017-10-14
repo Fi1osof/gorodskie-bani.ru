@@ -80,6 +80,15 @@ module.exports = (options) => ({
 		new webpack.ProvidePlugin({
 			// make fetch available
 			fetch: 'exports-loader?self.fetch!whatwg-fetch',
+      // $: "jquery/jquery",
+      // jQuery: "jquery/jquery",
+      // jquery: "jquery/jquery",
+      // $: "exports-loader?self.jquery!jquery",
+      $: "jquery",
+      // jquery: "exports-loader?self.jquery!jquery",
+      // jQuery: "exports-loader?self.jquery!jquery",
+      jQuery: "jquery",
+      jquery: "jquery",
 		}),
 
 		// Always expose NODE_ENV to webpack, in order to use `process.env.NODE_ENV`

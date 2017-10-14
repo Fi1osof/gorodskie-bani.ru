@@ -215,9 +215,10 @@ export class AppMain extends Component{
 
     return <Grid
       container
+      gutter={0}
       align="center"
       style={{
-        paddingLeft: 15,
+        // paddingLeft: 15,
       }}
     >
 

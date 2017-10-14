@@ -82,7 +82,7 @@ export default class TopicsPage extends Page {
 			limitPerPage,
 		} = this.state;
 
-		console.log("Topic", topics);
+		// console.log("Topic", topics);
 
 		let topicsList = [];
 
@@ -137,7 +137,11 @@ export default class TopicsPage extends Page {
 
 		}
 
-		return <div>
+		return <div
+			style={{
+				width: "100%",
+			}}
+		>
 			{topicsList}
 
 			{moreButton}
@@ -205,7 +209,11 @@ export default class TopicsPage extends Page {
 
 		// console.log('CompaniesPage 2 item', item, companyId);
 
-		return <div>
+		return <div
+			style={{
+				width: "100%",
+			}}
+		>
  			
  			{content}
 

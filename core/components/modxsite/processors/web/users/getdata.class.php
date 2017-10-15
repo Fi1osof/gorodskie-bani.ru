@@ -94,12 +94,26 @@ class modWebUsersGetdataProcessor extends modSiteWebUsersGetdataProcessor{
         $list = parent::afterIteration($list);
         
         $avatars_url = $this->getSourcePath(15);
-         
+        
+        $canViewAllData = $this->modx->hasPermission("canViewAllData");
+
         foreach($list as & $l){
             if(empty($l['image'])){
                 $l['image'] = "anonymous.jpg";
             }
             $l['image'] = trim($avatars_url . $l['image'], '/');
+
+            if(!$canViewAllData){
+
+                unset($l['offer']);
+                unset($l['delegate']);
+                unset($l['createdby']);
+                unset($l['offer_date']);
+                unset($l['offer_date']);
+                unset($l['contract_date']);
+
+            }
+
         }
         
         return $list;

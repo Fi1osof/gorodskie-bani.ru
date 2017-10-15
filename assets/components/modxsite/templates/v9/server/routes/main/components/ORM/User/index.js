@@ -27,6 +27,7 @@ export const getList = (object, args, context, info) => {
       count,
       search,
       ownProfile,
+      delegatesOnly,
     } = args || {};
 
     limit = limit || 0;
@@ -41,6 +42,7 @@ export const getList = (object, args, context, info) => {
       count: count === undefined ? 0 : count,
       search,
       ownProfile,
+      delegatesOnly,
     };
 
     let request = SendMODXRequest(action, params);

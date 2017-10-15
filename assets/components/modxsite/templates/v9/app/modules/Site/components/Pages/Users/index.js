@@ -28,6 +28,7 @@ import UserAvatar from 'modules/Site/components/fields/User/avatar';
 import Pagination from 'modules/Site/components/pagination';
 
 import User from './User';
+import Compred from './Compred';
 
 export default class UsersPage extends Page {
 
@@ -41,6 +42,7 @@ export default class UsersPage extends Page {
 			total: 0,
 			users: [],
 			delegatesOnly: false,
+			compredOpen: true,
 		});
 	}
 
@@ -361,6 +363,7 @@ export default class UsersPage extends Page {
 			limit,
 			total,
 			delegatesOnly,
+			compredOpen,
 		} = this.state;
 
 		let content;
@@ -565,6 +568,24 @@ export default class UsersPage extends Page {
 							checked={delegatesOnly}
 							onChange={this.onDelegatedChange}
 						/>	Только представители
+
+						<Button 
+							onClick={event => {
+								this.setState({
+									compredOpen: true,
+								});
+							}}
+						>
+							Отправить компред
+						</Button>
+
+						{compredOpen 
+							?
+							<Compred 
+							/>
+							:
+							null
+						}
 
 					</Paper>
 				:

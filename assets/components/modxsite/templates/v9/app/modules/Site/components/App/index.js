@@ -91,6 +91,7 @@ export class AppMain extends Component{
   static childContextTypes = {
     request: PropTypes.func,
     apiRequest: PropTypes.func,
+    loadApiData: PropTypes.func,
     openCompanyPage: PropTypes.func,
     user: PropTypes.object,
     userActions: PropTypes.object,
@@ -142,6 +143,7 @@ export class AppMain extends Component{
     let context = {
       request: this.request,
       apiRequest: this.apiRequest,
+      loadApiData: this.loadApiData,
       openCompanyPage: this.openCompanyPage,
       // prepareCompaniesLocalData: this.prepareCompaniesLocalData,
       // loadCompanyFullData: this.loadCompanyFullData,
@@ -1148,7 +1150,7 @@ export class AppMain extends Component{
   }
 
 
-  async loadApiData(){
+  loadApiData = async () => {
 
     await this.remoteQuery({
       operationName: "apiData",

@@ -42,7 +42,7 @@ export default class UsersPage extends Page {
 			total: 0,
 			users: [],
 			delegatesOnly: false,
-			compredOpen: true,
+			compredOpen: false,
 		});
 	}
 

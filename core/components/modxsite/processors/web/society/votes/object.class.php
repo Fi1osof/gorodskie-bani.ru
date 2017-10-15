@@ -272,9 +272,12 @@ class modWebSocietyVotesObjectProcessor extends modXObjectProcessor{
         $this->object->set('neutral_votes', $thread->neutral_votes);
         $this->object->set('rating', $thread->rating);
         
-        $this->modx->cacheManager->refresh(array(
-            'default' => array(),
-        ));
+        // $this->modx->cacheManager->refresh(array(
+        //     'default' => array(),
+        // ));
+
+        $this->modx->cacheManager->refresh();
+        $this->modx->cacheManager->clearCache();
         
         return parent::cleanup();
     }

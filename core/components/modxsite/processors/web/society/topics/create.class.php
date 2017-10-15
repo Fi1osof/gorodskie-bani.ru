@@ -203,6 +203,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
         $topic->save();
         
         $this->modx->cacheManager->refresh();
+        $this->modx->cacheManager->clearCache();
         
         /*
             Рассылаем уведомления

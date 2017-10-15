@@ -124,6 +124,7 @@ class modWebCompaniesCreateProcessor extends modObjectCreateProcessor{
         $resource->save();
         
         $this->modx->cacheManager->refresh();
+        $this->modx->cacheManager->clearCache();
         
         return parent::afterSave();
     }

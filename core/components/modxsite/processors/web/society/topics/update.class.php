@@ -168,6 +168,7 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
         
         
         $this->modx->cacheManager->refresh();
+        $this->modx->cacheManager->clearCache();
         
         return parent::afterSave();
     }

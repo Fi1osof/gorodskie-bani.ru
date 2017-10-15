@@ -25,6 +25,8 @@ export default class Compred extends Component{
 
 		this.state = {
 			username: "",
+			fullname: "",
+			email: "",
 			errors: {},
 			inRequest: false,
 		};
@@ -50,6 +52,7 @@ export default class Compred extends Component{
 
 		const {
 			username,
+			fullname,
 			email,
 		} = this.state;
 
@@ -63,6 +66,7 @@ export default class Compred extends Component{
 
 		request("registration", false, 'registration', {
 			username,
+			fullname,
 			email,
 			isOffer: true,
 		}, {
@@ -94,6 +98,7 @@ export default class Compred extends Component{
 
 					Object.assign(newState, {
 						username: "",
+						fullname: "",
 						email: "",
 					});
 
@@ -116,6 +121,7 @@ export default class Compred extends Component{
 
 		const {
 			username,
+			fullname,
 			email,
 			errors,
 			inRequest,
@@ -135,9 +141,18 @@ export default class Compred extends Component{
 					name="username"
 					value={username}
 					onChange={this.onChange}
-					label="Имя пользователя"
+					label="Логин пользователя"
 					error={errors && errors.username ? true : false}
 					helperText={errors && errors.username || ""}
+				/>
+
+				<TextField
+					name="fullname"
+					value={fullname}
+					onChange={this.onChange}
+					label="ФИО пользователя"
+					error={errors && errors.fullname ? true : false}
+					helperText={errors && errors.fullname || ""}
 				/>
 
 				<TextField

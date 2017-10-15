@@ -357,7 +357,7 @@ HTML;
         }
 
 
-        $this->modx->cacheManager->clearCache();
+        $this->modx->cacheManager->refresh();
         
         
         return $this->success($msg, array(

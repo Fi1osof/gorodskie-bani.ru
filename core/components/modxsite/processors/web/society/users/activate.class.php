@@ -87,7 +87,7 @@ class modWebSocietyUsersActivateProcessor extends modObjectUpdateProcessor{
             $this->modx->user->addSessionContext($this->modx->context->key); 
         }
 
-        $this->modx->cacheManager->clearCache();
+        $this->modx->cacheManager->refresh();
         
         return $this->success('Пользователь успешно активирован', array(
             "id"    => $this->object->id,

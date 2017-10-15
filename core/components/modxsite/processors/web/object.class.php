@@ -25,7 +25,7 @@ abstract class modWebObjectProcessor extends modSiteWebObjectProcessor{
     public function afterSave(){
 
 
-        $this->modx->cacheManager->clearCache();
+        $this->modx->cacheManager->refresh();
 
         return parent::afterSave();
     }

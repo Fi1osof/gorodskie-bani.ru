@@ -838,17 +838,26 @@ export class AppMain extends Component{
   componentDidUpdate(prevProps, prevState){
 
 
+    // console.log("this.props", this.props);
+    // console.log("prevProps", prevProps);
+
     let {
       user: {
         user,
+        // own_data_requested,
       }
     } = this.props;
 
     let {
       user: {
         user: prevUser,
+        // own_data_requested: prev_own_data_requested,
       }
     } = prevProps;
+
+    const {
+      inited,
+    } = this.state;
 
     // // 
 
@@ -857,7 +866,7 @@ export class AppMain extends Component{
     // // Если пользователь авторизовался, то перезагружаем данные зависимые
     
     if(
-      user && (!prevUser || user.id != prevUser.id)
+      inited && user && (!prevUser || user.id != prevUser.id)
     ){
       this.loadApiData();
     }

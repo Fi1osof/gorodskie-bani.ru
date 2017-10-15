@@ -30,6 +30,11 @@ export default class UserPage extends Component {
 		UsersStore: PropTypes.object.isRequired,
 		CommentsStore: PropTypes.object.isRequired,
 		localQuery: PropTypes.func.isRequired,
+		removeQuery: PropTypes.func.isRequired,
+		request: PropTypes.func.isRequired,
+    router: PropTypes.object.isRequired,
+    userActions: PropTypes.object.isRequired,
+    documentActions: PropTypes.object.isRequired,
 	};
 
 
@@ -66,8 +71,100 @@ export default class UserPage extends Component {
 
 		this.loadData();
 
+		this.processAction();
+
 		super.componentDidMount && super.componentDidMount();
 	}
+
+	
+	processAction(){
+
+		if(typeof window === "undefined"){
+			return;
+		}
+
+		const {
+			params: {
+				action,
+			},
+		} = this.context.router;
+
+		switch(action){
+
+			case "activation":
+
+				this.processActivation();
+
+				break;
+
+			default:;
+
+		}
+
+
+	}
+
+	// Активация пользователя
+	processActivation(){
+
+		const {
+			params: {
+				action,
+			},
+			location,
+		} = this.context.router;
+
+		const {
+			request,
+		} = this.context;
+
+		const {
+			username,
+		} = this.props;
+
+		const {
+			k: key,
+		} = location.query || {};
+
+		request("activation", false, "users/activate", {
+			username,
+			key,
+		}, {
+
+			callback: (data, errors) => {
+
+				console.log("activation result", data, errors);
+
+				const {
+					success,
+					message,
+				} = data;
+
+				if(success){
+
+					const {
+						userActions,
+						documentActions,
+					} = this.context;
+
+					documentActions.addInformerMessage({
+						type: "success",
+						text: message || "Пользователь успешно активирован",
+						autohide: 5000,
+					});
+
+					browserHistory.replace(`/profile/${username}`);
+					
+					userActions.GetOwnData();
+
+				}
+
+			},
+
+		});
+
+	}
+
 
 	loadData(){
 
@@ -96,7 +193,7 @@ export default class UserPage extends Component {
 		})
 		.then(r => {
 
-			console.log("Resources r", r);
+			// console.log("Resources r", r);
 
 			const {
 				user,

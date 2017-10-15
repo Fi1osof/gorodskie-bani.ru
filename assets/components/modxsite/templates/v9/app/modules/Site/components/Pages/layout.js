@@ -11,6 +11,9 @@ const defaultProps = {}
 export default class Page extends Component{
 
 	static contextTypes = {
+		user: PropTypes.object.isRequired,
+		updateItem: PropTypes.func.isRequired,
+		saveItem: PropTypes.func.isRequired,
 		CompaniesStore: PropTypes.object.isRequired,
 		TopicsStore: PropTypes.object.isRequired,
 		ResourcesStore: PropTypes.object.isRequired,
@@ -41,6 +44,7 @@ export default class Page extends Component{
 			RatingsStore,
 			TopicsStore,
 			ResourcesStore,
+			UsersStore,
 		} = this.context;
 
 		this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
@@ -62,6 +66,14 @@ export default class Page extends Component{
 		});
 
 		this.ResourcesStoreListener = ResourcesStore.getDispatcher().register(payload => {
+
+			this.loadData();
+
+		});
+
+		this.UsersStoreListener = UsersStore.getDispatcher().register(payload => {
+
+			// console.log('UsersStore payload', payload);
 
 			this.loadData();
 

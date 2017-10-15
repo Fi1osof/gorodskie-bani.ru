@@ -136,10 +136,21 @@ class modWebPublicActionProcessor extends modProcessor{
                     self::$actualClassName = 'modWebUsersOwnprofileGetdataProcessor';
                     break;
 
+                case 'users/activate':
+                    require dirname(dirname(__FILE__)) . '/society/users/activate.class.php';
+                    self::$actualClassName = 'modWebSocietyUsersActivateProcessor';
+                    break;
+
                 case 'password/forgot':
 
                     require dirname(dirname(__FILE__)) . '/society/users/password/forgot.class.php';
                     self::$actualClassName = 'modWebSocietyUsersPasswordForgotProcessor';
+                    break;
+
+                case 'crm/users/update':
+
+                    require dirname(dirname(__FILE__)) . '/users/update.class.php';
+                    self::$actualClassName = 'modWebUsersUpdateProcessor';
                     break;
 
                 

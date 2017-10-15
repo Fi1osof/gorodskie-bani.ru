@@ -106,9 +106,10 @@ export const getList = (source, args, context, info) => {
 
   const {
     username,
+    delegatesOnly,
   } = args;
 
-  // console.log('getList rating', args, info);
+  // console.log('user getList', args, info);
 
   // const {
   //   fieldNodes: {
@@ -122,6 +123,10 @@ export const getList = (source, args, context, info) => {
 
   if(username){
     state = state.filter(n => n.username === username);
+  }
+
+  if(delegatesOnly){
+    state = state.filter(n => n.delegate === true);
   }
 
   return state;
@@ -175,6 +180,26 @@ export const UserType = new GraphQLObjectType({
         type: GraphQLBoolean,
         description: "Флаг того, что пользователь - представитель компании.",
       },
+      createdon: {
+        type: GraphQLInt,
+        description: "Дата регистрации пользователя",
+      },
+      offer: {
+        type: GraphQLString,
+        description: "Коммерческое предложение",
+      },
+      offer_date: {
+        type: GraphQLInt,
+        description: "Дата отправки коммерческого предложения",
+      },
+      contract_date: {
+        type: GraphQLInt,
+        description: "Дата заключения сделки",
+      },
+      createdby: {
+        type: GraphQLInt,
+        description: "Кем создана учетка пользователя",
+      },
       comments: {
         type: new GraphQLList(CommentType),
         description: CommentType.description,
@@ -198,6 +223,15 @@ export const UserType = new GraphQLObjectType({
           } = context;
 
           return rootResolver(null, args, context, info);
+        },
+      },
+      _Dirty: {
+        type: GraphQLBoolean,
+        description: "Флаг того, что объект изменен",
+        resolve: source => {
+
+          return source && source._isDirty ? true : false;
+
         },
       },
     };

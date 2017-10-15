@@ -20,7 +20,39 @@ abstract class modWebObjectProcessor extends modSiteWebObjectProcessor{
 
         return parent::initialize();
     }
+
+
+    public function afterSave(){
+
+
+        $this->modx->cacheManager->clearCache();
+
+        return parent::afterSave();
+    }
+
+
+    
+    public function cleanup() {
+
+        $object = & $this->object;
+
+        foreach($object->_fields as $name => $value){
+
+
+            if(!array_key_exists($name, $this->properties)){
+            
+        
+                unset($object->_fields[$name]);
+
+            }
+
+        }
+
+        return parent::cleanup();
+    }
 }
+
+return 'modWebObjectProcessor';
 
 // abstract class modXObjectProcessor extends modObjectUpdateProcessor{
     

@@ -12,6 +12,7 @@ import {
   CommentsPage,
   RatingsPage,
   ContactsPage,
+  CRMPage,
   // Lesson1,
   // PageGraphiQL,
 } from "modules/Site";
@@ -121,6 +122,11 @@ let routes = {
         path: "/profile/:username",
         // component: CompaniesPage,
         // component: UsersPage,
+        childRoutes: [{
+          path: "/profile/:username/:action/",
+          // component: CompaniesPage,
+          // component: UsersPage,
+        }],
       }],
     },
     {
@@ -144,6 +150,11 @@ let routes = {
       path: "/contacts.html",
       name: "Contacts",
       component: ContactsPage,
+    },
+    {
+      path: "/crm/",
+      name: "CRM",
+      component: CRMPage,
     },
     // {
     //   path: "/react-lessons/lesson1",

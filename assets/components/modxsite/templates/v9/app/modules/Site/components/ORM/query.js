@@ -469,12 +469,14 @@ query Users(
   $userGetComments:Boolean = false
   $getCommentAuthor:Boolean = false
   $usersPage:Int = 1
+  $usersDelegatesOnly:Boolean = false
 ) {
   
   usersList(
     limit:$limit
     ids:$userIds
     page:$usersPage
+    delegatesOnly:$usersDelegatesOnly
   ) @include(if:$withPagination)
   {
     count
@@ -487,6 +489,7 @@ query Users(
     limit:$limit
     ids:$userIds
     page:$usersPage
+    delegatesOnly:$usersDelegatesOnly
   ) @skip(if:$withPagination)
   {
     ...User
@@ -1006,7 +1009,12 @@ fragment UserFields on UserType{
   active
   sudo
   blocked
+  createdon
+  createdby
   delegate
+  offer
+  offer_date
+  contract_date
   image
   imageFormats @include(if:$getImageFormats)
   {
@@ -1015,6 +1023,7 @@ fragment UserFields on UserType{
     middle
     big
   }
+  _Dirty
 }
 
 query test(

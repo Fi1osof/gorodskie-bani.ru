@@ -15,8 +15,10 @@ class modWebUsersGetdataProcessor extends modSiteWebUsersGetdataProcessor{
         
         $this->setDefaultProperties(array(
             "format" => "json",
-            "showinactive" => $this->modx->hasPermission("view_inactive_users"),
-            "showblocked" => $this->modx->hasPermission("view_blocked_users"),
+            // "showinactive" => $this->modx->hasPermission("view_inactive_users"),
+            // "showblocked" => $this->modx->hasPermission("view_blocked_users"),
+            "showinactive" => true,
+            "showblocked" => true,
             "ownProfile"   => false,
             "cache"             => true,
             'cache_prefix'      => $this->modx->context->key . "/" . get_class($this) . '/getdata/' . $this->modx->user->id. "/", 
@@ -54,11 +56,24 @@ class modWebUsersGetdataProcessor extends modSiteWebUsersGetdataProcessor{
             $where['id'] = $this->modx->user->id;
 
         }
+        
+        // Только представители компаний
+        if($this->getProperty("delegatesOnly")){
+            $where['delegate'] = "1";
+        }
+        
+        // Только представители компаний
+        if($this->getProperty("createdByMe")){
+            $where['createdby'] = $this->modx->user->id;
+        }
 
 
         if($where){
             $c->where($where);
         }
+
+        // $c->prepare();
+        // print $c->toSQL();
 
         return $c;
     }

@@ -48,6 +48,8 @@ export const getList = (object, args, context, info) => {
     request
     .then((data) => {
 
+      // console.log("Users server getlist data", data);
+
       if(!data.success){
 
         return reject(data.message || "Ошибка выполнения запроса");
@@ -66,6 +68,7 @@ export const getList = (object, args, context, info) => {
             blocked,
             sudo,
             delegate,
+            // createdon,
           } = user;
 
           Object.assign(user, {
@@ -73,6 +76,7 @@ export const getList = (object, args, context, info) => {
             blocked: blocked === '1' ? true : false,
             sudo: sudo === '1' ? true : false,
             delegate: delegate === '1' ? true : false,
+            // createdon: parseInt(createdon) || null,
           });
 
         });

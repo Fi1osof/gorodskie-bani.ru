@@ -94,9 +94,11 @@ export class AppMain extends Component{
     openCompanyPage: PropTypes.func,
     user: PropTypes.object,
     userActions: PropTypes.object,
+    documentActions: PropTypes.object,
     // prepareCompaniesLocalData: PropTypes.func,
     // loadCompanyFullData: PropTypes.func,
     updateItem: PropTypes.func,
+    saveItem: PropTypes.func,
     updateContactItem: PropTypes.func,
     saveContactItem: PropTypes.func,
     setPageTitle: PropTypes.func,
@@ -123,6 +125,7 @@ export class AppMain extends Component{
     let {
       user,
       userActions,
+      documentActions,
     } = this.props;
 
     let {
@@ -143,12 +146,14 @@ export class AppMain extends Component{
       // prepareCompaniesLocalData: this.prepareCompaniesLocalData,
       // loadCompanyFullData: this.loadCompanyFullData,
       updateItem: this.updateItem,
+      saveItem: this.saveItem,
       updateContactItem: this.updateContactItem,
       saveContactItem: this.saveContactItem,
       setPageTitle: this.setPageTitle,
       getCounters: this.getCounters,
       user,
       userActions,
+      documentActions,
       TopicsStore,
       CommentsStore,
       ResourcesStore,
@@ -831,17 +836,17 @@ export class AppMain extends Component{
   componentDidUpdate(prevProps, prevState){
 
 
-    // let {
-    //   user: {
-    //     user,
-    //   }
-    // } = this.props;
+    let {
+      user: {
+        user,
+      }
+    } = this.props;
 
-    // let {
-    //   user: {
-    //     user: prevUser,
-    //   }
-    // } = prevProps;
+    let {
+      user: {
+        user: prevUser,
+      }
+    } = prevProps;
 
     // // 
 
@@ -849,9 +854,11 @@ export class AppMain extends Component{
     
     // // Если пользователь авторизовался, то перезагружаем данные зависимые
     
-    // if(user && user.id && (!prevUser || user.id != prevUser.id)){
-    //   this.loadApiData();
-    // }
+    if(
+      user && (!prevUser || user.id != prevUser.id)
+    ){
+      this.loadApiData();
+    }
   }
 
   setPageTitle = (title) => {
@@ -1150,7 +1157,6 @@ export class AppMain extends Component{
       },
     })
     .then(data => {
-      
 
       // console.log('loadCompanies', data);
 
@@ -1502,7 +1508,7 @@ export class AppMain extends Component{
       return false;
     }
 
-    return user.sudo == "1" || user.policies[perm] || false;
+    return user.sudo == "1" || (user.policies && user.policies[perm]) || false;
   }
 
 

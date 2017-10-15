@@ -302,13 +302,23 @@ const RootType = new GraphQLObjectType({
       type: UserType,
       name: "usersList",
       description: "Список пользователей с постраничностью",
-      args: listArgs,
+      args: Object.assign({
+        delegatesOnly: {
+          type: GraphQLBoolean,
+          description: "Только представители",
+        },
+      }, listArgs),
     }),
     users: {
       type: new GraphQLList(UserType),
       name: "Users",
       description: "Список пользователей",
-      args: listArgs,
+      args: Object.assign({
+        delegatesOnly: {
+          type: GraphQLBoolean,
+          description: "Только представители",
+        },
+      }, listArgs),
     },
     user: {
       type: UserType,

@@ -2,7 +2,7 @@
     {$site_url = $modx->getOption('site_url')}
     {$site_name = $modx->getOption('site_name')}
     
-    {if $auth_user_id}
+    {if !empty($auth_user_id)}
         {$auth_email = $modx->getObject('modUser', $auth_user_id)->Profile->email}
         {$auth_link_salt = $modx->getOption('modsociety.auth_link_salt')}
         {$str = "{$auth_user_id}{$modx->site_id}{$auth_link_salt}"}

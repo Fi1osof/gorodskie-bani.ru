@@ -387,6 +387,10 @@ export const TVsField = {
         type: GraphQLString,
         description: 'Метро',
       },
+      approved: {
+        type: GraphQLBoolean,
+        description: 'Одобренный',
+      },
     },
   }),
   // resolve: (object) => {

@@ -921,6 +921,7 @@ fragment Company on Company{
     work_time
     prices
     metro
+    approved
   }
   ... on Company @include(if:$getCompanyFullData)
   {

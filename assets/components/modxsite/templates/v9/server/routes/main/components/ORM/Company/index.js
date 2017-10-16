@@ -347,6 +347,15 @@ export const getList = (object, args, context, info) => {
                     value,
                   } = tv;
                   
+                  switch(name){
+                    
+                    case 'approved':
+
+                      value = value === "1" ? true : false;
+
+                      break;
+                  }
+
                   tvs[name] = value;
 
                 }

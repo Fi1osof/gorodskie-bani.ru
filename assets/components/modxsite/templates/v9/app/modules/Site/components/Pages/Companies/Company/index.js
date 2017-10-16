@@ -273,6 +273,7 @@ export default class CompanyPage extends Component{
 			site,
 			work_time,
 			prices,
+			approved,
 		} = tvs || {};
 
 		// console.log("Company page item", item);
@@ -506,7 +507,11 @@ export default class CompanyPage extends Component{
 							</p> : ''}
 							
 							{site ? <p>
-								<b>Сайт: </b> {site}
+								<b>Сайт: </b> <a 
+									href={/^https?:/.test(site) ? site : `http://${site}`} 
+									target="_blank" 
+									rel={approved ? "follow" : "nofollow"}
+								>{site}</a>
 							</p> : ''}
 							
 							{work_time ? <div

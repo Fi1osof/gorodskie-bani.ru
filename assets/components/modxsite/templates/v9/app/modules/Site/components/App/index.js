@@ -873,6 +873,11 @@ export class AppMain extends Component{
   }
 
   setPageTitle = (title) => {
+
+    if(title && !/Городские бани/u.test(title)){
+      title += " | Городские бани";
+    }
+
     if(
       typeof window !== "undefined"
       && (window.document.title != title)

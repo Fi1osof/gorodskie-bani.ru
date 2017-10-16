@@ -10,6 +10,13 @@ import Paper from 'material-ui/Paper';
 export default class ContactsPage extends Page{
 
 
+
+  setPageTitle(title){
+
+		return super.setPageTitle(title || "Контакты");
+
+  }
+
 	renderContent(){
 
 		return <Paper

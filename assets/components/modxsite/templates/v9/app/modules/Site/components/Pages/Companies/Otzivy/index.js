@@ -18,6 +18,13 @@ export default class OtzivyPage extends TopicsPage {
 
 	}
 
+
+  setPageTitle(title){
+
+		super.setPageTitle(title || "Обзоры и отзывы");
+
+  }
+
 	// constructor(props){
 
 	// 	super(props);

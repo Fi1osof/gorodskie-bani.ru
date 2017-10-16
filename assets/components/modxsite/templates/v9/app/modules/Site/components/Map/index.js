@@ -133,11 +133,34 @@ export default class MapMainView extends Component{
 
  		// }
 
- 		const {
- 			setPageTitle,
- 		} = this.context;
+		const {
+			CompaniesStore,
+			RatingsStore,
+			localQuery,
+			router: {
+				params,
+			},
+		} = this.context;
 
- 		setPageTitle("Городские бани");
+		const {
+			city, 
+		} = params || {};
+
+ 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
+ 		
+ 			// this.setPageTitle();
+
+ 			this.createClusters();
+
+ 		});
+
+ 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
+
+ 			this.createClusters();
+ 		});
+
+
+ 		this.setPageTitle();
 
  		this.createClusters();
 	}
@@ -158,13 +181,20 @@ export default class MapMainView extends Component{
 		// 
 
 		// 
-		// 
+
+
+		const {
+			city: currentCity,
+		} = this.state;
+
 
 		let {
-			// mapShowGeoObjects,
-			// mapShowContacts,
  			router,
 		} = this.context;
+
+		// let {
+ 	// 		router: prevRouter,
+		// } = prevContext;
 
 		/*
 			Если поменялись координаты в роунитге, двигаем карту
@@ -174,9 +204,22 @@ export default class MapMainView extends Component{
  			lat,
  			lng,
  			zoom,
+ 			city,
  		} = router.params || {};
 
  		// 
+
+ 		// console.log("componentDidUpdate city", city, currentCity);
+
+ 		if((currentCity || city) && (currentCity !== city)){
+
+ 			this.setState({
+ 				city,
+ 			}, () => {
+ 				this.setPageTitle();
+ 			});
+
+ 		}
 
  		let {
  			center: {
@@ -230,12 +273,15 @@ export default class MapMainView extends Component{
 	}
 
 
-	async initCoords(){
+	async setPageTitle(title){
 
 		const {
-			CompaniesStore,
-			RatingsStore,
-			localQuery,
+ 			localQuery,
+ 			setPageTitle,
+ 		} = this.context;
+
+
+ 		const {
 			router: {
 				params,
 			},
@@ -245,15 +291,53 @@ export default class MapMainView extends Component{
 			city, 
 		} = params || {};
 
- 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
 
- 			this.createClusters();
- 		});
+ 		if(!title && city){
 
- 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
+ 			let response = await localQuery({
+ 				operationName: "Cities",
+ 			});
 
- 			this.createClusters();
- 		});
+ 			const {
+ 				resources: cities,
+ 			} = response.data;
+
+ 			// console.log('cities', cities);
+
+ 			const currentCity = cities && cities.find(n => n.alias === city);
+
+ 			// console.log('currentCity', currentCity);
+
+ 				
+ 			if(currentCity){
+				
+				title = currentCity.name;
+
+
+ 			}
+
+			// console.log("setPageTitle", title, city, currentCity);
+
+ 		}
+ 		
+
+
+ 		setPageTitle(title || "Городские бани");
+
+	}
+
+	async initCoords(){
+
+		const {
+			localQuery,
+			router: {
+				params,
+			},
+		} = this.context;
+
+		const {
+			city, 
+		} = params || {};
 
 
  		let {
@@ -283,12 +367,21 @@ export default class MapMainView extends Component{
 
  			// console.log('currentCity', currentCity);
 
- 			if(currentCity && currentCity.coords){
+ 				
+ 			if(currentCity){
+				
+				// this.setPageTitle(currentCity.name);
 
- 				lat = currentCity.coords.lat;
- 				lng = currentCity.coords.lng;
+				if(currentCity.coords){
 
- 				zoom = 12;
+	 				lat = currentCity.coords.lat;
+	 				lng = currentCity.coords.lng;
+
+	 				zoom = 12;
+
+				}
+
+
  			}
 
  		}

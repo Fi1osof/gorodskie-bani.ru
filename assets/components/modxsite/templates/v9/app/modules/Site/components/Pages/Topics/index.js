@@ -30,6 +30,50 @@ export default class TopicsPage extends Page {
 
 		super.componentDidMount && super.componentDidMount();
 	}
+
+	componentDidUpdate(prevProps, prevState, prevContext){
+
+		const {
+			city: currentCity,
+		} = this.state;
+
+
+		let {
+ 			router,
+		} = this.context;
+
+
+		const {
+			topicAlias,
+		} = router && router.params || {};
+
+		const {
+			topicAlias: currentTopicAlias,
+		} = this.state;
+
+
+		// console.log("componentDidUpdate", currentCity, topicAlias);
+
+		if((currentTopicAlias || topicAlias) && currentTopicAlias !== topicAlias){
+		
+
+			this.setState({
+				topicAlias,
+			}, () => {
+
+				if(currentTopicAlias && !topicAlias){
+
+					this.setPageTitle();
+
+				}
+
+			});
+
+		}
+
+
+		return super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext) || true;
+	}
 	
 
 	loadData(){
@@ -72,6 +116,24 @@ export default class TopicsPage extends Page {
 		return "Topics";
 
 	}
+
+
+
+  setPageTitle(title){
+
+  	// console.log("setPageTitle", title);
+
+		// const {
+		// 	params,
+		// } = this.props;
+
+		// const {
+		// 	topicAlias,
+		// } = params || {};
+
+		super.setPageTitle(title || "Новости");
+
+  }
 
 
 	renderTopics(){
@@ -179,6 +241,8 @@ export default class TopicsPage extends Page {
 			const item = topics && topics.find(n => n.id == topicAlias || n.alias == topicAlias.replace(".html", ""));
 
 			if(item){
+
+				this.setPageTitle(item.name);
 
 				content = <Grid
 					item

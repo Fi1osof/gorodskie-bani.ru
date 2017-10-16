@@ -19,12 +19,27 @@ export default class CompaniesPage extends Page {
 		});
 	}
 	
+
+	setPageTitle(title){
+
+		const {
+			params,
+		} = this.props;
+
+		const {
+			companyId,
+		} = params || {};
+
+		return !companyId && super.setPageTitle(title || "Городские бани");
+	}
+
 	renderContent(){
 
 		const {
 			params,
-		} = this.props,
-		{
+		} = this.props;
+
+		const {
 			CompaniesStore,
 		} = this.context;
 
@@ -47,7 +62,7 @@ export default class CompaniesPage extends Page {
 			}
 		}
 
-		console.log('CompaniesPage 2 item', item, companyId);
+		// console.log('CompaniesPage 2 item', item, companyId);
 
 		return <div
 			style={{

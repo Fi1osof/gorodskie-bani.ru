@@ -48,6 +48,7 @@ export default class RatingsPage extends Page {
 
 		this.loadData();
 
+
 		super.componentDidMount && super.componentDidMount();
 	}
 
@@ -66,15 +67,42 @@ export default class RatingsPage extends Page {
 			},
 		} = prevProps;
 
+
+		// console.log("componentDidUpdate", ratingType, prevRatingType);
+
 		if((ratingType || prevRatingType) && ratingType !== prevRatingType){
 
 			this.loadData();
+
+			if(prevRatingType && !ratingType){
+
+				this.setPageTitle();
+
+			}
 
 		}
 
 
 		super.componentDidUpdate && super.componentDidUpdate();
 	}
+
+
+
+  setPageTitle(title){
+
+  	// console.log("setPageTitle", title);
+
+		// const {
+		// 	params,
+		// } = this.props;
+
+		// const {
+		// 	topicAlias,
+		// } = params || {};
+
+		super.setPageTitle(title || "Рейтинги бань");
+
+  }
 	
 
 	loadData(){
@@ -204,6 +232,14 @@ export default class RatingsPage extends Page {
 
 				// ratings = ratingTypes && ratingTypes.filter(n => n.Type && n.Type.alias === ratingTypes);
 				ratingTypes = ratingTypes && ratingTypes.filter(n => n.alias === ratingType);
+
+				const currentRating = ratingTypes[0];
+
+				if(currentRating){
+
+					this.setPageTitle(`Рейтинг бань ${currentRating.name}`);
+
+				}
 
 			}
 

@@ -34,6 +34,7 @@ export default class Topic extends Component{
 
 	static contextTypes = {
 		localQuery: PropTypes.func.isRequired,
+		// setPageTitle: PropTypes.func.isRequired,
 	};
 
 	constructor(props){
@@ -52,12 +53,27 @@ export default class Topic extends Component{
 	}
 
 
-	// componentDidMount(){
+	componentDidMount(){
 
 
-	// 	this.loadData();
+		// this.setPageTitle();
 
+	}
+
+
+	// setPageTitle(title){
+
+	// 	const {
+	// 		item,
+	// 	} = this.props;
+
+	// 	const {
+	// 		setPageTitle,
+	// 	} = this.context;
+
+	// 	setPageTitle(title || item.name);
 	// }
+
 
 	// async loadData(){
 
@@ -158,7 +174,7 @@ export default class Topic extends Component{
 			uri:CompanyUri,
 		} = Parent || {};
 
-		console.log('Parent', Parent);
+		// console.log('Parent', Parent);
 
 		const {
 			id: author_id,

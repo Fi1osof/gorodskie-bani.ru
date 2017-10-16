@@ -60,12 +60,6 @@ export default class CompanyPage extends Component{
 			name,
 		} = item || {};
 
-		const {
-			setPageTitle,
-		} = this.context;
-
-		setPageTitle(name);
-
 
 		let {
 			CompaniesStore,
@@ -100,9 +94,9 @@ export default class CompanyPage extends Component{
  			this.loadCompanyFullData();
  		});
 
-
-
 		this.loadCompanyFullData();
+
+		this.setPageTitle(name);
 
 		super.componentDidMount && super.componentDidMount();
 	}
@@ -171,6 +165,16 @@ export default class CompanyPage extends Component{
 	}
 
 
+	setPageTitle(title){
+
+		const {
+			setPageTitle,
+		} = this.context;
+
+		setPageTitle(title);
+	}
+
+
 	async loadCompanyFullData(){
 
 		const {
@@ -211,7 +215,7 @@ export default class CompanyPage extends Component{
 
 				company && Object.assign(item, company);
 
-				console.log('Company loadCompanyFullData result', result);
+				// console.log('Company loadCompanyFullData result', result);
 
 				this.forceUpdate();
 

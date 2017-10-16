@@ -11,6 +11,7 @@ const defaultProps = {}
 export default class Page extends Component{
 
 	static contextTypes = {
+		setPageTitle: PropTypes.func.isRequired,
 		user: PropTypes.object.isRequired,
 		updateItem: PropTypes.func.isRequired,
 		saveItem: PropTypes.func.isRequired,
@@ -82,6 +83,8 @@ export default class Page extends Component{
 		this.loadData();
 			
 		// super.componentDidMount && super.componentDidMount();
+
+		this.setPageTitle();
 	}
 
   componentDidUpdate(){
@@ -91,9 +94,22 @@ export default class Page extends Component{
     }
   }
 
+
+  setPageTitle(title){
+
+
+		const {
+			setPageTitle,
+		} = this.context;
+
+		title && setPageTitle(title);
+
+  }
+
+
   loadData(){
 
-		console.log("Page loadData");
+		// console.log("Page loadData");
 
   }
 

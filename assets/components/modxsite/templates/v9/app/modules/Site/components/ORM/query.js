@@ -796,6 +796,7 @@ fragment ResourceFields on ResourceType{
   imageFormats{
     thumb
     marker_thumb
+    slider_thumb
     small
     middle
     big
@@ -901,6 +902,7 @@ fragment Company on Company{
       original
       thumb
       marker_thumb
+      slider_thumb
       small
       middle
       big
@@ -983,6 +985,7 @@ fragment imageFormats on Company{
       original
       thumb
       marker_thumb
+      slider_thumb
       small
       middle
       big

@@ -18,6 +18,8 @@ import Comments from 'modules/Site/components/Comments';
 
 import CompanyTopics from './Topics';
 
+import Slider from 'react-slick';
+
 // import GoogleMapReact from 'google-map-react';
 
 import RatingField from './fields/Rating';
@@ -292,11 +294,16 @@ export default class CompanyPage extends Component{
 		let galleryItems = [];
 
 
+		let Gallery;
+		let galleryList = [];
+		let galleryThumbs = [];
+
+
 		if(galleryItem){
 			galleryItems.push(<Grid
 				item
 				xs={12}
-				key={`biag_image`}
+				key={`big_image`}
 			>
 				<img 
 					src={galleryItem}
@@ -314,13 +321,13 @@ export default class CompanyPage extends Component{
 		}
 
 
-		if(gallery && gallery.length > 1){
+		if(gallery && gallery.length){
 
 			gallery.map((n, index) => {
 
-				if(index === 0){
-					return;
-				}
+				// if(index === 0){
+				// 	return;
+				// }
 
 				const {
 					imageFormats: image,
@@ -332,8 +339,12 @@ export default class CompanyPage extends Component{
 
 				const {
 					thumb,
+					slider_thumb,
 					big,
+
 				} = image;
+
+				galleryThumbs.push(thumb);
 
 				// if(galleryItem && galleryItem === n.image){
 
@@ -342,26 +353,63 @@ export default class CompanyPage extends Component{
 				// 	return;
 				// }
 
-				galleryItems.push(<Grid
-					item
+				galleryItems.push(<img 
 					key={index}
-				>
-
-					<img 
-						src={thumb}
-						style={{
-							cursor: 'pointer',
-						}}
-						onClick={event => {
-							this.setState({
-								galleryItem: big,
-							});
-						}}
-					/>
-				</Grid>);
+					src={slider_thumb}
+					style={{
+						cursor: 'pointer',
+					}}
+					// onClick={event => {
+					// 	this.setState({
+					// 		galleryItem: big,
+					// 	});
+					// }}
+				/>);
 			});
 
 		}
+
+		Gallery = <CardContent
+			style={{
+				paddingBottom: 40,
+			}}
+		>
+						 
+				{/*<Grid
+					container
+  				gutter={0}
+				>
+
+					{galleryItems}
+
+				</Grid>*/}
+		
+				<Slider {...{
+		      dots: true,
+		      // adaptiveHeight: true,
+		      dotsClass: "slick-dots slick-paging",
+		      infinite: true,
+		      // centerMode: true,
+		      speed: 500,
+		      slidesToShow: 1,
+		      slidesToScroll: 1,
+		      responsive: [ 
+		      	{ breakpoint: 768, settings: { slidesToShow: 1 } }, 
+		      	{ breakpoint: 1024, settings: { slidesToShow: 2 } }, 
+		      	{ breakpoint: 1200, settings: { slidesToShow: 3 } }, 
+		      	{ breakpoint: 100000, settings: { slidesToShow: 5 } } ,
+		      ],
+		      customPaging: function(i) {
+		        // return <a><img src={`${baseUrl}/abstract0${i+1}.jpg`}/></a>
+
+		        const thumb = galleryThumbs[i];
+		        return <a><img src={thumb}/></a>
+		      },
+		    }}>
+	        {galleryItems}
+	      </Slider> 
+
+		</CardContent>
 
 
 		return <Card
@@ -420,12 +468,13 @@ export default class CompanyPage extends Component{
 									src={image.thumb}
 									style={{
 										cursor: 'pointer',
+										marginRight: 10,
 									}}
-									onClick={event => {
-										this.setState({
-											galleryItem: image.big,
-										});
-									}}
+									// onClick={event => {
+									// 	this.setState({
+									// 		galleryItem: image.big,
+									// 	});
+									// }}
 								/>
 							</Grid>
 							:
@@ -574,33 +623,7 @@ export default class CompanyPage extends Component{
 				</Paper>
 			</CardContent>
 
-			{galleryItems
-				?
-					
-				<CardContent>
-						
-					<Paper
-						style={{
-							padding: 15,
-						}}
-					>
-
-						<Grid
-							container
-      				gutter={0}
-						>
-
-							{galleryItems}
-
-						</Grid>
-				
-					</Paper>
-
-				</CardContent>
-
-				:
-				null
-			}
+			{Gallery}
 
 
 			<CompanyTopics 

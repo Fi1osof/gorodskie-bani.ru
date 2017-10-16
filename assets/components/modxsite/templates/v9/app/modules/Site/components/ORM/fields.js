@@ -257,6 +257,12 @@ const imageFields = {
       return `images/resized/marker_thumb/${image.original}`;
     },
   },
+  slider_thumb: {
+    type: GraphQLString,
+    resolve: (image) => {
+      return `images/resized/slider_thumb/${image.original}`;
+    },
+  },
   small: {
     type: GraphQLString,
     resolve: (image) => {
@@ -297,6 +303,12 @@ export const imageType = {
         type: GraphQLString,
         resolve: (image) => {
           return `images/resized/marker_thumb/${image}`;
+        },
+      },
+      slider_thumb: {
+        type: GraphQLString,
+        resolve: (image) => {
+          return `images/resized/slider_thumb/${image}`;
         },
       },
       small: {

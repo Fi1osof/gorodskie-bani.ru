@@ -8,7 +8,7 @@ const webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var ExtractTextPluginMainPlugin = new ExtractTextPlugin({
-  filename: 'css/main.css'
+  filename: process.env.NODE_ENV === "production" ? 'css/main.[hash].css' : "css/main.css",
 });
 
 module.exports = (options) => ({

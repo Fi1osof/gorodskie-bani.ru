@@ -611,6 +611,7 @@ module.exports = function (options) {
     let assetsUrl;
 
     let js_src;
+    let css_src;
 
     let basePath;
 
@@ -632,13 +633,20 @@ module.exports = function (options) {
         js_src = match[1];
       }
 
-      // console.log(match);
+      let css_match = html.match(/<link [^>]*?href="([^\"]*?\.css)" rel="stylesheet"/);
+
+      if(css_match){
+        css_src = css_match[1];
+      }
+
+      // console.log('css_match', css_match);
 
     }
     else{
       assetsUrl = "/build/";
 
       js_src = `${assetsUrl}main.js`;
+      css_src = `${assetsUrl}css/main.css`;
     }
 
     // console.log('process.env.NODE_ENV CWD', process.cwd());
@@ -654,7 +662,7 @@ module.exports = function (options) {
           <title>Городские бани</title>
           <meta name="robots" content="index, follow" />
           <link rel="shortcut icon" href="/favicon.ico"/>
-          <link rel="stylesheet" href="${assetsUrl}css/main.css">
+          <link rel="stylesheet" href="${css_src}">
           <base href="/" />
           <script type="application/javascript">
             window.REDUX_INITIAL_STATE = ${JSON.stringify(initialState)};

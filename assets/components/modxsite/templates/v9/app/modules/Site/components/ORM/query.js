@@ -2,6 +2,7 @@
 const defaultQuery = `
 
 
+
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -176,7 +177,7 @@ query MainMenuData(
   $withPagination:Boolean = false
   $ratingsResourceId:Int
   $getCompanyGallery:Boolean = false
-  $getTVs:Boolean = false
+  $getTVs:Boolean = true
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
@@ -292,7 +293,7 @@ query MapCompanies (
   $getRatingsAvg:Boolean = true
   $withPagination:Boolean = false
   $getCompanyGallery:Boolean = false
-  $getTVs:Boolean = false
+  $getTVs:Boolean = true
   $companyCommentsSort:[SortBy]
   $getCommentAuthor:Boolean = false
   $getCompanyTopics:Boolean = false
@@ -1079,6 +1080,7 @@ query test(
     # }
   }
 } 
+
 
 `;
 

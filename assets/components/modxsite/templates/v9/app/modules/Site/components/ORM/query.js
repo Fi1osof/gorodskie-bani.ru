@@ -2,7 +2,6 @@
 const defaultQuery = `
 
 
-
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -26,6 +25,7 @@ query apiData(
   $resourceGetComments:Boolean = false
   $resourceIds:[Int]
   $userGetComments:Boolean = false
+  $resourceTag:String
 ){
   companies(
     limit:$limit
@@ -458,6 +458,7 @@ query CompanyTopics(
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
+  $resourceTag:String
 ){
     ...Topics
 }
@@ -639,6 +640,7 @@ query Topics(
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
+  $resourceTag:String
 ){
   
   ...Topics
@@ -666,6 +668,7 @@ fragment Topics on RootType{
     resourceType:topic
     limit:$resourcesLimit
     parent:$resourceParent
+    tag:$resourceTag
     sort:[{
       by:id
       dir:desc
@@ -675,9 +678,15 @@ fragment Topics on RootType{
     ...Topic
   }
   topicsList:resourcesList(
+    ids:$resourceIds
     resourceType:topic
     limit:$resourcesLimit
     parent:$resourceParent
+    tag:$resourceTag
+    sort:[{
+      by:id
+      dir:desc
+    }]
   ) @include(if:$withPagination)
   {
     count
@@ -791,8 +800,7 @@ fragment ResourceFields on ResourceType{
   createdon
   hidemenu
   short_text
-  topic_tags
-  topic_tags_array
+  tags
   image
   imageFormats{
     thumb
@@ -1080,7 +1088,6 @@ query test(
     # }
   }
 } 
-
 
 `;
 

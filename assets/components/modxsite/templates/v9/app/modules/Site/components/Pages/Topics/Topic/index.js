@@ -11,6 +11,7 @@ import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
+import Chip from 'material-ui/Chip';
 
 import CommentsIcon from 'material-ui-icons/Chat';
 import MoreIcon from 'material-ui-icons/More';
@@ -157,6 +158,7 @@ export default class Topic extends Component{
 			Author,
 			comments,
 			pubdate,
+			tags,
 		} = item;
 
 		
@@ -262,6 +264,9 @@ export default class Topic extends Component{
 
 					<Grid
 						item
+						style={{
+							paddingRight: 6,
+						}}
 					>
 
 						<UserLink 
@@ -272,11 +277,10 @@ export default class Topic extends Component{
 
 					<Grid
 						item
-					>
-
-						| <span
+					> | <span
 							style={{
-								paddingLeft: 10,
+								// paddingLeft: 10,
+								paddingRight:6,
 							}}
 						>{pubdate}</span>
 						
@@ -290,21 +294,23 @@ export default class Topic extends Component{
 							container
 							align="center"
 							gutter={0}
-						>
-						
-							| <IconButton 
-								onClick={event => {
-									this.setState({
-										commentOpen: !commentOpen,
-									});
-								}}
-								accent={comments && comments.length && !commentOpen ? true : false}
+						> | <IconButton 
+									onClick={event => {
+										this.setState({
+											commentOpen: !commentOpen,
+										});
+									}}
+									accent={comments && comments.length && !commentOpen ? true : false}
+									style={{
+										height: 34,
+										width: 34,
+									}}
 							>
 								<CommentsIcon 
 									style={{
 										height: 18,
 										width: 18,
-										marginLeft: 10,
+										// marginLeft: 10,
 										marginRight: 3,
 									}}
 								/>
@@ -313,6 +319,44 @@ export default class Topic extends Component{
 						</Grid>
 
 					</Grid>
+
+
+					{tags && tags.length
+						?
+						<Grid
+							item
+							xs={12}
+							style={{
+								marginTop: 10,
+							}}
+						>
+							<Grid
+								container
+							>
+								{tags.map(tag => {
+
+									return <Chip
+										key={tag}
+										label={<Link
+											to={`/tag/${tag}`}
+											href={`/tag/${tag}`}
+										>
+											{tag}
+										</Link>}
+										style={{
+											margin: 3,
+											height: 24,
+											paddingLeft: 9,
+											paddingRight: 9,
+										}}
+									/>
+
+								})}
+							</Grid>
+						</Grid>
+						:
+						null
+					}
 
 
 				</Grid>

@@ -257,6 +257,8 @@ export const getList = (object, args, context, info) => {
               
             }
 
+            object.tags = object.topic_tags && object.topic_tags.split(",");
+
           }
           
         });

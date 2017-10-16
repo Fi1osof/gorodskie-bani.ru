@@ -35,6 +35,7 @@ export default class TopicsPage extends Page {
 
 		const {
 			city: currentCity,
+			tag: currentTag,
 		} = this.state;
 
 
@@ -45,6 +46,7 @@ export default class TopicsPage extends Page {
 
 		const {
 			topicAlias,
+			tag,
 		} = router && router.params || {};
 
 		const {
@@ -71,6 +73,25 @@ export default class TopicsPage extends Page {
 
 		}
 
+		if((currentTag || tag) && currentTag !== tag){
+		
+
+			this.setState({
+				tag,
+			}, () => {
+
+				// if(currentTopicAlias && !topicAlias){
+
+				// 	this.setPageTitle();
+
+				// }
+
+				this.loadData();
+
+			});
+
+		}
+
 
 		return super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext) || true;
 	}
@@ -79,6 +100,20 @@ export default class TopicsPage extends Page {
 	loadData(){
 
 		// console.log("Topics loadData");
+
+
+
+		const {
+			params,
+		} = this.props;
+
+		const {
+			tag,
+		} = params || {};
+
+
+
+		console.log("Topics tag", tag);
 
 
 		const {
@@ -92,11 +127,12 @@ export default class TopicsPage extends Page {
 				resourceGetAuthor: true,
 				resourceGetComments: true,
 				getCommentAuthor: true,
+				resourceTag: tag,
 			},
 		})
 		.then(r => {
 
-			// console.log("Resources r", r);
+			console.log("Resources r", r);
 
 			const {
 				topics,

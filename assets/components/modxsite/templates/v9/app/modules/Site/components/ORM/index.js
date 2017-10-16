@@ -157,6 +157,10 @@ const resourcesArgs = Object.assign({
     type: new GraphQLList(GraphQLInt),
     description: 'С какими шаблонами надо исключить документы',
   },
+  tag: {
+    type: GraphQLString,
+    description: 'Фильтр по тегу',
+  },
   resourceType: {
     type: new GraphQLEnumType({
       name: "ResourceTypeEnum",

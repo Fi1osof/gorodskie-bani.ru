@@ -91,16 +91,9 @@ export const ResourceType = new GraphQLObjectType({
         type: GraphQLString,
         description: "Картинка",
       },
-      topic_tags: {
-        type: GraphQLString,
-        description: "Теги",
-      },
-      topic_tags_array: {
+      tags: {
         type: new GraphQLList(GraphQLString),
-        description: "Теги, разбитые на массив",
-        resolve: (source) => {
-          return source.topic_tags && source.topic_tags.split(",");
-        },
+        description: "Теги",
       },
       imageFormats: imageType,
       city_id: {
@@ -452,6 +445,7 @@ export const getList = (source, args, context, info) => {
   const {
     parent,
     template,
+    tag,
     resourceType,
   } = args;
  
@@ -485,6 +479,14 @@ export const getList = (source, args, context, info) => {
   if(template){
 
     state = state.filter(n => n.template === template);
+
+  }
+
+  if(tag){
+
+    const search = new RegExp(tag, 'ui');
+
+    state = state.filter(n => n.tags && n.tags.findIndex(i => i.match(search)) !== -1);
 
   }
 

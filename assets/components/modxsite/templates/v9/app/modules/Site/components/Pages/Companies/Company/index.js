@@ -338,6 +338,7 @@ export default class CompanyPage extends Component{
 				}
 
 				const {
+					original,
 					thumb,
 					slider_thumb,
 					big,
@@ -356,8 +357,10 @@ export default class CompanyPage extends Component{
 				galleryItems.push(<img 
 					key={index}
 					src={slider_thumb}
+					// src={original}
 					style={{
-						cursor: 'pointer',
+						// cursor: 'pointer',
+						// height: "auto",
 					}}
 					// onClick={event => {
 					// 	this.setState({
@@ -384,30 +387,33 @@ export default class CompanyPage extends Component{
 
 				</Grid>*/}
 		
-				<Slider {...{
-		      dots: true,
-		      // adaptiveHeight: true,
-		      dotsClass: "slick-dots slick-paging",
-		      infinite: true,
-		      // centerMode: true,
-		      speed: 500,
-		      slidesToShow: 1,
-		      slidesToScroll: 1,
-		      responsive: [ 
-		      	{ breakpoint: 768, settings: { slidesToShow: 1 } }, 
-		      	{ breakpoint: 1024, settings: { slidesToShow: 2 } }, 
-		      	{ breakpoint: 1200, settings: { slidesToShow: 3 } }, 
-		      	{ breakpoint: 100000, settings: { slidesToShow: 5 } } ,
-		      ],
-		      customPaging: function(i) {
-		        // return <a><img src={`${baseUrl}/abstract0${i+1}.jpg`}/></a>
+				<div>
+					<Slider {...{
+			      dots: true,
+			      // adaptiveHeight: true,
+			      dotsClass: "slick-dots slick-paging",
+			      infinite: true,
+			      // centerMode: true,
+			      speed: 500,
+			      slidesToShow: 1,
+			      slidesToScroll: 1,
+			      // lazyLoad: true,
+			      responsive: [ 
+			      	{ breakpoint: 768, settings: { slidesToShow: 1 } }, 
+			      	{ breakpoint: 1024, settings: { slidesToShow: 2 } }, 
+			      	{ breakpoint: 1200, settings: { slidesToShow: 3 } }, 
+			      	{ breakpoint: 100000, settings: { slidesToShow: 5 } } ,
+			      ],
+			      customPaging: function(i) {
+			        // return <a><img src={`${baseUrl}/abstract0${i+1}.jpg`}/></a>
 
-		        const thumb = galleryThumbs[i];
-		        return <a><img src={thumb}/></a>
-		      },
-		    }}>
-	        {galleryItems}
-	      </Slider> 
+			        const thumb = galleryThumbs[i];
+			        return <a><img src={thumb}/></a>
+			      },
+			    }}>
+		        {galleryItems}
+		      </Slider> 
+				</div>
 
 		</CardContent>
 

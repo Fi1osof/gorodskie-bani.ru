@@ -141,6 +141,30 @@ let routes = {
     },
     {
       childRoutes: [{
+        path: "/chelyabinsk/:companyId/",
+        component: CompaniesPage,
+      }],
+    },
+    {
+      childRoutes: [{
+        path: "/chelyabinsk/:companyId",
+        component: CompaniesPage,
+      }],
+    },
+    {
+      childRoutes: [{
+        path: "/moscow/:companyId/",
+        component: CompaniesPage,
+      }],
+    },
+    {
+      childRoutes: [{
+        path: "/moscow/:companyId",
+        component: CompaniesPage,
+      }],
+    },
+    {
+      childRoutes: [{
         path: "/city/:city/:companyId/",
         component: CompaniesPage,
       }],

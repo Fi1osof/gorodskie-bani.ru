@@ -69,7 +69,7 @@ export default class CompaniesPage extends Page {
 			// console.log('location companyId', companyId);
 
 			// item = CompaniesStore.getState().find(n => n.uri === pathname || n.id == companyId || n.alias == companyId);
-			item = CompaniesStore.getState().find(n => n.uri === pathname);
+			item = CompaniesStore.getState().find(n => n.uri === pathname || n.uri === `${pathname}/`);
 
 			if(item){
 

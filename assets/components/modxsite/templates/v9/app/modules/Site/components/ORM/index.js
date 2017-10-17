@@ -161,6 +161,10 @@ const resourcesArgs = Object.assign({
     type: GraphQLString,
     description: 'Фильтр по тегу',
   },
+  uri: {
+    type: GraphQLString,
+    description: 'Поиск по URI документа',
+  },
   resourceType: {
     type: new GraphQLEnumType({
       name: "ResourceTypeEnum",

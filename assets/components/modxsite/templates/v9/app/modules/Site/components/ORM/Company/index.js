@@ -1085,6 +1085,16 @@ export const getList = (source, args, context, info) => {
     CompaniesStore,
   } = context.state;
 
-  return CompaniesStore.getState();
+  const {
+    uri,
+  } = args;
+
+  let state = CompaniesStore.getState();
+
+  if(uri !== undefined){
+    state = state.filter(n => n.uri === uri);
+  }
+
+  return state;
 
 };

@@ -26,6 +26,7 @@ query apiData(
   $resourceIds:[Int]
   $userGetComments:Boolean = false
   $resourceTag:String
+  $resourceUri:String
 ){
   companies(
     limit:$limit
@@ -78,10 +79,12 @@ query Companies (
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
+  $resourceUri:String
 ){
   companies(
     limit:$limit
     ids:$companyIds
+    uri:$resourceUri
   ) @skip(if:$withPagination)
   {
     ...Company
@@ -89,6 +92,7 @@ query Companies (
   companiesList(
     limit:$limit
     ids:$companyIds
+    uri:$resourceUri
   ) @include(if:$withPagination)
   {
     count
@@ -192,6 +196,7 @@ query MainMenuData(
   $resourceExcludeTemplates:[Int]
   $resourceType:ResourceTypeEnum
   $resourceParent:Int = 1296
+  $resourceUri:String
 ){
   ...RatingsList
   
@@ -540,6 +545,7 @@ query Resources(
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
   $resourceParent:Int
+  $resourceUri:String
 ){
   
   ...ResourcesList
@@ -566,6 +572,7 @@ query Cities(
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
   $resourceParent:Int = 1296
+  $resourceUri:String
 ){
   
   ...ResourcesList
@@ -585,6 +592,7 @@ query RatingTypes(
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
   $resourceParent:Int = 1349
+  $resourceUri:String
 ){
   
   ...ResourcesList
@@ -621,6 +629,7 @@ query RatingsPageData(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
+  $resourceUri:String
 ){
   
   ...ResourcesList
@@ -744,6 +753,7 @@ fragment ResourcesList on RootType{
     excludeTemplates:$resourceExcludeTemplates
     resourceType:$resourceType
     parent:$resourceParent
+    uri:$resourceUri
   )@include(if:$withPagination)
   {
     count
@@ -758,6 +768,7 @@ fragment ResourcesList on RootType{
     excludeTemplates:$resourceExcludeTemplates
     resourceType:$resourceType
     parent:$resourceParent
+    uri:$resourceUri
   )@skip(if:$withPagination)
   {
     ...Resource

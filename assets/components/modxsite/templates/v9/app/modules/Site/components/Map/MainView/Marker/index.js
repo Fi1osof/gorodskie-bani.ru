@@ -11,6 +11,8 @@ import Business from 'material-ui-icons/Business';
 import Texture from 'material-ui-icons/Texture';
 import EditIcon from 'material-ui-icons/ModeEdit';
 
+import { Link } from 'react-router';
+
 import CompanyMiniCart from './Company';
 
 export default class Marker extends Component{
@@ -51,6 +53,7 @@ export default class Marker extends Component{
 
 			const {
 				name,
+				uri,
 				image,
 				imageFormats,
 				ratingAvg,
@@ -61,6 +64,8 @@ export default class Marker extends Component{
 			const {
 				approved,
 			} = tvs || {};
+
+			let link = uri;
 
 			// const {
 	  //     rating,
@@ -167,7 +172,12 @@ export default class Marker extends Component{
 					}}
 				>
 					{details}
-					{icon}
+					<Link
+						to={link}
+						href={link}
+					>
+						{icon}
+					</Link>
 				</div>
 			</div>;
 

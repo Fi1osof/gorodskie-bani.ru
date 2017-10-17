@@ -36,6 +36,10 @@ export default class CompaniesPage extends Page {
 	renderContent(){
 
 		const {
+			router,
+		} = this.context;
+
+		const {
 			params,
 		} = this.props;
 
@@ -51,7 +55,21 @@ export default class CompaniesPage extends Page {
 		let company;
 
 		if(companyId){
-			item = CompaniesStore.getState().find(n => n.id == companyId || n.alias == companyId);
+
+			// let location = browserHistory && browserHistory.getCurrentLocation();
+
+			let pathname = router.location.pathname;
+
+			pathname = decodeURI(pathname);
+
+			pathname = pathname.replace(/^\//, '');
+
+			// console.log('location pathname', pathname);
+
+			// console.log('location companyId', companyId);
+
+			// item = CompaniesStore.getState().find(n => n.uri === pathname || n.id == companyId || n.alias == companyId);
+			item = CompaniesStore.getState().find(n => n.uri === pathname);
 
 			if(item){
 

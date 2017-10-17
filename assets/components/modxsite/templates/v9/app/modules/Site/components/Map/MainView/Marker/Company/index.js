@@ -47,6 +47,7 @@ export default class CompanyMiniCart extends Component{
 		const {
 			name,
 			alias,
+			uri,
 			image,
 			imageFormats,
 			// ratingAvg,
@@ -71,7 +72,8 @@ export default class CompanyMiniCart extends Component{
 
 
 
-		const link = `/bani/${alias}/`;
+		// const link = `/bani/${alias}/`;
+		const link = uri;
 
 		return <div
 			{...other}

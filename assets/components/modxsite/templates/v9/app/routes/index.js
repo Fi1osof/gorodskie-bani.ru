@@ -129,14 +129,6 @@ let routes = {
       path: "/profile/",
     },
     {
-      path: "/city/:city/",
-      component: MainPage
-    },
-    {
-      path: "/city/:city/@:lat,:lng,:zoom",
-      component: MainPage
-    },
-    {
       // path: "/bani/",
       childRoutes: [{
         path: "/bani/:companyId/",
@@ -146,6 +138,20 @@ let routes = {
       //   path: "/city/:city/:companyId/",
       //   component: CompaniesPage,
       // }],
+    },
+    {
+      childRoutes: [{
+        path: "/city/:city/:companyId/",
+        component: CompaniesPage,
+      }],
+    },
+    {
+      path: "/city/:city/",
+      component: MainPage
+    },
+    {
+      path: "/city/:city/@:lat,:lng,:zoom",
+      component: MainPage
     },
     {
       path: "/ratings/",

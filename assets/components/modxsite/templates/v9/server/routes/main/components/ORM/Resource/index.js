@@ -257,7 +257,7 @@ export const getList = (object, args, context, info) => {
               
             }
 
-            object.tags = object.topic_tags && object.topic_tags.split(",");
+            object.tags = object.topic_tags && object.topic_tags.split(",").filter(tag => tag && tag.replace(/ /g, "") !== "");
 
           }
           

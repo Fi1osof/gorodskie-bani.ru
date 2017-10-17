@@ -456,7 +456,7 @@ module.exports = function (options) {
         ;
 
         q.where({
-          "redirects.uri": req.url.replace(/^\/+/, ''),
+          "redirects.uri": decodeURI(req.url.replace(/^\/+/, '')),
         });
 
         // if(Company_id){
@@ -469,10 +469,11 @@ module.exports = function (options) {
 
         q.limit(1); 
         // 
+          
+        // console.log("knex SQL", q.toString());
 
         q.then((result) => { 
 
-          // debug("knex SQL", q.toString());
           // debug("knex result", result);
 
           const {

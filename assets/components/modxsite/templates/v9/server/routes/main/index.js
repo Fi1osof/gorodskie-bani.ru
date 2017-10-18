@@ -448,6 +448,8 @@ module.exports = function (options) {
 
     return new Promise((resolve, reject) => {
 
+      const requestedUri = decodeURI(req.url.replace(/^\/+/, ''));
+
       var q = knex(`${prefix}redirects as redirects`)
         .innerJoin(`${prefix}site_content as content`, 'redirects.resource_id', 'content.id')
         // .select('profile.*')
@@ -456,8 +458,9 @@ module.exports = function (options) {
         ;
 
         q.where({
-          "redirects.uri": decodeURI(req.url.replace(/^\/+/, '')),
+          "redirects.uri": requestedUri,
         });
+        q.whereNot('content.uri', requestedUri);
 
         // if(Company_id){
 
@@ -470,17 +473,17 @@ module.exports = function (options) {
         q.limit(1); 
         // 
           
-        // console.log("knex SQL", q.toString());
+        console.log("knex SQL", q.toString());
 
         q.then((result) => { 
 
-          // debug("knex result", result);
+          debug("knex result", result);
 
           const {
             uri,
           } = result && result[0] || {};
 
-          if(uri){
+          if(uri && uri !== requestedUri){
 
             return res.redirect(301, `/${uri}`);
           }

@@ -6,6 +6,8 @@ import Page from '../layout';
 
 import {Link, browserHistory} from 'react-router';
 
+import Paper from 'material-ui/Paper';
+
 import Company from './Company';
 
 export default class CompaniesPage extends Page {
@@ -70,6 +72,40 @@ export default class CompaniesPage extends Page {
 
 			// item = CompaniesStore.getState().find(n => n.uri === pathname || n.id == companyId || n.alias == companyId);
 			item = CompaniesStore.getState().find(n => n.uri === pathname || n.uri === `${pathname}/`);
+
+			if(item){
+
+			}
+			else{
+
+				let id = parseInt(companyId);
+
+
+				if(id){
+
+					item = CompaniesStore.getState().find(n => n.id  === id);
+
+
+					// Если это временный объект, то выводим сообщение об ошибке
+					if(!item && id < 0){
+						
+						company = <Paper
+							style={{
+								padding: 15,
+							}}
+						>
+
+							Ссылка на редактируемый документ устарела. Если вы обновляли страницу и не сохранили документ, он удалился и необходимо создать новый.
+							
+						</Paper>
+
+					}
+
+				}
+
+				// console.log("id", id, item);
+
+			}
 
 			if(item){
 

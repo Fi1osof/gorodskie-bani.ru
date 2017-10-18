@@ -3,14 +3,13 @@
 require_once __DIR__ . '/../site/web/object.class.php';
 
 abstract class modWebObjectProcessor extends modSiteWebObjectProcessor{
-
-    function checkPermissions(){
-
+    
+    public function checkPermissions() {
         return $this->modx->user->id && parent::checkPermissions();
     }
 
-    public function initialize() {
 
+    public function initialize() {
 
         $request_body = file_get_contents('php://input');
 
@@ -18,7 +17,119 @@ abstract class modWebObjectProcessor extends modSiteWebObjectProcessor{
             $this->setProperties($data);
         }
 
+        if(isset($this->properties['id'])){
+            $this->properties['id'] = (int)$this->properties['id'];
+        }
+        
+        foreach($this->properties as $field => & $value){
+
+            if(!is_scalar($value)){
+                continue;
+            }
+
+            $v = (string)$value;
+
+            if($v === "null"){
+                $value = null;
+            }
+            else if($v === "true"){
+                $value = true;
+            }
+            else if($v === "false"){
+                $value = false;
+            }
+            else if($v === "NaN"){
+                unset($this->properties[$field]);
+            }
+            else if($v === "undefined"){
+                unset($this->properties[$field]);
+            }
+        }
+        
         return parent::initialize();
+    }
+
+    function clear_post_data(&$data){
+        if(is_array($data)){
+            foreach($data as $r_name => &$r_val){
+                $this->clear_post_data($r_val);
+                continue;
+            }
+        }
+        else{
+            $data =  str_replace(array('[', ']', '%5B', '%5D'), array('&#91;', '&#93;', '&#91;','&#93;',), $data);
+        }
+    }
+
+
+    protected function createResource(array $data){
+
+        $user_id = $this->modx->user->id;
+
+
+        if(empty($data['pagetitle'])){
+            $this->addFieldError("pagetitle", "Не заполнен заголовок");
+        }
+
+        if($this->hasErrors()){
+            return null;
+        }
+
+        // else
+        $data = array_merge(array(
+            "published"     => true,
+            "searchable"    => false,
+            "show_in_tree"  => false,
+            "isfolder"      => 1,
+            "hidemenu"      => 0,
+            "createdby"     => $user_id,
+            "createdon"     => time(),
+            "publishedby"   => $user_id,
+            "publishedon"   => time(),
+            "context_key"   => "web",
+            "alias"         => $data['pagetitle'],
+            "class_key"     => "modDocument",
+        ), $data);
+
+        $resource = $this->modx->newObject("modResource", $data); 
+
+        // $resource->fromArray($data);
+
+        /*
+            Проверяем на конфликт УРЛов.
+            Если есть конфликт, добавляем префикс по id
+        */
+
+        if($resource->isDuplicateAlias()){
+            $q = $this->modx->newQuery("modResource");
+            $q->select(array(
+                "max(id)",
+            ));
+
+            $resource->alias .= "-" . ($this->modx->getValue($q->prepare()) + 1);
+
+            $resource->uri = $resource->getAliasPath($resource->alias);
+        }
+
+
+        return $resource;
+    }
+
+    public function failure($msg = "", $object = array()){
+
+        // var_dump($msg);
+        // var_dump($object);
+        // var_dump($this->modx->error->errors);
+
+        if(
+            empty($msg)
+            AND !empty($this->modx->error->errors)
+        ){
+            $error = current($this->modx->error->errors);
+            $msg = $error['msg'];
+        }
+
+        return parent::failure($msg, $object);
     }
 
 
@@ -30,86 +141,95 @@ abstract class modWebObjectProcessor extends modSiteWebObjectProcessor{
 
         return parent::afterSave();
     }
-
-
     
     public function cleanup() {
 
-        $object = & $this->object;
+        /*
+            Вычищаем все данные, которые не были переданы в запросе
+        */
+        foreach($this->object->_fields as $name => $value){
 
-        foreach($object->_fields as $name => $value){
-
-
-            if(!array_key_exists($name, $this->properties)){
-            
-        
-                unset($object->_fields[$name]);
-
+            // Пропускаем разрешенные поля
+            if(in_array($name, array(
+                "id",
+            ))){
+                continue;
             }
 
+            if(!array_key_exists($name, $this->properties)){
+                unset($this->object->_fields[$name]);
+            }
         }
 
-        return parent::cleanup();
+        unset($this->object->_fields['new_object']);
+        unset($this->object->_fields['save_object']);
+
+        return $this->success($this->getProperty("success_msg", 'Объект успешно сохранен'), $this->object);
     }
 }
 
 return 'modWebObjectProcessor';
 
-// abstract class modXObjectProcessor extends modObjectUpdateProcessor{
+
+
+// require_once __DIR__ . '/../site/web/object.class.php';
+
+// abstract class modWebObjectProcessor extends modSiteWebObjectProcessor{
+
+//     function checkPermissions(){
+
+//         return $this->modx->user->id && parent::checkPermissions();
+//     }
+
+//     public function initialize() {
+
+
+//         $request_body = file_get_contents('php://input');
+
+//         if($request_body AND $data = json_decode($request_body, 1)){
+//             $this->setProperties($data);
+//         }
+
+//         return parent::initialize();
+//     }
+
+
+//     public function afterSave(){
+
+
+//         $this->modx->cacheManager->refresh();
+//         $this->modx->cacheManager->clearCache();
+
+//         return parent::afterSave();
+//     }
+
+
     
-//     public $logSaveAction = false;
-    
-    
-    
-//     public function fireBeforeSaveEvent() {
-//         $preventSave = false;
-//         if (!empty($this->beforeSaveEvent)) {
-//             /** @var boolean|array $OnBeforeFormSave */
-//             $OnBeforeFormSave = $this->modx->invokeEvent($this->beforeSaveEvent,array(
-//                 'mode'  => $this->object->isNew() ? modSystemEvent::MODE_NEW : modSystemEvent::MODE_UPD,
-//                 'data' => $this->object->toArray(),
-//                 $this->primaryKeyField => $this->object->get($this->primaryKeyField),
-//                 $this->object => &$this->object,
-//                 $this->objectType => &$this->object,
-//             ));
-//             if (is_array($OnBeforeFormSave)) {
-//                 $preventSave = false;
-//                 foreach ($OnBeforeFormSave as $msg) {
-//                     if (!empty($msg)) {
-//                         $preventSave .= $msg."\n";
-//                     }
-//                 }
-//             } else {
-//                 $preventSave = $OnBeforeFormSave;
+//     public function cleanup() {
+
+//         $object = & $this->object;
+
+//         foreach($object->_fields as $name => $value){
+
+//             // if(in_array($name, array(
+//             //     "new_object",
+//             //     "save_object",
+//             // ))){
+//             //     continue;
+//             // }
+
+//             if(!array_key_exists($name, $this->properties)){
+            
+        
+//                 unset($object->_fields[$name]);
+
 //             }
+
 //         }
-//         return $preventSave;
+
+//         return parent::cleanup();
 //     }
-    
-    
-//     # public function beforeSave() { 
-//     #     print_r($this->object->toArray());
-//     #     return 'Debug';
-//     # }
-    
-    
-//     public function fireAfterSaveEvent() {
-//         if (!empty($this->afterSaveEvent)) {
-//             $this->modx->invokeEvent($this->afterSaveEvent,array(
-//                 'mode' => $this->object->isNew() ? modSystemEvent::MODE_NEW : modSystemEvent::MODE_UPD,
-//                 $this->primaryKeyField => $this->object->get($this->primaryKeyField),
-//                 $this->object => &$this->object,
-//                 $this->objectType => &$this->object,
-//             ));
-//         }
-//     }
-    
-    
-//     public function logManagerAction() {
-//         if($this->logSaveAction){
-//             return parent::logManagerAction();
-//         }
-//         return;
-//     } 
-    
 // }
+
+// return 'modWebObjectProcessor';
+

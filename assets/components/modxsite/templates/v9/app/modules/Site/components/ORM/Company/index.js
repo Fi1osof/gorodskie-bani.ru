@@ -1095,6 +1095,8 @@ export default class Company extends ModelObject{
 
 export const add = (source, args, context, info) => {
 
+  console.log("Company add");
+
   let {
     CompaniesStore,
     coords,
@@ -1114,13 +1116,14 @@ export const add = (source, args, context, info) => {
   const uri = `bani/${id}/`;
 
   let data = {
-    id,
-    name: "",
-    uri,
-    coords,
   };
 
-  let company = new Company(data, context);
+  let company = new Company({
+    id,
+    name: "",
+    coords,
+    uri,
+  }, context);
 
   CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions.CREATE, company);
 

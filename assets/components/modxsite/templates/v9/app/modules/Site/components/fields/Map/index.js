@@ -77,6 +77,7 @@ export default class ItemMap extends Component{
 			// PlacesStore
  			item,
  			updateItem,
+ 			onChange,
  		} = this.props;
 
  		// let {
@@ -86,9 +87,14 @@ export default class ItemMap extends Component{
  		// // PlacesStore.getDispatcher().dispatch(PlacesStore.actions['UPDATE'], item, newCoords);
 
  		// updateItem(item, newCoords, PlacesStore);
- 		updateItem(item, {
+
+ 		const data = {
  			coords: newCoords,
- 		});
+ 		};
+
+ 		updateItem(item, data);
+
+  	onChange && onChange(item, data);
 
  		this.forceUpdate();
  	}
@@ -110,7 +116,11 @@ export default class ItemMap extends Component{
 		let {
 			item,
 			updateItem,
+			onFocus,
 			helper,
+			error,
+			helperText,
+			onChange,
 			...other
 		} = this.props;
 
@@ -192,6 +202,11 @@ export default class ItemMap extends Component{
 			    			style={{
 			    				minWidth: 300
 			    			}}
+			    			error={error || false}
+			    			textFieldProps={{
+			    				helperText: helperText || undefined,
+			    				onFocus,
+			    			}}
 			    			onNewRequest={(event, value, mapItem) => {
 							  	let {
 							  		coordinates: {
@@ -200,12 +215,14 @@ export default class ItemMap extends Component{
 							  		},
 							  	} = mapItem;
 
-							  	updateItem(item, {
+							  	const data = {
 							  		coords: {
 								  		lat,
 								  		lng,
 								  	},
-							  	});
+							  	};
+
+							  	updateItem(item, data);
 
 								}}
 		    			/>

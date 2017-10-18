@@ -924,9 +924,9 @@ export class AppMain extends Component{
       CompaniesStore,
     } = this.state;
 
-    if(data.coords){
-      Object.assign(data, data.coords);
-    }
+    // if(data.coords){
+    //   Object.assign(data, data.coords);
+    // }
 
     // 
 

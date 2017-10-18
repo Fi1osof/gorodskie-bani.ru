@@ -156,7 +156,13 @@ export default class Page extends Component{
 			
 			{this.renderContent()}
 
-			{getCounters()}
+			<div
+				style={{
+					paddingTop: 30,
+				}}
+			>
+				{getCounters()}
+			</div>
 
 		</Grid>;
 	}

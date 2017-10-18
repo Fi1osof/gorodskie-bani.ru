@@ -15,23 +15,23 @@ class modWebCompaniesValidator extends modWebValidator{
         }
         
         if(!$country = $company->Country){
-            $this->addFieldError("country_id", "Не была указана страна");
+            // $this->addFieldError("country_id", "Не была указана страна");
         }
         
         if(!$city = $company->City){
-            $this->addFieldError("city_id", "Не был указан город");
+            // $this->addFieldError("city_id", "Не был указан город");
         }
         
-        if(
-            $foundation_date = $company->foundation_date
-            AND $foundation_date > time()
-        ){
-            $this->addFieldError("foundation_date", "Дата основания не может быть позднее текущей даты");
-        }
+        // if(
+        //     $foundation_date = $company->foundation_date
+        //     AND $foundation_date > time()
+        // ){
+        //     $this->addFieldError("foundation_date", "Дата основания не может быть позднее текущей даты");
+        // }
         
-        if($website = $company->website){
-            $company->website = preg_replace('/^.*?\:\/\/|\/+$/', '', $website);
-        }
+        // if($website = $company->website){
+        //     $company->website = preg_replace('/^.*?\:\/\/|\/+$/', '', $website);
+        // }
         
         if(
             $country && $city
@@ -40,9 +40,9 @@ class modWebCompaniesValidator extends modWebValidator{
             return "Указаные страна и город не совпадают";
         }
         
-        if(!$resource->CreatedBy){
-            return "У документа отсутствует автор";
-        }
+        // if(!$resource->CreatedBy){
+        //     return "У документа отсутствует автор";
+        // }
         
         return parent::validate();
     }

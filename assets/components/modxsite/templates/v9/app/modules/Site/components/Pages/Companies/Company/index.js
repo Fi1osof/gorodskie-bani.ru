@@ -248,10 +248,82 @@ export default class CompanyPage extends Component{
 
 		return saveContactItem(item);
 	}
+
+
+	clearErrors(name){
+		
+		const {
+			item,
+		} = this.props;
+
+		let {
+			_errors: errors,
+		} = item;
+
+		if(errors && errors[name]){
+			errors[name] = "";
+			this.forceUpdate();
+		}
+
+	}
+
+	// Почему-то не приходит объект события
+	onFocus = (name) => {
+
+		// console.log('onFocus', event, a,b);
+
+		this.clearErrors(name);
+
+		return;
+
+	}
+
+	onChange = event => {
+
+		const {
+			item,
+		} = this.props;
+
+		let data = {};
+
+		// console.log("onChange item", item);
+
+		const {
+			name,
+			value,
+		} = event.target;
+
+		this.clearErrors(name);
+
+		data[name] = value;
+
+		switch(name){
+
+			case 'address':
+			case 'metro':
+			case 'phones':
+			case 'site':
+			case 'work_time':
+			case 'prices':
+
+				let tvs = item.tvs || {};
+
+				tvs[name] = value;
+
+				data.tvs = tvs;
+
+				break;
+
+		}
+
+		// console.log("onChange name, value", name, value);
+
+		item.update(data);
+
+	}
+
 	
 	render(){
-
-		const inEditMode = true;
 
 		const {
 			item,
@@ -272,8 +344,11 @@ export default class CompanyPage extends Component{
 			city,
 			coords,
 			comments,
+			_errors: errors,
 			_isDirty,
 		} = item;
+
+		const inEditMode = _isDirty ? true : true;
 
 		const {
 			metro,
@@ -435,28 +510,74 @@ export default class CompanyPage extends Component{
 		>
 			
 			<CardHeader 
-        title={<div
-        	style={{
-        		display: 'flex',
-        		flexDirection: 'row',
-        		alignItems: 'center',
-        	}}
+        title={<Grid
+        	container
+        	align="center"
+        	// style={{
+        	// 	display: 'flex',
+        	// 	flexDirection: 'row',
+        	// 	alignItems: 'center',
+        	// }}
         >
         	{_isDirty
         		?
-        			<IconButton
-        				onClick={event => {
-        					this.saveItem();
-        				}}
+        			<Grid
+        				item
         			>
-        				<SaveIcon 
-        					color="red"
-        				/>
-        			</IconButton>
+        				
+        				<IconButton
+	        				onClick={event => {
+	        					this.saveItem();
+	        				}}
+	        			>
+	        				<SaveIcon 
+	        					color="red"
+	        				/>
+	        			</IconButton>
+
+	        			<Helper
+									contrastIcons={false}
+		            >
+		              <Paper
+		              	style={{
+		              		padding: 15,
+		              	}}
+		              >
+		              	
+		              	<p>
+		              		Если горит красная иконка в виде дискеты, это означает, что информация о вашем заведении отредактирована. Кликнув по этой иконке
+		              		вы сохраните измененную информацию. <br />
+		              		Если вы хотите отменить все изменения, просто обновите страницу и изменения сбросятся.
+		              	</p> 
+
+		              </Paper>
+		            </Helper>
+
+        			</Grid>
         		:
         		null}
-        	{name}
-        </div>}
+
+    			<Grid
+    				item
+    				xs
+    			>
+	        	{inEditMode
+	        		?
+								<TextField 
+									label="Название заведения"
+									error={errors && errors.name ? true : false}
+									helperText={errors && errors.name || ""}
+									name="name"
+									value={name || ""}
+									onChange={this.onChange}
+									onFocus={() => this.onFocus('name')}
+								/>
+	        		:
+	        		name
+	        	}
+    			</Grid>
+
+        </Grid>}
         subheader={<RatingField 
 					item={item}
 				/>}
@@ -507,9 +628,12 @@ export default class CompanyPage extends Component{
 								?
 									<TextField 
 										label="Адрес"
-										helperText="Укажите подробный адрес"
+										error={errors && errors.address ? true : false}
+										helperText={errors && errors.address || "Укажите подробный адрес"}
 										name="address"
 										value={address || ""}
+										onChange={this.onChange}
+										onFocus={() => this.onFocus('address')}
 									/>
 								:
 								addresses.length ? <p>
@@ -522,10 +646,12 @@ export default class CompanyPage extends Component{
 							{inEditMode
 								?
 								<TextField 
-									label="Адрес"
+									label="Метро"
 									helperText="Укажите ближайшие станции метро через запятую"
 									name="metro"
 									value={metro || ""}
+									onChange={this.onChange}
+									onFocus={() => this.onFocus('metro')}
 								/>
 								:
 								metro ? <p>
@@ -541,6 +667,8 @@ export default class CompanyPage extends Component{
 									helperText="Можно указать несколько телефонов через запятую"
 									name="phones"
 									value={phones || ""}
+									onChange={this.onChange}
+									onFocus={() => this.onFocus('phones')}
 								/>
 								:
 								phones ? <p>
@@ -556,6 +684,8 @@ export default class CompanyPage extends Component{
 									helperText="Если адрес начинается с https, обязательно укажите вместе с ним, например, https://ваш_сайт/"
 									name="site"
 									value={site || ""}
+									onChange={this.onChange}
+									onFocus={() => this.onFocus('site')}
 								/>
 								:
 								site ? <p>
@@ -572,10 +702,13 @@ export default class CompanyPage extends Component{
 								?
 								<TextField 
 									label="Время работы"
-									helperText="Распишите график работы заведения"
+									error={errors && errors.work_time ? true : false}
+									helperText={errors && errors.work_time || "Распишите график работы заведения"}
 									name="work_time"
 									value={work_time || ""}
 									multiline
+									onChange={this.onChange}
+									onFocus={() => this.onFocus('work_time')}
 								/>
 								:
 								work_time ? <div
@@ -606,10 +739,13 @@ export default class CompanyPage extends Component{
 								?
 								<TextField 
 									label="Цены"
-									helperText="Распишите цены, включая цены на допуслуги"
+									error={errors && errors.prices ? true : false}
+									helperText={errors && errors.prices || "Распишите цены, включая цены на допуслуги"}
 									name="prices"
 									value={prices || ""}
 									multiline
+									onChange={this.onChange}
+									onFocus={() => this.onFocus('prices')}
 								/>
 								:
 								prices
@@ -675,11 +811,17 @@ export default class CompanyPage extends Component{
 	        	updateItem={this.updateItem}
 	        	// updateItem={updateItem}
 	        	showSearchControl={true}
+	        	onFocus={() => this.onFocus('coords')}
+	        	onChange={(item, data) => {
+	        		this.clearErrors('coords');
+	        	}}
+	        	error={errors && errors.coords ? true : false}
+	        	helperText={errors && errors.coords || undefined}
 	        	helper={<Paper
             	style={{
             		padding: 15,
             	}}
-            > 
+            >
 
             	<p>
             		Это поле позволяет точно указать координаты вашего заведения. Для этого просто переместите на карте маркер мышкой в нужную позицию.
@@ -688,6 +830,11 @@ export default class CompanyPage extends Component{
             	<p>
             		Если маркер находится не в том районе карты, где вам нужно, можете в этом поисковом поле набрать нужный вам адрес, после чего кликнуть подходящий 
             		предложенный вариант и маркер автоматически переместится в выбранный район.
+            	</p>
+
+            	<p>
+            		Смотрите видео как это работает: <br />
+            		<iframe width="560" height="315" src="https://www.youtube.com/embed/4V_GzUk0PTQ?rel=0&amp;showinfo=0" frameBorder="0" allowFullScreen></iframe>
             	</p>
 
             </Paper>}

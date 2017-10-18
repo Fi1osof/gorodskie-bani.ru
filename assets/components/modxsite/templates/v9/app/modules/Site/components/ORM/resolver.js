@@ -584,201 +584,228 @@ import {
 
 const rootResolver = (source, args, context, info) => {
 
-    // Object.assign(info, {
-    //   rootResolver,
-    // });
+  // Object.assign(info, {
+  //   rootResolver,
+  // });
 
-    let result;
+  let result;
 
-    // console.log('fieldResolver source', source);
-    // console.log('fieldResolver args', args);
-    // console.log('fieldResolver info', info);
+  // console.log('fieldResolver source', source);
+  // console.log('fieldResolver args', args);
+  // console.log('fieldResolver info', info);
 
-    // console.log('fieldResolver context', context);
+  // console.log('fieldResolver context', context);
 
-    let {
-      fieldName,
-      returnType,
-    } = info;
+  let {
+    fieldName,
+    returnType,
+    operation,
+  } = info;
 
-
-    // const {
-    //   ofType,
-    // } = returnType;
-
-    if(source){
-
-      // if(typeof source.fieldResolver === 'function'){
-        
-      //   // console.log('fieldResolver source', source);
-        
-      //   result = source.fieldResolver(source, args, context, info);
-      // }
-
-      // else result = source[fieldName];
-
-      result = source[fieldName];
-    }
-
-    if(result === undefined){
-
-      // Резолвим по типу объекта
-
-      // const {
-      //   returnType,
-      // } = info;
-
-      const {
-        name: returnTypeName,
-      } = returnType;
+  // Если это не корневой вызов, сбрасываем операцию, чтобы сквозной вызов не выполнялся
+  if(source){
+    operation = undefined;
+  }
 
 
+  if(operation && operation.name){
 
-      if(returnType instanceof ObjectsListType){
-        
-        // console.log('ObjectsListType', returnType);
+    switch(operation.name.value){
 
-        const {
-          _fields: {
-            object: objectField,
-          },
-        } = returnType;
+      case "addCompany":
 
-        if(objectField && objectField.type){
+        if(returnType === CompanyType){
 
-          const {
-            type: objectType,
-          } = objectField;
+          // console.log("rootResolver addCompany info", info);
 
-          const {
-            ofType,
-          } = objectType || {};
- 
-          if(getResolverByType(ofType)){
-
-            return getObjectsList(ofType, source, args, context, info);
-
-          }
-
-            // .then(r => {
-            //   result = r;
-            // })
+          return addCompany(source, args, context, info); 
+          
         }
 
 
-      }
+        break;
+    }
 
-      else if(returnType instanceof GraphQLList){
-        
-        // console.log('GraphQLList', returnType);
+  }
+
+
+  // const {
+  //   ofType,
+  // } = returnType;
+
+  if(source){
+
+    // if(typeof source.fieldResolver === 'function'){
+      
+    //   // console.log('fieldResolver source', source);
+      
+    //   result = source.fieldResolver(source, args, context, info);
+    // }
+
+    // else result = source[fieldName];
+
+    result = source[fieldName];
+  }
+
+  if(result === undefined){
+
+    // Резолвим по типу объекта
+
+    // const {
+    //   returnType,
+    // } = info;
+
+    const {
+      name: returnTypeName,
+    } = returnType;
+
+
+
+    if(returnType instanceof ObjectsListType){
+      
+      // console.log('ObjectsListType', returnType);
+
+      const {
+        _fields: {
+          object: objectField,
+        },
+      } = returnType;
+
+      if(objectField && objectField.type){
+
+        const {
+          type: objectType,
+        } = objectField;
 
         const {
           ofType,
-        } = returnType;
-        // const {
-        //   id,
-        // } = args;
-
-
-
-        // Получаем список контактов
-        // if((ofType === ContactType)
-
-        // // Получаем список заведений
-        // ||(ofType === PlaceType)
-
-        // // Получаем список услуг
-        // ||(ofType === ServiceType)
-
-        // // Получаем список связок место-контакт
-        // ||(ofType === PlaceContactType)
-
-        // // Получаем список связок место-услуга
-        // ||(ofType === PlaceServiceType)
-
-        // // Получаем список связок контакт-услуга
-        // ||(ofType === ContactServiceType)
-
-        // // Получаем список типов мест
-        // ||(ofType === PlaceTypeType)
-        // )
+        } = objectType || {};
 
         if(getResolverByType(ofType)){
 
-          return getObjects(ofType, source, args, context, info);
+          return getObjectsList(ofType, source, args, context, info);
 
         }
 
           // .then(r => {
           //   result = r;
           // })
-
       }
 
-      else if(returnType instanceof GraphQLObjectType){
-        
-        // console.log('GraphQLObjectType', returnType);
-        // console.log('GraphQLObjectType args', args);
-
-        // console.log('CompanyType.constructor', CompanyType);
-
-       //  const {
-       //    name: returnTypeName,
-       //  } = returnType;
-
-       //  const {
-       //    id,
-       //  } = args;
-
-
-
-
-        // Получаем список контактов
-        // if((returnType === ContactType)
-
-        // // Получаем список заведений
-        // ||(returnType === PlaceType)
-
-        // // Получаем список услуг
-        // ||(returnType === ServiceType)
-
-        // // Получаем список связок место-контакт
-        // ||(returnType === PlaceContactType)
-
-        // // Получаем список связок место-услуга
-        // ||(returnType === PlaceServiceType)
-
-        // // Получаем список связок контакт-услуга
-        // ||(returnType === ContactServiceType)
-
-        // // Получаем список типов мест
-        // ||(returnType === PlaceTypeType)
-        // )
-
-        if(getResolverByType(returnType)){
-
-          // return new Promise((resolve, reject) => {
-
-          //   objectResolver(returnType, source, args, context, info)
-          //   .then(r => {
-
-          //     resolve(r);
-
-          //   })
-          //   .catch(e => reject(e));
-
-          // });
-
-          return objectResolver(returnType, source, args, context, info);
-
-        }        
-
-      }
 
     }
 
+    else if(returnType instanceof GraphQLList){
+      
+      // console.log('GraphQLList', returnType);
 
-    return result;
+      const {
+        ofType,
+      } = returnType;
+      // const {
+      //   id,
+      // } = args;
+
+
+
+      // Получаем список контактов
+      // if((ofType === ContactType)
+
+      // // Получаем список заведений
+      // ||(ofType === PlaceType)
+
+      // // Получаем список услуг
+      // ||(ofType === ServiceType)
+
+      // // Получаем список связок место-контакт
+      // ||(ofType === PlaceContactType)
+
+      // // Получаем список связок место-услуга
+      // ||(ofType === PlaceServiceType)
+
+      // // Получаем список связок контакт-услуга
+      // ||(ofType === ContactServiceType)
+
+      // // Получаем список типов мест
+      // ||(ofType === PlaceTypeType)
+      // )
+
+      if(getResolverByType(ofType)){
+
+        return getObjects(ofType, source, args, context, info);
+
+      }
+
+        // .then(r => {
+        //   result = r;
+        // })
+
+    }
+
+    else if(returnType instanceof GraphQLObjectType){
+      
+      // console.log('GraphQLObjectType', returnType);
+      // console.log('GraphQLObjectType args', args);
+
+      // console.log('CompanyType.constructor', CompanyType);
+
+     //  const {
+     //    name: returnTypeName,
+     //  } = returnType;
+
+     //  const {
+     //    id,
+     //  } = args;
+
+
+
+
+      // Получаем список контактов
+      // if((returnType === ContactType)
+
+      // // Получаем список заведений
+      // ||(returnType === PlaceType)
+
+      // // Получаем список услуг
+      // ||(returnType === ServiceType)
+
+      // // Получаем список связок место-контакт
+      // ||(returnType === PlaceContactType)
+
+      // // Получаем список связок место-услуга
+      // ||(returnType === PlaceServiceType)
+
+      // // Получаем список связок контакт-услуга
+      // ||(returnType === ContactServiceType)
+
+      // // Получаем список типов мест
+      // ||(returnType === PlaceTypeType)
+      // )
+
+      if(getResolverByType(returnType)){
+
+        // return new Promise((resolve, reject) => {
+
+        //   objectResolver(returnType, source, args, context, info)
+        //   .then(r => {
+
+        //     resolve(r);
+
+        //   })
+        //   .catch(e => reject(e));
+
+        // });
+
+        return objectResolver(returnType, source, args, context, info);
+
+      }        
+
+    }
+
+  }
+
+
+  return result;
 
 }
 
@@ -793,70 +820,6 @@ const objectResolver = (returnType, source, args, context, info) => {
   // Если это не корневой вызов, сбрасываем операцию, чтобы сквозной вызов не выполнялся
   if(source){
     operation = undefined;
-  }
-
-
-  if(operation && operation.name){
-
-    switch(operation.name.value){
-
-      case "addCompany":
-
-        return addCompany(source, args, context, info); 
-
-        break;
-
-      // case "contactSetParent":
-
-      //   // console.log("contactSetParent object", result);
-
-      //   if(result && (result instanceof Contact)){
-
-      //     return result.contactSetParent(source, args, context, info)
-      //       // .catch(e => {
-      //       //   throw(new Error(e));
-      //       // });
-
-      //   }
-
-      //   break;
-
-      // case "PlaceContactUpdateCoords":
-
-
-      //   if(result && (result instanceof PlaceContact)){
-
-      //     // console.log("PlaceContactUpdateCoords Object result", result);
-
-      //     const {
-      //       lat,
-      //       lng,
-      //     } = args;
-
-      //     // Object.assign(result, {
-      //     //   lat,
-      //     //   lng,
-      //     // });
-      //     let coords;
-
-      //     if(lat && lng){
-      //       coords = {
-      //         lat,
-      //         lng,
-      //       };
-      //     }
-
-      //     return result.update({
-      //       lat,
-      //       lng,
-      //       coords,
-      //     });
-
-      //   }
-
-      //   break;
-    }
-
   }
 
   // console.log("await getObject object", result);

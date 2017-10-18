@@ -10,31 +10,62 @@
 
 require_once dirname(__FILE__) . '/_validator.class.php';
 
-class modWebCompaniesCreateProcessor extends modObjectCreateProcessor{
+require_once __DIR__ . '/object.class.php';
+
+// class modWebCompaniesCreateProcessor extends modObjectCreateProcessor{
+class modWebCompaniesCreateProcessor extends modWebCompaniesObjectProcessor{
     
-    public $classKey = 'modCompany';
+    public $classKey = 'SocietyBlog';
     
     public $permission = "create_company";
     
     
-    public function checkPermissions(){
+    // public function checkPermissions(){
         
-        if(!$this->modx->user->id){
-            return false;
-        }
+    //     if(!$this->modx->user->id){
+    //         return false;
+    //     }
         
-        return parent::checkPermissions();
-    }
+    //     return parent::checkPermissions();
+    // }
     
+    
+    function checkPermissions(){
+
+        // return $this->modx->hasPermission("updateCompanies") && parent::checkPermissions();
+
+        return true;
+    }
+
     
     public function initialize(){
         
-        $this->unsetProperty("editedby");
-        $this->unsetProperty("editedon");
-        $this->unsetProperty("owner");
-        $this->unsetProperty("resource_id");
-        $this->unsetProperty("blog_id");
-        $this->unsetProperty("content");
+        // if($foundation_date = $this->getProperty('foundation_date')){
+        //     if(!$foundation_date = strtotime($foundation_date)){
+        //         return "Дата основания должна быть указана в формате yyyy-mm-dd";
+        //     }
+            
+        //     // else
+        //     $this->setProperty('foundation_date', $foundation_date);
+        // }
+
+        // print_r($this->properties);
+        
+        $this->unsetProperty("id");
+        
+        $this->setProperties(array(
+            "new_object" => true,
+            "save_object" => true,
+        ));
+
+        // print_r($this->properties);
+
+        return parent::initialize();
+    }
+
+
+    public function beforeSet(){
+        
         
         $this->setProperties(array(
             "name"  => strip_tags(trim($this->getProperty('name'))),
@@ -47,72 +78,92 @@ class modWebCompaniesCreateProcessor extends modObjectCreateProcessor{
         ));
         
         $this->setProperties(array(
-            "createdby" =>   $this->modx->user->id,
+            // "createdby" =>   $this->modx->user->id,
             "createdon" => time(),
         ));
-        
-        if($foundation_date = $this->getProperty('foundation_date')){
-            if(!$foundation_date = strtotime($foundation_date)){
-                return "Дата основания должна быть указана в формате yyyy-mm-dd";
-            }
-            
-            // else
-            $this->setProperty('foundation_date', $foundation_date);
-        }
-        
-        return parent::initialize();
+ 
+
+        return parent::beforeSet();
     }
      
     
     public function beforeSave(){
         
-        parent::beforeSave();
+        $object = & $this->object;
+
+        // parent::beforeSave();
         
-        $resource = $this->modx->newObject('modResource', array(
-            "createdby" =>   $this->getProperty('createdby'),
-            "createdon" => $this->getProperty('createdon'),
-            "pagetitle" => $this->getProperty('name'),
-            "class_key" => "modDocument",
-            "isfolder"  => 1,
-            "template"  => 21,
-            "parent"    => $this->modx->getOption('modxsite.companies_catalog_id'),
-            "published" => false,
+        // $resource = $this->modx->newObject('modResource', array(
+        //     "createdby" =>   $this->getProperty('createdby'),
+        //     "createdon" => $this->getProperty('createdon'),
+        //     "pagetitle" => $this->getProperty('name'),
+        //     "class_key" => "modDocument",
+        //     "isfolder"  => 1,
+        //     "template"  => 21,
+        //     "parent"    => $this->modx->getOption('modxsite.companies_catalog_id'),
+        //     "published" => false,
+        // ));
+
+        // $resource->alias = $resource->cleanAlias($resource->pagetitle);
+        // $this->object->addOne($resource) ;
+        
+        // $validator = new modWebCompaniesValidator($this);
+        // $ok = $validator->validate();
+        // if($ok !== true){
+        //     return $ok;
+        // }
+        
+        // // Проверяем наличие в базе такой компании
+        // if($this->modx->getCount($this->classKey, array(
+        //     "name"  => $this->object->name,
+        // ))){
+        //     return "Такая компания уже имеется";
+        // }
+        
+        // // Проверяем по сайту
+        // if($this->object->website && $this->modx->getCount($this->classKey, array(
+        //     "website"  => $this->object->website,
+        // ))){
+        //     return "Компания с таким вебсайтом уже имеется";
+        // }
+        
+        // // Проверяем по емейлу
+        // if($this->object->email && $this->modx->getCount($this->classKey, array(
+        //     "email"  => $this->object->email,
+        // ))){
+        //     return "Компания с такой почтой уже имеется";
+        // }
+        
+        // /*
+        // */
+        // print_r($this->object->toArray());
+        
+        // return "Debug";
+
+
+
+        $data = array_merge((array)$this->properties, array(
+            "class_key"     => $this->classKey,
+            "parent"    => 1524,
+            "template"  => 27,
+            // "alias"         => preg_replace("/https?:\/\//i", "", trim($object->pagetitle, "/")),
+            "alias"         => trim($object->name),
         ));
-        $resource->alias = $resource->cleanAlias($resource->pagetitle);
-        $this->object->addOne($resource) ;
-        
-        $validator = new modWebCompaniesValidator($this);
-        $ok = $validator->validate();
-        if($ok !== true){
-            return $ok;
+
+        // print_r($data);
+
+        $resource = $this->createResource($data);
+
+        if($resource){
+
+            // print_r($resource->toArray());
+
+            $object->fromArray($resource->toArray());
+            
+            // print_r($object->toArray());
         }
-        
-        // Проверяем наличие в базе такой компании
-        if($this->modx->getCount($this->classKey, array(
-            "name"  => $this->object->name,
-        ))){
-            return "Такая компания уже имеется";
-        }
-        
-        // Проверяем по сайту
-        if($this->object->website && $this->modx->getCount($this->classKey, array(
-            "website"  => $this->object->website,
-        ))){
-            return "Компания с таким вебсайтом уже имеется";
-        }
-        
-        // Проверяем по емейлу
-        if($this->object->email && $this->modx->getCount($this->classKey, array(
-            "email"  => $this->object->email,
-        ))){
-            return "Компания с такой почтой уже имеется";
-        }
-        
-        /*print_r($this->object->toArray());
-        
-        return "Debug";*/
-        
-        return !$this->hasErrors();
+
+        return parent::beforeSave();
     }
     
     public function afterSave(){

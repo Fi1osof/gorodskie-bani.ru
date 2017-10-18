@@ -41,7 +41,7 @@ const addDevMiddlewares = (app, webpackConfig) => {
   app.use(router({
     app: app,
     // webpack: compiler,
-  }));
+  }).router);
   
   // app.use(router({
   //   app: app,

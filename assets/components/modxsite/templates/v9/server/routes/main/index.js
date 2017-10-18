@@ -37,13 +37,393 @@ const knex = require('knex')(db_config);
  
 let styles = {};
 
-
-
+ 
 
 
 /*
   OLD Router
 */
+
+export default class Router {
+
+  constructor(options){
+
+    this.router = this.createRouter(props);
+
+  }
+
+
+  createRouter(options){
+
+    const {
+    } = options || {};
+
+    var express = require('express');
+    let router = express.Router();
+
+
+    debug("Server started");
+
+    var httpServ = require('http');
+
+    require('express-ws')(options.app);
+
+    
+
+    /*
+    * API
+    * */
+
+    //   /*
+    //   * Собираем кукисы из оригинального запроса и если передаются куки в параметрах запроса,
+    //   * то объединяем их
+    //   * */
+      
+
+    router.post('/api/', function (req, res, next) {
+
+
+      const request = Object.assign(req.query, req.body);
+
+      let response = new Response(req, res, request, knex, config, clients, SendMessage);
+
+      return response.process(req, res, request);
+
+    });
+
+    router.use('/', function(req, res) {
+      
+      const store = configureStore();
+      
+      match({ 
+        routes, 
+        location: req.url 
+      }, async (error, redirectLocation, renderProps) => {
+
+        if (redirectLocation) { // Если необходимо сделать redirect
+          return res.redirect(301, redirectLocation.pathname + redirectLocation.search);
+        }
+
+        if (error) { // Произошла ошибка любого рода
+          return res.status(500).send(error.message);
+        }
+
+        if (!renderProps) { // мы не определили путь, который бы подошел для URL
+
+          let prevent;
+
+          await checkRedirect(req, res)
+            .then(r => {
+              prevent = r;
+            })
+            .catch(e => {
+              console.error(e);
+            });
+
+          if(!prevent){
+
+            // debug("knex resreq.headers", req);
+
+            var q = knex(`${prefix}monitor_requests`)
+              .insert({
+                site_url: req.hostname,
+                url: req.url,
+                http_status: 404,
+                context_key: "web",
+                parent: 0,
+                path: '/www/gorodskie-bani.ru/',
+                uuid: '',
+                ip: '',
+                time: 0,
+                php_error_info: '',
+                referer: '',
+                user_agent: req.headers['user-agent'],
+              })
+              ;
+
+              q.then((result) => { 
+
+                // debug("knex SQL", q.toString());
+                // debug("knex result", result);
+
+              }).catch(e => {
+
+                console.error(e);
+              });
+
+            return res.status(404).send('Not found');
+          }
+
+        }
+
+
+        let html;
+
+        try{
+          
+          const componentHTML = ReactDom.renderToString(
+            <Provider store={store}>
+              <RouterContext {...renderProps} />
+            </Provider>
+          );
+
+          const state = store.getState();
+
+          html = renderHTML(componentHTML, state);
+        }
+        catch(e){
+          console.error(e);
+          return res.status(500).send(e.message);
+        };
+
+        return res.end(html);
+      });
+
+      return;
+    });
+
+
+    const checkRedirect = (req, res) => {
+
+      return new Promise((resolve, reject) => {
+
+        const requestedUri = decodeURI(req.url.replace(/^\/+/, ''));
+
+        var q = knex(`${prefix}redirects as redirects`)
+          .innerJoin(`${prefix}site_content as content`, 'redirects.resource_id', 'content.id')
+          // .select('profile.*')
+          .select('content.uri')
+          // .limit('3')
+          ;
+
+          q.where({
+            "redirects.uri": requestedUri,
+          });
+          q.whereNot('content.uri', requestedUri);
+
+
+          q.limit(1); 
+          // 
+            
+          // console.log("knex SQL", q.toString());
+
+          q.then((result) => { 
+
+            // debug("knex result", result);
+
+            const {
+              uri,
+            } = result && result[0] || {};
+
+            if(uri && uri !== requestedUri){
+
+              return res.redirect(301, `/${uri}`);
+            }
+
+            return result;
+            return resolve(false);
+
+          }).catch(e => {
+
+            reject(e);
+          });
+
+
+        var cookies = [];
+
+        let cookies_obj;
+
+
+        let options = {
+          // method,
+          
+          url: "http://gorodskie-bani.local:9000/" + req.url,
+
+          // location: req.url,
+          headers: {
+          },
+        };
+
+        if(req.headers && req.headers.cookie){
+          let cooks = req.headers.cookie.split(";");
+
+          cookies_obj = {};
+
+          cooks.map(function(item){
+            var match = item.match(/ *(.+?)=(.+)/);
+            if(match){
+              cookies_obj[match[1]] = match[2];
+            }
+          });
+        }
+
+        if(cookies_obj){
+
+          for(var i in cookies_obj){
+            cookies.push(i + '=' + cookies_obj[i]);
+          }
+        }
+
+        if(cookies){
+          options.headers.Cookie = cookies;
+        }
+
+
+        const {
+          host,
+        } = req.headers;
+
+
+        let req2 = httpServ.request(options, (request, a, b) => {
+          //
+
+          request.on('data', function (chunk) {
+            // str += chunk;
+          });
+          //
+          // //the whole response has been recieved, so we just print it out here
+          request.on('end', function () {
+
+            var response_headers = request.headers;
+     
+            if(response_headers['location'] && response_headers['location'] != ''){
+
+              // res.redirect(301, 'http://yourotherdomain.com' + req.path)
+              res.redirect(301, response_headers['location'])
+              
+              return resolve(true);
+            }
+
+            return resolve(false); 
+
+          });
+
+
+        });
+
+        req2.end();
+
+      });
+
+    }
+   
+    function renderHTML(componentHTML, initialState) {
+
+      let assetsUrl;
+
+      let js_src;
+      let css_src;
+
+      let basePath;
+
+      if(process.env.NODE_ENV === 'production'){
+        assetsUrl = "/assets/components/modxsite/templates/v9/build/";
+
+        basePath = process.cwd() + "/build/";
+
+        var htmlFileName = "index.html";
+        // var html = fs.readFileSync(Path.join(assetsUrl, htmlFileName), "utf8");
+        var html = fs.readFileSync( `${basePath}${htmlFileName}`, "utf8");
+
+        let match = html.match(/<script .*?src="(.*?)"/);
+
+        if(match){
+          js_src = match[1];
+        }
+
+        let css_match = html.match(/<link [^>]*?href="([^\"]*?\.css)" rel="stylesheet"/);
+
+        if(css_match){
+          css_src = css_match[1];
+        }
+
+      }
+      else{
+        assetsUrl = "/build/";
+
+        js_src = `${assetsUrl}main.js`;
+        css_src = `${assetsUrl}css/main.css`;
+      }
+
+      // console.log('process.env.NODE_ENV CWD', process.cwd());
+      // console.log('process.env.NODE_ENV', process);
+      // console.log('process.env.NODE_ENV webpack', webpack);
+
+      return `
+        <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Городские бани</title>
+            <meta name="robots" content="index, follow" />
+            <link rel="shortcut icon" href="/favicon.ico"/>
+            <link rel="alternate" hreflang="ru" href="http://gorodskie-bani.ru/" />
+            <link rel="stylesheet" href="${css_src}">
+            <base href="/" />
+            <script type="application/javascript">
+              window.REDUX_INITIAL_STATE = ${JSON.stringify(initialState)};
+            </script>
+
+            <script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+              ga('create', 'UA-39491207-3', 'auto');
+              ga('send', 'pageview');
+            </script>
+            
+
+            <!-- Yandex.Metrika counter -->
+            <script type="text/javascript" >
+                (function (d, w, c) {
+                    (w[c] = w[c] || []).push(function() {
+                        try {
+                            w.yaCounter26848689 = new Ya.Metrika({
+                                id:26848689,
+                                clickmap:true,
+                                trackLinks:true,
+                                accurateTrackBounce:true,
+                                webvisor:true,
+                                trackHash:true
+                            });
+                        } catch(e) { }
+                    });
+
+                    var n = d.getElementsByTagName("script")[0],
+                        s = d.createElement("script"),
+                        f = function () { n.parentNode.insertBefore(s, n); };
+                    s.type = "text/javascript";
+                    s.async = true;
+                    s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+                    if (w.opera == "[object Opera]") {
+                        d.addEventListener("DOMContentLoaded", f, false);
+                    } else { f(); }
+                })(document, window, "yandex_metrika_callbacks");
+            </script>
+            <noscript><div><img src="https://mc.yandex.ru/watch/26848689" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+            <!-- /Yandex.Metrika counter -->
+          
+          </head>
+          <body>
+            <div id="root">${componentHTML}</div>
+          </body>
+          
+          <script type="application/javascript" src="${js_src}"></script>
+
+        </html>
+      `;
+    }
+
+    return router;
+
+  }
+
+}
+
+
 
 const oldRouter = function (options) {
 
@@ -901,342 +1281,342 @@ const oldRouter = function (options) {
   //   * */
     
 
-  router.post('/api/', function (req, res, next) {
+  // router.post('/api/', function (req, res, next) {
 
 
-    const request = Object.assign(req.query, req.body);
+  //   const request = Object.assign(req.query, req.body);
 
-    let response = new Response(req, res, request, knex, config, clients, SendMessage);
+  //   let response = new Response(req, res, request, knex, config, clients, SendMessage);
 
-    return response.process(req, res, request);
+  //   return response.process(req, res, request);
 
-  });
+  // });
 
-  router.use('/', function(req, res) {
+  // router.use('/', function(req, res) {
     
-    const store = configureStore();
+  //   const store = configureStore();
     
-    match({ 
-      routes, 
-      location: req.url 
-    }, async (error, redirectLocation, renderProps) => {
+  //   match({ 
+  //     routes, 
+  //     location: req.url 
+  //   }, async (error, redirectLocation, renderProps) => {
 
-      if (redirectLocation) { // Если необходимо сделать redirect
-        return res.redirect(301, redirectLocation.pathname + redirectLocation.search);
-      }
+  //     if (redirectLocation) { // Если необходимо сделать redirect
+  //       return res.redirect(301, redirectLocation.pathname + redirectLocation.search);
+  //     }
 
-      if (error) { // Произошла ошибка любого рода
-        return res.status(500).send(error.message);
-      }
+  //     if (error) { // Произошла ошибка любого рода
+  //       return res.status(500).send(error.message);
+  //     }
 
-      if (!renderProps) { // мы не определили путь, который бы подошел для URL
+  //     if (!renderProps) { // мы не определили путь, который бы подошел для URL
 
-        let prevent;
+  //       let prevent;
 
-        await checkRedirect(req, res)
-          .then(r => {
-            prevent = r;
-          })
-          .catch(e => {
-            console.error(e);
-          });
+  //       await checkRedirect(req, res)
+  //         .then(r => {
+  //           prevent = r;
+  //         })
+  //         .catch(e => {
+  //           console.error(e);
+  //         });
 
-        if(!prevent){
+  //       if(!prevent){
 
-          // debug("knex resreq.headers", req);
+  //         // debug("knex resreq.headers", req);
 
-          var q = knex(`${prefix}monitor_requests`)
-            .insert({
-              site_url: req.hostname,
-              url: req.url,
-              http_status: 404,
-              context_key: "web",
-              parent: 0,
-              path: '/www/gorodskie-bani.ru/',
-              uuid: '',
-              ip: '',
-              time: 0,
-              php_error_info: '',
-              referer: '',
-              user_agent: req.headers['user-agent'],
-            })
-            ;
+  //         var q = knex(`${prefix}monitor_requests`)
+  //           .insert({
+  //             site_url: req.hostname,
+  //             url: req.url,
+  //             http_status: 404,
+  //             context_key: "web",
+  //             parent: 0,
+  //             path: '/www/gorodskie-bani.ru/',
+  //             uuid: '',
+  //             ip: '',
+  //             time: 0,
+  //             php_error_info: '',
+  //             referer: '',
+  //             user_agent: req.headers['user-agent'],
+  //           })
+  //           ;
 
-            q.then((result) => { 
+  //           q.then((result) => { 
 
-              // debug("knex SQL", q.toString());
-              // debug("knex result", result);
+  //             // debug("knex SQL", q.toString());
+  //             // debug("knex result", result);
 
-            }).catch(e => {
+  //           }).catch(e => {
 
-              console.error(e);
-            });
+  //             console.error(e);
+  //           });
 
-          return res.status(404).send('Not found');
-        }
+  //         return res.status(404).send('Not found');
+  //       }
 
-      }
+  //     }
 
 
-      let html;
+  //     let html;
 
-      try{
+  //     try{
         
-        const componentHTML = ReactDom.renderToString(
-          <Provider store={store}>
-            <RouterContext {...renderProps} />
-          </Provider>
-        );
+  //       const componentHTML = ReactDom.renderToString(
+  //         <Provider store={store}>
+  //           <RouterContext {...renderProps} />
+  //         </Provider>
+  //       );
 
-        const state = store.getState();
+  //       const state = store.getState();
 
-        html = renderHTML(componentHTML, state);
-      }
-      catch(e){
-        console.error(e);
-        return res.status(500).send(e.message);
-      };
+  //       html = renderHTML(componentHTML, state);
+  //     }
+  //     catch(e){
+  //       console.error(e);
+  //       return res.status(500).send(e.message);
+  //     };
 
-      return res.end(html);
-    });
+  //     return res.end(html);
+  //   });
 
-    return;
-  });
-
-
-  const checkRedirect = (req, res) => {
-
-    return new Promise((resolve, reject) => {
-
-      const requestedUri = decodeURI(req.url.replace(/^\/+/, ''));
-
-      var q = knex(`${prefix}redirects as redirects`)
-        .innerJoin(`${prefix}site_content as content`, 'redirects.resource_id', 'content.id')
-        // .select('profile.*')
-        .select('content.uri')
-        // .limit('3')
-        ;
-
-        q.where({
-          "redirects.uri": requestedUri,
-        });
-        q.whereNot('content.uri', requestedUri);
+  //   return;
+  // });
 
 
-        q.limit(1); 
-        // 
+  // const checkRedirect = (req, res) => {
+
+  //   return new Promise((resolve, reject) => {
+
+  //     const requestedUri = decodeURI(req.url.replace(/^\/+/, ''));
+
+  //     var q = knex(`${prefix}redirects as redirects`)
+  //       .innerJoin(`${prefix}site_content as content`, 'redirects.resource_id', 'content.id')
+  //       // .select('profile.*')
+  //       .select('content.uri')
+  //       // .limit('3')
+  //       ;
+
+  //       q.where({
+  //         "redirects.uri": requestedUri,
+  //       });
+  //       q.whereNot('content.uri', requestedUri);
+
+
+  //       q.limit(1); 
+  //       // 
           
-        // console.log("knex SQL", q.toString());
+  //       // console.log("knex SQL", q.toString());
 
-        q.then((result) => { 
+  //       q.then((result) => { 
 
-          // debug("knex result", result);
+  //         // debug("knex result", result);
 
-          const {
-            uri,
-          } = result && result[0] || {};
+  //         const {
+  //           uri,
+  //         } = result && result[0] || {};
 
-          if(uri && uri !== requestedUri){
+  //         if(uri && uri !== requestedUri){
 
-            return res.redirect(301, `/${uri}`);
-          }
+  //           return res.redirect(301, `/${uri}`);
+  //         }
 
-          return result;
-          return resolve(false);
+  //         return result;
+  //         return resolve(false);
 
-        }).catch(e => {
+  //       }).catch(e => {
 
-          reject(e);
-        });
-
-
-      var cookies = [];
-
-      let cookies_obj;
+  //         reject(e);
+  //       });
 
 
-      let options = {
-        // method,
+  //     var cookies = [];
+
+  //     let cookies_obj;
+
+
+  //     let options = {
+  //       // method,
         
-        url: "http://gorodskie-bani.local:9000/" + req.url,
+  //       url: "http://gorodskie-bani.local:9000/" + req.url,
 
-        // location: req.url,
-        headers: {
-        },
-      };
+  //       // location: req.url,
+  //       headers: {
+  //       },
+  //     };
 
-      if(req.headers && req.headers.cookie){
-        let cooks = req.headers.cookie.split(";");
+  //     if(req.headers && req.headers.cookie){
+  //       let cooks = req.headers.cookie.split(";");
 
-        cookies_obj = {};
+  //       cookies_obj = {};
 
-        cooks.map(function(item){
-          var match = item.match(/ *(.+?)=(.+)/);
-          if(match){
-            cookies_obj[match[1]] = match[2];
-          }
-        });
-      }
+  //       cooks.map(function(item){
+  //         var match = item.match(/ *(.+?)=(.+)/);
+  //         if(match){
+  //           cookies_obj[match[1]] = match[2];
+  //         }
+  //       });
+  //     }
 
-      if(cookies_obj){
+  //     if(cookies_obj){
 
-        for(var i in cookies_obj){
-          cookies.push(i + '=' + cookies_obj[i]);
-        }
-      }
+  //       for(var i in cookies_obj){
+  //         cookies.push(i + '=' + cookies_obj[i]);
+  //       }
+  //     }
 
-      if(cookies){
-        options.headers.Cookie = cookies;
-      }
-
-
-      const {
-        host,
-      } = req.headers;
+  //     if(cookies){
+  //       options.headers.Cookie = cookies;
+  //     }
 
 
-      let req2 = httpServ.request(options, (request, a, b) => {
-        //
+  //     const {
+  //       host,
+  //     } = req.headers;
 
-        request.on('data', function (chunk) {
-          // str += chunk;
-        });
-        //
-        // //the whole response has been recieved, so we just print it out here
-        request.on('end', function () {
 
-          var response_headers = request.headers;
+  //     let req2 = httpServ.request(options, (request, a, b) => {
+  //       //
+
+  //       request.on('data', function (chunk) {
+  //         // str += chunk;
+  //       });
+  //       //
+  //       // //the whole response has been recieved, so we just print it out here
+  //       request.on('end', function () {
+
+  //         var response_headers = request.headers;
    
-          if(response_headers['location'] && response_headers['location'] != ''){
+  //         if(response_headers['location'] && response_headers['location'] != ''){
 
-            // res.redirect(301, 'http://yourotherdomain.com' + req.path)
-            res.redirect(301, response_headers['location'])
+  //           // res.redirect(301, 'http://yourotherdomain.com' + req.path)
+  //           res.redirect(301, response_headers['location'])
             
-            return resolve(true);
-          }
+  //           return resolve(true);
+  //         }
 
-          return resolve(false); 
+  //         return resolve(false); 
 
-        });
+  //       });
 
 
-      });
+  //     });
 
-      req2.end();
+  //     req2.end();
 
-    });
+  //   });
 
-  }
+  // }
  
-  function renderHTML(componentHTML, initialState) {
+  // function renderHTML(componentHTML, initialState) {
 
-    let assetsUrl;
+  //   let assetsUrl;
 
-    let js_src;
-    let css_src;
+  //   let js_src;
+  //   let css_src;
 
-    let basePath;
+  //   let basePath;
 
-    if(process.env.NODE_ENV === 'production'){
-      assetsUrl = "/assets/components/modxsite/templates/v9/build/";
+  //   if(process.env.NODE_ENV === 'production'){
+  //     assetsUrl = "/assets/components/modxsite/templates/v9/build/";
 
-      basePath = process.cwd() + "/build/";
+  //     basePath = process.cwd() + "/build/";
 
-      var htmlFileName = "index.html";
-      // var html = fs.readFileSync(Path.join(assetsUrl, htmlFileName), "utf8");
-      var html = fs.readFileSync( `${basePath}${htmlFileName}`, "utf8");
+  //     var htmlFileName = "index.html";
+  //     // var html = fs.readFileSync(Path.join(assetsUrl, htmlFileName), "utf8");
+  //     var html = fs.readFileSync( `${basePath}${htmlFileName}`, "utf8");
 
-      let match = html.match(/<script .*?src="(.*?)"/);
+  //     let match = html.match(/<script .*?src="(.*?)"/);
 
-      if(match){
-        js_src = match[1];
-      }
+  //     if(match){
+  //       js_src = match[1];
+  //     }
 
-      let css_match = html.match(/<link [^>]*?href="([^\"]*?\.css)" rel="stylesheet"/);
+  //     let css_match = html.match(/<link [^>]*?href="([^\"]*?\.css)" rel="stylesheet"/);
 
-      if(css_match){
-        css_src = css_match[1];
-      }
+  //     if(css_match){
+  //       css_src = css_match[1];
+  //     }
 
-    }
-    else{
-      assetsUrl = "/build/";
+  //   }
+  //   else{
+  //     assetsUrl = "/build/";
 
-      js_src = `${assetsUrl}main.js`;
-      css_src = `${assetsUrl}css/main.css`;
-    }
+  //     js_src = `${assetsUrl}main.js`;
+  //     css_src = `${assetsUrl}css/main.css`;
+  //   }
 
-    // console.log('process.env.NODE_ENV CWD', process.cwd());
-    // console.log('process.env.NODE_ENV', process);
-    // console.log('process.env.NODE_ENV webpack', webpack);
+  //   // console.log('process.env.NODE_ENV CWD', process.cwd());
+  //   // console.log('process.env.NODE_ENV', process);
+  //   // console.log('process.env.NODE_ENV webpack', webpack);
 
-    return `
-      <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Городские бани</title>
-          <meta name="robots" content="index, follow" />
-          <link rel="shortcut icon" href="/favicon.ico"/>
-          <link rel="alternate" hreflang="ru" href="http://gorodskie-bani.ru/" />
-          <link rel="stylesheet" href="${css_src}">
-          <base href="/" />
-          <script type="application/javascript">
-            window.REDUX_INITIAL_STATE = ${JSON.stringify(initialState)};
-          </script>
+  //   return `
+  //     <!DOCTYPE html>
+  //       <html>
+  //       <head>
+  //         <meta charset="utf-8">
+  //         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  //         <title>Городские бани</title>
+  //         <meta name="robots" content="index, follow" />
+  //         <link rel="shortcut icon" href="/favicon.ico"/>
+  //         <link rel="alternate" hreflang="ru" href="http://gorodskie-bani.ru/" />
+  //         <link rel="stylesheet" href="${css_src}">
+  //         <base href="/" />
+  //         <script type="application/javascript">
+  //           window.REDUX_INITIAL_STATE = ${JSON.stringify(initialState)};
+  //         </script>
 
-          <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-            ga('create', 'UA-39491207-3', 'auto');
-            ga('send', 'pageview');
-          </script>
+  //         <script>
+  //           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  //           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  //           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  //           })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  //           ga('create', 'UA-39491207-3', 'auto');
+  //           ga('send', 'pageview');
+  //         </script>
           
 
-          <!-- Yandex.Metrika counter -->
-          <script type="text/javascript" >
-              (function (d, w, c) {
-                  (w[c] = w[c] || []).push(function() {
-                      try {
-                          w.yaCounter26848689 = new Ya.Metrika({
-                              id:26848689,
-                              clickmap:true,
-                              trackLinks:true,
-                              accurateTrackBounce:true,
-                              webvisor:true,
-                              trackHash:true
-                          });
-                      } catch(e) { }
-                  });
+  //         <!-- Yandex.Metrika counter -->
+  //         <script type="text/javascript" >
+  //             (function (d, w, c) {
+  //                 (w[c] = w[c] || []).push(function() {
+  //                     try {
+  //                         w.yaCounter26848689 = new Ya.Metrika({
+  //                             id:26848689,
+  //                             clickmap:true,
+  //                             trackLinks:true,
+  //                             accurateTrackBounce:true,
+  //                             webvisor:true,
+  //                             trackHash:true
+  //                         });
+  //                     } catch(e) { }
+  //                 });
 
-                  var n = d.getElementsByTagName("script")[0],
-                      s = d.createElement("script"),
-                      f = function () { n.parentNode.insertBefore(s, n); };
-                  s.type = "text/javascript";
-                  s.async = true;
-                  s.src = "https://mc.yandex.ru/metrika/watch.js";
+  //                 var n = d.getElementsByTagName("script")[0],
+  //                     s = d.createElement("script"),
+  //                     f = function () { n.parentNode.insertBefore(s, n); };
+  //                 s.type = "text/javascript";
+  //                 s.async = true;
+  //                 s.src = "https://mc.yandex.ru/metrika/watch.js";
 
-                  if (w.opera == "[object Opera]") {
-                      d.addEventListener("DOMContentLoaded", f, false);
-                  } else { f(); }
-              })(document, window, "yandex_metrika_callbacks");
-          </script>
-          <noscript><div><img src="https://mc.yandex.ru/watch/26848689" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-          <!-- /Yandex.Metrika counter -->
+  //                 if (w.opera == "[object Opera]") {
+  //                     d.addEventListener("DOMContentLoaded", f, false);
+  //                 } else { f(); }
+  //             })(document, window, "yandex_metrika_callbacks");
+  //         </script>
+  //         <noscript><div><img src="https://mc.yandex.ru/watch/26848689" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  //         <!-- /Yandex.Metrika counter -->
         
-        </head>
-        <body>
-          <div id="root">${componentHTML}</div>
-        </body>
+  //       </head>
+  //       <body>
+  //         <div id="root">${componentHTML}</div>
+  //       </body>
         
-        <script type="application/javascript" src="${js_src}"></script>
+  //       <script type="application/javascript" src="${js_src}"></script>
 
-      </html>
-    `;
-  }
+  //     </html>
+  //   `;
+  // }
  
  
 
@@ -1248,4 +1628,4 @@ const oldRouter = function (options) {
   return router;
 }
 
-export default oldRouter;
+// export default Router;

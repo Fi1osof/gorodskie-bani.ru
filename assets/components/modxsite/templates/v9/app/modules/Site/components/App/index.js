@@ -872,6 +872,135 @@ export class AppMain extends Component{
     }
   }
 
+
+
+
+  initWebSocket(user){
+
+
+    return new Promise((resolve, reject) => {
+
+
+      if(typeof window === 'undefined'){
+        return resolve();
+      }
+
+      const protocol = (document.location.protocol == "https:") ? "wss" : "ws";
+
+      const ws = new WebSocket(`${protocol}://${window.location.host}/api/?${user ? `uid=${user.id}` : ''}`);  
+
+      // window.ws = ws;
+
+      this.state.ws = ws;
+
+      ws.onmessage = (message) => {
+
+        console.log('new ws message', message);
+
+        if (ws.readyState == ws.OPEN) {
+          
+          try{
+
+            message = JSON.parse(message.data);
+
+
+
+            switch (message.type) {
+
+              case 'chat_message':
+
+                if (message.object && message.object.id) {
+                  var messages = this.state.messages;
+                  var msg = message.object;
+                  // messages.push(msg);
+
+                  // console.log('new ws msg', msg);
+
+                  // Если есть текущий диалог, добавляем в него
+                  // if(
+                  //   msg.dialogue_id
+                  //   && this.state.dialogues
+                  //   && this.state.dialogues.length
+                  // ){
+                  //   this.state.dialogues.map((dialog) => {
+                  //     if(dialog.id == msg.dialogue_id){
+                  //       dialog.lastmsg = `${msg.sender_firstname}: ${msg.text}`;
+                  //     }
+                  //   });
+                  // }
+
+                  // this.setState({
+                  //   messages: messages,
+                  // });
+                }
+
+                break;
+
+              case 'newDialogMessage':
+
+                this.getUserInfo();
+
+                break;
+
+              // Сообщение было отмечено как прочтенное, перегружаем его
+              case 'dialog_message_is_readed':
+
+                let {
+                  text: message_id,
+                } = message;
+
+                message_id = parseInt(message_id);
+
+                if(message_id){
+
+                  this.reloadMessage({
+                    message_id,
+                  });
+                  
+                }
+
+                break;
+
+              default:;
+            }
+
+            // console.log('ws onmessage', message);
+
+          }
+          catch(e){
+            console.error(e);
+          }
+        }
+      }
+
+      ws.onopen = () => {
+        
+        // console.log('ws onopen');
+        
+        // this.setState({
+        //   need_send_user_data: true,
+        // });
+
+        resolve(ws);
+      }
+
+      ws.onerror = (error) => {
+        console.error('ws Connection error', error);
+
+        reject(error);
+      }
+
+      ws.onclose = function () {
+        // console.log('ws Connection closed');
+      }
+
+
+    });
+
+  }
+
+
+
   setPageTitle = (title) => {
 
     if(title && !/Городские бани/u.test(title)){
@@ -1170,6 +1299,8 @@ export class AppMain extends Component{
 
   loadApiData = async () => {
 
+    let user;
+
     await this.remoteQuery({
       operationName: "apiData",
       variables: {
@@ -1194,7 +1325,7 @@ export class AppMain extends Component{
       if(data.success && data.object){
         let {
           companies,
-          user,
+          user: currentUser,
           users,
           ratings,
           comments,
@@ -1202,8 +1333,10 @@ export class AppMain extends Component{
           topics,
         } = data.object || {};
 
-        if(user){
-          this.props.userActions.GetOwnDataSuccess(user);
+        if(currentUser){
+          this.props.userActions.GetOwnDataSuccess(currentUser);
+
+          user = currentUser;
         }
 
         // let companies = object && object.map(n => new Company(n)) || [];
@@ -1228,6 +1361,8 @@ export class AppMain extends Component{
     .catch(e => {
       console.error(e);
     });
+
+    this.initWebSocket(user);
 
     // this.forceUpdate();
 

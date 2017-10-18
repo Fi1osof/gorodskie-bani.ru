@@ -73,7 +73,7 @@ let schema;
 
 export default class Response{
 
-  constructor (req, res, params, knexdb, config) {
+  constructor (req, res, params, knexdb, config, ws_clients, SendWebSocketMessage) {
  
 
     this.db = knex = knexdb;
@@ -89,6 +89,10 @@ export default class Response{
     schema = this.getSchema();
 
     this.rootResolver = rootResolver;
+ 
+    this.ws_clients = ws_clients;
+
+    this.SendWebSocketMessage = SendWebSocketMessage;
   };
 
   getConfig = (field) => {

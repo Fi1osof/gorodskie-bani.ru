@@ -61,6 +61,19 @@ import {
 } from './Comment';
 
 
+import WsConnectionType, {
+} from 'modules/Site/components/ORM/WsConnection';
+
+import {
+  getList as getWsConnectionsList,
+} from './WsConnection';
+
+
+import WsMessageType, {
+} from 'modules/Site/components/ORM/WsMessage';
+
+
+
 const rootResolver = async (source, args, context, info) => {
 
 
@@ -269,6 +282,23 @@ const getObjectsList = async (ofType, source, args, context, info) => {
         console.error(e);
       });
 
+  }
+
+
+  if(ofType === WsConnectionType){
+
+    await getWsConnectionsList(source, args, context, info)
+      .then(r => {
+
+        object = r;
+
+        console.log('getWsConnectionsList resolver result', r);
+
+      })
+      .catch(e => {
+        console.error(e);
+      });
+      
   }
 
   // return {

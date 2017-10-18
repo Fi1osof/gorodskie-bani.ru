@@ -1123,6 +1123,59 @@ mutation addCompany(
 }
 
 
+# WebSocket connection
+
+query WsConnections(
+  $wsConnectionUserId:Int
+  $wsConnectionSendMessage:Boolean = false
+  $wsConnectionGetUser:Boolean = false
+  $wsConnectionMessageType:String = ""
+  $wsConnectionMessageText:String
+  $getImageFormats:Boolean = false
+){
+  ...RootWsConnections
+}
+
+query WsConnectionsByUserId(
+  $wsConnectionUserId:Int!
+  $wsConnectionSendMessage:Boolean = false
+  $wsConnectionGetUser:Boolean = false
+  $wsConnectionMessageType:String = ""
+  $wsConnectionMessageText:String
+  $getImageFormats:Boolean = false
+){
+  ...RootWsConnections
+}
+
+fragment RootWsConnections on RootType{
+  ws_connections(
+    user:$wsConnectionUserId
+  ){
+    ...WsConnection
+  }
+}
+
+fragment WsConnection on WsConnectionType{
+    id
+    status
+    query{
+      uid
+    }
+    user @include(if:$wsConnectionGetUser)
+    {
+      ...UserFields
+    }
+    sendWsUserMessageTypeNotice(
+      type:$wsConnectionMessageType
+      text:$wsConnectionMessageText
+    ) @include(if:$wsConnectionSendMessage)
+    {
+      type
+      text
+      message_id
+    }
+}
+
 `;
 
 export default defaultQuery;

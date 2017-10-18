@@ -1,7 +1,5 @@
 'use strict';
 
-// import React    from 'react';
-// import ReactDOMServer from 'react-dom/server';
 
 import React    from 'react';
 import ReactDom from 'react-dom/server';
@@ -9,7 +7,6 @@ import { match, RouterContext } from 'react-router';
 import { Provider } from "react-redux";
 
 const fs = require('fs');
-// var path = require('path');
 
 import configureStore from '../../../app/store';
 import routes from "../../../app/routes";
@@ -37,96 +34,219 @@ let {
 } = db_config;
 
 const knex = require('knex')(db_config);
-
-
-// import {db as db_config} from '../../config/config';
  
 let styles = {};
 
 module.exports = function (options) {
 
   const {
-    // webpack,
   } = options || {};
-
-  // var options = options || {};
 
   var express = require('express');
   var router = express.Router();
 
-  // var querystring = require('querystring');
-
-  // var mime = require('mime-types');
-
-  // var http = require('http');
-
-  // var fs = require('fs');
-
-  /*
-  * Надстройка WebSocket для роутера
-  * */
-  // var expressWs = require('express-ws')(options.app);
-  // require('express-ws')(options.app);
-
-  // var host = options.host;
-  // let raw_host_port = options.raw_host_port;
-  // ;
-
 
   debug("Server started");
 
-
-  // var cfg = {
-  //   hot_reload_debug: options.hot_reload_debug,
-  //   hot_reload_port: options.hot_reload_port,
-  //   ssl: false,
-  // };
-
-  // // var host = options.host;
-
-  // var httpServ = (cfg.ssl) ? require('https') : require('http');
   var httpServ = require('http');
 
+  require('express-ws')(options.app);
+
+ 
   /*
-  * API
-  * */
-  //
+    WS
+  */
 
+  let clients = [];
+  let users = [];
+ 
+  const SendMessage = function(client, message, original_message){
+    if(client && client.readyState === client.OPEN){
 
-  // function SendMessage(client, message, original_message){
-  //   if(client && client.readyState == client.OPEN){
+      // console.log(client);
+      // console.log('SendMessage', message);
 
-  //     // console.log(client);
+      if(typeof message !== "object"){
+        message = {
+          text: "message"
+        };
+      }
 
-  //     if(typeof message !== "object"){
-  //       message = {
-  //         text: "message"
-  //       };
-  //     }
+      if(!message.ts){
+        message.ts = new Date().getTime();
+      }
 
-  //     if(!message.ts){
-  //       message.ts = new Date().getTime();
-  //     }
+      delete message.cookie;
+      delete message.password;
 
-  //     delete message.cookie;
-  //     delete message.password;
+      if(original_message){
 
-  //     if(original_message){
+        delete original_message.cookie;
+        delete original_message.password;
 
-  //       delete original_message.cookie;
-  //       delete original_message.password;
+        message.original_message = original_message;
+      }
 
-  //       message.original_message = original_message;
-  //     }
+      // client.send(JSON.stringify(message));
+      client && typeof client.send === "function" && client.send(JSON.stringify(message));
+    }
 
-  //     client.send(JSON.stringify(message));
-  //   }
-
-  // }
+  }
  
 
 
-  // function SendMessageToAll(ws, message, original_message, exclude_current){
+  const SendMessageToAll = function(ws, message, original_message, exclude_current){
+
+    delete message.cookie;
+    delete message.password;
+
+    if(original_message){
+      delete original_message.cookie;
+      delete original_message.password;
+    }
+
+    for(var i in clients){
+
+      var client = clients[i];
+
+      if(exclude_current && client == ws){
+        continue;
+      }
+
+      SendMessage(client, message, original_message);
+    }
+  }
+
+
+
+  
+  /*
+    Cлужба рассылки уведомлений о новых письмах
+  */
+  // setInterval(() => {
+
+  //   let res = {};
+  //   let req = {};
+  //   let request = {};
+
+  //   let response = new Response(req, res, request, knex, clients, SendMessage, config);
+
+  //   // return response.process();
+
+  //   response.notifyUsersUnreadMessages({
+  //     headers: {},
+  //   }, {}, response, {});
+
+  // }, 1000 * 60 * 5);
+
+
+
+  const success = function(req, res, response, knex){
+    
+
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify(response));
+  }
+
+  const failure = function(req, res, response){
+
+
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify(response));
+  }
+
+
+  const processResponse = function(req, res, response){
+    if(response.success){
+      return success(req, res, response);
+    }
+    else{
+      return failure(req, res, response);
+    }
+  }
+ 
+ 
+
+  /*
+   * Static
+   * */
+
+
+  /*
+   * Надстройка WebSocket для роутера
+   * */
+  // var expressWs = require('express-ws')(options.app);
+
+
+  /*
+   * API
+   * */
+  //
+
+
+
+  const SendUsersActivity = function(){
+
+    var users_list = [];
+    var ids = {};
+
+    var total_active_clients = 0;
+
+    for(var i in clients){
+      var client = clients[i];
+
+      if(
+        client.readyState == client.OPEN
+      ){
+
+        total_active_clients++;
+
+        if(
+          client.user
+          && client.user.id
+          && !ids[client.user.id]
+        ){
+          ids[client.user.id] = true;
+          users_list.push(client.user);
+        }
+      }
+    }
+
+
+    users_list.reverse();
+
+    // for(var i in clients){
+    //   SendMessage(clients[i], {
+    //     type: "active_users_list",
+    //     users: users_list,
+    //   });
+    // }
+
+    /*
+     * Если список пользователей изменился, отправляем статистику
+     * */
+    if(md5(users_list) != md5(users)){
+      users = users_list;
+
+      SendMessageToAll({
+        type: "active_users_list",
+        users: users,
+      });
+    }
+
+
+    debug('SendUsersActivity');
+    debug('total_active_clients', total_active_clients);
+    debug('users', users);
+    return;
+  }
+
+
+  // setInterval(SendUsersActivity, 3000);
+
+
+
+  // function SendMessageToAll(message, original_message, exclude_current, ws){
 
   //   delete message.cookie;
   //   delete message.password;
@@ -149,14 +269,133 @@ module.exports = function (options) {
   // }
 
 
-  // function success(req, res, response, knex){
+  function SendMessageToUsers(message, users_ids){
+
+    // console.log("SendMessageToUsers", message, users_ids);
+    // console.log("SendMessageToUsers", users_ids);
+
+    if(!users_ids || users_ids == ""){
+      return;
+    }
+
+    users_ids = users_ids.split(",");
+
+    for(var i in users_ids){
+      users_ids[i] = Number(users_ids[i]);
+    }
+
+    clients.map(function(client){
+
+      // var client = clients[i];
+
+      // if(exclude_current && client == ws){
+      //   continue;
+      // }
+
+      // console.log("Проверяем клиента", users_ids);
+      // break;
+
+      // console.log(typeof client);
+
+      if(users_ids.indexOf(client.user_id) != -1){
+        // console.log('users_ids: ', client.user_id);
+
+        SendMessage(client, message);
+      }
+
+      // SendMessage(client, message);
+    });
+  }
+
+  // const SendMessage = function(client, message, original_message){
+  //   if(client && client.readyState === client.OPEN){
+
+  //     // console.log(client);
+  //     // console.log('SendMessage', message);
+
+  //     if(typeof message !== "object"){
+  //       message = {
+  //         text: "message"
+  //       };
+  //     }
+
+  //     if(!message.ts){
+  //       message.ts = new Date().getTime();
+  //     }
+
+  //     delete message.cookie;
+  //     delete message.password;
+
+  //     if(original_message){
+
+  //       delete original_message.cookie;
+  //       delete original_message.password;
+
+  //       message.original_message = original_message;
+  //     }
+
+  //     // client.send(JSON.stringify(message));
+  //     client && typeof client.send === "function" && client.send(JSON.stringify(message));
+  //   }
+
+  // }
+ 
+
+
+  // const SendMessageToAll = function(ws, message, original_message, exclude_current){
+
+  //   delete message.cookie;
+  //   delete message.password;
+
+  //   if(original_message){
+  //     delete original_message.cookie;
+  //     delete original_message.password;
+  //   }
+
+  //   for(var i in clients){
+
+  //     var client = clients[i];
+
+  //     if(exclude_current && client == ws){
+  //       continue;
+  //     }
+
+  //     SendMessage(client, message, original_message);
+  //   }
+  // }
+
+
+
+  
+  /*
+    Cлужба рассылки уведомлений о новых письмах
+  */
+  // setInterval(() => {
+
+  //   let res = {};
+  //   let req = {};
+  //   let request = {};
+
+  //   let response = new Response(req, res, request, knex, clients, SendMessage, config);
+
+  //   // return response.process();
+
+  //   response.notifyUsersUnreadMessages({
+  //     headers: {},
+  //   }, {}, response, {});
+
+  // }, 1000 * 60 * 5);
+
+
+
+  // const success = function(req, res, response, knex){
     
 
   //   res.writeHead(200, {'Content-Type': 'application/json'});
   //   res.end(JSON.stringify(response));
   // }
 
-  // function failure(req, res, response){
+  // const failure = function(req, res, response){
 
 
   //   res.writeHead(200, {'Content-Type': 'application/json'});
@@ -164,7 +403,7 @@ module.exports = function (options) {
   // }
 
 
-  // function processResponse(req, res, response){
+  // const processResponse = function(req, res, response){
   //   if(response.success){
   //     return success(req, res, response);
   //   }
@@ -173,171 +412,724 @@ module.exports = function (options) {
   //   }
   // }
  
-  // function renderHTML(componentHTML, initialState) {
-  //   return `
-  //     <!DOCTYPE html>
-  //       <html>
-  //       <head>
-  //           <meta charset="utf-8">
-  //           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  //           <title>Hello React</title>
-  //           <link rel="stylesheet" href="${assetUrl}/public/assets/styles.css">
-  //           <script type="application/javascript">
-  //             window.REDUX_INITIAL_STATE = ${JSON.stringify(initialState)};
-  //           </script>
-  //       </head>
-  //       <body>
-  //         <div id="react-view">${componentHTML}</div>
-  //   <div id="dev-tools"></div>
-  //         <script type="application/javascript" src="${assetUrl}/public/assets/bundle.js"></script>
-  //       </body>
-  //     </html>
-  //   `;
-  // }
-
-
-  // router.post('/api/', function(req, res) {
-
-  //   // debug("Server. Request Requested");
-  //   // console.log("Server. Request Requested", req.query);
-  //   // console.log("Server. Request body", req.body);
-
-  //   var body = "";
-
-  //   let request = {};
-
-  //   req.on('data', chunk => {
-  //     // console.log('got data chunk', chunk);
-  //     body += chunk;
-  //   });
-
-  //   req.on('end', () => {
-    
-  //     // var preg = 'Content-Disposition: form-data; name="(.+?)"(.*?)------WebKitFormBoundary';
-  //     // var preg = 'Content-Disposition: form-data; name="(.+?)"([\s\S]+?)-------';
-  //     var preg = 'name="(.+?)"([\s\S]+?)------';
-
-  //     // var match = body.match(new RegExp(preg, 'mgu'));
-  //     // var match = new RegExp(preg, 'gu').exec(body);
-  //     var match = body.match(/Content-Disposition: form-data; name="(.+?)"([\s\S]+?)------/g)
-
-  //     if(match && match.length){
-  //       match.map(str => {
-  //         // let result = str.match(new RegExp(preg, 'mu'));
-
-  //         // let result = str.match(/Content-Disposition: form-data; name="(.+?)"((\s*)(\S*)(\s*)?)------/);
-  //         let result = str.match(/Content-Disposition: form-data; name="(.+?)"[\s]*(.*)/);
-
-  //         // console.log('result', result);
-
-  //         if(result){
-  //           let {
-  //             1: name,
-  //             2: value,
-  //           } = result;
-
-  //           // value = value.replace(//);
-
-  //           request[name] = value;
-  //         }
-  //       });
-  //     }
  
 
-  //     let response = new Response(req, res, request, knex);
+  /*
+   * Static
+   * */
 
-  //     return response.process();
-  //   });
 
- 
-  // });
+  /*
+   * Надстройка WebSocket для роутера
+   * */
+  // var expressWs = require('express-ws')(options.app);
 
-  // SendMODXRequest = async (action, params) => {
 
-  //   const req = this.req;
+  /*
+   * API
+   * */
+  //
 
-  //   const method = 'POST';
 
-  //   let url = `/assets/components/modxsite/connectors/connector.php?pub_action=${action}`;
 
-  //   let options = {
-  //     method,
-  //     headers: {
-  //     },
-  //   };
+  // const SendUsersActivity = function(){
 
-  //   let form;
+  //   var users_list = [];
+  //   var ids = {};
 
-  //   if(method == 'POST' && params){
+  //   var total_active_clients = 0;
 
-  //     form = new FormData()
+  //   for(var i in clients){
+  //     var client = clients[i];
 
-  //     for(var i in params){
-        
-  //       var value = params[i];
+  //     if(
+  //       client.readyState == client.OPEN
+  //     ){
 
-  //       value = (typeof value !== "undefined") && value.toString && value.toString() || undefined;
+  //       total_active_clients++;
 
-  //       if(value !== undefined){
-  //         form.append(i, value);
+  //       if(
+  //         client.user
+  //         && client.user.id
+  //         && !ids[client.user.id]
+  //       ){
+  //         ids[client.user.id] = true;
+  //         users_list.push(client.user);
   //       }
   //     }
-
-  //     options.body = form;
-      
   //   }
 
 
+  //   users_list.reverse();
+
+  //   // for(var i in clients){
+  //   //   SendMessage(clients[i], {
+  //   //     type: "active_users_list",
+  //   //     users: users_list,
+  //   //   });
+  //   // }
+
+  //   /*
+  //    * Если список пользователей изменился, отправляем статистику
+  //    * */
+  //   if(md5(users_list) != md5(users)){
+  //     users = users_list;
+
+  //     SendMessageToAll({
+  //       type: "active_users_list",
+  //       users: users,
+  //     });
+  //   }
+
+
+  //   debug('SendUsersActivity');
+  //   debug('total_active_clients', total_active_clients);
+  //   debug('users', users);
+  //   return;
+  // }
+
+
+  // setInterval(SendUsersActivity, 3000);
+
+
+
+  // function SendMessageToAll(message, original_message, exclude_current, ws){
+
+  //   delete message.cookie;
+  //   delete message.password;
+
+  //   if(original_message){
+  //     delete original_message.cookie;
+  //     delete original_message.password;
+  //   }
+
+  //   for(var i in clients){
+
+  //     var client = clients[i];
+
+  //     if(exclude_current && client == ws){
+  //       continue;
+  //     }
+
+  //     SendMessage(client, message, original_message);
+  //   }
+  // }
+
+
+  function SendMessageToUsers(message, users_ids){
+
+    // console.log("SendMessageToUsers", message, users_ids);
+    // console.log("SendMessageToUsers", users_ids);
+
+    if(!users_ids || users_ids == ""){
+      return;
+    }
+
+    users_ids = users_ids.split(",");
+
+    for(var i in users_ids){
+      users_ids[i] = Number(users_ids[i]);
+    }
+
+    clients.map(function(client){
+
+      // var client = clients[i];
+
+      // if(exclude_current && client == ws){
+      //   continue;
+      // }
+
+      // console.log("Проверяем клиента", users_ids);
+      // break;
+
+      // console.log(typeof client);
+
+      if(users_ids.indexOf(client.user_id) != -1){
+        // console.log('users_ids: ', client.user_id);
+
+        SendMessage(client, message);
+      }
+
+      // SendMessage(client, message);
+    });
+  }
+
+  router.ws('/api/', function(ws, req) {
+
+
+    debug("Server. WS Requested");
+
+    clients.push(ws);
+
+    ws.on('message', function incoming(message) {
+
+      debug('Я получил от вас сообщение: ' + message);
+
+      try{
+        var response = JSON.parse(message);
+
+        // debug("Server. Received message", response);
+
+        var result = {};
+
+
+        var raw_text = php.trim(response.text) || ''
+          ,text = php.strip_tags(raw_text)
+          .replace(/\[/g, '&#91;')
+          .replace(/\]/g, '&#93;');
+
+        var id = response.id;
+        var name = response.name;
+
+
+        switch(response.type){
+
+
+          // case 'form':
+
+          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=' + response.pub_action;
+          //   SendMODXRequest(ws, url, response);
+
+          //   break;
+
+
+
+          /*
+           * Поиск топиков
+           * */
+          // case 'search':
+
+          //   // var postData = querystring.stringify({users: JSON.stringify(users)});
+
+          //   var url = '/topics/?query=' + encodeURIComponent(response.query);
+          //   SendMODXRequest(ws, url, response);
+
+
+          //   break;
+
+
+          /*
+           * Поиск пользователя
+           * */
+          case 'find_user':
+
+            // var postData = querystring.stringify({users: JSON.stringify(users)});
+
+            // debug("local document");
+
+            // debug("WS", ws.hostname);
+            // debug("WS", ws.headers);
+
+            var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/getdata&current=true&query=' + encodeURIComponent(response.query);
+            SendMODXRequest(ws, url, response);
+ 
+
+            break;
+
+          /*
+           * Получаем данные своего профиля (копия предыдущей функции)
+           * */
+          case 'user/get_own_data':
+
+            var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/get_own_data&current=true';
+
+            SendMODXRequest(ws, url, response, function(message){
+
+              if(message.success && message.object && message.object.id){
+
+                var user;
+
+                var object = message.object;
+                var user_id = object.id;
+
+                for(var i in users){
+                  if(users[i].id == user_id){
+                    user = users[i];
+                    break;
+                  }
+                }
+
+                if(!user){
+                  user = {
+                    id: object.id,
+                    username: object.username,
+                    fullname: object.fullname,
+                    photo:    object.photo,
+                  };
+
+                  // debug("Активные пользователи", users || "sdfsdfsd");
+                  // debug("Пользователь", user || "sdfsd");
+
+                  // users.push(user);
+                }
+
+                ws.user = user;
+
+                // SendUsersActivity();
+              }
+
+              return message;
+            });
+
+
+            // var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/get_own_data&current=true';
+            //
+            // // debug("Запрос на поиск пользователя", url);
+            //
+            // var options = {
+            //   host: host,
+            //   port: raw_host_port,
+            //   path: url,
+            //   // 'method': 'GET',
+            //   'headers': {
+            //     // 'Content-Type': 'application/x-www-form-urlencoded',
+            //     // 'Content-Length': Buffer.byteLength(postData)
+            //   },
+            //   // json: {
+            //   //   users: users
+            //   // }
+            // };
+            //
+            // if (ws.upgradeReq.headers.cookie) {
+            //   options.headers.Cookie = ws.upgradeReq.headers.cookie;
+            // }
+            //
+            // debug("Авторизация пользователя, заголовки", ws.upgradeReq.headers);
+            // debug("Авторизация пользователя, передаваемые параметры", options);
+            //
+            // var callback = function(request){
+            //
+            //   // debug("load_document loaded response");
+            //
+            //   var client = this;
+            //
+            //   var str = '';
+            //   //
+            //   // //another chunk of data has been recieved, so append it to `str`
+            //   request.on('data', function (chunk) {
+            //     str += chunk;
+            //   });
+            //   //
+            //   // //the whole response has been recieved, so we just print it out here
+            //   request.on('end', function () {
+            //
+            //     // var response_headers = request.headers;
+            //     // debug("Response from MODX", str);
+            //
+            //     var message;
+            //
+            //     try{
+            //       var result = JSON.parse(str);
+            //
+            //       var user;
+            //
+            //       if(result.success && result.object && result.object.id){
+            //
+            //         var object = result.object;
+            //         var user_id = object.id;
+            //
+            //         for(var i in users){
+            //           if(users[i].id == user_id){
+            //             user = users[i];
+            //             break;
+            //           }
+            //         }
+            //
+            //         if(!user){
+            //           user = {
+            //             id: object.id,
+            //             username: object.username,
+            //             fullname: object.fullname,
+            //             photo:    object.photo,
+            //           };
+            //
+            //           // debug("Активные пользователи", users || "sdfsdfsd");
+            //           // debug("Пользователь", user || "sdfsd");
+            //
+            //           // users.push(user);
+            //
+            //         }
+            //
+            //         client.user = user;
+            //
+            //         SendUsersActivity();
+            //       }
+            //
+            //       // debug("Активные пользователи", users);
+            //
+            //       message = result;
+            //
+            //     }
+            //     catch(e){
+            //       console.error(e.message, e.stack);
+            //       console.log(str);
+            //
+            //       message = e.message + e.stack;
+            //     }
+            //
+            //     debug("Результат данные пользователя", result, message);
+            //
+            //     SendMessage(client, message, response);
+            //
+            //   });
+            // }
+            //
+            // var request = httpServ.request(options, callback.bind(ws));
+            // // request.write(postData);
+            // request.end();
+
+            break;
+
+
+          /*
+           * Регистрация
+           * */
+          case 'signup':
+
+            var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/create&username='+ response.login + '&password=' + response.password;
+
+            // debug("Запрос на поиск пользователя", url);
+
+            var options = {
+              host: host,
+              port: raw_host_port,
+              path: url,
+              // 'method': 'GET',
+              'headers': {
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+                // 'Content-Length': Buffer.byteLength(postData)
+              },
+              // json: {
+              //   users: users
+              // }
+            };
+
+            if (ws.upgradeReq.headers.cookie) {
+              options.headers.Cookie = ws.upgradeReq.headers.cookie;
+            }
+
+
+            var callback = function(request){
+
+              // debug("load_document loaded response");
+
+              var client = this;
+
+              var str = '';
+              //
+              // //another chunk of data has been recieved, so append it to `str`
+              request.on('data', function (chunk) {
+                str += chunk;
+              });
+              //
+              // //the whole response has been recieved, so we just print it out here
+              request.on('end', function () {
+
+                // var response_headers = request.headers;
+                // debug("Response from MODX", str);
+
+                var message;
+
+                try{
+                  var result = JSON.parse(str);
+
+                  if(result.success && result.object && result.object.id){
+
+
+                  }
+
+                  // debug("Активные пользователи", users);
+
+                  message = result;
+                }
+                catch(e){
+                  console.error(e.message, e.stack);
+                  // console.log(str);
+
+                  message = e.message + e.stack;
+                }
+
+                debug("Результат регистрации пользователя", result, message);
+
+                SendMessage(client, message, response);
+
+              });
+            }
+
+            var request = httpServ.request(options, callback.bind(ws));
+            // request.write(postData);
+            request.end();
+
+            break;
+
+          /*
+           * Поиск пользователя
+           * */
+          case 'signin':
+
+
+            var url = '/assets/components/modxsite/connectors/connector.php?pub_action=login&username=' + encodeURIComponent(response.login) + '&password=' + (response.password);
+
+            // (ws, url, original_message, process_message_callback)
+            SendMODXRequest(ws, url, response, function(message){
+
+              if(message.success && message.object){
+                SendUsersActivity();
+              }
+
+              return message;
+            });
+
+
+
+
+            break;
+
+
+          /*
+           * Выход пользователя
+           * */
+          case 'signout':
+
+
+            // console.log(ws.user);
+            // return;
+
+            var url = '/assets/components/modxsite/connectors/connector.php?pub_action=logout';
+
+            SendMODXRequest(ws, url, response, function(message){
+
+              if(message.success && ws.user && ws.user.id){
+                var user_id = ws.user.id;
+                for(var i in clients){
+                  var client = clients[i];
+                  if(client.user && client.user.id == user_id){
+                    // clients.slice(i,1);
+                    delete client.user;
+                  }
+                }
+
+                SendUsersActivity();
+              }
+
+              return message;
+            });
+            break;
+ 
+ 
+          case 'message':
+
+            var client_id = response.client_id;
+
+
+            if(!client_id){
+              result = {
+                type: "error"
+                ,text: "Не был указан ID клиента"
+              };
+            }
+            else if(!text){
+              result = {
+                type: "error"
+                ,text: "Текст не может быть пустым"
+              };
+            }
+
+
+            else{
+              result = {
+                type: "message"
+                ,sender: {
+                  id: client_id
+                  ,guest: ws.client_data.guest
+                  ,name: ws.client_data.name
+                  ,photo: ws.client_data.photo
+                }
+                ,text: text
+              };
+            }
+
+            // debug('ws.client_data');
+            // debug(ws.client_data);
+
+            if(result.type == "error"){
+              ws.send(JSON.stringify(result));
+            }
+            else{
+              for(var i in clients){
+                if(clients[i].readyState == WebSocket.OPEN){
+                  clients[i].send(JSON.stringify(result));
+
+
+                  // debug("ws: ");
+                  // debug(ws);
+
+                  // write message into DB
+
+                }
+              }
+
+              var d = new Date();
+              var n = d.getTime();
+
+              Message.query().insert({
+                text: text
+                ,raw_text: raw_text
+                ,ts: String(n).substr(0,10) + '.' + String(n).substr(10)
+                ,user_id: ws.user_id
+                ,channel_id: ws.channel_id
+              }).then(function (record) {
+                // console.log(record);
+              });
+            }
+            break;
+
+
+
+          case 'joined':
+
+            // var users = [];
+            //
+            // for(var i in clients){
+            //   var client = clients[i];
+            //
+            //   if(client.readyState == WebSocket.OPEN){
+            //     users.push({
+            //       name: client.client_data.name
+            //       ,photo: client.client_data.photo
+            //       ,guest: client.client_data.guest
+            //     });
+            //   }
+            // }
+            //
+            // debug("User joined: ");
+            // debug(response);
+            //
+            // for(var i in clients){
+            //   if(clients[i].readyState == WebSocket.OPEN){
+            //     clients[i].send(JSON.stringify({
+            //       type: "joined"
+            //       ,text: ws.client_data.name
+            //       ,users: users
+            //     }));
+            //   }
+            // }
+            //
+            //
+            // var postData = querystring.stringify({users: JSON.stringify(users)});
+            //
+            // var options = {
+            //   host: host,
+            //   path: '/assets/components/modxsite/connectors/connector.php?pub_action=node/log_active_users',
+            //   'method': 'POST',
+            //   'headers': {
+            //     'Content-Type': 'application/x-www-form-urlencoded',
+            //     'Content-Length': Buffer.byteLength(postData)
+            //   },
+            //   json: {
+            //     users: users
+            //   }
+            // };
+            //
+            //
+            // var request = httpServ.request(options);
+            // request.write(postData);
+            // request.end();
+
+            ws.user_id = response.id;
+
+            break;
+
+          default:
+            // console.error("WS.", "Неизвестный тип сообщения");
+            // ws.send(JSON.stringify({
+            //   type: "error"
+            //   ,text: "Неизвестный тип сообщения"
+            // }));
+
+            // console.log(ws);
+
+            SendMessage(ws, {
+              type: "error"
+              ,text: "Неизвестный тип сообщения"
+            }, response);
+        }
+
+
+      }
+      catch(e){
+        console.error(e);
+      }
+
+      // clients.forEach(function each(client) {
+      //     client.send("Новое сообщение: " + message);
+      // });
+    });
+
+    // ws.send(JSON.stringify({
+    //   type: "hello"
+    // }));
+
+    ws.on('close', function(){
+
+      debug("Соединение закрыто");
+
+      for(var i in clients){
+        if(clients[i] === ws){
+          clients.splice(i, 1);
+          debug("Удален клиент из общего списка");
+          break;
+        }
+      }
+
+      // SendUsersActivity();
+    });
+
+
+
+
+    SendMessage(ws, {
+      type: "hello"
+    }, response);
+
+  });
+
+
+  /*
+    Eof WS
+  */
+
+
+
+  /*
+  * API
+  * */
 
   //   /*
   //   * Собираем кукисы из оригинального запроса и если передаются куки в параметрах запроса,
   //   * то объединяем их
   //   * */
     
-  // };
 
   router.post('/api/', function (req, res, next) {
 
 
     const request = Object.assign(req.query, req.body);
 
-    // debug("REQUEST /new_api/ 2", request);
-
-    let response = new Response(req, res, request, knex, config);
+    let response = new Response(req, res, request, knex, config, clients, SendMessage);
 
     return response.process();
 
   });
 
   router.use('/', function(req, res) {
-
-    // debug("Server. Request Requested");
-    // console.log("Server. Request Requested", req.query);
-    // console.log("Server. Request body", req.body);
     
     const store = configureStore();
-
-    // console.log('store', store);
-
-    // var body = "";
-
-    // let request = {};
-
-    // const componentHTML = ReactDom.renderToString(
-    //   <Provider store={store}>
-    //     <RouterContext {...renderProps} />
-    //   </Provider>
-    // );
-
-    // res.writeHead(200, {'Content-Type': 'text/html'});
-    // res.end(renderHTML(componentHTML));
     
     match({ 
       routes, 
       location: req.url 
     }, async (error, redirectLocation, renderProps) => {
-
-      // console.log('renderProps', renderProps);
 
       if (redirectLocation) { // Если необходимо сделать redirect
         return res.redirect(301, redirectLocation.pathname + redirectLocation.search);
@@ -393,29 +1185,7 @@ module.exports = function (options) {
           return res.status(404).send('Not found');
         }
 
-        
-        // await fetch(site_url + req.url, options)
-        //   .then(function(response) {
-
-        //     console.log('response', response.headers);
-
-        //     let response_headers = response.headers;
-
-        //     if(response_headers && response_headers['location'] && response_headers['location'] != ''){
-
-        //       // res.redirect(301, 'http://yourotherdomain.com' + req.path)
-        //       res.redirect(301, response_headers['location'])
-        //       return;
-        //     }
-
-        //   })
-        //   .catch(e => {
-        //     console.error(e);
-        //   });
-
-
       }
-
 
 
       let html;
@@ -462,22 +1232,15 @@ module.exports = function (options) {
         });
         q.whereNot('content.uri', requestedUri);
 
-        // if(Company_id){
-
-        //   q.innerJoin(`${prefix}modxsite_companies_places as places_companies`, 'places_companies.place_id', 'places.id');
-        //   q.where('places_companies.Company_id', Company_id);
-
-        // }
-
 
         q.limit(1); 
         // 
           
-        console.log("knex SQL", q.toString());
+        // console.log("knex SQL", q.toString());
 
         q.then((result) => { 
 
-          debug("knex result", result);
+          // debug("knex result", result);
 
           const {
             uri,
@@ -495,10 +1258,6 @@ module.exports = function (options) {
 
           reject(e);
         });
-
-
-
-
 
 
       var cookies = [];
@@ -538,35 +1297,17 @@ module.exports = function (options) {
 
       if(cookies){
         options.headers.Cookie = cookies;
-
-        // debug("options.headers", options.headers);
       }
-
-      // debug("options.headers", options.headers);
-      // debug("options 1 ", options);
-
-      // debug("req.url", req.url);
-
-      // debug("req.headers", req.headers);
 
 
       const {
         host,
       } = req.headers;
 
-      // Object.assign(options, {
-      //   host,
-      //   port: 9000,
-      // });
-
 
       let req2 = httpServ.request(options, (request, a, b) => {
-
-        // debug("options 2", options);
-
-        // var str = '';
         //
-        // //another chunk of data has been recieved, so append it to `str`
+
         request.on('data', function (chunk) {
           // str += chunk;
         });
@@ -574,20 +1315,7 @@ module.exports = function (options) {
         // //the whole response has been recieved, so we just print it out here
         request.on('end', function () {
 
-          // debug("options 3", options);
-          // debug("options 4", a);
-          // debug("options 5", b);
-
           var response_headers = request.headers;
-
-
-          /*
-           * Отрисовка компонентов
-           * */
-      
-
-          // debug("server response", request.headers);
-
    
           if(response_headers['location'] && response_headers['location'] != ''){
 
@@ -624,9 +1352,6 @@ module.exports = function (options) {
 
       basePath = process.cwd() + "/build/";
 
-      // console.log('assetsUrl', assetsUrl);
-      // console.log('__dirname', __dirname);
-
       var htmlFileName = "index.html";
       // var html = fs.readFileSync(Path.join(assetsUrl, htmlFileName), "utf8");
       var html = fs.readFileSync( `${basePath}${htmlFileName}`, "utf8");
@@ -642,8 +1367,6 @@ module.exports = function (options) {
       if(css_match){
         css_src = css_match[1];
       }
-
-      // console.log('css_match', css_match);
 
     }
     else{

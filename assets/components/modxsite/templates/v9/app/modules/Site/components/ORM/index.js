@@ -74,6 +74,9 @@ import {
   ResourceType,
 } from './Resource';
 
+import WsConnectionType, {
+} from './WsConnection';
+
 
 // console.log('UserType', UserType, CompanyType);
 
@@ -344,6 +347,16 @@ const RootType = new GraphQLObjectType({
           type: GraphQLBoolean,
           description: "Получить текущего пользователя",
         },
+      },
+    },
+    ws_connections: {
+      type: new GraphQLList(WsConnectionType),
+      description: 'WebSocket-соединения',
+      args: {
+        user: {
+          type: GraphQLInt,
+          description: "ID пользователя",
+        }
       },
     },
     // // ratings: {

@@ -954,18 +954,22 @@ export class AppMain extends Component{
 
     const callback = (data, errors) => { 
 
-      // if(data.success && data.object){
+      if(data.success && data.object){
 
-      //   const {
-      //     id,
-      //   } = data.object;
+        const {
+          id,
+          uri,
+        } = data.object;
 
-      //   if(id != itemId){
-      //     browserHistory.replace(`/db/contacts/${id}/`);
-      //   }
+        if(id !== itemId){
 
-      //   return;
-      // }
+          // const uri = `/bani/${id}/`;
+          
+          browserHistory.replace(uri);
+        }
+
+        return;
+      }
     }
 
     this.saveItem(store, item, 'companies/', callback);
@@ -1043,9 +1047,9 @@ export class AppMain extends Component{
       }
 
       // Пропускаем временные свойства
-      // if(/^\_/.test(i)){
-      //   continue;
-      // }
+      if(/^\_/.test(i)){
+        continue;
+      }
 
       // 
 

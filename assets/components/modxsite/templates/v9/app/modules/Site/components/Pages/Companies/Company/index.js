@@ -13,11 +13,15 @@ import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 
 import SaveIcon from 'material-ui-icons/Save';
+import EditIcon from 'material-ui-icons/Edit';
+import AddIcon from 'material-ui-icons/AddCircle';
 
 import Helper from 'modules/Site/components/Helper';
 
 import ItemMap from 'modules/Site/components/fields/Map';
 import Comments from 'modules/Site/components/Comments';
+
+import ImagesUploader from 'modules/Site/components/fields/ImageUploader';
 
 import CompanyTopics from './Topics';
 
@@ -26,6 +30,7 @@ import Slider from 'react-slick';
 // import GoogleMapReact from 'google-map-react';
 
 import RatingField from './fields/Rating';
+
 
 export default class CompanyPage extends Component{
 
@@ -44,6 +49,8 @@ export default class CompanyPage extends Component{
 		TopicsStore: PropTypes.object.isRequired,
 		CommentsStore: PropTypes.object.isRequired,
 		ResourcesStore: PropTypes.object.isRequired,
+		documentActions: PropTypes.object.isRequired,
+		user: PropTypes.object.isRequired,
 	};
 
 	constructor(props){
@@ -165,6 +172,19 @@ export default class CompanyPage extends Component{
 
 
  		return super.componentWillUnmount && super.componentWillUnmount();
+	}
+
+
+	componentDidUpdate(prevProps, prevState){
+
+
+		// console.log('componentDidUpdate', this.props.item.id, prevProps.item.id);
+
+		if(this.props.item.id !== prevProps.item.id){
+			this.loadCompanyFullData();
+		}
+
+		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState);
 	}
 
 
@@ -326,6 +346,15 @@ export default class CompanyPage extends Component{
 	render(){
 
 		const {
+    	documentActions,
+    	user,
+    } = this.context;
+
+    const {
+    	user: currentUser,
+    } = user || {};
+
+		const {
 			item,
 		} = this.props;
 
@@ -342,13 +371,17 @@ export default class CompanyPage extends Component{
 			tvs,
 			content,
 			city,
+			createdby,
 			coords,
 			comments,
 			_errors: errors,
 			_isDirty,
 		} = item;
 
-		const inEditMode = _isDirty ? true : true;
+		const inEditMode = _isDirty ? true : false;
+
+		// const canEdit = !createdby || (currentUser && currentUser.id === createdby || user.hasPermission("editAllCompanies"));
+		const canEdit = true;
 
 		const {
 			metro,
@@ -360,7 +393,90 @@ export default class CompanyPage extends Component{
 			approved,
 		} = tvs || {};
 
+
+		const helper = <Helper
+			contrastIcons={false}
+			ref="helper"
+    ><Paper
+				style={{
+					padding: 15,
+				}}
+			>
+				<div>
+					Размещать информацию о своем заведении у нас можно бесплатно. 
+					Платно стоят некоторые отдельные функции (если хотите знать какие, свяжитесь с нами по почте <a href="mailto:info@gorodskie-bani.ru">info@gorodskie-bani.ru</a>). 
+					<a
+						href="javascript:;"
+						style={{
+							// textShadow: "0px 0px 5px #ccc",
+							// fontSize: 12,
+							// background: "rgba(256,256,256,0.7)",
+					  //   display: "block",
+					  //   paddingRight: 10,
+						}}
+						onClick={e => {
+
+							const {
+								localQuery,
+							} = this.context;
+
+							this.refs.helper.setState({
+								open: false,
+							});
+
+							localQuery({
+								operationName: "addCompany",
+							});
+
+						}}
+					>
+						<Grid
+							container
+							gutter={0}
+							align="center"
+						>
+							<IconButton
+			  				accent
+			  				style={{
+			  					height: 30,
+			  					width: 30,
+			  				}}
+							>
+			  				<AddIcon 
+			  				/>
+							</IconButton>
+							Добавить заведение
+						</Grid>
+					</a>
+				</div>
+				
+				<p>
+					Если вы являетесь владельцем заведения, вам доступна функция редактирования его. Для начала редактирования просто кликните соответствующую иконку.
+				</p> 
+				
+				<p>
+					Если вы не являетесь владельцем заведения, вы не сможете сохранить внесенные изменения 
+					(хотя возможность редактирования вам будет доступна даже если вы не авторизованный.).
+					В таком случае данная функция будет доступна вам в качестве ознакомительной.
+				</p> 
+
+				<p>
+					Если горит красная иконка в виде дискеты, это означает, что информация о вашем заведении отредактирована. Кликнув по этой иконке
+					вы сохраните измененную информацию. <br />
+					Если вы хотите отменить все изменения, просто обновите страницу и изменения сбросятся.
+				</p> 
+
+				<p>
+					Если вы отредактировали заведение, но не были авторизованы или зарегестрированы, не переживайте - процедура авторизации и регистрации максимально упращена 
+					и не требует перезагрузки окна. Вы легко авторизуетесь, после чего сможете сохранить внесенные изменения.
+				</p>
+
+			</Paper>
+    </Helper>;
+
+
 		// console.log("Company page item", item);
+
 
 		let addresses = [];
 
@@ -519,43 +635,6 @@ export default class CompanyPage extends Component{
         	// 	alignItems: 'center',
         	// }}
         >
-        	{_isDirty
-        		?
-        			<Grid
-        				item
-        			>
-        				
-        				<IconButton
-	        				onClick={event => {
-	        					this.saveItem();
-	        				}}
-	        			>
-	        				<SaveIcon 
-	        					color="red"
-	        				/>
-	        			</IconButton>
-
-	        			<Helper
-									contrastIcons={false}
-		            >
-		              <Paper
-		              	style={{
-		              		padding: 15,
-		              	}}
-		              >
-		              	
-		              	<p>
-		              		Если горит красная иконка в виде дискеты, это означает, что информация о вашем заведении отредактирована. Кликнув по этой иконке
-		              		вы сохраните измененную информацию. <br />
-		              		Если вы хотите отменить все изменения, просто обновите страницу и изменения сбросятся.
-		              	</p> 
-
-		              </Paper>
-		            </Helper>
-
-        			</Grid>
-        		:
-        		null}
 
     			<Grid
     				item
@@ -577,6 +656,53 @@ export default class CompanyPage extends Component{
 	        	}
     			</Grid>
 
+
+        	{_isDirty
+        		?
+        			<Grid
+        				item
+        			>
+        				
+        				<IconButton
+	        				onClick={event => {
+	        					this.saveItem();
+	        				}}
+	        			>
+	        				<SaveIcon 
+	        					color="red"
+	        				/>
+	        			</IconButton>
+		              
+		            {helper}
+
+        			</Grid>
+        		:
+
+        			canEdit
+        			?
+        			<Grid
+        				item
+        			>
+        				
+        				<IconButton
+	        				onClick={event => {
+	        					item.update({
+	        						a: "DSfds",
+	        					});
+	        				}}
+	        			>
+	        				<EditIcon 
+	        					// color="red"
+	        				/>
+	        			</IconButton>
+ 
+	              {helper}
+
+        			</Grid>	
+        			:
+
+        		null}
+
         </Grid>}
         subheader={<RatingField 
 					item={item}
@@ -595,29 +721,109 @@ export default class CompanyPage extends Component{
 						container
       			gutter={0}
 					>
+						<Grid
+							item
+						>
 
-						{image
-							?
-							<Grid
-								item
-							>
-								<img 
-									src={image.thumb}
-									style={{
-										cursor: 'pointer',
-										marginRight: 10,
-									}}
-									// onClick={event => {
-									// 	this.setState({
-									// 		galleryItem: image.big,
-									// 	});
-									// }}
-								/>
-							</Grid>
-							:
-							null
-						}
+							{image
+								?
+									<img 
+										src={image.thumb}
+										style={{
+											cursor: 'pointer',
+											marginRight: 10,
+										}}
+										// onClick={event => {
+										// 	this.setState({
+										// 		galleryItem: image.big,
+										// 	});
+										// }}
+									/> 
+								:
+								null
+							}
+
+							{inEditMode
+								?
+
+									<div>
+										
+										<ImagesUploader 
+		                  label={image ? "Заменить изображение" : "Загрузить изображение"}
+		                  multiple={false}
+		                  dataName="file[]"
+		                  url="/assets/components/modxsite/connectors/connector.php?pub_action=images/upload"
+		                  optimisticPreviews
+		                  onLoadEnd={(err, response) => {
+		                    // console.log('onLoadEnd', err, response);
+
+		                    if (err && err.message) {
+		                      // console.error(err);
+		                      // this.updateProject({
+		                      //   _errors: {
+		                      //     image: err.message,
+		                      //   }
+		                      // });
+
+		                      const {
+		                      	message,
+		                      } = err.response || {};
+
+		                      documentActions.addInformerMessage(message || "Ошибка загрузки файла");
+
+		                    }
+		                    else{
+
+		                      // console.log('response', response);
+		                      // console.log('item', item);
+
+
+		                      let {
+		                        0: image,
+		                      } = response.object || {};
+
+		                      // console.log('response image', image);
+
+		                      if(image && image.url){
+			                      
+			                      item.update({
+			                      	image: image.url,
+			                      });
+
+			                      this.clearErrors("image");
+
+		                        // this.updateProject({
+		                        //   thumb: image.thumb,
+		                        //   image: image.url,
+		                        //   newImage: image.url,
+		                        // });
+		                      }
+
+		                      return;
+		                    }
+		                  }}
+		                />
+
+		                {errors && errors.image 
+		                	?
+		                		<p
+		                			style={{
+		                				color: "red",
+		                			}}
+		                		>
+		                			{errors.image}
+		                		</p>
+		                	:
+		                	null
+		                }
+
+									</div>
+
+								:
+								null
+							}
 							
+						</Grid>
 
 						<Grid
 							item
@@ -728,7 +934,13 @@ export default class CompanyPage extends Component{
 											dangerouslySetInnerHTML={{ __html: work_time }}
 										/>
 										:
-										work_time
+										<div
+											style={{
+												whiteSpace: "pre-wrap",
+											}}
+										>
+											{work_time}
+										</div>
 									}
 
 								</div>
@@ -748,29 +960,36 @@ export default class CompanyPage extends Component{
 									onFocus={() => this.onFocus('prices')}
 								/>
 								:
+								
 								prices
-								?
-									<div
-										style={{
-											overflow: 'hidden',
-										}}
-									>
-										<b
+									?
+										<div
 											style={{
-												float: 'left',
+												overflow: 'hidden',
 											}}
-										>Цены:&nbsp;</b> 
-										{approved
-											?
-											<div
-												dangerouslySetInnerHTML={{ __html: prices }}
-											/>
-											:
-											{prices}
-										}
-									</div>
-								:
-								null
+										>
+											<b
+												style={{
+													float: 'left',
+												}}
+											>Цены:&nbsp;</b> 
+											{approved
+												?
+												<div
+													dangerouslySetInnerHTML={{ __html: prices }}
+												/>
+												:
+												<div
+													style={{
+														whiteSpace: "pre-wrap",
+													}}
+												>
+													{prices}
+												</div>
+											}
+										</div>
+									:
+									null
 							}
 						</Grid>
 
@@ -813,11 +1032,16 @@ export default class CompanyPage extends Component{
 	        	showSearchControl={true}
 	        	onFocus={() => this.onFocus('coords')}
 	        	onChange={(item, data) => {
+
+	        		// console.log("onChange data", data);
+
+	        		// item.update(data);
+
 	        		this.clearErrors('coords');
 	        	}}
 	        	error={errors && errors.coords ? true : false}
 	        	helperText={errors && errors.coords || undefined}
-	        	helper={<Paper
+	        	helper={inEditMode && <Paper
             	style={{
             		padding: 15,
             	}}
@@ -837,7 +1061,7 @@ export default class CompanyPage extends Component{
             		<iframe width="560" height="315" src="https://www.youtube.com/embed/4V_GzUk0PTQ?rel=0&amp;showinfo=0" frameBorder="0" allowFullScreen></iframe>
             	</p>
 
-            </Paper>}
+            </Paper> || undefined}
 	        />
 
 					{/*

@@ -30,12 +30,12 @@ class modWebCompaniesCreateProcessor extends modWebCompaniesObjectProcessor{
     // }
     
     
-    function checkPermissions(){
+    // function checkPermissions(){
 
-        // return $this->modx->hasPermission("updateCompanies") && parent::checkPermissions();
+    //     // return $this->modx->hasPermission("updateCompanies") && parent::checkPermissions();
 
-        return true;
-    }
+    //     return true;
+    // }
 
     
     public function initialize(){
@@ -77,10 +77,10 @@ class modWebCompaniesCreateProcessor extends modWebCompaniesObjectProcessor{
             "works"  => (int)$this->getProperty('works'),
         ));
         
-        $this->setProperties(array(
-            // "createdby" =>   $this->modx->user->id,
-            "createdon" => time(),
-        ));
+        // $this->setProperties(array(
+        //     // "createdby" =>   $this->modx->user->id,
+        //     "createdon" => time(),
+        // ));
  
 
         return parent::beforeSet();
@@ -90,6 +90,10 @@ class modWebCompaniesCreateProcessor extends modWebCompaniesObjectProcessor{
     public function beforeSave(){
         
         $object = & $this->object;
+
+        $object->fromArray(array(
+            "createdon" => time(),
+        ));
 
         // parent::beforeSave();
         
@@ -168,11 +172,15 @@ class modWebCompaniesCreateProcessor extends modWebCompaniesObjectProcessor{
     
     public function afterSave(){
         
-        $resource = & $this->object->Resource;
+        $object = & $this->object;
+
+        $this->setProperty("uri", $object->uri);
+
+        // $resource = & $this->object;
         
-        $resource->alias = $resource->alias . "-". $resource->id;
+        // $resource->alias = $resource->alias . "-". $resource->id;
         
-        $resource->save();
+        // $resource->save();
         
         $this->modx->cacheManager->refresh();
         $this->modx->cacheManager->clearCache();

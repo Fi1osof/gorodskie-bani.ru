@@ -13,9 +13,23 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
     //     return $this->modx->hasPermission("updateCompanies") && parent::checkPermissions();
     // }
 
+    function checkPermissions(){
+
+        // return $this->modx->hasPermission("updateCompanies") && parent::checkPermissions();
+
+        return true;
+    }
+
 
     public function initialize(){
 
+        $this->unsetProperty("class_key");
+        $this->unsetProperty("template");
+        $this->unsetProperty("context_key");
+        $this->unsetProperty("deletedby");
+        $this->unsetProperty("deletedon");
+        $this->unsetProperty("createdby");
+        $this->unsetProperty("createdon");
         $this->unsetProperty("editedby");
         $this->unsetProperty("editedon");
         $this->unsetProperty("owner");
@@ -25,8 +39,6 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 
     	$props = array(
     		"id" => (int)$this->getProperty("id"),
-    		"lat" => (float)$this->getProperty("lat"),
-    		"lng" => (float)$this->getProperty("lng"),
     		"new_object" => $this->getProperty("new_object"),
     		"save_object" => $this->getProperty("save_object"),
     	);
@@ -62,6 +74,8 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
     	// print_r($this->properties);
 
 
+		// print_r($object->toArray());
+
 		$object = & $this->object;
 
 		if($object->isNew()){
@@ -85,7 +99,10 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 			"site",
 			"work_time",
 			"prices",
-			"coords",
+			// "coords",
+			"lat",
+			"lng",
+			"image",
 		);
 
 		foreach($tvs as $tv_name){
@@ -107,6 +124,10 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 
 		// print_r($object->toArray());
 
+		if(isset($object->name) && empty($object->name)){
+			$this->addFieldError("name", "Необходимо указать название заведения");
+		}
+
 		if(isset($object->address) && empty($object->address)){
 			$this->addFieldError("address", "Необходимо указать адрес заведения");
 		}
@@ -119,13 +140,61 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 			$this->addFieldError("prices", "Необходимо указать цены");
 		}
 
-		if(isset($object->coords) && empty($object->coords)){
+		// if(isset($object->coords) && empty($object->coords)){
+		// 	$this->addFieldError("coords", "Необходимо указать объект на карте");
+		// }
+
+		if(isset($object->lat) && empty($object->lat)){
 			$this->addFieldError("coords", "Необходимо указать объект на карте");
+		}
+
+		if(isset($object->lng) && empty($object->lng)){
+			$this->addFieldError("coords", "Необходимо указать объект на карте");
+		}
+
+		if(isset($object->image) && empty($object->image)){
+			$this->addFieldError("image", "Необходимо загрузить основное фото");
 		}
 
 		// if(!$object->address){
 		// 	$this->addFieldError("address", "Необходимо указать адрес заведения");
 		// }
+
+		if(!$this->modx->hasPermission("SUDO") && !$this->hasErrors()){
+
+			if(!$object->createdby){
+
+				if($object->isNew()){
+
+					return "Необходимо авторизоваться";
+
+				}
+				else{
+					return "Не указан владелец";
+				}
+
+			}
+
+			if(!$this->modx->user->id){
+				return "Вы не атворизованы. Пожалуйста, авторизуйтесь.";
+			}
+
+			if($object->createdby != $this->modx->user->id){
+				return "Вы не можете сохранить изменения в чужой компании. Если это ваша компания, пожалуйста, свяжитесь с нами по почте info@gorodskie-bani.ru";
+			}
+
+			if($object->isNew()){
+
+				if($this->modx->getCount("modResource", array(
+					"class_key"	=> $this->classKey,
+					"createdby"	=> $this->modx->user->id,
+				))){
+					return "Вы не можете создать более одного заведения. Чтобы иметь эту возможность, свяжитесь с нами по почте info@gorodskie-bani.ru";
+				}
+
+			}
+
+		}
 
 
 		// return "Debug";
@@ -183,6 +252,13 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 
 		if(isset($prices)){
 			$object->setTVValue(20, $prices);
+		}
+
+
+		$image = $object->image;
+
+		if(isset($image)){
+			$object->setTVValue(3, preg_replace('/^\/?assets\/images\//', '', $image));
 		}
 
 

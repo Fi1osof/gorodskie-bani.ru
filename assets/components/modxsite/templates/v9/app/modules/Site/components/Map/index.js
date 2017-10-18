@@ -1208,14 +1208,25 @@ export default class MapMainView extends Component{
 	    			position="LEFT_BOTTOM"
 	    		> 
 
-	    			<Link
-	    				to="#"
+	    			<a
+	    				href="javascript:;"
 	    				style={{
 	    					// textShadow: "0px 0px 5px #ccc",
     						fontSize: 12,
     						background: "rgba(256,256,256,0.7)",
 						    display: "block",
 						    paddingRight: 10,
+	    				}}
+	    				onClick={e => {
+
+	    					const {
+	    						localQuery,
+	    					} = this.context;
+
+	    					localQuery({
+	    						operationName: "addCompany",
+	    					});
+
 	    				}}
 	    			>
 	    				<Grid
@@ -1235,7 +1246,7 @@ export default class MapMainView extends Component{
 		    				</IconButton>
 		    				Добавить заведение
 	    				</Grid>
-	    			</Link>
+	    			</a>
 
 	    		</Control>
 	    		

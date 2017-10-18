@@ -153,6 +153,12 @@ class modWebPublicActionProcessor extends modProcessor{
                     self::$actualClassName = 'modWebUsersUpdateProcessor';
                     break;
 
+                case 'images/upload':
+
+                    require dirname(dirname(__FILE__)) . '/images/upload.class.php';
+                    self::$actualClassName = 'modWebImagesUploadProcessor';
+                    break;
+
                 
                 default:;
             } 

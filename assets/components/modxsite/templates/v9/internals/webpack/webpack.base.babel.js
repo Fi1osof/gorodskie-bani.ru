@@ -30,6 +30,7 @@ module.exports = (options) => ({
 							|| /\/structor-templates\//.test(file)
 							|| /\/react-cms-data-view\//.test(file)
 							|| /\/google-map-react\//.test(file)
+							|| /\/react-progress-button\//.test(file)
 							// || /\/moment\//.test(file)
 						){
 							return;

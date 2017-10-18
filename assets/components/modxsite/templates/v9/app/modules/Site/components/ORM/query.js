@@ -912,6 +912,7 @@ fragment Company on Company{
   publishedon
   pubdate
   createdon
+  createdby
   image
   ...imageFormats @include(if:$getImageFormats)
   gallery @include(if:$getCompanyGallery)
@@ -1098,7 +1099,29 @@ query test(
     #   }
     # }
   }
-} 
+}
+
+mutation addCompany(
+  $getRatingsAvg:Boolean = true
+  $getImageFormats:Boolean = true
+  $getCompanyComments:Boolean = true
+  $getCommentCompany:Boolean = false
+  $getCompanyFullData:Boolean = true
+  $getCompanyGallery:Boolean = true
+  $getTVs:Boolean = true
+  $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = true
+  $getCompanyTopics:Boolean = true
+  $getRatingVoters:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+){
+  addCompany{
+    ...Company
+  }
+}
+
 
 `;
 

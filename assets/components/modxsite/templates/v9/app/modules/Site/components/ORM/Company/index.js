@@ -233,6 +233,10 @@ export const CompanyType = new GraphQLObjectType({
       parent: {
         type: GraphQLInt
       },
+      createdby: {
+        type: GraphQLInt,
+        description: "ID автора и владельца компании",
+      },
       createdon: {
         type: GraphQLInt,
         description: "Дата создания в секундах",

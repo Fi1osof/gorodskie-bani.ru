@@ -13,6 +13,7 @@ require('babel-core/register')({
         || /\/structor-templates\//.test(file)
         || /\/react-decliner\//.test(file)
         || /\/google-map-react\//.test(file)
+        || /\/react-progress-button\//.test(file)
         // || /\/moment\//.test(file)
       ){
         return;

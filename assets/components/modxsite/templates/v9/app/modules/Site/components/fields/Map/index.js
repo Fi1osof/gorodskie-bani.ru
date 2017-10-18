@@ -48,8 +48,23 @@ export default class ItemMap extends Component{
 	}
  
 
+ 	inEditMode(){
+
+ 		const {
+ 			item: {
+ 				_isDirty,
+ 			},
+ 		} = this.props;
+
+		return _isDirty ? true : false;
+ 	}
+
 
  	onChildMouseDown(key, props, coords){ 
+
+ 		if(!this.inEditMode()){
+ 			return;
+ 		}
  
  		this.setState({
  			draggable: false,
@@ -62,6 +77,10 @@ export default class ItemMap extends Component{
  	onChildMouseUp(){
  		// console.log('onChildMouseUp');
 
+ 		if(!this.inEditMode()){
+ 			return;
+ 		}
+
  		this.setState({
  			draggable: true,
  		});
@@ -71,6 +90,10 @@ export default class ItemMap extends Component{
 
  		// let {
  		// } = marker;
+
+ 		if(!this.inEditMode()){
+ 			return;
+ 		}
 
  		let {
 
@@ -90,6 +113,7 @@ export default class ItemMap extends Component{
 
  		const data = {
  			coords: newCoords,
+ 			...newCoords,
  		};
 
  		updateItem(item, data);
@@ -121,6 +145,7 @@ export default class ItemMap extends Component{
 			error,
 			helperText,
 			onChange,
+			_isDirty,
 			...other
 		} = this.props;
 
@@ -158,6 +183,10 @@ export default class ItemMap extends Component{
 	      	lat: lat,
 	      	lng: lng,
 	      }}
+	      center={draggable && {
+	      	lat: lat,
+	      	lng: lng,
+	      } || undefined}
 	      defaultZoom={15}
 				draggable={draggable}
 			  onChildMouseDown={::this.onChildMouseDown}
@@ -216,6 +245,8 @@ export default class ItemMap extends Component{
 							  	} = mapItem;
 
 							  	const data = {
+							  		lat,
+							  		lng,
 							  		coords: {
 								  		lat,
 								  		lng,

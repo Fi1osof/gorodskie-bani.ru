@@ -6,12 +6,15 @@ import {Link, browserHistory} from 'react-router';
 
 import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
+import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 
 import SaveIcon from 'material-ui-icons/Save';
+
+import Helper from 'modules/Site/components/Helper';
 
 import ItemMap from 'modules/Site/components/fields/Map';
 import Comments from 'modules/Site/components/Comments';
@@ -247,6 +250,8 @@ export default class CompanyPage extends Component{
 	}
 	
 	render(){
+
+		const inEditMode = true;
 
 		const {
 			item,
@@ -497,44 +502,117 @@ export default class CompanyPage extends Component{
 							item
 							xs
 						>
+
+							{inEditMode
+								?
+									<TextField 
+										label="Адрес"
+										helperText="Укажите подробный адрес"
+										name="address"
+										value={address || ""}
+									/>
+								:
+								addresses.length ? <p>
+									<b>Адрес: </b> {addresses.reduce((prev, curr) => [prev, ', ', curr])}
+								</p> : ''
+							}
+
 							
-							{addresses.length ? <p>
-								<b>Адрес: </b> {addresses.reduce((prev, curr) => [prev, ', ', curr])}
-							</p> : ''}
 							
-							{metro ? <p>
-								<b>Метро: </b> {metro}
-							</p> : ''}
-							
-							{phones ? <p>
-								<b>Телефон: </b> {phones}
-							</p> : ''}
-							
-							{site ? <p>
-								<b>Сайт: </b> <a 
-									href={/^https?:/.test(site) ? site : `http://${site}`} 
-									target="_blank" 
-									rel={approved ? "follow" : "nofollow"}
-								>{site}</a>
-							</p> : ''}
-							
-							{work_time ? <div
-								style={{
-									overflow: 'hidden',
-								}}
-							>
-								<b
-									style={{
-										float: 'left',
-									}}
-								>Время работы:&nbsp;</b> <div
-									dangerouslySetInnerHTML={{ __html: work_time }}
+							{inEditMode
+								?
+								<TextField 
+									label="Адрес"
+									helperText="Укажите ближайшие станции метро через запятую"
+									name="metro"
+									value={metro || ""}
 								/>
-							</div>
+								:
+								metro ? <p>
+									<b>Метро: </b> {metro}
+								</p> 
+								: ''
+							}
+							
+							{inEditMode
+								?
+								<TextField 
+									label="Телефон"
+									helperText="Можно указать несколько телефонов через запятую"
+									name="phones"
+									value={phones || ""}
+								/>
+								:
+								phones ? <p>
+									<b>Телефон: </b> {phones}
+								</p> 
+								: ''
+							}
+							
+							{inEditMode
+								?
+								<TextField 
+									label="Сайт"
+									helperText="Если адрес начинается с https, обязательно укажите вместе с ним, например, https://ваш_сайт/"
+									name="site"
+									value={site || ""}
+								/>
+								:
+								site ? <p>
+									<b>Сайт: </b> <a 
+										href={/^https?:/.test(site) ? site : `http://${site}`} 
+										target="_blank" 
+										rel={approved ? "follow" : "nofollow"}
+									>{site}</a>
+								</p> 
+								: ''
+							}
+							
+							{inEditMode
+								?
+								<TextField 
+									label="Время работы"
+									helperText="Распишите график работы заведения"
+									name="work_time"
+									value={work_time || ""}
+									multiline
+								/>
+								:
+								work_time ? <div
+									style={{
+										overflow: 'hidden',
+									}}
+								>
+									<b
+										style={{
+											float: 'left',
+										}}
+									>Время работы:&nbsp;</b>
+
+									{approved
+										?
+										<div
+											dangerouslySetInnerHTML={{ __html: work_time }}
+										/>
+										:
+										work_time
+									}
+
+								</div>
 
 							 : ''}
 
-							{prices
+							{inEditMode
+								?
+								<TextField 
+									label="Цены"
+									helperText="Распишите цены, включая цены на допуслуги"
+									name="prices"
+									value={prices || ""}
+									multiline
+								/>
+								:
+								prices
 								?
 									<div
 										style={{
@@ -545,9 +623,15 @@ export default class CompanyPage extends Component{
 											style={{
 												float: 'left',
 											}}
-										>Цены:&nbsp;</b> <div
-											dangerouslySetInnerHTML={{ __html: prices }}
-										/>
+										>Цены:&nbsp;</b> 
+										{approved
+											?
+											<div
+												dangerouslySetInnerHTML={{ __html: prices }}
+											/>
+											:
+											{prices}
+										}
 									</div>
 								:
 								null
@@ -591,6 +675,22 @@ export default class CompanyPage extends Component{
 	        	updateItem={this.updateItem}
 	        	// updateItem={updateItem}
 	        	showSearchControl={true}
+	        	helper={<Paper
+            	style={{
+            		padding: 15,
+            	}}
+            > 
+
+            	<p>
+            		Это поле позволяет точно указать координаты вашего заведения. Для этого просто переместите на карте маркер мышкой в нужную позицию.
+            	</p>
+
+            	<p>
+            		Если маркер находится не в том районе карты, где вам нужно, можете в этом поисковом поле набрать нужный вам адрес, после чего кликнуть подходящий 
+            		предложенный вариант и маркер автоматически переместится в выбранный район.
+            	</p>
+
+            </Paper>}
 	        />
 
 					{/*

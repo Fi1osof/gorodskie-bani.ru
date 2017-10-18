@@ -1,6 +1,8 @@
 
 import moment from 'moment';
 
+import {browserHistory} from 'react-router';
+
 // moment.locale('ru');
 
 import {
@@ -857,6 +859,17 @@ export default class Company extends ModelObject{
 
   }
 
+  
+  update(data, silent){
+
+    const {
+      // ContactsStore,
+      updateContactItem,
+    } = this.getApp();
+
+    return updateContactItem(this, data, silent);
+  }
+
   // fieldResolver(source, args, context, info){
   //   // 
   //   // 
@@ -1078,6 +1091,48 @@ export default class Company extends ModelObject{
   }
 
 }
+
+
+export const add = (source, args, context, info) => {
+
+  let {
+    CompaniesStore,
+    coords,
+  } = context.state;
+
+  if(!coords || !coords.lat || !coords.lng){
+
+    coords = {
+      lat: 55.753767,
+      lng: 37.631778,
+    };
+
+  }
+
+  const id = Math.round(Math.random() * 10000000) * -1;
+
+  const uri = `bani/${id}/`;
+
+  let data = {
+    id,
+    name: "",
+    uri,
+    coords,
+  };
+
+  let company = new Company(data, context);
+
+  CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions.CREATE, company);
+
+  company.update(data);
+
+  browserHistory.push(uri);
+
+  return company;
+
+};
+
+
 
 export const getList = (source, args, context, info) => {
 

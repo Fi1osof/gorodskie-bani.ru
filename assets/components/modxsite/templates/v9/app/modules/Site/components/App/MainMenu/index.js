@@ -255,60 +255,25 @@ export default class MainMenu extends Component{
         
         <div id="navbar-main" className="collapse navbar-collapse navbar-right">
           <ul className="nav navbar-nav">
-              <li className="first">
-                <Link 
-                  to="bani-otzivy/" 
-                  href="bani-otzivy/" 
-                  title="Обзоры и отзывы"
-                  onClick={event => {
-                    this.closeMenu();
-                  }}
-                >
-                  Обзоры и отзывы 
-                </Link>
-              </li>
-              <li className="">
-                <Link 
-                  to="topics/" 
-                  href="topics/" 
-                  title="Новости"
-                  onClick={event => {
-                    this.closeMenu();
-                  }}
-                >
-                  Новости
-                </Link>
-              </li>
-              <li>
-              <a 
-              	href="javascript:;" 
-              	title="Рейтинги заведений" 
-              	className="dropdown-toggle"
-                data-toggle="dropdown"
-              	// onClick={event => this.setState({
-              	// 	ratingsOpened: !ratingsOpened,
-              	// })}
-              >Рейтинги заведений <i className="fa fa-angle-down"></i></a>
-              <ul 
-              	className="dropdown-menu"
-              	style={{
-              		display: ratingsOpened ? 'block' : undefined,
-              	}}
-              >
-                {ratingsList}
 
-                {/*<li className="first"><a href="ratings/steam/" title="Парилка">Парилка</a></li>
-                <li><a href="ratings/service/" title="Обслуживание">Обслуживание</a></li>
-                <li><a href="ratings/interior/" title="Интерьер">Интерьер</a></li>
-                <li><a href="ratings/cuisine/" title="Кухня">Кухня</a></li>
-                <li><a href="ratings/cleanliness/" title="Чистота">Чистота</a></li>
-                <li><a href="ratings/grafik-rabotyi/" title="График работы">График работы</a></li>
-                <li><a href="ratings/prices/" title="Стоимость услуг">Стоимость услуг</a></li>
-                <li><a href="ratings/cuisine-prices/" title="Стоимость кухни">Стоимость кухни</a></li>
-                <li><a href="ratings/skidki-i-akczii/" title="Скидки и акции">Скидки и акции</a></li>
-                <li><a href="ratings/friendliness/" title="Дружественная атмосфера">Дружественная атмосфера</a></li>
-                <li className="last"><a href="ratings/lgotyi-postoyannyim-posetitelyam/" title="Льготы постоянным посетителям">Льготы постоянным посетителям</a></li>*/}
-              </ul>
+              <li>
+                <a 
+                	href="javascript:;" 
+                	title="Рейтинги заведений" 
+                	className="dropdown-toggle"
+                  data-toggle="dropdown"
+                	// onClick={event => this.setState({
+                	// 	ratingsOpened: !ratingsOpened,
+                	// })}
+                >Рейтинги заведений <i className="fa fa-angle-down"></i></a>
+                <ul 
+                	className="dropdown-menu"
+                	style={{
+                		display: ratingsOpened ? 'block' : undefined,
+                	}}
+                >
+                  {ratingsList}
+                </ul>
               </li>
 
               <li>
@@ -332,6 +297,47 @@ export default class MainMenu extends Component{
 
 	              </ul>
               </li>
+
+              <li>
+                <a 
+                  href="javascript:;" 
+                  title="Рейтинги заведений" 
+                  className="dropdown-toggle"
+                  data-toggle="dropdown"
+                  // onClick={event => this.setState({
+                  //  ratingsOpened: !ratingsOpened,
+                  // })}
+                >Публикации <i className="fa fa-angle-down"></i></a>
+                <ul 
+                  className="dropdown-menu"
+                >
+                  <li className="first">
+                    <Link 
+                      to="bani-otzivy/" 
+                      href="bani-otzivy/" 
+                      title="Обзоры и отзывы"
+                      onClick={event => {
+                        this.closeMenu();
+                      }}
+                    >
+                      Обзоры и отзывы 
+                    </Link>
+                  </li>
+                  <li className="">
+                    <Link 
+                      to="topics/" 
+                      href="topics/" 
+                      title="Новости"
+                      onClick={event => {
+                        this.closeMenu();
+                      }}
+                    >
+                      Новости
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+
               <li className="last">
                 <Link 
                   to="contacts.html" 

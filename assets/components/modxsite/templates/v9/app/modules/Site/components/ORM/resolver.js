@@ -18,6 +18,7 @@ import {
 import {
 	CompanyType,
 	getList as getCompanyList,
+  add as addCompany,
 } from './Company';
 
 import {
@@ -792,6 +793,70 @@ const objectResolver = (returnType, source, args, context, info) => {
   // Если это не корневой вызов, сбрасываем операцию, чтобы сквозной вызов не выполнялся
   if(source){
     operation = undefined;
+  }
+
+
+  if(operation && operation.name){
+
+    switch(operation.name.value){
+
+      case "addCompany":
+
+        return addCompany(source, args, context, info); 
+
+        break;
+
+      // case "contactSetParent":
+
+      //   // console.log("contactSetParent object", result);
+
+      //   if(result && (result instanceof Contact)){
+
+      //     return result.contactSetParent(source, args, context, info)
+      //       // .catch(e => {
+      //       //   throw(new Error(e));
+      //       // });
+
+      //   }
+
+      //   break;
+
+      // case "PlaceContactUpdateCoords":
+
+
+      //   if(result && (result instanceof PlaceContact)){
+
+      //     // console.log("PlaceContactUpdateCoords Object result", result);
+
+      //     const {
+      //       lat,
+      //       lng,
+      //     } = args;
+
+      //     // Object.assign(result, {
+      //     //   lat,
+      //     //   lng,
+      //     // });
+      //     let coords;
+
+      //     if(lat && lng){
+      //       coords = {
+      //         lat,
+      //         lng,
+      //       };
+      //     }
+
+      //     return result.update({
+      //       lat,
+      //       lng,
+      //       coords,
+      //     });
+
+      //   }
+
+      //   break;
+    }
+
   }
 
   // console.log("await getObject object", result);

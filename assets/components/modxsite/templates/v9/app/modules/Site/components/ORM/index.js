@@ -357,3 +357,17 @@ const RootType = new GraphQLObjectType({
 });
 
 export default RootType;
+
+
+const mutationFields = {
+  addCompany: {
+    type: CompanyType,
+    description: "Добавление нового заведения",
+  },
+}
+
+
+export const Mutation = new GraphQLObjectType({
+  name: "Mutation",
+  fields: () => (mutationFields),
+});

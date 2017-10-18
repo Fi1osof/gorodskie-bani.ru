@@ -663,6 +663,7 @@ module.exports = function (options) {
           <title>Городские бани</title>
           <meta name="robots" content="index, follow" />
           <link rel="shortcut icon" href="/favicon.ico"/>
+          <link rel="alternate" hreflang="ru" href="http://gorodskie-bani.ru/" />
           <link rel="stylesheet" href="${css_src}">
           <base href="/" />
           <script type="application/javascript">

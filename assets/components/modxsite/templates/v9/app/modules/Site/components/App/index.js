@@ -281,7 +281,7 @@ export class AppMain extends Component{
 
     return new GraphQLSchema({
       query: RootType,
-      // mutation: Mutation,
+      mutation: Mutation,
     });
 
   }

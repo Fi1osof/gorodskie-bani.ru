@@ -5,9 +5,12 @@ import PropTypes from 'prop-types';
 // import GoogleMap from 'material-ui-components/src/GoogleMap';
 // import GoogleMap from 'modules/Sportpoisk/components/GoogleMap';
 
+import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import GoogleMapReact from 'google-map-react';
 import SimpleMarker from 'google-map-react/develop/markers/SimpleMarker';
+
+import Helper from 'modules/Site/components/Helper';
 
 // import Control from './Controls';
 // import Control from 'modules/Sportpoisk/components/GoogleMap/Controls/layout'; 
@@ -107,6 +110,7 @@ export default class ItemMap extends Component{
 		let {
 			item,
 			updateItem,
+			helper,
 			...other
 		} = this.props;
 
@@ -170,29 +174,63 @@ export default class ItemMap extends Component{
     			maps={maps}
     			position="TOP_CENTER"
     		>
-    			<YandexSearch 
-	    			map={map}
-	    			maps={maps}
-	    			style={{
-	    				minWidth: 300
-	    			}}
-	    			onNewRequest={(event, value, mapItem) => {
-					  	let {
-					  		coordinates: {
-					  			0: lat,
-					  			1: lng,
-					  		},
-					  	} = mapItem;
 
-					  	updateItem(item, {
-					  		coords: {
-						  		lat,
-						  		lng,
-						  	},
-					  	});
+    			<Grid
+    				container
+    				gutter={0}
+    				align="center"
+    			>
 
-						}}
-    			/>
+    				<Grid
+    					item
+    					xs
+    				>
+
+		    			<YandexSearch 
+			    			map={map}
+			    			maps={maps}
+			    			style={{
+			    				minWidth: 300
+			    			}}
+			    			onNewRequest={(event, value, mapItem) => {
+							  	let {
+							  		coordinates: {
+							  			0: lat,
+							  			1: lng,
+							  		},
+							  	} = mapItem;
+
+							  	updateItem(item, {
+							  		coords: {
+								  		lat,
+								  		lng,
+								  	},
+							  	});
+
+								}}
+		    			/>
+    					
+    				</Grid>
+    				
+	    			{helper 
+	    				?
+	    					<Grid
+		    					item
+		    				>
+			    				<Helper
+										contrastIcons={false}
+			            >
+			              {helper}
+			            </Helper>
+		            </Grid>
+	    				:
+	    				null
+	    			}
+
+    			</Grid>
+
+
+
     		</Control>
     		
     		:

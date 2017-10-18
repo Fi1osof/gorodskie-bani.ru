@@ -13,6 +13,7 @@ import ExploreIcon from 'material-ui-icons/Explore';
 import CloseIcon from 'material-ui-icons/Close';
 import Business from 'material-ui-icons/Business';
 import Texture from 'material-ui-icons/Texture';
+import AddIcon from 'material-ui-icons/AddCircle';
 
 import GoogleMapReact from 'google-map-react';
 
@@ -1197,6 +1198,50 @@ export default class MapMainView extends Component{
 		    >
 		    	{items}
 		    </GoogleMapReact>
+ 
+
+				{map && maps
+	    		?
+	    		<Control
+	    			map={map}
+	    			maps={maps}
+	    			position="LEFT_BOTTOM"
+	    		> 
+
+	    			<Link
+	    				to="#"
+	    				style={{
+	    					// textShadow: "0px 0px 5px #ccc",
+    						fontSize: 12,
+    						background: "rgba(256,256,256,0.7)",
+						    display: "block",
+						    paddingRight: 10,
+	    				}}
+	    			>
+	    				<Grid
+	    					container
+	    					gutter={0}
+	    					align="center"
+	    				>
+	    					<IconButton
+			    				accent
+			    				style={{
+			    					height: 30,
+			    					width: 30,
+			    				}}
+		    				>
+			    				<AddIcon 
+			    				/>
+		    				</IconButton>
+		    				Добавить заведение
+	    				</Grid>
+	    			</Link>
+
+	    		</Control>
+	    		
+	    		:
+	    		null
+	    	}
 
 
 				{map && maps

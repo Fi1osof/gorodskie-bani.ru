@@ -1858,14 +1858,24 @@ export default class Response{
     return schema;
   }
 
-  process = async () => {  
+  process = async (req, res, params) => {  
+
+    // let {
+    //   pub_action,
+    //   ...params 
+    // } = this.getRequestParams();
+
+    // let params = this.params || {};
+    // let query = req.query || {};
+
+    params = Object.assign({}, req.query || {}, params || {});
+
+    // let {
+    //   ...params 
+    // } = this.getRequestParams();
 
     let {
       pub_action,
-      ...params 
-    } = this.getRequestParams();
-
-    let {
       query,
       variables,
       operationName,
@@ -1901,6 +1911,13 @@ export default class Response{
 
     return result;
   }
+
+  // getRequestParams(){
+  //   let params = this.params || {};
+  //   let query = this.req.query || {};
+
+  //   return Object.assign(query, params);
+  // }
 
 
   localQuery = (graphQLParams) => {
@@ -2086,13 +2103,6 @@ export default class Response{
   //   return result;
 
   // }
-
-  getRequestParams(){
-    let params = this.params || {};
-    let query = this.req.query || {};
-
-    return Object.assign(query, params);
-  }
 
   success(message, object){
 

@@ -3,7 +3,9 @@ const express = require('express');
 const path = require('path');
 const compression = require('compression');
 
-const router = require('../routes/main');
+// const router = require('../routes/main');
+import router from '../routes/main';
+
 var cookieParser = require('cookie-parser');
 
 // Dev middleware
@@ -40,6 +42,11 @@ const addDevMiddlewares = (app, webpackConfig) => {
     app: app,
     // webpack: compiler,
   }));
+  
+  // app.use(router({
+  //   app: app,
+  //   // webpack: compiler,
+  // }));
 };
 
 // Production middlewares

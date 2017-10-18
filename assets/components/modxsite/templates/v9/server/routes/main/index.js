@@ -37,7 +37,15 @@ const knex = require('knex')(db_config);
  
 let styles = {};
 
-module.exports = function (options) {
+
+
+
+
+/*
+  OLD Router
+*/
+
+const oldRouter = function (options) {
 
   const {
   } = options || {};
@@ -240,34 +248,7 @@ module.exports = function (options) {
     debug('users', users);
     return;
   }
-
-
-  // setInterval(SendUsersActivity, 3000);
-
-
-
-  // function SendMessageToAll(message, original_message, exclude_current, ws){
-
-  //   delete message.cookie;
-  //   delete message.password;
-
-  //   if(original_message){
-  //     delete original_message.cookie;
-  //     delete original_message.password;
-  //   }
-
-  //   for(var i in clients){
-
-  //     var client = clients[i];
-
-  //     if(exclude_current && client == ws){
-  //       continue;
-  //     }
-
-  //     SendMessage(client, message, original_message);
-  //   }
-  // }
-
+ 
 
   function SendMessageToUsers(message, users_ids){
 
@@ -306,214 +287,130 @@ module.exports = function (options) {
       // SendMessage(client, message);
     });
   }
-
-  // const SendMessage = function(client, message, original_message){
-  //   if(client && client.readyState === client.OPEN){
-
-  //     // console.log(client);
-  //     // console.log('SendMessage', message);
-
-  //     if(typeof message !== "object"){
-  //       message = {
-  //         text: "message"
-  //       };
-  //     }
-
-  //     if(!message.ts){
-  //       message.ts = new Date().getTime();
-  //     }
-
-  //     delete message.cookie;
-  //     delete message.password;
-
-  //     if(original_message){
-
-  //       delete original_message.cookie;
-  //       delete original_message.password;
-
-  //       message.original_message = original_message;
-  //     }
-
-  //     // client.send(JSON.stringify(message));
-  //     client && typeof client.send === "function" && client.send(JSON.stringify(message));
-  //   }
-
-  // }
- 
-
-
-  // const SendMessageToAll = function(ws, message, original_message, exclude_current){
-
-  //   delete message.cookie;
-  //   delete message.password;
-
-  //   if(original_message){
-  //     delete original_message.cookie;
-  //     delete original_message.password;
-  //   }
-
-  //   for(var i in clients){
-
-  //     var client = clients[i];
-
-  //     if(exclude_current && client == ws){
-  //       continue;
-  //     }
-
-  //     SendMessage(client, message, original_message);
-  //   }
-  // }
-
-
-
-  
-  /*
-    Cлужба рассылки уведомлений о новых письмах
-  */
-  // setInterval(() => {
-
-  //   let res = {};
-  //   let req = {};
-  //   let request = {};
-
-  //   let response = new Response(req, res, request, knex, clients, SendMessage, config);
-
-  //   // return response.process();
-
-  //   response.notifyUsersUnreadMessages({
-  //     headers: {},
-  //   }, {}, response, {});
-
-  // }, 1000 * 60 * 5);
-
-
-
-  // const success = function(req, res, response, knex){
     
 
-  //   res.writeHead(200, {'Content-Type': 'application/json'});
-  //   res.end(JSON.stringify(response));
-  // }
 
-  // const failure = function(req, res, response){
+  const SendMODXRequest = (action, params) => {
 
+    const req = this.req;
 
-  //   res.writeHead(200, {'Content-Type': 'application/json'});
-  //   res.end(JSON.stringify(response));
-  // }
+    const method = 'POST';
 
+    let url = `/assets/components/modxsite/connectors/connector.php?pub_action=${action}`;
 
-  // const processResponse = function(req, res, response){
-  //   if(response.success){
-  //     return success(req, res, response);
-  //   }
-  //   else{
-  //     return failure(req, res, response);
-  //   }
-  // }
- 
- 
+    let options = {
+      // host: host,
+      // port: 80,
+      // path: url,
+      method,
+      headers: {
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+        // 'Content-Length': Buffer.byteLength(postData)
+      },
+      // json: {
+      //   users: users
+      // }
+    };
 
-  /*
-   * Static
-   * */
+    let form;
 
+    let {
+      sort,
+      ...other
+    } = params;
 
-  /*
-   * Надстройка WebSocket для роутера
-   * */
-  // var expressWs = require('express-ws')(options.app);
+    params = {...other};
 
+    if(sort){
 
-  /*
-   * API
-   * */
-  //
+      if(Array.isArray(sort)){
 
+        sort = sort[0];
 
+        if(sort){
 
-  // const SendUsersActivity = function(){
+          params.sort = sort.by;
+          params.dir = sort.dir || undefined;
 
-  //   var users_list = [];
-  //   var ids = {};
+        }
 
-  //   var total_active_clients = 0;
+      }
 
-  //   for(var i in clients){
-  //     var client = clients[i];
+    }
 
-  //     if(
-  //       client.readyState == client.OPEN
-  //     ){
-
-  //       total_active_clients++;
-
-  //       if(
-  //         client.user
-  //         && client.user.id
-  //         && !ids[client.user.id]
-  //       ){
-  //         ids[client.user.id] = true;
-  //         users_list.push(client.user);
-  //       }
-  //     }
-  //   }
+    if(method == 'POST' && params){
+      // var postData = querystring.stringify(params);
 
 
-  //   users_list.reverse();
+      form = new FormData()
 
-  //   // for(var i in clients){
-  //   //   SendMessage(clients[i], {
-  //   //     type: "active_users_list",
-  //   //     users: users_list,
-  //   //   });
-  //   // }
+      for(var i in params){
+        
+        var value = params[i];
 
-  //   /*
-  //    * Если список пользователей изменился, отправляем статистику
-  //    * */
-  //   if(md5(users_list) != md5(users)){
-  //     users = users_list;
+        value = (typeof value !== "undefined") && value.toString && value.toString() || undefined;
 
-  //     SendMessageToAll({
-  //       type: "active_users_list",
-  //       users: users,
-  //     });
-  //   }
+        if(value !== undefined){
+          form.append(i, value);
+        }
+      }
 
+      // form.append('limit', 3);
+      // form.append('with_coors_only', 'true');
 
-  //   debug('SendUsersActivity');
-  //   debug('total_active_clients', total_active_clients);
-  //   debug('users', users);
-  //   return;
-  // }
+      options.body = form;
 
+      // Object.assign(options.headers, form.getHeaders());
 
-  // setInterval(SendUsersActivity, 3000);
+      
+    }
 
 
 
-  // function SendMessageToAll(message, original_message, exclude_current, ws){
+    /*
+    * Собираем кукисы из оригинального запроса и если передаются куки в параметрах запроса,
+    * то объединяем их
+    * */
+    var cookies = [];
 
-  //   delete message.cookie;
-  //   delete message.password;
+    let cookies_obj;
 
-  //   if(original_message){
-  //     delete original_message.cookie;
-  //     delete original_message.password;
-  //   }
+    if(req.headers && req.headers.cookie){
+      let cooks = req.headers.cookie.split(";");
 
-  //   for(var i in clients){
+      cookies_obj = {};
 
-  //     var client = clients[i];
+      cooks.map(function(item){
+        var match = item.match(/ *(.+?)=(.+)/);
+        if(match){
+          cookies_obj[match[1]] = match[2];
+        }
+      });
+    }
 
-  //     if(exclude_current && client == ws){
-  //       continue;
-  //     }
+    if(cookies_obj){
 
-  //     SendMessage(client, message, original_message);
-  //   }
-  // }
+      for(var i in cookies_obj){
+        cookies.push(i + '=' + cookies_obj[i]);
+      }
+    }
+
+    if(cookies){
+      options.headers.Cookie = cookies;
+
+      debug("options.headers", options.headers);
+    }
+
+    debug("options.headers", options.headers);
+    debug("options", options);
+
+
+    return fetch(site_url + url, options)
+      .then(function(res) {
+        return res.json();
+      });
+  };
+
 
 
   function SendMessageToUsers(message, users_ids){
@@ -611,310 +508,203 @@ module.exports = function (options) {
           /*
            * Поиск пользователя
            * */
-          case 'find_user':
+          // case 'find_user':
 
-            // var postData = querystring.stringify({users: JSON.stringify(users)});
+          //   // var postData = querystring.stringify({users: JSON.stringify(users)});
 
-            // debug("local document");
+          //   // debug("local document");
 
-            // debug("WS", ws.hostname);
-            // debug("WS", ws.headers);
+          //   // debug("WS", ws.hostname);
+          //   // debug("WS", ws.headers);
 
-            var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/getdata&current=true&query=' + encodeURIComponent(response.query);
-            SendMODXRequest(ws, url, response);
+          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/getdata&current=true&query=' + encodeURIComponent(response.query);
+          //   SendMODXRequest(ws, url, response);
  
 
-            break;
+          //   break;
 
           /*
            * Получаем данные своего профиля (копия предыдущей функции)
            * */
-          case 'user/get_own_data':
+          // case 'user/get_own_data':
 
-            var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/get_own_data&current=true';
+          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/get_own_data&current=true';
 
-            SendMODXRequest(ws, url, response, function(message){
+          //   SendMODXRequest(ws, url, response, function(message){
 
-              if(message.success && message.object && message.object.id){
+          //     if(message.success && message.object && message.object.id){
 
-                var user;
+          //       var user;
 
-                var object = message.object;
-                var user_id = object.id;
+          //       var object = message.object;
+          //       var user_id = object.id;
 
-                for(var i in users){
-                  if(users[i].id == user_id){
-                    user = users[i];
-                    break;
-                  }
-                }
+          //       for(var i in users){
+          //         if(users[i].id == user_id){
+          //           user = users[i];
+          //           break;
+          //         }
+          //       }
 
-                if(!user){
-                  user = {
-                    id: object.id,
-                    username: object.username,
-                    fullname: object.fullname,
-                    photo:    object.photo,
-                  };
+          //       if(!user){
+          //         user = {
+          //           id: object.id,
+          //           username: object.username,
+          //           fullname: object.fullname,
+          //           photo:    object.photo,
+          //         };
 
-                  // debug("Активные пользователи", users || "sdfsdfsd");
-                  // debug("Пользователь", user || "sdfsd");
+          //         // debug("Активные пользователи", users || "sdfsdfsd");
+          //         // debug("Пользователь", user || "sdfsd");
 
-                  // users.push(user);
-                }
+          //         // users.push(user);
+          //       }
 
-                ws.user = user;
+          //       ws.user = user;
 
-                // SendUsersActivity();
-              }
+          //       // SendUsersActivity();
+          //     }
 
-              return message;
-            });
+          //     return message;
+          //   }); 
 
-
-            // var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/get_own_data&current=true';
-            //
-            // // debug("Запрос на поиск пользователя", url);
-            //
-            // var options = {
-            //   host: host,
-            //   port: raw_host_port,
-            //   path: url,
-            //   // 'method': 'GET',
-            //   'headers': {
-            //     // 'Content-Type': 'application/x-www-form-urlencoded',
-            //     // 'Content-Length': Buffer.byteLength(postData)
-            //   },
-            //   // json: {
-            //   //   users: users
-            //   // }
-            // };
-            //
-            // if (ws.upgradeReq.headers.cookie) {
-            //   options.headers.Cookie = ws.upgradeReq.headers.cookie;
-            // }
-            //
-            // debug("Авторизация пользователя, заголовки", ws.upgradeReq.headers);
-            // debug("Авторизация пользователя, передаваемые параметры", options);
-            //
-            // var callback = function(request){
-            //
-            //   // debug("load_document loaded response");
-            //
-            //   var client = this;
-            //
-            //   var str = '';
-            //   //
-            //   // //another chunk of data has been recieved, so append it to `str`
-            //   request.on('data', function (chunk) {
-            //     str += chunk;
-            //   });
-            //   //
-            //   // //the whole response has been recieved, so we just print it out here
-            //   request.on('end', function () {
-            //
-            //     // var response_headers = request.headers;
-            //     // debug("Response from MODX", str);
-            //
-            //     var message;
-            //
-            //     try{
-            //       var result = JSON.parse(str);
-            //
-            //       var user;
-            //
-            //       if(result.success && result.object && result.object.id){
-            //
-            //         var object = result.object;
-            //         var user_id = object.id;
-            //
-            //         for(var i in users){
-            //           if(users[i].id == user_id){
-            //             user = users[i];
-            //             break;
-            //           }
-            //         }
-            //
-            //         if(!user){
-            //           user = {
-            //             id: object.id,
-            //             username: object.username,
-            //             fullname: object.fullname,
-            //             photo:    object.photo,
-            //           };
-            //
-            //           // debug("Активные пользователи", users || "sdfsdfsd");
-            //           // debug("Пользователь", user || "sdfsd");
-            //
-            //           // users.push(user);
-            //
-            //         }
-            //
-            //         client.user = user;
-            //
-            //         SendUsersActivity();
-            //       }
-            //
-            //       // debug("Активные пользователи", users);
-            //
-            //       message = result;
-            //
-            //     }
-            //     catch(e){
-            //       console.error(e.message, e.stack);
-            //       console.log(str);
-            //
-            //       message = e.message + e.stack;
-            //     }
-            //
-            //     debug("Результат данные пользователя", result, message);
-            //
-            //     SendMessage(client, message, response);
-            //
-            //   });
-            // }
-            //
-            // var request = httpServ.request(options, callback.bind(ws));
-            // // request.write(postData);
-            // request.end();
-
-            break;
+          //   break;
 
 
           /*
            * Регистрация
            * */
-          case 'signup':
+          // case 'signup':
 
-            var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/create&username='+ response.login + '&password=' + response.password;
+          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/create&username='+ response.login + '&password=' + response.password;
 
-            // debug("Запрос на поиск пользователя", url);
+          //   // debug("Запрос на поиск пользователя", url);
 
-            var options = {
-              host: host,
-              port: raw_host_port,
-              path: url,
-              // 'method': 'GET',
-              'headers': {
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-                // 'Content-Length': Buffer.byteLength(postData)
-              },
-              // json: {
-              //   users: users
-              // }
-            };
+          //   var options = {
+          //     host: host,
+          //     port: raw_host_port,
+          //     path: url,
+          //     // 'method': 'GET',
+          //     'headers': {
+          //       // 'Content-Type': 'application/x-www-form-urlencoded',
+          //       // 'Content-Length': Buffer.byteLength(postData)
+          //     },
+          //     // json: {
+          //     //   users: users
+          //     // }
+          //   };
 
-            if (ws.upgradeReq.headers.cookie) {
-              options.headers.Cookie = ws.upgradeReq.headers.cookie;
-            }
-
-
-            var callback = function(request){
-
-              // debug("load_document loaded response");
-
-              var client = this;
-
-              var str = '';
-              //
-              // //another chunk of data has been recieved, so append it to `str`
-              request.on('data', function (chunk) {
-                str += chunk;
-              });
-              //
-              // //the whole response has been recieved, so we just print it out here
-              request.on('end', function () {
-
-                // var response_headers = request.headers;
-                // debug("Response from MODX", str);
-
-                var message;
-
-                try{
-                  var result = JSON.parse(str);
-
-                  if(result.success && result.object && result.object.id){
+          //   if (ws.upgradeReq.headers.cookie) {
+          //     options.headers.Cookie = ws.upgradeReq.headers.cookie;
+          //   }
 
 
-                  }
+          //   var callback = function(request){
 
-                  // debug("Активные пользователи", users);
+          //     // debug("load_document loaded response");
 
-                  message = result;
-                }
-                catch(e){
-                  console.error(e.message, e.stack);
-                  // console.log(str);
+          //     var client = this;
 
-                  message = e.message + e.stack;
-                }
+          //     var str = '';
+          //     //
+          //     // //another chunk of data has been recieved, so append it to `str`
+          //     request.on('data', function (chunk) {
+          //       str += chunk;
+          //     });
+          //     //
+          //     // //the whole response has been recieved, so we just print it out here
+          //     request.on('end', function () {
 
-                debug("Результат регистрации пользователя", result, message);
+          //       // var response_headers = request.headers;
+          //       // debug("Response from MODX", str);
 
-                SendMessage(client, message, response);
+          //       var message;
 
-              });
-            }
+          //       try{
+          //         var result = JSON.parse(str);
 
-            var request = httpServ.request(options, callback.bind(ws));
-            // request.write(postData);
-            request.end();
-
-            break;
-
-          /*
-           * Поиск пользователя
-           * */
-          case 'signin':
+          //         if(result.success && result.object && result.object.id){
 
 
-            var url = '/assets/components/modxsite/connectors/connector.php?pub_action=login&username=' + encodeURIComponent(response.login) + '&password=' + (response.password);
+          //         }
 
-            // (ws, url, original_message, process_message_callback)
-            SendMODXRequest(ws, url, response, function(message){
+          //         // debug("Активные пользователи", users);
 
-              if(message.success && message.object){
-                SendUsersActivity();
-              }
+          //         message = result;
+          //       }
+          //       catch(e){
+          //         console.error(e.message, e.stack);
+          //         // console.log(str);
 
-              return message;
-            });
+          //         message = e.message + e.stack;
+          //       }
+
+          //       debug("Результат регистрации пользователя", result, message);
+
+          //       SendMessage(client, message, response);
+
+          //     });
+          //   }
+
+          //   var request = httpServ.request(options, callback.bind(ws));
+          //   // request.write(postData);
+          //   request.end();
+
+          //   break;
+
+          // /*
+          //  * Поиск пользователя
+          //  * */
+          // case 'signin':
+
+
+          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=login&username=' + encodeURIComponent(response.login) + '&password=' + (response.password);
+
+          //   // (ws, url, original_message, process_message_callback)
+          //   SendMODXRequest(ws, url, response, function(message){
+
+          //     if(message.success && message.object){
+          //       SendUsersActivity();
+          //     }
+
+          //     return message;
+          //   });
 
 
 
 
-            break;
+          //   break;
 
 
           /*
            * Выход пользователя
            * */
-          case 'signout':
+          // case 'signout':
 
 
-            // console.log(ws.user);
-            // return;
+          //   // console.log(ws.user);
+          //   // return;
 
-            var url = '/assets/components/modxsite/connectors/connector.php?pub_action=logout';
+          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=logout';
 
-            SendMODXRequest(ws, url, response, function(message){
+          //   SendMODXRequest(ws, url, response, function(message){
 
-              if(message.success && ws.user && ws.user.id){
-                var user_id = ws.user.id;
-                for(var i in clients){
-                  var client = clients[i];
-                  if(client.user && client.user.id == user_id){
-                    // clients.slice(i,1);
-                    delete client.user;
-                  }
-                }
+          //     if(message.success && ws.user && ws.user.id){
+          //       var user_id = ws.user.id;
+          //       for(var i in clients){
+          //         var client = clients[i];
+          //         if(client.user && client.user.id == user_id){
+          //           // clients.slice(i,1);
+          //           delete client.user;
+          //         }
+          //       }
 
-                SendUsersActivity();
-              }
+          //       SendUsersActivity();
+          //     }
 
-              return message;
-            });
-            break;
+          //     return message;
+          //   });
+          //   break;
  
  
           case 'message':
@@ -1118,7 +908,7 @@ module.exports = function (options) {
 
     let response = new Response(req, res, request, knex, config, clients, SendMessage);
 
-    return response.process();
+    return response.process(req, res, request);
 
   });
 
@@ -1457,3 +1247,5 @@ module.exports = function (options) {
 
   return router;
 }
+
+export default oldRouter;

@@ -34,9 +34,13 @@ import Control from 'google-map-react-control';
 import HumanIcon from 'material-ui-icons/PermIdentity';
 import FaceIcon from 'material-ui-icons/Face';
 
+import UserLink from 'modules/Site/components/fields/User/link';
 
 class UserMarker extends Component{
 
+	static contextTypes = {
+		UsersStore: PropTypes.object.isRequired,
+	};
 
 	render(){
 
@@ -51,7 +55,35 @@ class UserMarker extends Component{
 		let Icon;
 
 		if(uid){
+
+			const {
+				UsersStore,
+			} = this.context;
+
+			const user = UsersStore.getState().find(n => n.id === uid);
+
 			Icon = FaceIcon;
+
+			if(user){
+
+				const {
+					username,
+				} = user;
+
+				const link = `/profile/${username}`;
+
+				return <UserLink
+					user={user}
+				/>
+
+				// return  <Link
+				// 	to={link}
+				// 	href={link}
+				// >
+				// 	<Icon />
+				// </Link>
+			}
+
 		}
 		else{
 			Icon = HumanIcon;
@@ -1021,7 +1053,44 @@ export default class MapMainView extends Component{
 	// 	return false
 	// }
 
-	getScreenBounds(){
+	isInAdvCoords(bounds){
+		
+		// let {
+		// 	minLat,
+		// 	maxLat,
+		// 	minLng,
+		// 	maxLng,
+		// } = this.getScreenBounds(true) || {};
+
+		const {
+			center,
+		} = this.state;
+		
+		if(!bounds || !center){
+			return;
+		}
+
+		let {
+			minLat,
+			maxLat,
+			minLng,
+			maxLng,
+		} = bounds;
+ 
+		// console.log('center', center);
+
+		// if(
+		// 	lat < maxLat && lat > minLat
+		// 	&&
+		// 	lng > minLng && lng < maxLng
+		// ){
+		// 	return true;
+		// }
+
+		return false
+	}
+
+	getScreenBounds(real){
 
 		let {
 			bounds,
@@ -1066,7 +1135,7 @@ export default class MapMainView extends Component{
 		// console.log("lngDiff", lngDiff);
 
 
-		if(zoom > 6){
+		if(zoom > 6 && !real){
 
 			minLat -= latDiff;
 			maxLat += latDiff;
@@ -1120,6 +1189,20 @@ export default class MapMainView extends Component{
 			minLng,
 			maxLng,
 		} = this.getScreenBounds() || {};
+
+		const {
+			...advBounds,
+		} = this.getScreenBounds(true) || {};
+
+
+		// console.log('advBounds', advBounds);
+
+		let advItems = [];
+
+		this.isInAdvCoords({});
+
+
+
 		/*
 			Router module
 		*/
@@ -1162,9 +1245,9 @@ export default class MapMainView extends Component{
 				...other
 			} = connection;
 
-			if(!coords){
-				return;
-			}
+			// if(!coords){
+			// 	return;
+			// }
 
 			users.push(<UserMarker
 				key={id}
@@ -1174,14 +1257,6 @@ export default class MapMainView extends Component{
 			</UserMarker>);
 
 		});
-
-		// console.log('getScreenBounds', minLat, maxLat, minLng, maxLng);
-
-		// console.log('getScreenBounds zoom', zoom);
-		// console.log('getScreenBounds minLng', minLng);
-		// console.log('getScreenBounds minLat', minLat);
-		// console.log('getScreenBounds maxLng', maxLng);
-		// console.log('getScreenBounds maxLat', maxLat);
 
 
 		// 

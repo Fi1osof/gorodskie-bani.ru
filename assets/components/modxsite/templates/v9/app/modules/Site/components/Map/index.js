@@ -1064,9 +1064,10 @@ export default class MapMainView extends Component{
 
 		const {
 			center,
+			zoom,
 		} = this.state;
 		
-		if(!bounds || !center){
+		if(!bounds || !center || !zoom || zoom < 13){
 			return;
 		}
 
@@ -1077,15 +1078,21 @@ export default class MapMainView extends Component{
 			maxLng,
 		} = bounds;
  
-		// console.log('center', center);
 
-		// if(
-		// 	lat < maxLat && lat > minLat
-		// 	&&
-		// 	lng > minLng && lng < maxLng
-		// ){
-		// 	return true;
-		// }
+		const {
+			lat,
+			lng,
+		} = center;
+
+		console.log('center', center);
+
+		if(
+			lat < maxLat && lat > minLat
+			&&
+			lng > minLng && lng < maxLng
+		){
+			return true;
+		}
 
 		return false
 	}
@@ -1199,7 +1206,25 @@ export default class MapMainView extends Component{
 
 		let advItems = [];
 
-		this.isInAdvCoords({});
+		const allowAds = this.isInAdvCoords({
+			maxLat: 55.63,
+			maxLng: 37.8,
+			minLat: 55.55,
+			minLng: 37.6,
+		});
+
+		if(allowAds){
+			advItems.push(<div>
+				<img
+					src="http://gorodskie-bani.ru/images/resized/slider_thumb/assets/images/companies/1525-vidnovskie-bani/5Y5A6418.jpg"
+					style={{
+						width: 200,
+					}}
+				/>
+			</div>);
+		}
+
+		console.log('advItems', advItems);
 
 
 
@@ -1522,6 +1547,23 @@ export default class MapMainView extends Component{
 	    		> 
 
 	    			{getCounters()}
+
+	    		</Control>
+	    		
+	    		:
+	    		null
+	    	}
+
+
+				{map && maps
+	    		?
+	    		<Control
+	    			map={map}
+	    			maps={maps}
+	    			position="RIGHT_BOTTOM"
+	    		> 
+
+	    			{advItems}
 
 	    		</Control>
 	    		

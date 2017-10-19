@@ -889,7 +889,9 @@ export class AppMain extends Component{
 
       const ws = new WebSocket(`${protocol}://${window.location.host}/api/?${user ? `uid=${user.id}` : ''}`);  
 
-      // window.ws = ws;
+      if(typeof window !== 'undefined'){
+        window.ws = ws;
+      }
 
       this.state.ws = ws;
 

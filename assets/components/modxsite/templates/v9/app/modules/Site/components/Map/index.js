@@ -64,14 +64,20 @@ export default class MapMainView extends Component{
 
 		super(props);
 
+		let {
+			zoom
+		} = props;
+
+		zoom = parseInt(zoom);
+
 		this.state = {
 			draggable: true,
 		  mapOptions: {
 		    center: props.center,
-		    zoom: props.zoom,
+		    zoom,
 		  },
 		  center: props.center,
-		  zoom: props.zoom,
+		  zoom,
 		  clusters: null,
 		  // activePlaceItem: null,
 		  // sidebarOpen: true,
@@ -208,6 +214,8 @@ export default class MapMainView extends Component{
  			city,
  		} = router.params || {};
 
+ 		zoom = parseInt(zoom);
+
  		// 
 
  		// console.log("componentDidUpdate city", city, currentCity);
@@ -230,12 +238,14 @@ export default class MapMainView extends Component{
  			zoom: currentZoom,
  		} = this.state;
 
+ 		currentZoom = parseInt(currentZoom);
+
  		if(
  			lat && lng && zoom
  			&& (
  				lat != currentLat
  				|| lng != currentLng
- 				|| zoom != currentZoom
+ 				|| zoom !== currentZoom
 			)
  		){
  			// this.setMapPosition(lat, lng);
@@ -246,7 +256,7 @@ export default class MapMainView extends Component{
 	      	lat: parseFloat(lat),
 	      	lng: parseFloat(lng),
 	      },
-	      zoom: parseFloat(zoom),
+	      zoom,
       });
  		}
 

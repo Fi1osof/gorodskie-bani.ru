@@ -804,22 +804,26 @@ export default class Router {
 
     clients.push(ws);
 
-    ws.on('message', function incoming(message) {
+    ws.on('message', async (message) => {
 
       debug('Я получил от вас сообщение: ' + message);
 
       try{
-        var response = JSON.parse(message);
+        // var response = JSON.parse(message);
+        let response = message;
 
-        // debug("Server. Received message", response);
+        debug("Server. Received message", response);
 
         var result = {};
 
 
-        var raw_text = php.trim(response.text) || ''
-          ,text = php.strip_tags(raw_text)
-          .replace(/\[/g, '&#91;')
-          .replace(/\]/g, '&#93;');
+        // const raw_text = response.text || ''
+        //   ,text = php.strip_tags(raw_text)
+        //   .replace(/\[/g, '&#91;')
+        //   .replace(/\]/g, '&#93;');
+
+        const raw_text = response.text;
+        const text = raw_text;
 
         var id = response.id;
         var name = response.name;
@@ -827,232 +831,6 @@ export default class Router {
 
         switch(response.type){
 
-
-          // case 'form':
-
-          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=' + response.pub_action;
-          //   SendMODXRequest(ws, url, response);
-
-          //   break;
-
-
-
-          /*
-           * Поиск топиков
-           * */
-          // case 'search':
-
-          //   // var postData = querystring.stringify({users: JSON.stringify(users)});
-
-          //   var url = '/topics/?query=' + encodeURIComponent(response.query);
-          //   SendMODXRequest(ws, url, response);
-
-
-          //   break;
-
-
-          /*
-           * Поиск пользователя
-           * */
-          // case 'find_user':
-
-          //   // var postData = querystring.stringify({users: JSON.stringify(users)});
-
-          //   // debug("local document");
-
-          //   // debug("WS", ws.hostname);
-          //   // debug("WS", ws.headers);
-
-          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/getdata&current=true&query=' + encodeURIComponent(response.query);
-          //   SendMODXRequest(ws, url, response);
- 
-
-          //   break;
-
-          /*
-           * Получаем данные своего профиля (копия предыдущей функции)
-           * */
-          // case 'user/get_own_data':
-
-          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/get_own_data&current=true';
-
-          //   SendMODXRequest(ws, url, response, function(message){
-
-          //     if(message.success && message.object && message.object.id){
-
-          //       var user;
-
-          //       var object = message.object;
-          //       var user_id = object.id;
-
-          //       for(var i in users){
-          //         if(users[i].id == user_id){
-          //           user = users[i];
-          //           break;
-          //         }
-          //       }
-
-          //       if(!user){
-          //         user = {
-          //           id: object.id,
-          //           username: object.username,
-          //           fullname: object.fullname,
-          //           photo:    object.photo,
-          //         };
-
-          //         // debug("Активные пользователи", users || "sdfsdfsd");
-          //         // debug("Пользователь", user || "sdfsd");
-
-          //         // users.push(user);
-          //       }
-
-          //       ws.user = user;
-
-          //       // SendUsersActivity();
-          //     }
-
-          //     return message;
-          //   }); 
-
-          //   break;
-
-
-          /*
-           * Регистрация
-           * */
-          // case 'signup':
-
-          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=users/create&username='+ response.login + '&password=' + response.password;
-
-          //   // debug("Запрос на поиск пользователя", url);
-
-          //   var options = {
-          //     host: host,
-          //     port: raw_host_port,
-          //     path: url,
-          //     // 'method': 'GET',
-          //     'headers': {
-          //       // 'Content-Type': 'application/x-www-form-urlencoded',
-          //       // 'Content-Length': Buffer.byteLength(postData)
-          //     },
-          //     // json: {
-          //     //   users: users
-          //     // }
-          //   };
-
-          //   if (ws.upgradeReq.headers.cookie) {
-          //     options.headers.Cookie = ws.upgradeReq.headers.cookie;
-          //   }
-
-
-          //   var callback = function(request){
-
-          //     // debug("load_document loaded response");
-
-          //     var client = this;
-
-          //     var str = '';
-          //     //
-          //     // //another chunk of data has been recieved, so append it to `str`
-          //     request.on('data', function (chunk) {
-          //       str += chunk;
-          //     });
-          //     //
-          //     // //the whole response has been recieved, so we just print it out here
-          //     request.on('end', function () {
-
-          //       // var response_headers = request.headers;
-          //       // debug("Response from MODX", str);
-
-          //       var message;
-
-          //       try{
-          //         var result = JSON.parse(str);
-
-          //         if(result.success && result.object && result.object.id){
-
-
-          //         }
-
-          //         // debug("Активные пользователи", users);
-
-          //         message = result;
-          //       }
-          //       catch(e){
-          //         console.error(e.message, e.stack);
-          //         // console.log(str);
-
-          //         message = e.message + e.stack;
-          //       }
-
-          //       debug("Результат регистрации пользователя", result, message);
-
-          //       SendMessage(client, message, response);
-
-          //     });
-          //   }
-
-          //   var request = httpServ.request(options, callback.bind(ws));
-          //   // request.write(postData);
-          //   request.end();
-
-          //   break;
-
-          // /*
-          //  * Поиск пользователя
-          //  * */
-          // case 'signin':
-
-
-          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=login&username=' + encodeURIComponent(response.login) + '&password=' + (response.password);
-
-          //   // (ws, url, original_message, process_message_callback)
-          //   SendMODXRequest(ws, url, response, function(message){
-
-          //     if(message.success && message.object){
-          //       SendUsersActivity();
-          //     }
-
-          //     return message;
-          //   });
-
-
-
-
-          //   break;
-
-
-          /*
-           * Выход пользователя
-           * */
-          // case 'signout':
-
-
-          //   // console.log(ws.user);
-          //   // return;
-
-          //   var url = '/assets/components/modxsite/connectors/connector.php?pub_action=logout';
-
-          //   SendMODXRequest(ws, url, response, function(message){
-
-          //     if(message.success && ws.user && ws.user.id){
-          //       var user_id = ws.user.id;
-          //       for(var i in clients){
-          //         var client = clients[i];
-          //         if(client.user && client.user.id == user_id){
-          //           // clients.slice(i,1);
-          //           delete client.user;
-          //         }
-          //       }
-
-          //       SendUsersActivity();
-          //     }
-
-          //     return message;
-          //   });
-          //   break;
- 
- 
           case 'message':
 
             var client_id = response.client_id;

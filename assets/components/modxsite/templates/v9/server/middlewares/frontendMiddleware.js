@@ -65,10 +65,10 @@ const addProdMiddlewares = (app, options) => {
 
   // app.get('*', (req, res) => res.sendFile(path.resolve(outputPath, 'index.html')));
 
-  app.use(router({
+  app.use(new router({
     app: app,
     // webpack: compiler,
-  }));
+  }).router);
   
 };
 

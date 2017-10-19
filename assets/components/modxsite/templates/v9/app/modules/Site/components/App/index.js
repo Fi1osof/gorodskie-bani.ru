@@ -104,6 +104,7 @@ export class AppMain extends Component{
     updateContactItem: PropTypes.func,
     saveContactItem: PropTypes.func,
     setPageTitle: PropTypes.func,
+    CoordsStore: PropTypes.object,
     CompaniesStore: PropTypes.object,
     RatingsStore: PropTypes.object,
     ResourcesStore: PropTypes.object,
@@ -131,6 +132,7 @@ export class AppMain extends Component{
     } = this.props;
 
     let {
+      CoordsStore,
       CompaniesStore,
       RatingsStore,
       ResourcesStore,
@@ -159,6 +161,7 @@ export class AppMain extends Component{
       userActions,
       documentActions,
       TopicsStore,
+      CoordsStore,
       CommentsStore,
       ResourcesStore,
       CompaniesStore,
@@ -195,6 +198,7 @@ export class AppMain extends Component{
 
     this.state = {
       notifications_store: notifications_store,
+      CoordsStore: new DataStore(new Dispatcher()),   // Координаты трейсируемых объектов
       CompaniesStore: new DataStore(new Dispatcher()),
       RatingsStore: new DataStore(new Dispatcher()),
       UsersStore: new DataStore(new Dispatcher()),
@@ -814,9 +818,15 @@ export class AppMain extends Component{
   componentDidMount(){
 
     let {
+      CoordsStore,
       CompaniesStore,
       RatingsStore,
     } = this.state;
+
+    CoordsStore.getDispatcher().register(payload => {
+
+      this.forceUpdate();
+    });
 
     CompaniesStore.getDispatcher().register(payload => {
 
@@ -875,6 +885,84 @@ export class AppMain extends Component{
   }
 
 
+  initUser(user){
+
+    this.initWebSocket(user);
+
+    /*
+      Если пользователь есть и имеет права смотреть координаты,
+      запускаем службу
+    */
+    if(user){
+
+      // console.log('initUser', user);
+
+      const {
+        user: propsUser,
+      } = this.props;
+
+      if(propsUser.hasPermission("viewCoords")){
+
+        setInterval(this.traceCoords, 5000);
+
+      }
+
+    }
+
+  }
+
+  traceCoords = () => {
+
+
+    this.remoteQuery({
+      operationName: "WsConnections",
+      variables: {
+        wsConnectionGetCoords: true,
+      },
+    })
+    .then(r => {
+
+      const {
+        CoordsStore,
+      } = this.state;
+
+      let CoordsStoreState = CoordsStore.getState();
+
+      // console.log("traceCoords", r);
+
+      let {
+        ws_connections,
+      } = r.object && r.object || {}
+
+      if(ws_connections && ws_connections.length){
+
+        const dispatcher = CoordsStore.getDispatcher();
+
+        ws_connections.map(ws_connection => {
+
+          const {
+            id,
+          } = ws_connection;
+
+          let item = CoordsStoreState.find(n => n.id === id);
+
+          if(item){
+            dispatcher.dispatch(CoordsStore.actions.UPDATE, item, ws_connection);
+          }
+          else{
+            dispatcher.dispatch(CoordsStore.actions.CREATE, ws_connection);
+          }
+
+        });
+
+      }
+
+    })
+    .catch(e => {
+      console.error(e);
+    });
+
+  }
 
 
   initWebSocket(user){
@@ -1387,7 +1475,7 @@ export class AppMain extends Component{
       console.error(e);
     });
 
-    this.initWebSocket(user);
+    this.initUser(user);
 
     // this.forceUpdate();
 

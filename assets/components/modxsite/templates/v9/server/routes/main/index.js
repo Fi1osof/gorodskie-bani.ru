@@ -17,6 +17,7 @@ import Response from './components/response';
 
 var debug = require('debug')("server:router/main");
 
+import md5 from 'md5';
 
 import fetch from 'node-fetch';
 
@@ -452,7 +453,16 @@ export default class Router {
       });
     }
 
-    router.ws('/api/', this.processWsRequest);
+    router.ws('/api/', (ws, req) => {
+
+      try{
+        this.processWsRequest(ws, req);
+      }
+      catch(e){
+        console.error(e);
+      }
+
+    });
 
 
 
@@ -818,7 +828,16 @@ export default class Router {
 
     debug("Server. WS Requested");
 
+    ws.id = md5(new Date().getTime());
+    // ws.id = new Date().getTime();
+
+    // debug("Server. WS Requested ID", ws.id);
+
+    // debug("Server. WS Requested ID 2",  md5(new Date().getTime()));
+    // debug("Server. WS Requested ID 3",  md5('new Date().getTime()'));
+
     clients.push(ws);
+
 
     ws.on('message', async (message) => {
 
@@ -1040,7 +1059,7 @@ export default class Router {
 
     this.SendMessage(ws, {
       type: "hello"
-    }, response);
+    }, {});
 
   }
 

@@ -292,7 +292,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
         object = r;
 
-        console.log('getWsConnectionsList resolver result', r);
+        // console.log('getWsConnectionsList resolver result', r);
 
       })
       .catch(e => {

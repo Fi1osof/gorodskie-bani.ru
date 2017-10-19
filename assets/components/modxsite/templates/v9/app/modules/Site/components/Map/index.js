@@ -16,6 +16,7 @@ import Texture from 'material-ui-icons/Texture';
 import AddIcon from 'material-ui-icons/AddCircle';
 
 import GoogleMapReact from 'google-map-react';
+// import SimpleMarker from 'google-map-react/develop/markers/SimpleMarker';
 
 import supercluster from 'supercluster';
 
@@ -28,9 +29,40 @@ import {Link, browserHistory} from 'react-router';
 import Marker from './MainView/Marker';
 // import SideBar from './SideBar';
 
-import Control from 'google-map-react-control'; 
+import Control from 'google-map-react-control';
+
+import HumanIcon from 'material-ui-icons/PermIdentity';
+import FaceIcon from 'material-ui-icons/Face';
 
 
+class UserMarker extends Component{
+
+
+	render(){
+
+		const {
+			query,
+		} = this.props;
+
+		const {
+			uid,
+		} = query || {};
+
+		let Icon;
+
+		if(uid){
+			Icon = FaceIcon;
+		}
+		else{
+			Icon = HumanIcon;
+		}
+
+		return <Icon 
+			/>
+
+	}
+
+}
 
 export default class MapMainView extends Component{
 
@@ -42,6 +74,7 @@ export default class MapMainView extends Component{
 		wsRequest: PropTypes.func.isRequired,
 		// loadCompanyMapData: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
+		CoordsStore: PropTypes.object.isRequired,
 		CompaniesStore: PropTypes.object.isRequired,
 		RatingsStore: PropTypes.object.isRequired,
 		setPageTitle: PropTypes.func.isRequired,
@@ -144,6 +177,7 @@ export default class MapMainView extends Component{
 		const {
 			CompaniesStore,
 			RatingsStore,
+      CoordsStore,
 			localQuery,
 			router: {
 				params,
@@ -165,6 +199,12 @@ export default class MapMainView extends Component{
  		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
 
  			this.createClusters();
+ 		});
+
+ 		this.CoordsStoreListener = CoordsStore.getDispatcher().register(payload => {
+
+ 			this.forceUpdate();
+
  		});
 
 
@@ -453,7 +493,11 @@ export default class MapMainView extends Component{
 
 		let {
 			cluster,
-		} = props;
+		} = props || {};
+
+		if(!cluster){
+			return;
+		}
 
 		let{
 			openCompanyPage,
@@ -591,13 +635,17 @@ export default class MapMainView extends Component{
 
  		let {
  			cluster,
- 		} = props;
+ 		} = props || {};
+
+ 		if(!cluster){
+ 			return;
+ 		}
 
  		// if(!item){
  		// 	return;
  		// }
 
- 		Object.assign(cluster.properties, {
+ 		cluster && cluster.properties && Object.assign(cluster.properties, {
  			hovered: true,
  		});
 
@@ -609,9 +657,13 @@ export default class MapMainView extends Component{
 
  		let {
  			cluster,
- 		} = props;
+ 		} = props || {};
 
- 		Object.assign(cluster.properties, {
+ 		if(!cluster){
+ 			return;
+ 		}
+
+ 		cluster && cluster.properties && Object.assign(cluster.properties, {
  			hovered: false,
  		});
 
@@ -1058,6 +1110,7 @@ export default class MapMainView extends Component{
 
 		const {
 			getCounters,
+			CoordsStore,
 		} = this.context;
 
 
@@ -1096,6 +1149,27 @@ export default class MapMainView extends Component{
 		if(!inited){
 			return null;
 		}
+
+		let users = [];
+
+		CoordsStore.getState().map(connection => {
+
+			// console.log("Map connection", connection);
+
+			const {
+				id,
+				coords,
+				...other
+			} = connection;
+
+			users.push(<UserMarker
+				key={id}
+				{...coords}
+				{...other}
+			>
+			</UserMarker>);
+
+		});
 
 		// console.log('getScreenBounds', minLat, maxLat, minLng, maxLng);
 
@@ -1299,6 +1373,9 @@ export default class MapMainView extends Component{
 					// }}
 		    >
 		    	{items}
+
+		    	{users}
+
 		    </GoogleMapReact>
  
 

@@ -1,6 +1,7 @@
 import {
   GraphQLInputObjectType,
   GraphQLObjectType,
+  GraphQLID,
   GraphQLList,
   GraphQLNonNull,
   GraphQLEnumType,
@@ -26,7 +27,10 @@ const WsConnectionType = new GraphQLObjectType({
   fields: () => {
     return {
       id: {
-        type: GraphQLInt,
+        type: GraphQLID,
+        // resolve: source=> {
+        //   console.log("WsConnectionType ID", source.id);
+        // }
       },
       status: {
         type: GraphQLString,

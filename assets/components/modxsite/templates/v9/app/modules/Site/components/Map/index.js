@@ -908,10 +908,54 @@ export default class MapMainView extends Component{
 		// mapProvider2 && mapProvider2._mapDomResizeCallback();
 	}
 
-	isInScreen(cluster){
+	// isInScreen(cluster){
+
+	// 	let {
+	// 		bounds,
+	// 	} = this.state;
+
+	// 	const {
+	// 		nw,
+	// 		se,
+	// 	} = bounds || {};
+
+	// 	let {
+	// 		geometry: {
+	// 			coordinates: {
+	// 				0: lng,
+	// 				1: lat,
+	// 			},
+	// 		}
+	// 	} = cluster;
+
+	// 	if(!lat || !lng || !nw || !se){
+	// 		return false;
+	// 	}
+		
+	// 	let {
+	// 		minLat,
+	// 		maxLat,
+	// 		minLng,
+	// 		maxLng,
+	// 	} = this.getScreenBounds() || {};
+
+ 
+	// 	if(
+	// 		lat < maxLat && lat > minLat
+	// 		&&
+	// 		lng > minLng && lng < maxLng
+	// 	){
+	// 		return true;
+	// 	}
+
+	// 	return false
+	// }
+
+	getScreenBounds(){
 
 		let {
 			bounds,
+			zoom,
 		} = this.state;
 
 		const {
@@ -919,18 +963,8 @@ export default class MapMainView extends Component{
 			se,
 		} = bounds || {};
 
-		let {
-			geometry: {
-				coordinates: {
-					0: lng,
-					1: lat,
-				},
-			}
-		} = cluster;
-
-		// 
-		if(!lat || !lng || !nw || !se){
-			return false;
+		if(!nw || !se){
+			return;
 		}
 
 		let {
@@ -943,30 +977,50 @@ export default class MapMainView extends Component{
 		} = se
 		;
 
-		const latDiff = maxLat - minLat;
+		// const latDiff = maxLat - minLat;
 
-		minLat -= latDiff;
-		maxLat += latDiff;
+		// minLat -= latDiff;
+		// maxLat += latDiff;
 
-		const lngDiff = maxLng - minLng;
+		// const lngDiff = maxLng - minLng;
 
-		minLng -= lngDiff;
-		maxLng += lngDiff;
+		// minLng -= lngDiff;
+		// maxLng += lngDiff;
 
-		// 
+		let index = 1
 
-		// 
+		const latDiff = Math.round(maxLat - minLat) / index;
+		const lngDiff = Math.round(maxLng - minLng) / index;
 
- 
-		if(
-			lat < maxLat && lat > minLat
-			&&
-			lng > minLng && lng < maxLng
-		){
-			return true;
+		// console.log("latDiff", latDiff);
+		// console.log("lngDiff", lngDiff);
+
+
+		if(zoom > 6){
+
+			minLat -= latDiff;
+			maxLat += latDiff;
+
+			minLng -= lngDiff;
+			maxLng += lngDiff;
+			
 		}
 
-		return false
+
+		if(maxLat < 0 ){
+			maxLat = Math.abs(maxLat);
+		}
+
+		if(maxLng < 0 ){
+			maxLng = Math.abs(maxLng);
+		}
+
+		return {
+			minLat,
+			maxLat,
+			minLng,
+			maxLng,
+		};
 	}
 
 	// loadCompanyMapData(item, force){
@@ -988,6 +1042,13 @@ export default class MapMainView extends Component{
 			getCounters,
 		} = this.context;
 
+
+		const {
+			minLat,
+			maxLat,
+			minLng,
+			maxLng,
+		} = this.getScreenBounds() || {};
 		/*
 			Router module
 		*/
@@ -1018,6 +1079,15 @@ export default class MapMainView extends Component{
 			return null;
 		}
 
+		// console.log('getScreenBounds', minLat, maxLat, minLng, maxLng);
+
+		// console.log('getScreenBounds zoom', zoom);
+		// console.log('getScreenBounds minLng', minLng);
+		// console.log('getScreenBounds minLat', minLat);
+		// console.log('getScreenBounds maxLng', maxLng);
+		// console.log('getScreenBounds maxLat', maxLat);
+
+
 		// 
 
 		let {
@@ -1030,14 +1100,16 @@ export default class MapMainView extends Component{
 
 
 
-  	if(cluster_id){
+  	// if(cluster_id){
   		
   		
-  	}
+  	// }
 
   	// 
 
-  	clusters && clusters.getClusters([-180, -85, 180, 85], zoom || 4).map(cluster => {
+  	// clusters && clusters.getClusters([50, 35, 60, 60], zoom || 4).map(cluster => {
+  	clusters && clusters.getClusters([minLng, minLat, maxLng, maxLat], zoom).map(cluster => {
+  	// clusters && clusters.getClusters([minLng, minLat, maxLng, maxLat], zoom || 4).map(cluster => {
 
   		if(cluster.properties.type == "Contact"){
   			// 
@@ -1069,9 +1141,9 @@ export default class MapMainView extends Component{
 			// }
 
 			// Если точка не в рамках карты, пропускаем 
-			if(!this.isInScreen(cluster)){
-				return;
-			}
+			// if(!this.isInScreen(cluster)){
+			// 	return;
+			// }
 
   		items.push(<Marker
   			key={id && `${id}_${type}` || `marker_${items.length}`} 
@@ -1086,6 +1158,8 @@ export default class MapMainView extends Component{
 
 			return;
   	});
+
+  	// console.log('items', items);
 
   	// 
 

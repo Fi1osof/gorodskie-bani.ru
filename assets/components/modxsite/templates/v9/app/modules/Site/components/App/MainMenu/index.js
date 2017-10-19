@@ -290,6 +290,8 @@ export default class MainMenu extends Component{
 	              	className="dropdown-menu"
 	              	style={{
 	              		display: citiesOpened ? 'block' : undefined,
+                    maxHeight: "70vh",
+                    overflow: "auto",
 	              	}}
 	              >
 

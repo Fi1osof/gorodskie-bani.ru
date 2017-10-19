@@ -1162,6 +1162,10 @@ export default class MapMainView extends Component{
 				...other
 			} = connection;
 
+			if(!coords){
+				return;
+			}
+
 			users.push(<UserMarker
 				key={id}
 				{...coords}

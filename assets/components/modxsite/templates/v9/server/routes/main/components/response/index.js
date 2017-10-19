@@ -804,7 +804,7 @@ export default class Response{
 
     return new GraphQLSchema({
       query: RootType,
-      // mutation: Mutation,
+      mutation: Mutation,
       // directives: rootDirectives,
     });
 

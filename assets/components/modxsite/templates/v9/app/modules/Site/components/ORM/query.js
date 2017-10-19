@@ -1132,6 +1132,7 @@ query WsConnections(
   $wsConnectionMessageType:String = ""
   $wsConnectionMessageText:String
   $getImageFormats:Boolean = false
+  $wsConnectionGetCoords:Boolean = false
 ){
   ...RootWsConnections
 }
@@ -1143,6 +1144,7 @@ query WsConnectionsByUserId(
   $wsConnectionMessageType:String = ""
   $wsConnectionMessageText:String
   $getImageFormats:Boolean = false
+  $wsConnectionGetCoords:Boolean = false
 ){
   ...RootWsConnections
 }
@@ -1156,24 +1158,48 @@ fragment RootWsConnections on RootType{
 }
 
 fragment WsConnection on WsConnectionType{
-    id
-    status
-    query{
-      uid
-    }
-    user @include(if:$wsConnectionGetUser)
-    {
-      ...UserFields
-    }
-    sendWsUserMessageTypeNotice(
-      type:$wsConnectionMessageType
-      text:$wsConnectionMessageText
-    ) @include(if:$wsConnectionSendMessage)
-    {
-      type
-      text
-      message_id
-    }
+  id
+  status
+  query{
+    uid
+  }
+  coords @include(if:$wsConnectionGetCoords)
+  {
+    lat
+    lng
+    zoom
+  }
+  user @include(if:$wsConnectionGetUser)
+  {
+    ...UserFields
+  }
+  sendWsUserMessageTypeNotice(
+    type:$wsConnectionMessageType
+    text:$wsConnectionMessageText
+  ) @include(if:$wsConnectionSendMessage)
+  {
+    type
+    text
+    message_id
+  }
+}
+
+mutation logCoords(
+  $lat:Float!
+  $lng:Float!
+  $wsConnectionSendMessage:Boolean = false
+  $wsConnectionGetUser:Boolean = false
+  $wsConnectionMessageType:String = ""
+  $wsConnectionMessageText:String
+  $getImageFormats:Boolean = false
+  $wsConnectionGetCoords:Boolean = false
+){
+  logCoords(
+    lat:$lat
+    lng:$lng
+  ){
+    ...WsConnection
+  }
 }
 
 `;

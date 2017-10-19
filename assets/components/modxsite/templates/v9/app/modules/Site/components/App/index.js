@@ -91,6 +91,7 @@ export class AppMain extends Component{
   static childContextTypes = {
     request: PropTypes.func,
     apiRequest: PropTypes.func,
+    wsRequest: PropTypes.func,
     loadApiData: PropTypes.func,
     openCompanyPage: PropTypes.func,
     user: PropTypes.object,
@@ -143,6 +144,7 @@ export class AppMain extends Component{
     let context = {
       request: this.request,
       apiRequest: this.apiRequest,
+      wsRequest: this.wsRequest,
       loadApiData: this.loadApiData,
       openCompanyPage: this.openCompanyPage,
       // prepareCompaniesLocalData: this.prepareCompaniesLocalData,
@@ -999,6 +1001,27 @@ export class AppMain extends Component{
 
     });
 
+  }
+
+
+  wsRequest = (message) => {
+
+    const {
+      ws,
+    } = this.state;
+
+    if(!ws || ws.readyState !== ws.OPEN){
+      return false
+    }
+
+    try{
+      ws.send(JSON.stringify(message));
+    }
+    catch(e){
+      console.error(e);
+    }
+
+    return true;
   }
 
 

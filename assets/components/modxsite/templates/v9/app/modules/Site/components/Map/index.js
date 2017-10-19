@@ -39,6 +39,7 @@ export default class MapMainView extends Component{
 		// updateItem: PropTypes.func.isRequired,
 		// savePlaceItem: PropTypes.func.isRequired,
 		openCompanyPage: PropTypes.func.isRequired,
+		wsRequest: PropTypes.func.isRequired,
 		// loadCompanyMapData: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
 		CompaniesStore: PropTypes.object.isRequired,
@@ -649,6 +650,23 @@ export default class MapMainView extends Component{
  			pathname,
  		} = location;
 
+
+ 		if(lat && lng){
+
+ 			const {
+ 				wsRequest,
+ 			} = this.context;
+
+ 			wsRequest({
+				type: "coords",
+				coords: {
+					lat,
+					lng,
+					zoom,
+				},
+ 			});
+
+ 		}
 
  		lat = lat && parseFloat(parseFloat(lat).toFixed(6)) || undefined;
  		lng = lng && parseFloat(parseFloat(lng).toFixed(6)) || undefined;

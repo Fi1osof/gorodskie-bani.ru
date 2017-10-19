@@ -15,6 +15,10 @@ import {
 	// modxUserType,
 } from '../User';
 
+import {
+  coordsType,
+} from '../fields';
+
 import WsMessageType from '../WsMessage';
 
 const WsConnectionType = new GraphQLObjectType({
@@ -131,6 +135,10 @@ const WsConnectionType = new GraphQLObjectType({
           // });
           
         },
+      },
+      coords: {
+        type: coordsType,
+        description: coordsType.description,
       },
       sendWsUserMessageTypeNotice: {
         type: WsMessageType,

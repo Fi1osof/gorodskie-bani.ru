@@ -347,9 +347,15 @@ export const coordsType = new GraphQLObjectType({
   fields: {
     lat: {
       type: GraphQLFloat,
+      description: "Широта",
     },
     lng: {
       type: GraphQLFloat,
+      description: "Долгота",
+    },
+    zoom: {
+      type: GraphQLInt,
+      description: "Зум",
     },
   },
 })

@@ -6,6 +6,7 @@ import {
   GraphQLEnumType,
   GraphQLInt,
   GraphQLString,
+  GraphQLFloat,
   GraphQLBoolean,
 } from 'graphql';
 
@@ -376,6 +377,20 @@ const mutationFields = {
   addCompany: {
     type: CompanyType,
     description: "Добавление нового заведения",
+  },
+  logCoords: {
+    type: WsConnectionType,
+    description: "Логирование координат",
+    args: {
+      lat: {
+        type: new GraphQLNonNull(GraphQLFloat),
+        description: "Долгота",
+      },
+      lng: {
+        type: new GraphQLNonNull(GraphQLFloat),
+        description: "Широта",
+      },
+    },
   },
 }
 

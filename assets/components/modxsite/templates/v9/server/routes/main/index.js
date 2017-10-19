@@ -105,6 +105,22 @@ export default class Router {
     }
 
 
+    
+    // setInterval(() => {
+
+    //   let res = {};
+    //   let req = {};
+    //   let request = {};
+
+    //   let response = new Response(req, res, request, knex, clients, SendMessage, config);
+
+    //   // return response.process();
+
+    //   response.notifyUsersUnreadMessages({
+    //     headers: {},
+    //   }, {}, response, {});
+
+    // }, 1000 * 60 * 5);
 
     
     /*
@@ -809,10 +825,18 @@ export default class Router {
       debug('Я получил от вас сообщение: ' + message);
 
       try{
-        // var response = JSON.parse(message);
-        let response = message;
+        message = JSON.parse(message);
+        // let response = message;
 
-        debug("Server. Received message", response);
+        debug("Server. Received message", message);
+
+        const {
+          type,
+        } = message;
+
+        // debug("Server. Received type", type);
+
+        // debug("Server. Received lat, lng", lat, lng);
 
         var result = {};
 
@@ -822,18 +846,18 @@ export default class Router {
         //   .replace(/\[/g, '&#91;')
         //   .replace(/\]/g, '&#93;');
 
-        const raw_text = response.text;
+        const raw_text = message.text;
         const text = raw_text;
 
-        var id = response.id;
-        var name = response.name;
+        // var id = message.id;
+        // var name = message.name;
 
 
-        switch(response.type){
+        switch(type){
 
           case 'message':
 
-            var client_id = response.client_id;
+            var client_id = message.client_id;
 
 
             if(!client_id){
@@ -951,6 +975,18 @@ export default class Router {
             // request.end();
 
             ws.user_id = response.id;
+
+            break;
+
+          case 'coords':
+
+            const {
+              coords,
+            } = message;
+
+            // console.log("Coords", coords);
+
+            ws.coords = coords;
 
             break;
 

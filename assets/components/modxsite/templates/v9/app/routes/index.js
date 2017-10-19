@@ -34,7 +34,7 @@ let routes = {
     //   component: MainPage
     // },
     {
-      path: "/index/",
+      path: "/index",
       name: "MainPage",
       component: MainPage
     },
@@ -44,7 +44,7 @@ let routes = {
       component: MainPage
     },
     {
-      path: "/db/",
+      path: "/db",
       component: DbPage,
       // childRoutes: [
       //   {
@@ -84,15 +84,15 @@ let routes = {
       // ]
     },
     {
-      path: "/bani-otzivy/",
+      path: "/bani-otzivy",
       component: OtzivyPage,
       childRoutes: [{
-        path: "/bani-otzivy/:topicAlias/",
+        path: "/bani-otzivy/:topicAlias",
         // component: CompaniesPage,
       }]
     },
     {
-      path: "/topics/",
+      path: "/topics",
       component: TopicsPage,
       childRoutes: [{
         path: "/topics/:topicAlias",
@@ -119,7 +119,7 @@ let routes = {
         // component: CompaniesPage,
         // component: UsersPage,
         childRoutes: [{
-          path: "/profile/:username/:action/",
+          path: "/profile/:username/:action",
           // component: CompaniesPage,
           // component: UsersPage,
         }],
@@ -131,7 +131,7 @@ let routes = {
     {
       // path: "/bani/",
       childRoutes: [{
-        path: "/bani/:companyId/",
+        path: "/bani/:companyId",
         component: CompaniesPage,
       }],
       // childRoutes: [{
@@ -141,7 +141,7 @@ let routes = {
     },
     {
       childRoutes: [{
-        path: "/chelyabinsk/:companyId/",
+        path: "/chelyabinsk/:companyId",
         component: CompaniesPage,
       }],
     },
@@ -153,7 +153,7 @@ let routes = {
     },
     {
       childRoutes: [{
-        path: "/moscow/:companyId/",
+        path: "/moscow/:companyId",
         component: CompaniesPage,
       }],
     },
@@ -164,24 +164,24 @@ let routes = {
       }],
     },
     {
-      childRoutes: [{
-        path: "/city/:city/:companyId/",
-        component: CompaniesPage,
-      }],
-    },
-    {
-      path: "/city/:city/",
-      component: MainPage
-    },
-    {
       path: "/city/:city/@:lat,:lng,:zoom",
       component: MainPage
     },
     {
-      path: "/ratings/",
+      childRoutes: [{
+        path: "/city/:city/:companyId",
+        component: CompaniesPage,
+      }],
+    },
+    {
+      path: "/city/:city",
+      component: MainPage
+    },
+    {
+      path: "/ratings",
       component: RatingsPage,
       childRoutes: [{
-        path: "/ratings/:ratingType/",
+        path: "/ratings/:ratingType",
       }]
     },
     {

@@ -73,6 +73,14 @@ import WsMessageType, {
 } from 'modules/Site/components/ORM/WsMessage';
 
 
+import RedirectType, {
+} from 'modules/Site/components/ORM/Redirect';
+
+import {
+  getList as getRedirects,
+} from './Redirect';
+
+
 
 const rootResolver = async (source, args, context, info) => {
 
@@ -288,6 +296,23 @@ const getObjectsList = async (ofType, source, args, context, info) => {
   if(ofType === WsConnectionType){
 
     await getWsConnectionsList(source, args, context, info)
+      .then(r => {
+
+        object = r;
+
+        // console.log('getWsConnectionsList resolver result', r);
+
+      })
+      .catch(e => {
+        console.error(e);
+      });
+      
+  }
+
+
+  if(ofType === RedirectType){
+
+    await getRedirects(source, args, context, info)
       .then(r => {
 
         object = r;

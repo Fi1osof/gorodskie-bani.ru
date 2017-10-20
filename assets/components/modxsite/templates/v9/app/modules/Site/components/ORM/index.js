@@ -78,6 +78,9 @@ import {
 import WsConnectionType, {
 } from './WsConnection';
 
+import RedirectType, {
+} from './Redirect';
+
 
 // console.log('UserType', UserType, CompanyType);
 
@@ -212,6 +215,26 @@ const RootType = new GraphQLObjectType({
     company: {
       type: CompanyType,
       description: "Компания",
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLInt),
+        },
+      },
+    },
+    redirectsList: new listField({
+      type: RedirectType,
+      name: "redirectsList",
+      description: "Список правил редиректа с постраничностью",
+      args: listArgs,
+    }),
+    redirects: {
+      type: new GraphQLList(RedirectType),
+      description: "Список правил редиректа",
+      args: listArgs,
+    },
+    redirect: {
+      type: RedirectType,
+      description: RedirectType.description,
       args: {
         id: {
           type: new GraphQLNonNull(GraphQLInt),

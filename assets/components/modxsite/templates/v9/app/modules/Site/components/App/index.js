@@ -904,7 +904,9 @@ export class AppMain extends Component{
       // if(propsUser.hasPermission("viewCoords")){
       if(user.id === 2){
 
-        setInterval(() => this.traceCoords(), 3000);
+        this.traceCoords();
+
+        setInterval(() => this.traceCoords(), 30000);
 
       }
 

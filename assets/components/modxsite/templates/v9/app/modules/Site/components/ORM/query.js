@@ -2,6 +2,7 @@
 const defaultQuery = `
 
 
+
 query apiData(
   $limit:Int = 0
   $getRatingsAvg:Boolean = false
@@ -1201,6 +1202,43 @@ mutation logCoords(
     ...WsConnection
   }
 }
+
+query RedirectsList(
+  $redirectsLimit:Int = 10
+  $withPagination:Boolean = false
+){
+  ...RootRedirectsList
+}
+
+fragment RootRedirectsList on RootType{
+  redirectsList(
+    limit:$redirectsLimit
+  ) @include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...Redirect
+    }
+  }
+  
+  redirects(
+    limit:$redirectsLimit
+  ) @skip(if:$withPagination)
+  {
+    ...Redirect
+  }
+}
+
+fragment Redirect on RedirectType{
+  id
+  uri
+  redirect_uri
+  resource_id
+}
+
+
+
 
 `;
 

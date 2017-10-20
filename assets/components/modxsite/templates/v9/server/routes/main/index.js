@@ -55,6 +55,35 @@ export default class Router {
 
   constructor(options){
 
+    // const SendMODXRequest = (action, params) => {
+    //   return this.SendMODXRequest(action, params, req);
+    // }
+
+    this.response = new Response(null, null, null, knex, config, this.clients, this.SendMessage, ::this.SendMODXRequest);
+
+
+    this.response.localQuery({
+      operationName: "Redirects",
+      variables: {
+        redirectsLimit: 0,
+      },
+    })
+    .then(r => {
+
+      // console.log('Redirects result', r);
+
+      const {
+        redirects,
+      } = r.data;
+
+      this.redirects = redirects;
+
+    })
+    .catch(e => {
+      console.error(e);
+    });
+
+
     this.router = this.createRouter(options);
 
   }
@@ -496,13 +525,7 @@ export default class Router {
 
     // let response = new Response(req, res, request, knex, config, this.clients, this.SendMessage);
 
-    const SendMODXRequest = (action, params) => {
-      return this.SendMODXRequest(action, params, req);
-    }
-
-    let response = new Response(null, null, null, knex, config, this.clients, this.SendMessage, SendMODXRequest);
-
-    return response.process(req, res, request);
+    return this.response.process(req, res, request);
 
   };
 
@@ -753,12 +776,34 @@ export default class Router {
     
     const store = configureStore();
     
+    const url = req.url;
+
+    const decodedURI = decodeURI(req.url);
+
+
     match({ 
       routes, 
-      location: req.url 
+      location: url,
     }, async (error, redirectLocation, renderProps) => {
 
-      // console.log('match this 2', this);
+      console.log('match request', url, decodedURI);
+
+      const {
+        redirects,
+      } = this;
+
+      // console.log('match this redirects', redirects);
+
+      const redurectUri = decodedURI.replace(/^\/+/, '');
+
+      const redirect = redirects && redirects.find(n => n.uri === redurectUri || `${n.uri}/` === redurectUri);
+
+      if (redirect) { // Если необходимо сделать redirect
+
+        console.log('redirect', redirect);
+
+        return res.redirect(301, '/' + redirect.redirect_uri);
+      }
 
       if (redirectLocation) { // Если необходимо сделать redirect
         return res.redirect(301, redirectLocation.pathname + redirectLocation.search);
@@ -770,15 +815,15 @@ export default class Router {
 
       if (!renderProps) { // мы не определили путь, который бы подошел для URL
 
-        let prevent;
+        // let prevent;
 
-        await this.checkRedirect(req, res)
-          .then(r => {
-            prevent = r;
-          })
-          .catch(e => {
-            console.error(e);
-          });
+        // await this.checkRedirect(req, res)
+        //   .then(r => {
+        //     prevent = r;
+        //   })
+        //   .catch(e => {
+        //     console.error(e);
+        //   });
 
         if(!prevent){
 
@@ -843,129 +888,129 @@ export default class Router {
   };
 
   
-  checkRedirect = (req, res) => {
+  // checkRedirect = (req, res) => {
 
-    return new Promise((resolve, reject) => {
+  //   return new Promise((resolve, reject) => {
 
-      const requestedUri = decodeURI(req.url.replace(/^\/+/, ''));
+  //     const requestedUri = decodeURI(req.url.replace(/^\/+/, ''));
 
-      var q = knex(`${prefix}redirects as redirects`)
-        .innerJoin(`${prefix}site_content as content`, 'redirects.resource_id', 'content.id')
-        // .select('profile.*')
-        .select('content.uri')
-        // .limit('3')
-        ;
+  //     var q = knex(`${prefix}redirects as redirects`)
+  //       .innerJoin(`${prefix}site_content as content`, 'redirects.resource_id', 'content.id')
+  //       // .select('profile.*')
+  //       .select('content.uri')
+  //       // .limit('3')
+  //       ;
 
-        q.where({
-          "redirects.uri": requestedUri,
-        });
-        q.whereNot('content.uri', requestedUri);
+  //       q.where({
+  //         "redirects.uri": requestedUri,
+  //       });
+  //       q.whereNot('content.uri', requestedUri);
 
 
-        q.limit(1); 
-        // 
+  //       q.limit(1); 
+  //       // 
           
-        // console.log("knex SQL", q.toString());
+  //       // console.log("knex SQL", q.toString());
 
-        q.then((result) => { 
+  //       q.then((result) => { 
 
-          // debug("knex result", result);
+  //         // debug("knex result", result);
 
-          const {
-            uri,
-          } = result && result[0] || {};
+  //         const {
+  //           uri,
+  //         } = result && result[0] || {};
 
-          if(uri && uri !== requestedUri){
+  //         if(uri && uri !== requestedUri){
 
-            return res.redirect(301, `/${uri}`);
-          }
+  //           return res.redirect(301, `/${uri}`);
+  //         }
 
-          return result;
-          return resolve(false);
+  //         return result;
+  //         return resolve(false);
 
-        }).catch(e => {
+  //       }).catch(e => {
 
-          reject(e);
-        });
-
-
-      var cookies = [];
-
-      let cookies_obj;
+  //         reject(e);
+  //       });
 
 
-      let options = {
-        // method,
+  //     var cookies = [];
+
+  //     let cookies_obj;
+
+
+  //     let options = {
+  //       // method,
         
-        url: "http://gorodskie-bani.local:9000/" + req.url,
+  //       url: "http://gorodskie-bani.local:9000/" + req.url,
 
-        // location: req.url,
-        headers: {
-        },
-      };
+  //       // location: req.url,
+  //       headers: {
+  //       },
+  //     };
 
-      if(req.headers && req.headers.cookie){
-        let cooks = req.headers.cookie.split(";");
+  //     if(req.headers && req.headers.cookie){
+  //       let cooks = req.headers.cookie.split(";");
 
-        cookies_obj = {};
+  //       cookies_obj = {};
 
-        cooks.map(function(item){
-          var match = item.match(/ *(.+?)=(.+)/);
-          if(match){
-            cookies_obj[match[1]] = match[2];
-          }
-        });
-      }
+  //       cooks.map(function(item){
+  //         var match = item.match(/ *(.+?)=(.+)/);
+  //         if(match){
+  //           cookies_obj[match[1]] = match[2];
+  //         }
+  //       });
+  //     }
 
-      if(cookies_obj){
+  //     if(cookies_obj){
 
-        for(var i in cookies_obj){
-          cookies.push(i + '=' + cookies_obj[i]);
-        }
-      }
+  //       for(var i in cookies_obj){
+  //         cookies.push(i + '=' + cookies_obj[i]);
+  //       }
+  //     }
 
-      if(cookies){
-        options.headers.Cookie = cookies;
-      }
-
-
-      const {
-        host,
-      } = req.headers;
+  //     if(cookies){
+  //       options.headers.Cookie = cookies;
+  //     }
 
 
-      let req2 = httpServ.request(options, (request, a, b) => {
-        //
+  //     const {
+  //       host,
+  //     } = req.headers;
 
-        request.on('data', function (chunk) {
-          // str += chunk;
-        });
-        //
-        // //the whole response has been recieved, so we just print it out here
-        request.on('end', function () {
 
-          var response_headers = request.headers;
+  //     let req2 = httpServ.request(options, (request, a, b) => {
+  //       //
+
+  //       request.on('data', function (chunk) {
+  //         // str += chunk;
+  //       });
+  //       //
+  //       // //the whole response has been recieved, so we just print it out here
+  //       request.on('end', function () {
+
+  //         var response_headers = request.headers;
    
-          if(response_headers['location'] && response_headers['location'] != ''){
+  //         if(response_headers['location'] && response_headers['location'] != ''){
 
-            // res.redirect(301, 'http://yourotherdomain.com' + req.path)
-            res.redirect(301, response_headers['location'])
+  //           // res.redirect(301, 'http://yourotherdomain.com' + req.path)
+  //           res.redirect(301, response_headers['location'])
             
-            return resolve(true);
-          }
+  //           return resolve(true);
+  //         }
 
-          return resolve(false); 
+  //         return resolve(false); 
 
-        });
+  //       });
 
 
-      });
+  //     });
 
-      req2.end();
+  //     req2.end();
 
-    });
+  //   });
 
-  };
+  // };
 
   renderHTML(componentHTML, initialState) {
 
@@ -1112,7 +1157,7 @@ export default class Router {
 
   }
 
-  SendMODXRequest = async (action, params, req) => {
+  async SendMODXRequest(action, params, req){
 
     // console.log('SendMODXRequest', req, params);
     // console.log('SendMODXRequest', params);

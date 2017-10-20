@@ -1885,10 +1885,15 @@ export default class Response{
 
     let result;
 
+    // variables = Object.assign(variables || {
+    //   req,
+    // });
+
     await this.localQuery({
       query,
       operationName,
       variables,
+      req,
     })
     .then((response) => {
 
@@ -1908,7 +1913,7 @@ export default class Response{
       result = this.success("", response && response.data || null, res);
     })
     .catch(e => {
-        result = this.failure(e, null, res);
+      result = this.failure(e, null, res);
     });
 
     return result;
@@ -1928,9 +1933,12 @@ export default class Response{
       query,
       operationName,
       variables,
+      req,
     } = graphQLParams;
 
     return new Promise((resolve, reject) => {
+
+      // console.log('req', req);
 
       graphql({
         schema,
@@ -1939,7 +1947,13 @@ export default class Response{
         // rootValue: undefined,
         variableValues: variables || undefined,
         // contextValue: this.getChildContext(),
-        contextValue: this,
+        contextValue: Object.assign({}, this, {
+          SendMODXRequest: async (action, params) => {
+
+            return this.SendMODXRequest(action, params, req);
+
+          },
+        }),
         fieldResolver: rootResolver,
         // directives: rootDirectives,
       })
@@ -1966,6 +1980,7 @@ export default class Response{
           reject(e);
         });
     });
+
   }
 
 

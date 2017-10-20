@@ -1203,7 +1203,7 @@ mutation logCoords(
   }
 }
 
-query RedirectsList(
+query Redirects(
   $redirectsLimit:Int = 10
   $withPagination:Boolean = false
 ){

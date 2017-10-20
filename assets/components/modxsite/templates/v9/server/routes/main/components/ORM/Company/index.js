@@ -266,7 +266,16 @@ export const getList = (object, args, context, info) => {
     SendMODXRequest,
   } = context;
 
-  console.log("Companies getList args", args);
+  // console.log("Companies getList args", args);
+  // console.log("Companies getList req", req);
+  // console.log("Companies getList context", context);
+
+
+  let {
+    variableValues
+  } = info;
+
+  // console.log("Companies getList variableValues", variableValues);
 
   return new Promise((resolve, reject) => {
     // Эта функция будет вызвана автоматически

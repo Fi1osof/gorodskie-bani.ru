@@ -1260,28 +1260,28 @@ export default class MapMainView extends Component{
 
 		let users = [];
 
-		// CoordsStore.getState().map(connection => {
+		CoordsStore.getState().map(connection => {
 
-		// 	// console.log("Map connection", connection);
+			// console.log("Map connection", connection);
 
-		// 	const {
-		// 		id,
-		// 		coords,
-		// 		...other
-		// 	} = connection;
+			const {
+				id,
+				coords,
+				...other
+			} = connection;
 
-		// 	// if(!coords){
-		// 	// 	return;
-		// 	// }
+			// if(!coords){
+			// 	return;
+			// }
 
-		// 	users.push(<UserMarker
-		// 		key={id}
-		// 		{...coords}
-		// 		{...other}
-		// 	>
-		// 	</UserMarker>);
+			users.push(<UserMarker
+				key={id}
+				{...coords}
+				{...other}
+			>
+			</UserMarker>);
 
-		// });
+		});
 
 
 		// 
@@ -1481,6 +1481,7 @@ export default class MapMainView extends Component{
 		    	{users}
 
 		    </GoogleMapReact>
+ 
 
 				{map && maps
 	    		?

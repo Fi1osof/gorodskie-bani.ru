@@ -83,6 +83,28 @@ export default class Router {
       console.error(e);
     });
 
+    this.response.localQuery({
+      operationName: "Resources",
+      variables: {
+        resourceExcludeTemplates: 0,
+      },
+      req: {},
+    })
+    .then(r => {
+
+      // console.log('resources result', r);
+
+      const {
+        resources,
+      } = r.data;
+
+      this.resources = resources;
+
+    })
+    .catch(e => {
+      console.error(e);
+    });
+
 
     this.router = this.createRouter(options);
 
@@ -786,7 +808,7 @@ export default class Router {
       location: url,
     }, async (error, redirectLocation, renderProps) => {
 
-      console.log('match request', url, decodedURI);
+      // console.log('match request', url, decodedURI);
 
       const {
         redirects,
@@ -796,13 +818,24 @@ export default class Router {
 
       const redurectUri = decodedURI.replace(/^\/+/, '');
 
-      const redirect = redirects && redirects.find(n => n.uri === redurectUri || `${n.uri}/` === redurectUri);
+      if(redurectUri && (!this.resources || this.resources.findIndex(n => n.uri === redurectUri) === -1)){
 
-      if (redirect) { // Если необходимо сделать redirect
+        const redirect = redirects && redirects.find(n => n.uri === redurectUri || `${n.uri}/` === redurectUri);
 
-        console.log('redirect', redirect);
+        if (redirect) { // Если необходимо сделать redirect
 
-        return res.redirect(301, '/' + redirect.redirect_uri);
+          // console.log('redirect', redurectUri, redirect);
+
+          const link = '/' + redirect.redirect_uri;
+
+          if(decodedURI !== link){
+
+            return res.redirect(301, link);
+            
+          }
+
+        }
+        
       }
 
       if (redirectLocation) { // Если необходимо сделать redirect

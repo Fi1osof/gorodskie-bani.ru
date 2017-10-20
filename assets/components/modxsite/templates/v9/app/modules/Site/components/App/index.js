@@ -903,7 +903,7 @@ export class AppMain extends Component{
 
       if(propsUser.hasPermission("viewCoords")){
 
-        setInterval(this.traceCoords, 3000);
+        setInterval(() => this.traceCoords(), 3000);
 
       }
 

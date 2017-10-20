@@ -159,7 +159,7 @@ let routes = {
     },
     {
       childRoutes: [{
-        path: "/moscow/:companyId",
+        path: "/st-petersburg/:companyId",
         component: CompaniesPage,
       }],
     },

@@ -1084,7 +1084,7 @@ export default class MapMainView extends Component{
 			lng,
 		} = center;
 
-		console.log('center', center);
+		// console.log('center', center);
 
 		if(
 			lat < maxLat && lat > minLat
@@ -1224,7 +1224,7 @@ export default class MapMainView extends Component{
 			</div>);
 		}
 
-		console.log('advItems', advItems);
+		// console.log('advItems', advItems);
 
 
 
@@ -1260,28 +1260,28 @@ export default class MapMainView extends Component{
 
 		let users = [];
 
-		CoordsStore.getState().map(connection => {
+		// CoordsStore.getState().map(connection => {
 
-			// console.log("Map connection", connection);
+		// 	// console.log("Map connection", connection);
 
-			const {
-				id,
-				coords,
-				...other
-			} = connection;
+		// 	const {
+		// 		id,
+		// 		coords,
+		// 		...other
+		// 	} = connection;
 
-			// if(!coords){
-			// 	return;
-			// }
+		// 	// if(!coords){
+		// 	// 	return;
+		// 	// }
 
-			users.push(<UserMarker
-				key={id}
-				{...coords}
-				{...other}
-			>
-			</UserMarker>);
+		// 	users.push(<UserMarker
+		// 		key={id}
+		// 		{...coords}
+		// 		{...other}
+		// 	>
+		// 	</UserMarker>);
 
-		});
+		// });
 
 
 		// 

@@ -757,7 +757,7 @@ export class AppMain extends Component{
 
 
   // remoteQuery = (query, variables) => {
-  remoteQuery = async (graphQLParams) => {
+  remoteQuery = (graphQLParams) => {
 
     if(typeof graphQLParams !== 'object'){
       graphQLParams = {
@@ -903,7 +903,7 @@ export class AppMain extends Component{
 
       if(propsUser.hasPermission("viewCoords")){
 
-        setInterval(this.traceCoords, 5000);
+        setInterval(this.traceCoords, 3000);
 
       }
 
@@ -913,7 +913,6 @@ export class AppMain extends Component{
 
   traceCoords = () => {
 
-
     this.remoteQuery({
       operationName: "WsConnections",
       variables: {
@@ -922,11 +921,7 @@ export class AppMain extends Component{
     })
     .then(r => {
 
-      const {
-        CoordsStore,
-      } = this.state;
-
-      let CoordsStoreState = CoordsStore.getState();
+      let CoordsStoreState = this.state.CoordsStore.getState();
 
       // console.log("traceCoords", r);
 
@@ -936,7 +931,7 @@ export class AppMain extends Component{
 
       if(ws_connections && ws_connections.length){
 
-        const dispatcher = CoordsStore.getDispatcher();
+        const dispatcher = this.state.CoordsStore.getDispatcher();
 
         ws_connections.map(ws_connection => {
 
@@ -947,15 +942,17 @@ export class AppMain extends Component{
           let item = CoordsStoreState.find(n => n.id === id);
 
           if(item){
-            dispatcher.dispatch(CoordsStore.actions.UPDATE, item, ws_connection);
+            dispatcher.dispatch(this.state.CoordsStore.actions.UPDATE, item, ws_connection);
           }
           else{
-            dispatcher.dispatch(CoordsStore.actions.CREATE, ws_connection);
+            dispatcher.dispatch(this.state.CoordsStore.actions.CREATE, ws_connection);
           }
 
         });
 
       }
+
+      // delete CoordsStoreState;
 
     })
     .catch(e => {
@@ -1864,8 +1861,6 @@ export class AppMain extends Component{
     let callback = options.callback;
     let method = options.method;
 
-    let {addInformerMessage} = this.props.documentActions;
-
     // var body = new FormData();
 
     var data = {
@@ -1906,7 +1901,7 @@ export class AppMain extends Component{
 
       return response.json()
     })
-    .then(function (data) {
+    .then( (data) => {
 
       let errors = {};
 
@@ -1925,11 +1920,10 @@ export class AppMain extends Component{
 
         var error = data.message || "Ошибка выполнения запроса";
 
-        showErrorMessage && 
-          addInformerMessage && addInformerMessage({
-            text: error,
-            autohide: 4000,
-          });
+        showErrorMessage && this.props.documentActions.addInformerMessage({
+          text: error,
+          autohide: 4000,
+        });
       }
 
       if(callback){
@@ -1938,7 +1932,7 @@ export class AppMain extends Component{
       
       this.forceUpdate();
 
-    }.bind(this))
+    })
     .catch((error) => {
         console.error('Request failed', error);
         if(callback){

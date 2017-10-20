@@ -266,6 +266,8 @@ export const getList = (object, args, context, info) => {
     SendMODXRequest,
   } = context;
 
+  console.log("Companies getList args", args);
+
   return new Promise((resolve, reject) => {
     // Эта функция будет вызвана автоматически
 

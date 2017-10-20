@@ -18,6 +18,12 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         // $this->modx->log(1, print_r($this->properties, 1), "FILE");
         // $this->modx->log(1, print_r($_REQUEST, 1), "FILE");
         # return true; 
+
+        $request_body = file_get_contents('php://input');
+
+        if($request_body AND $data = json_decode($request_body, 1)){
+            $this->setProperties($data);
+        }
         
 
         foreach($this->properties as $name => & $value){

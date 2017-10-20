@@ -73,7 +73,7 @@ let schema;
 
 export default class Response{
 
-  constructor (req, res, params, knexdb, config, ws_clients, SendWebSocketMessage) {
+  constructor (req, res, params, knexdb, config, ws_clients, SendWebSocketMessage, SendMODXRequest) {
  
 
     this.db = knex = knexdb;
@@ -93,6 +93,8 @@ export default class Response{
     this.ws_clients = ws_clients;
 
     this.SendWebSocketMessage = SendWebSocketMessage;
+
+    this.SendMODXRequest = SendMODXRequest;
   };
 
   getConfig = (field) => {
@@ -148,137 +150,137 @@ export default class Response{
   //   return;
   // }
 
-  SendMODXRequest = (action, params) => {
+  // SendMODXRequest = (action, params) => {
 
-    const req = this.req;
+  //   const req = this.req;
 
-    const method = 'POST';
+  //   const method = 'POST';
 
-    let url = `/assets/components/modxsite/connectors/connector.php?pub_action=${action}`;
+  //   let url = `/assets/components/modxsite/connectors/connector.php?pub_action=${action}`;
 
-    let options = {
-      // host: host,
-      // port: 80,
-      // path: url,
-      method,
-      headers: {
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-        // 'Content-Length': Buffer.byteLength(postData)
-      },
-      // json: {
-      //   users: users
-      // }
-    };
+  //   let options = {
+  //     // host: host,
+  //     // port: 80,
+  //     // path: url,
+  //     method,
+  //     headers: {
+  //       // 'Content-Type': 'application/x-www-form-urlencoded',
+  //       // 'Content-Length': Buffer.byteLength(postData)
+  //     },
+  //     // json: {
+  //     //   users: users
+  //     // }
+  //   };
 
-    let form;
+  //   let form;
 
-    let {
-      sort,
-      ...other
-    } = params;
+  //   let {
+  //     sort,
+  //     ...other
+  //   } = params;
 
-    params = {...other};
+  //   params = {...other};
 
-    if(sort){
+  //   if(sort){
 
-      if(Array.isArray(sort)){
+  //     if(Array.isArray(sort)){
 
-        sort = sort[0];
+  //       sort = sort[0];
 
-        if(sort){
+  //       if(sort){
 
-          params.sort = sort.by;
-          params.dir = sort.dir || undefined;
+  //         params.sort = sort.by;
+  //         params.dir = sort.dir || undefined;
 
-        }
+  //       }
 
-      }
+  //     }
 
-    }
+  //   }
 
-    if(method == 'POST' && params){
-      // var postData = querystring.stringify(params);
+  //   if(method == 'POST' && params){
+  //     // var postData = querystring.stringify(params);
 
 
-      form = new FormData()
+  //     form = new FormData()
 
-      for(var i in params){
+  //     for(var i in params){
         
-        var value = params[i];
+  //       var value = params[i];
 
-        value = (typeof value !== "undefined") && value.toString && value.toString() || undefined;
+  //       value = (typeof value !== "undefined") && value.toString && value.toString() || undefined;
 
-        if(value !== undefined){
-          form.append(i, value);
-        }
-      }
+  //       if(value !== undefined){
+  //         form.append(i, value);
+  //       }
+  //     }
 
-      // form.append('limit', 3);
-      // form.append('with_coors_only', 'true');
+  //     // form.append('limit', 3);
+  //     // form.append('with_coors_only', 'true');
 
-      options.body = form;
+  //     options.body = form;
 
-      // Object.assign(options.headers, form.getHeaders());
+  //     // Object.assign(options.headers, form.getHeaders());
 
       
-    }
+  //   }
 
 
 
-    /*
-    * Собираем кукисы из оригинального запроса и если передаются куки в параметрах запроса,
-    * то объединяем их
-    * */
-    var cookies = [];
+  //   /*
+  //   * Собираем кукисы из оригинального запроса и если передаются куки в параметрах запроса,
+  //   * то объединяем их
+  //   * */
+  //   var cookies = [];
 
-    let cookies_obj;
+  //   let cookies_obj;
 
-    // if(req.upgradeReq && req.upgradeReq.headers && req.upgradeReq.headers.cookie){
-    //   var cooks = req.upgradeReq.headers.cookie.split(";");
+  //   // if(req.upgradeReq && req.upgradeReq.headers && req.upgradeReq.headers.cookie){
+  //   //   var cooks = req.upgradeReq.headers.cookie.split(";");
 
-    //   cooks.map(function(item){
-    //     var match = item.match(/ *(.+?)=(.+)/);
-    //     if(match){
-    //       cookies_obj[match[1]] = match[2];
-    //     }
-    //   });
-    // }
+  //   //   cooks.map(function(item){
+  //   //     var match = item.match(/ *(.+?)=(.+)/);
+  //   //     if(match){
+  //   //       cookies_obj[match[1]] = match[2];
+  //   //     }
+  //   //   });
+  //   // }
 
-    if(req.headers && req.headers.cookie){
-      let cooks = req.headers.cookie.split(";");
+  //   if(req.headers && req.headers.cookie){
+  //     let cooks = req.headers.cookie.split(";");
 
-      cookies_obj = {};
+  //     cookies_obj = {};
 
-      cooks.map(function(item){
-        var match = item.match(/ *(.+?)=(.+)/);
-        if(match){
-          cookies_obj[match[1]] = match[2];
-        }
-      });
-    }
+  //     cooks.map(function(item){
+  //       var match = item.match(/ *(.+?)=(.+)/);
+  //       if(match){
+  //         cookies_obj[match[1]] = match[2];
+  //       }
+  //     });
+  //   }
 
-    if(cookies_obj){
+  //   if(cookies_obj){
 
-      for(var i in cookies_obj){
-        cookies.push(i + '=' + cookies_obj[i]);
-      }
-    }
+  //     for(var i in cookies_obj){
+  //       cookies.push(i + '=' + cookies_obj[i]);
+  //     }
+  //   }
 
-    if(cookies){
-      options.headers.Cookie = cookies;
+  //   if(cookies){
+  //     options.headers.Cookie = cookies;
 
-      debug("options.headers", options.headers);
-    }
+  //     debug("options.headers", options.headers);
+  //   }
 
-    debug("options.headers", options.headers);
-    debug("options", options);
+  //   debug("options.headers", options.headers);
+  //   debug("options", options);
 
 
-    return fetch(site_url + url, options)
-      .then(function(res) {
-        return res.json();
-      });
-  };
+  //   return fetch(site_url + url, options)
+  //     .then(function(res) {
+  //       return res.json();
+  //     });
+  // };
 
   ObjectResolver = (resolver, object, args) => {
     return new Promise((resolve, reject) => {
@@ -1900,13 +1902,13 @@ export default class Response{
           ...other
         } = errors[0];
 
-        result = this.failure(message, {...other});
+        result = this.failure(message, {...other}, res);
       }
       // else
-      result = this.success("", response && response.data || null);
+      result = this.success("", response && response.data || null, res);
     })
     .catch(e => {
-        result = this.failure(e);
+        result = this.failure(e, null, res);
     });
 
     return result;
@@ -2104,17 +2106,17 @@ export default class Response{
 
   // }
 
-  success(message, object){
+  success(message, object, res){
 
-    return this.outputResponse(true, message, object)
+    return this.outputResponse(res, true, message, object)
   }
 
-  failure(message, object){
+  failure(message, object, res){
 
-    return this.outputResponse(false, message, object)
+    return this.outputResponse(res, false, message, object)
   }
 
-  outputResponse(success, message, object){
+  outputResponse(res, success, message, object){
 
     // let output = object || {};
 
@@ -2124,8 +2126,11 @@ export default class Response{
       object,
     };
 
-    this.res.writeHead(200, {'Content-Type': 'application/json'});
-    this.res.end(JSON.stringify(output));
+    // this.res.writeHead(200, {'Content-Type': 'application/json'});
+    // this.res.end(JSON.stringify(output));
+
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.end(JSON.stringify(output));
   } 
 
 }

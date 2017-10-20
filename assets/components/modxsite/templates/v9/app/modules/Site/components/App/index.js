@@ -1984,7 +1984,14 @@ export class AppMain extends Component{
         <div 
           id="Module"
         >
-          {inited && children || null}
+          {inited
+            ? 
+              children
+            : 
+            <div 
+              className="preloader"
+            />
+          }
         </div>
 
 

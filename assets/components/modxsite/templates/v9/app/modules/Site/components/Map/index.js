@@ -1481,7 +1481,6 @@ export default class MapMainView extends Component{
 		    	{users}
 
 		    </GoogleMapReact>
- 
 
 				{map && maps
 	    		?

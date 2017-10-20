@@ -39,6 +39,11 @@ let routes = {
       component: MainPage
     },
     {
+      path: "/index/@:lat,:lng,:zoom",
+      name: "MainPage",
+      component: MainPage
+    },
+    {
       path: "/@:lat,:lng,:zoom",
       name: "MainPage",
       component: MainPage

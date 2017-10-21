@@ -30,6 +30,10 @@ export default class Comments extends Component{
 			comments,
 		} = this.props;
 
+		if(!comments){
+			return null;
+		}
+
 		let commentsList = [];
 
 		comments.map(comment => {

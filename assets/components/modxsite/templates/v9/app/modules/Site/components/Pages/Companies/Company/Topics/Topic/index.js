@@ -162,8 +162,11 @@ export default class Topic extends Component{
         subheader={CompanyLink && <Link
         	to={CompanyLink}
         	href={CompanyLink}
+        	style={{
+        		color: "#333",
+        	}}
         >
-        	{CompanyName}
+        	{`Компания: ${CompanyName}`}
         </Link> || undefined}
 			>
 				

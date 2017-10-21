@@ -143,6 +143,8 @@ export default class Topic extends Component{
 			item,
 		} = this.props;
 
+		// console.log('Topic item', item);
+
 		if(!item){
 			return null;
 		}

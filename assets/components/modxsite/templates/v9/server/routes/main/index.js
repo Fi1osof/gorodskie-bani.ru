@@ -828,7 +828,7 @@ export default class Router {
     
     const url = req.url;
 
-    const decodedURI = decodeURI(req.url);
+    const decodedURI = decodeURI(req.url).replace(/\@[0-9\.\,]+/, '');
 
 
     match({ 
@@ -994,6 +994,8 @@ export default class Router {
         // );
 
         let appExports = {};
+
+        // console.log('{...renderProps} ', {...renderProps} );
 
         const componentHTML = ReactDom.renderToString(
           <MainApp

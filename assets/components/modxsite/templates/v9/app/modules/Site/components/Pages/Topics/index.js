@@ -102,46 +102,63 @@ export default class TopicsPage extends Page {
 		// console.log("Topics loadData");
 
 
+		if(typeof window === "undefined"){
+			
+		  const {
+		    TopicsStore,
+		  } = this.context;
 
-		const {
-			params,
-		} = this.props;
+		  this.state.topics = TopicsStore.getState();
 
-		const {
-			tag,
-		} = params || {};
-
-
-
-		// console.log("Topics tag", tag);
-
-
-		const {
-			localQuery,
-		} = this.context;
-
-		let result = localQuery({
-			operationName: this.getOperationName(),
-			variables: {
-				// resourcesLimit: 10,
-				resourceGetAuthor: true,
-				resourceGetComments: true,
-				getCommentAuthor: true,
-				resourceTag: tag,
-			},
-		})
-		.then(r => {
-
-			// console.log("Resources r", r);
+		}
+		else{
 
 			const {
-				topics,
-			} = r.data;
+				params,
+			} = this.props;
 
-			this.setState({
-				topics,
-			});
-		}); 
+			const {
+				tag,
+			} = params || {};
+
+
+
+			// console.log("Topics tag", tag);
+
+
+			const {
+				localQuery,
+			} = this.context;
+
+			let result = localQuery({
+				operationName: this.getOperationName(),
+				variables: {
+					// resourcesLimit: 10,
+					resourceGetAuthor: true,
+					resourceGetComments: true,
+					getCommentAuthor: true,
+					resourceTag: tag,
+				},
+			})
+			.then(r => {
+
+				// console.log("Resources r", r);
+
+				const {
+					topics,
+				} = r.data;
+
+				this.setState({
+					topics,
+				});
+
+				// this.state.topics = topics;
+
+			}); 
+
+		}
+
+
 
 		// console.log("Resources r", result);
 		
@@ -254,9 +271,16 @@ export default class TopicsPage extends Page {
 			params,
 		} = this.props;
 
-		// {
-		// 	TopicsStore,
-		// } = this.context;
+		const {
+			router,
+			location,
+		} = this.context;
+
+		// const pathname = router.getCurrentLocation().pathname.replace(/^\//, '');
+		const pathname = decodeURI(location && location.pathname && location.pathname.replace(/^\//, '') || "");
+
+		// console.log("Topics pathname", pathname, router.getCurrentLocation());
+		// console.log("Topics pathname", pathname, location);
 
 		const {
 			topics,
@@ -271,10 +295,12 @@ export default class TopicsPage extends Page {
 
 		let content;
 
-		if(topicAlias){
+		const item = pathname && topics && topics.find(n => n.uri === pathname || n.uri === `${pathname}/`);
+
+		if(topicAlias || item){
 			
 			// const item = TopicsStore.getState().find(n => n.id == topicAlias || n.alias == topicAlias);
-			const item = topics && topics.find(n => n.id == topicAlias || n.alias == topicAlias.replace(".html", ""));
+			// const item = topics && topics.find(n => n.id == topicAlias || n.alias == topicAlias.replace(".html", ""));
 
 			if(item){
 

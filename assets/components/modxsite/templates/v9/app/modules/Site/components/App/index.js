@@ -137,6 +137,7 @@ export class MainApp extends Component{
 export class AppMain extends Component{
 
   static childContextTypes = {
+    location: PropTypes.object,
     request: PropTypes.func,
     apiRequest: PropTypes.func,
     wsRequest: PropTypes.func,
@@ -177,6 +178,7 @@ export class AppMain extends Component{
       user,
       userActions,
       documentActions,
+      location,
     } = this.props;
 
     let {
@@ -192,6 +194,7 @@ export class AppMain extends Component{
     } = this.state;
 
     let context = {
+      location,
       request: this.request,
       apiRequest: this.apiRequest,
       wsRequest: this.wsRequest,
@@ -274,6 +277,8 @@ export class AppMain extends Component{
     stores.notifications_store = notifications_store;
 
     this.rootResolver = rootResolver;
+
+    // console.log('AppMain location', props.location);
   }
 
   getCounters(){

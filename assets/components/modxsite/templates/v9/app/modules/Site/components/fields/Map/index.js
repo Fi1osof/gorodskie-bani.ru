@@ -137,6 +137,10 @@ export default class ItemMap extends Component{
 
 	render(){
 
+		if(typeof window === "undefined"){
+			return null;
+		}
+
 		let {
 			item,
 			updateItem,

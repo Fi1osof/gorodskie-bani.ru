@@ -913,6 +913,8 @@ export default class Router {
           operationName: "apiData",
           variables: {
             resourceExcludeTemplates: 0,
+            getCompanyGallery: true,
+            getImageFormats: true,
           },
           req,
         })
@@ -1253,11 +1255,11 @@ export default class Router {
           <noscript><div><img src="https://mc.yandex.ru/watch/26848689" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
           <!-- /Yandex.Metrika counter -->
         
-          ${style}
+          ${style || ""}
           
           ${css_src ? `<link rel="stylesheet" href="${css_src}">` : ""}
 
-          ${inline_styles}
+          ${inline_styles || ""}
 
         </head>
         <body>

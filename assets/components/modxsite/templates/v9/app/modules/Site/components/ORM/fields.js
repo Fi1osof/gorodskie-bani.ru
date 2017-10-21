@@ -263,6 +263,13 @@ const imageFields = {
       return `images/resized/slider_thumb/${image.original}`;
     },
   },
+  slider_dot_thumb: {
+    type: GraphQLString,
+    description: "Для навигации в слайдере",
+    resolve: (image) => {
+      return `images/resized/slider_dot_thumb/${image.original}`;
+    },
+  },
   small: {
     type: GraphQLString,
     resolve: (image) => {
@@ -309,6 +316,13 @@ export const imageType = {
         type: GraphQLString,
         resolve: (image) => {
           return `images/resized/slider_thumb/${image}`;
+        },
+      },
+      slider_dot_thumb: {
+        type: GraphQLString,
+        description: "Для навигации в слайдере",
+        resolve: (image) => {
+          return `images/resized/slider_dot_thumb/${image}`;
         },
       },
       small: {

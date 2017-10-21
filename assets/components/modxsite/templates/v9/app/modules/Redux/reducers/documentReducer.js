@@ -6,6 +6,8 @@ const initialState = {
   informerMessage: '',
   stores: {},
   apiData: {},
+  mapData: {},
+  citiesData: {},
 };
 
 /*

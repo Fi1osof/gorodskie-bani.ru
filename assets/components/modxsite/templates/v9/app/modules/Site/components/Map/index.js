@@ -102,6 +102,7 @@ export default class MapMainView extends Component{
 
 		// updateItem: PropTypes.func.isRequired,
 		// savePlaceItem: PropTypes.func.isRequired,
+		document: PropTypes.object.isRequired,
 		openCompanyPage: PropTypes.func.isRequired,
 		wsRequest: PropTypes.func.isRequired,
 		// loadCompanyMapData: PropTypes.func.isRequired,
@@ -148,12 +149,15 @@ export default class MapMainView extends Component{
 		  // activePlaceItem: null,
 		  // sidebarOpen: true,
 			cluster: null,
+			inited: true,
 		}
 	}
 
 	componentWillMount(){
 
 		this.initCoords();
+
+ 		this.createClusters();
 
  		return super.componentWillMount && super.componentWillMount();
 	}
@@ -189,6 +193,7 @@ export default class MapMainView extends Component{
  		return super.componentWillUnmount && super.componentWillUnmount();
 	}
 
+	
 	componentDidMount(){
 
  		// let {
@@ -202,7 +207,7 @@ export default class MapMainView extends Component{
 
  		// if(lat && lng){
  		// 	// this.setMapPosition(lat, lng);
-   //    // defaultCenter={this.props.center}
+   	//    // defaultCenter={this.props.center}
 
  		// }
 
@@ -241,8 +246,6 @@ export default class MapMainView extends Component{
 
 
  		this.setPageTitle();
-
- 		this.createClusters();
 	}
 
 	// shouldComponentUpdate(a, b, c, d){
@@ -273,7 +276,7 @@ export default class MapMainView extends Component{
 		} = this.context;
 
 		// let {
- 	// 		router: prevRouter,
+ 		// 		router: prevRouter,
 		// } = prevContext;
 
 		/*
@@ -410,7 +413,116 @@ export default class MapMainView extends Component{
 
 	}
 
-	async initCoords(){
+	// async initCoords(){
+
+	// 	const {
+	// 		localQuery,
+	// 		router: {
+	// 			params,
+	// 		},
+	// 	} = this.context;
+
+	// 	const {
+	// 		city, 
+	// 	} = params || {};
+
+
+ // 		let {
+ // 			router,
+ // 		} = this.context;
+
+ // 		let {
+ // 			lat,
+ // 			lng,
+ // 			zoom,
+ // 		} = router.params;
+
+
+ // 		if(city && !lat && !lng){
+
+ // 			let response = await localQuery({
+ // 				operationName: "Cities",
+ // 			});
+
+ // 			const {
+ // 				resources: cities,
+ // 			} = response.data;
+
+ // 			// console.log('cities', cities);
+
+ // 			const currentCity = cities && cities.find(n => n.alias === city);
+
+ // 			// console.log('currentCity', currentCity);
+
+ 				
+ // 			if(currentCity){
+				
+	// 			// this.setPageTitle(currentCity.name);
+
+	// 			if(currentCity.coords){
+
+	//  				lat = currentCity.coords.lat;
+	//  				lng = currentCity.coords.lng;
+
+	//  				zoom = 12;
+
+	// 			}
+
+
+ // 			}
+
+ // 		}
+
+ // 		// 
+ 			
+	// 	// console.log('lat lng', lat, lng, zoom);
+
+ // 		if(lat && lng && zoom){
+ // 			// this.setMapPosition(lat, lng);
+ //      // defaultCenter={this.props.center}
+
+ //      let center = {
+ //      	lat: parseFloat(lat),
+ //      	lng: parseFloat(lng),
+ //      };
+
+ //      zoom = parseFloat(zoom);
+
+ //      // Object.assign(this.state, {
+ //      // 	center,
+ //      // 	zoom,
+ //      // 	mapOptions: {
+	//      //  	center,
+	// 	    //   zoom,
+ //      // 	}
+ //      // });
+
+ //      // console.log("map data", {center,
+ //      // 	zoom,
+ //      // 	mapOptions: {
+	//      //  	center,
+	// 	    //   zoom,
+ //      // 	}});
+
+ //      this.setState({
+ //      	center,
+ //      	zoom,
+ //      	mapOptions: {
+	//       	center,
+	// 	      zoom,
+ //      	}
+ //      });
+ // 		}
+
+ // 		this.setState({
+ //    	inited: true,
+ //    });
+
+	// 	return;
+	// }
+
+
+	initCoords(){
 
 		const {
 			localQuery,
@@ -437,13 +549,14 @@ export default class MapMainView extends Component{
 
  		if(city && !lat && !lng){
 
- 			let response = await localQuery({
- 				operationName: "Cities",
- 			});
+ 			const {
+ 				citiesData
+ 			} = this.context.document;
+ 
 
  			const {
  				resources: cities,
- 			} = response.data;
+ 			} = citiesData || {};
 
  			// console.log('cities', cities);
 
@@ -501,7 +614,16 @@ export default class MapMainView extends Component{
 		    //   zoom,
       // 	}});
 
-      this.setState({
+      // this.setState({
+      // 	center,
+      // 	zoom,
+      // 	mapOptions: {
+	     //  	center,
+		    //   zoom,
+      // 	}
+      // });
+
+      Object.assign(this.state, {
       	center,
       	zoom,
       	mapOptions: {
@@ -511,9 +633,9 @@ export default class MapMainView extends Component{
       });
  		}
 
- 		this.setState({
-    	inited: true,
-    });
+ 		// this.setState({
+   //  	inited: true,
+   //  });
 
 		return;
 	}
@@ -803,56 +925,83 @@ export default class MapMainView extends Component{
 	  );
 	};
 
-	createClusters = async props => {
+	// createClusters = props => {
 
 		
 
-		// 
+	// 	// 
 
-	  // this.setState({
-	  //   // clusters: this.state.mapOptions.bounds
-	  //   clusters: this.state.bounds
-	  //     ? this.getClusters(props)
-	  //     : null,
-	  // });
+	//   // this.setState({
+	//   //   // clusters: this.state.mapOptions.bounds
+	//   //   clusters: this.state.bounds
+	//   //     ? this.getClusters(props)
+	//   //     : null,
+	//   // });
+
+	//   const {
+	// 		// CompaniesStore,
+	// 		localQuery,
+	// 	} = this.context;
+
+	// 	// let {
+	// 	// 	// mapOptions: {
+	// 	// 	// 	zoom,
+	// 	// 	// },
+	// 	// 	zoom,
+	// 	// } = this.state;
+
+	// 	// let {
+	// 	// } = this.context;
+
+ //  	let companies;
+
+ //  	localQuery({
+ //  		operationName: "MapCompanies",
+ //  		variables: {
+ //  			limit: 0,
+ //  		},
+ //  	})
+ //  		.then(r => {
+
+ //  			// console.log("Map companies", r);
+
+ //  			const {
+ //  				companies: result,
+ //  			} = r.data || {};
+
+ //  			companies = result;
+
+	// 			this.prepareClusters(companies);
+
+ //  		});
+		
+
+	//   // return clusters;
+	// };
+
+	createClusters = props => {
+
+	
 
 	  const {
 			// CompaniesStore,
-			localQuery,
+			document,
 		} = this.context;
 
-		let {
-			// mapOptions: {
-			// 	zoom,
-			// },
-			zoom,
-		} = this.state;
+		const {
+			companies,
+		} = document.mapData || {};
 
-		let {
-		} = this.context;
+		this.prepareClusters(companies);
+
+	};
+
+
+	prepareClusters(companies){
 
 
   	let markersData = [];
 
-  	let companies;
-
-  	await localQuery({
-  		operationName: "MapCompanies",
-  		variables: {
-  			limit: 0,
-  		},
-  	})
-  		.then(r => {
-  			// console.log("Map companies", r);
-
-  			const {
-  				companies: result,
-  			} = r.data || {};
-
-  			companies = result;
-
-  		});
-		
 		// console.log("Map companies 2 companies", companies);
 
 		companies && companies.map(item => {
@@ -942,12 +1091,15 @@ export default class MapMainView extends Component{
 	  // return clusters.getClusters([-180, -85, 180, 85], 2);
 	  // return clusters.getClusters(this.state.mapOptions);
 
-	  this.setState({
+	  Object.assign(this.state, {
 	  	clusters,
 	  });
 
-	  // return clusters;
-	};
+	  // this.setState({
+	  // 	clusters,
+	  // });
+	}
+
 
 	getClusters = () => {
 
@@ -1099,6 +1251,18 @@ export default class MapMainView extends Component{
 
 	getScreenBounds(real){
 
+		if(typeof window === "undefined"){
+
+			return {
+				minLat: -80,
+				maxLat: 80,
+				minLng: -180,
+				maxLng: 180,
+			};
+
+		}
+
+
 		let {
 			bounds,
 			zoom,
@@ -1180,6 +1344,8 @@ export default class MapMainView extends Component{
 
 	render(){
 
+		const key = "AIzaSyBdNZDE_QadLccHx5yDc96VL0M19-ZPUvU";
+
 		let {
 			children,
 		} = this.props;
@@ -1215,12 +1381,17 @@ export default class MapMainView extends Component{
 
 		if(allowAds){
 			advItems.push(<div>
-				<img
-					src="http://gorodskie-bani.ru/images/resized/slider_thumb/assets/images/companies/1525-vidnovskie-bani/5Y5A6418.jpg"
-					style={{
-						width: 200,
-					}}
-				/>
+				<Link
+					to={`/bani/vidnovskie-bani/`}
+					href={`/bani/vidnovskie-bani/`}
+				>
+					<img
+						src="http://gorodskie-bani.ru/images/resized/slider_thumb/assets/images/companies/1525-vidnovskie-bani/5Y5A6418.jpg"
+						style={{
+							width: 200,
+						}}
+					/>
+				</Link>
 			</div>);
 		}
 
@@ -1244,6 +1415,7 @@ export default class MapMainView extends Component{
 		const {
 			map,
 			maps,
+			center,
 			draggable,
 			clusters,
 			// activePlaceItem,
@@ -1253,6 +1425,10 @@ export default class MapMainView extends Component{
 			bounds,
 			inited,
 		} = this.state;
+
+		
+		// console.log("Map render clusters", clusters);
+
 
 		if(!inited){
 			return null;
@@ -1363,6 +1539,11 @@ export default class MapMainView extends Component{
 
   	// sidebarOpen = sidebarOpen && sidebar_items_list && sidebar_items_list.length ? true : false;
 
+  	// 
+  	let staticMapUrl;
+
+  	staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${center.lat},${center.lng}&zoom=${zoom}&size=640x640&maptype=roadmap&key=${key}`;
+
   	return <Grid
   		container
   		style={{
@@ -1455,11 +1636,11 @@ export default class MapMainView extends Component{
 
 	  		<GoogleMapReact
 		      bootstrapURLKeys={{
-		      	key: "AIzaSyBdNZDE_QadLccHx5yDc96VL0M19-ZPUvU",
+		      	key,
 		      }}
 		      defaultCenter={this.state.mapOptions.center}
 		      defaultZoom={this.state.mapOptions.zoom}
-		      center={this.state.center} // current map center
+		      center={center} // current map center
   				zoom={this.state.zoom} // current map zoom
 	  			ref="mapProvider"
 					draggable={draggable}
@@ -1475,6 +1656,14 @@ export default class MapMainView extends Component{
 				 //  options={{
 					//   scrollwheel: false,
 					// }}
+
+					style={{
+						display: "flex",
+						flexGrow: 1,
+						position: "relative",
+						overflow: "hidden",
+						background: typeof window === "undefined" ? `url(${staticMapUrl}) no-repeat center` : undefined,
+					}}
 		    >
 		    	{items}
 

@@ -145,6 +145,7 @@ export class AppMain extends Component{
     openCompanyPage: PropTypes.func,
     user: PropTypes.object,
     userActions: PropTypes.object,
+    document: PropTypes.object,
     documentActions: PropTypes.object,
     // prepareCompaniesLocalData: PropTypes.func,
     // loadCompanyFullData: PropTypes.func,
@@ -178,6 +179,7 @@ export class AppMain extends Component{
       user,
       userActions,
       documentActions,
+      document,
       location,
     } = this.props;
 
@@ -210,6 +212,7 @@ export class AppMain extends Component{
       getCounters: this.getCounters,
       user,
       userActions,
+      document,
       documentActions,
       TopicsStore,
       CoordsStore,

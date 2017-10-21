@@ -45,6 +45,8 @@ let styles = {};
  
 
 let apiData;
+let mapData;
+let citiesData;
 
 
 /*
@@ -114,7 +116,12 @@ export default class Router {
 
     this.loadApiData();
 
+    this.loadMapData();
+
+    this.loadCitiesData();
+
   }
+  
 
   loadApiData(){
 
@@ -132,6 +139,58 @@ export default class Router {
       // console.log('apiData result', r);
 
       apiData = r.data;
+
+    })
+    .catch(e => {
+      console.error(e);
+    });
+
+  }
+
+
+  loadMapData(){
+
+    this.response.localQuery({
+      operationName: "MapCompanies",
+      variables: {
+        limit: 0,
+        getCompanyGallery: false,
+        // getImageFormats: true,
+        getTVs: false,
+      },
+      req: {},
+    })
+    .then(r => {
+
+      // console.log('mapData result', r);
+
+      mapData = r.data;
+
+    })
+    .catch(e => {
+      console.error(e);
+    });
+
+  }
+
+
+  loadCitiesData(){
+
+    this.response.localQuery({
+      operationName: "Cities",
+      variables: {
+        limit: 0,
+        getCompanyGallery: false,
+        // getImageFormats: true,
+        getTVs: false,
+      },
+      req: {},
+    })
+    .then(r => {
+
+      // console.log('mapData result', r);
+
+      citiesData = r.data;
 
     })
     .catch(e => {
@@ -971,6 +1030,8 @@ export default class Router {
 
         Object.assign(state.document, {
           apiData,
+          mapData,
+          citiesData,
         });
 
         store = configureStore(state);
@@ -1226,7 +1287,13 @@ export default class Router {
 
     let jState = "";
 
-    // jState = JSON.stringify(initialState);
+    Object.assign(initialState.document, {
+      apiData: null,
+      // mapData,
+      // citiesData,
+    });
+
+    jState = JSON.stringify(initialState);
 
     jState = jState.replace(/<script.*?>.*?<\/script>/g, '');
 

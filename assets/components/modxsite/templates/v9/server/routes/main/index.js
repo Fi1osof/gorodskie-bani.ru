@@ -1124,16 +1124,18 @@ export default class Router {
     let js_src;
     let css_src;
 
-    let basePath;
+    let inline_styles;
+
+    let basePath = process.cwd() + "/";
+
+    let buildPath = basePath + "build/";
 
     if(process.env.NODE_ENV === 'production'){
       assetsUrl = "/assets/components/modxsite/templates/v9/build/";
 
-      basePath = process.cwd() + "/build/";
-
       var htmlFileName = "index.html";
       // var html = fs.readFileSync(Path.join(assetsUrl, htmlFileName), "utf8");
-      var html = fs.readFileSync( `${basePath}${htmlFileName}`, "utf8");
+      var html = fs.readFileSync( `${buildPath}${htmlFileName}`, "utf8");
 
       let match = html.match(/<script .*?src="(.*?)"/);
 
@@ -1145,7 +1147,28 @@ export default class Router {
 
       if(css_match){
         css_src = css_match[1];
+
+        // console.log('css_src', css_src);
+
+        const css_array = css_src.split("/");
+
+        css_src = "";
+
+        var filename = `${buildPath}css/${css_array[css_array.length - 1]}`;
+   
+        // var filename = template_path + css_file;
+
+        inline_styles = fs.readFileSync(filename, "utf-8");
+   
+        // console.log("inline_styles", inline_styles, filename);
+
+        // style = '<style>';
+        // style += styles.css_file;
+        // style += '</style>';
+
+        inline_styles = `<style>${inline_styles}</style>`;
       }
+
 
     }
     else{
@@ -1237,7 +1260,9 @@ export default class Router {
           <div id="root">${componentHTML}</div>
         </body>
         
-        <link rel="stylesheet" href="${css_src}">
+        ${css_src ? `<link rel="stylesheet" href="${css_src}">` : ""}
+
+        ${inline_styles}
 
         <script type="application/javascript">
           window.REDUX_INITIAL_STATE = ${jState};

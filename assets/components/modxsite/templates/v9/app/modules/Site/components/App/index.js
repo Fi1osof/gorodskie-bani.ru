@@ -1536,9 +1536,55 @@ export class AppMain extends Component{
   // }
 
 
-  loadApiData(){
+  loadApiData = () => {
 
-    let user; 
+    // 
+
+    const {
+      document,
+    } = this.props;
+
+    let {
+      apiData,
+    } = document;
+
+    if(typeof window !== "undefined"){
+
+      // const response = await this.remoteQuery({
+      //   operationName: "apiData",
+      //   variables: {
+      //     limit: 0,
+      //   },
+      // });
+
+      this.remoteQuery({
+        operationName: "apiData",
+        variables: {
+          limit: 0,
+        },
+      })
+      .then(r => {
+
+        document.apiData = apiData = r && r.object || null;
+
+        this.initData(apiData);
+
+      });
+
+      // console.log("ApiData response", response);
+
+    }
+    else{
+
+      this.initData(apiData);
+
+    }
+
+    return;
+  }
+
+
+  initData(apiData){
 
     let {
       CompaniesStore,
@@ -1549,15 +1595,7 @@ export class AppMain extends Component{
       TopicsStore,
     } = this.state;
 
-    // 
-
-    const {
-      document,
-    } = this.props;
-
-    const {
-      apiData,
-    } = document;
+    let user; 
 
     if(apiData){
       let {
@@ -1598,7 +1636,8 @@ export class AppMain extends Component{
       // companies.map(n => {
       //   this.prepareCompaniesLocalData(n);
       // });
-    } 
+    }
+
 
     this.initUser(user);
 
@@ -1607,6 +1646,7 @@ export class AppMain extends Component{
     this.setState({
       inited: true,
     });
+
   }
 
 

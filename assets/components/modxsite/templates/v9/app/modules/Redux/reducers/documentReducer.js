@@ -5,6 +5,7 @@ const initialState = {
   document_view: 'Index',
   informerMessage: '',
   stores: {},
+  apiData: {},
 };
 
 /*

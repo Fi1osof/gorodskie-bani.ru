@@ -2,9 +2,9 @@
 const defaultQuery = `
 
 
-
 query apiData(
   $limit:Int = 0
+  $apiGetCompenies:Boolean = true
   $getRatingsAvg:Boolean = false
   $getImageFormats:Boolean = false
   $getCompanyComments:Boolean = false
@@ -28,11 +28,13 @@ query apiData(
   $userGetComments:Boolean = false
   $resourceTag:String
   $resourceUri:String
+  $resourceGetContent:Boolean = true
 ){
   companies(
     limit:$limit
     # offset:1
-  ) {
+  ) @include(if:$apiGetCompenies)
+  {
     ...Company
   }
   ratings(
@@ -81,6 +83,7 @@ query Companies (
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $resourceUri:String
+  $resourceGetContent:Boolean = true
 ){
   companies(
     limit:$limit
@@ -120,6 +123,7 @@ query Company(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
 ){
   company(
     id: $id
@@ -161,6 +165,7 @@ query Ratings(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
+  $resourceGetContent:Boolean = true
 ){
   ...RatingsList
 }
@@ -198,6 +203,7 @@ query MainMenuData(
   $resourceType:ResourceTypeEnum
   $resourceParent:Int = 1296
   $resourceUri:String
+  $resourceGetContent:Boolean = true
 ){
   ...RatingsList
   
@@ -258,6 +264,7 @@ query Comments(
   $userGetComments:Boolean = false
   $commentsPage:Int = 1
   $commentsIds:[Int]
+  $resourceGetContent:Boolean = true
 ){
   commentsList(
     ids: $commentsIds
@@ -307,6 +314,7 @@ query MapCompanies (
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
 ){
   companiesList(
     limit:$limit
@@ -354,6 +362,7 @@ query CompanyRatings(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
+  $resourceGetContent:Boolean = true
 ){
   ratings(  
     limit:$limit
@@ -397,6 +406,7 @@ query CompanyComments(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
 ){
   comments(  
     limit:$limit
@@ -442,6 +452,7 @@ query CompanyAvgRatings(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
+  $resourceGetContent:Boolean = true
 ){
   ratings(  
     limit:1
@@ -465,6 +476,7 @@ query CompanyTopics(
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
   $resourceTag:String
+  $resourceGetContent:Boolean = true
 ){
     ...Topics
 }
@@ -547,6 +559,7 @@ query Resources(
   $userGetComments:Boolean = false
   $resourceParent:Int
   $resourceUri:String
+  $resourceGetContent:Boolean = true
 ){
   
   ...ResourcesList
@@ -574,6 +587,7 @@ query Cities(
   $userGetComments:Boolean = false
   $resourceParent:Int = 1296
   $resourceUri:String
+  $resourceGetContent:Boolean = true
 ){
   
   ...ResourcesList
@@ -594,6 +608,7 @@ query RatingTypes(
   $userGetComments:Boolean = false
   $resourceParent:Int = 1349
   $resourceUri:String
+  $resourceGetContent:Boolean = true
 ){
   
   ...ResourcesList
@@ -631,6 +646,7 @@ query RatingsPageData(
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
   $resourceUri:String
+  $resourceGetContent:Boolean = true
 ){
   
   ...ResourcesList
@@ -651,6 +667,7 @@ query Topics(
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
   $resourceTag:String
+  $resourceGetContent:Boolean = true
 ){
   
   ...Topics
@@ -667,6 +684,7 @@ query ObzoryZavedeniy(
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
 ){
   
   ...Obzory
@@ -780,6 +798,8 @@ fragment Resource on ResourceType{
   
   ...ResourceFields
   
+  content @include(if:$resourceGetContent)
+  
   Author @include(if:$resourceGetAuthor)
   {
     ...User
@@ -802,7 +822,6 @@ fragment ResourceFields on ResourceType{
   template
   parent
   description
-  content
   alias
   uri
   deleted
@@ -1121,6 +1140,7 @@ mutation addCompany(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
 ){
   addCompany{
     ...Company
@@ -1240,7 +1260,6 @@ fragment Redirect on RedirectType{
   redirect_uri
   resource_id
 }
-
 
 
 

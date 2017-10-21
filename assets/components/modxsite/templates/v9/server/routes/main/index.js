@@ -1184,7 +1184,9 @@ export default class Router {
     // console.log('process.env.NODE_ENV', process);
     // console.log('process.env.NODE_ENV webpack', webpack);
 
-    let jState = JSON.stringify(initialState);
+    let jState = "";
+
+    // jState = JSON.stringify(initialState);
 
     jState = jState.replace(/<script.*?>.*?<\/script>/g, '');
 

@@ -1254,15 +1254,15 @@ export default class Router {
           <!-- /Yandex.Metrika counter -->
         
           ${style}
+          
+          ${css_src ? `<link rel="stylesheet" href="${css_src}">` : ""}
+
+          ${inline_styles}
 
         </head>
         <body>
           <div id="root">${componentHTML}</div>
         </body>
-        
-        ${css_src ? `<link rel="stylesheet" href="${css_src}">` : ""}
-
-        ${inline_styles}
 
         <script type="application/javascript">
           window.REDUX_INITIAL_STATE = ${jState};

@@ -10,6 +10,8 @@ import * as proxyActions from 'modules/Redux/actions/proxyActions';
 import * as userActions from 'modules/Redux/actions/userActions';
 import * as documentActions from 'modules/Redux/actions/documentActions';
 
+import customPropTypes from 'material-ui/utils/customPropTypes';
+
 import { connect } from 'react-redux';
 import { browserHistory, Router } from 'react-router';
 import { bindActionCreators } from 'redux';
@@ -87,6 +89,23 @@ const defaultProps = {
 
 
 export class MainApp extends Component{
+
+  static childContextTypes = {
+    appExports: PropTypes.object,
+  };
+
+  getChildContext() {
+
+    let {
+      appExports,
+    } = this.props;
+
+    let context = {
+      appExports,
+    };
+
+    return context;
+  }
 
   render(){
 
@@ -238,7 +257,9 @@ export class AppMain extends Component{
       schema,
       // db,
       coords: {},
-      inited: typeof window === "undefined",
+      // inited: typeof window === "undefined",
+      inited: true,
+      // appExports: {},
     }
 
     let {
@@ -1556,8 +1577,13 @@ export class AppMain extends Component{
       }
 
       // let companies = object && object.map(n => new Company(n)) || [];
+
       companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
       users = users && users.map(n => this.createStoreObject(User, n)) || [];
+
+      // companies = companies || [];
+      // users = users || [];
+
       ratings = ratings || [];
       comments = comments || [];
 
@@ -2063,6 +2089,7 @@ export class AppMain extends Component{
     let {
       children, 
       user, 
+      // appExports,
       ...other
     } = this.props;
 
@@ -2074,38 +2101,91 @@ export class AppMain extends Component{
     let authOpen = user && user.loginModalOpened || false;
 
     return <MuiThemeProvider theme={customStyles}>
-      <div
-        className="MainApp"
-      >
-        <MainMenu 
-        />
-
-        <div 
-          id="Module"
-        >
-          {inited
-            ? 
-              children
-            : 
-            <div 
-              className="preloader"
-            />
-          }
-        </div>
-
-
-        <Auth 
-          open={authOpen}
-        />
-
-        <Informer
-          store={notifications_store}
-        />  
-
-      </div>
+      <Renderer 
+        inited={inited}
+        children={children}
+        authOpen={authOpen}
+        notifications_store={notifications_store}
+        // appExports={appExports}
+      />
     </MuiThemeProvider>
 
     ;
+  }
+}
+
+
+class Renderer extends Component{
+
+
+  static contextTypes = {
+    styleManager: customPropTypes.muiRequired,
+    appExports: PropTypes.object.isRequired,
+  }
+
+
+  componentWillMount(){
+
+    const {
+      styleManager,
+    } = this.context;
+
+    let {
+      appExports,
+    } = this.context;
+
+    // if(typeof window == "undefined"){
+      // For render css on server-side
+      if(appExports){
+
+        appExports.theme = styleManager;
+
+      }
+    // }
+  }
+
+  render(){
+
+    const {
+      inited,
+      children,
+      authOpen,
+      notifications_store,
+    } = this.props;
+
+    // let {
+    //   appExports,
+    // } = this.props;
+
+    return <div
+      className="MainApp"
+    >
+      <MainMenu 
+      />
+
+      <div 
+        id="Module"
+      >
+        {inited
+          ? 
+            children
+          : 
+          <div 
+            className="preloader"
+          />
+        }
+      </div>
+
+
+      <Auth 
+        open={authOpen}
+      />
+
+      <Informer
+        store={notifications_store}
+      />  
+
+    </div>;
   }
 }
 

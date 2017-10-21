@@ -258,7 +258,7 @@ export default class MainMenu extends Component{
 
               <li>
                 <a 
-                  href="javascript:;" 
+                  href="/" 
                   title="Все бани на карте" 
                   className="dropdown-toggle" 
                   data-toggle="dropdown"
@@ -281,15 +281,18 @@ export default class MainMenu extends Component{
               </li>
 
               <li>
-                <a 
-                	href="javascript:;" 
+                <Link 
+                  to="/ratings/" 
+                	href="/ratings/" 
                 	title="Рейтинги заведений" 
                 	className="dropdown-toggle"
                   data-toggle="dropdown"
                 	// onClick={event => this.setState({
                 	// 	ratingsOpened: !ratingsOpened,
                 	// })}
-                >Рейтинги заведений <i className="fa fa-angle-down"></i></a>
+                >
+                  Рейтинги заведений <i className="fa fa-angle-down"></i>
+                </Link>
                 <ul 
                 	className="dropdown-menu"
                 	style={{
@@ -301,15 +304,18 @@ export default class MainMenu extends Component{
               </li>
 
               <li>
-                <a 
-                  href="javascript:;" 
+                <Link
+                  to="/topics/" 
+                  href="/topics/" 
                   title="Рейтинги заведений" 
                   className="dropdown-toggle"
                   data-toggle="dropdown"
                   // onClick={event => this.setState({
                   //  ratingsOpened: !ratingsOpened,
                   // })}
-                >Публикации <i className="fa fa-angle-down"></i></a>
+                >
+                  Публикации <i className="fa fa-angle-down"></i>
+                </Link>
                 <ul 
                   className="dropdown-menu"
                 >

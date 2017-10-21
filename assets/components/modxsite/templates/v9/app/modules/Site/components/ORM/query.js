@@ -811,6 +811,7 @@ fragment ResourceFields on ResourceType{
   pubdate
   createdon
   hidemenu
+  searchable
   short_text
   tags
   image
@@ -1236,6 +1237,7 @@ fragment Redirect on RedirectType{
   redirect_uri
   resource_id
 }
+
 
 
 

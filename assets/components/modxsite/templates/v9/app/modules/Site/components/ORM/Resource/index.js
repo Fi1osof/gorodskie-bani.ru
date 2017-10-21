@@ -113,20 +113,22 @@ export const ResourceType = new GraphQLObjectType({
       deleted: {
         type: GraphQLBoolean,
         description: "Флаг, что документ удален",
-        resolve: (source) => {
-          return parseInt(source.deleted) === 1 ? true : false;
-        },
       },
       hidemenu: {
         type: GraphQLBoolean,
         description: "Флаг, что документ скрывается в меню",
-        resolve: (source) => {
-          return parseInt(source.hidemenu) === 1 ? true : false;
-        },
+      },
+      searchable: {
+        type: GraphQLBoolean,
+        description: "Флаг, что документ индексируемый",
       },
       createdon: {
         type: GraphQLInt,
         description: "Дата создания в секундах",
+      },
+      published: {
+        type: GraphQLBoolean,
+        description: "Флаг, что документ опубликован",
       },
       publishedon: {
         type: GraphQLInt,
@@ -144,13 +146,6 @@ export const ResourceType = new GraphQLObjectType({
           }
 
           return moment(time * 1000).format('YYYY-MM-DD') || null;
-        },
-      },
-      published: {
-        type: GraphQLBoolean,
-        description: "Флаг, что документ опубликован",
-        resolve: (source) => {
-          return parseInt(source.published) === 1 ? true : false;
         },
       },
       tvs: TVsField,

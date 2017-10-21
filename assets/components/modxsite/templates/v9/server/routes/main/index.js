@@ -819,7 +819,9 @@ export default class Router {
 
       const redurectUri = decodedURI.replace(/^\/+/, '');
 
-      if(redurectUri && (!this.resources || this.resources.findIndex(n => n.uri === redurectUri) === -1)){
+      const resource = this.resources && this.resources.find(n => n.uri === redurectUri);
+
+      if(redurectUri && !resource){
 
         const redirect = redirects && redirects.find(n => n.uri === redurectUri || `${n.uri}/` === redurectUri);
 
@@ -951,8 +953,12 @@ export default class Router {
         //   </Provider>
         // );
 
+        let appExports = {};
+
         const componentHTML = ReactDom.renderToString(
-          <MainApp>
+          <MainApp
+            appExports={appExports}
+          >
             <Provider store={store}>
               <RouterContext 
                 {...renderProps} 
@@ -961,12 +967,19 @@ export default class Router {
           </MainApp>
         );
 
+        const stylesGenerated = appExports.theme && appExports.theme.sheetsToString();
 
+        // console.log('stylesGenerated', stylesGenerated);
+
+
+        let style = '<style>';
+        style += stylesGenerated;
+        style += '</style>';
 
         // const stylesGenerated = exports.theme.sheetsToString();
 
 
-        html = this.renderHTML(componentHTML, state);
+        html = this.renderHTML(componentHTML, state, resource, style);
       }
       catch(e){
         console.error(e);
@@ -1104,7 +1117,7 @@ export default class Router {
 
   // };
 
-  renderHTML(componentHTML, initialState) {
+  renderHTML(componentHTML, initialState, resource, style) {
 
     let assetsUrl;
 
@@ -1150,21 +1163,31 @@ export default class Router {
 
     jState = jState.replace(/<script.*?>.*?<\/script>/g, '');
 
+    const {
+      name,
+      longtitle,
+      description,
+      searchable,
+    } = resource || {};
+
+    let title = longtitle || name || "";
+
+    title = title && `${title} | ` || "";
+
+    title += 'Городские и общественные бани';
+
     return `
       <!DOCTYPE html>
         <html>
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Городские бани</title>
-          <meta name="robots" content="index, follow" />
+          <title>${title}</title>
+          <meta name="description" content="${description}"> 
+          <meta name="robots" content="${searchable === false ? "noindex, nofollow" : "index, follow"}" />
           <link rel="shortcut icon" href="/favicon.ico"/>
           <link rel="alternate" hreflang="ru" href="http://gorodskie-bani.ru/" />
-          <link rel="stylesheet" href="${css_src}">
           <base href="/" />
-          <script type="application/javascript">
-            window.REDUX_INITIAL_STATE = ${jState};
-          </script>
 
           <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -1207,12 +1230,20 @@ export default class Router {
           <noscript><div><img src="https://mc.yandex.ru/watch/26848689" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
           <!-- /Yandex.Metrika counter -->
         
+          ${style}
+
         </head>
         <body>
           <div id="root">${componentHTML}</div>
         </body>
         
-        <script type="application/javascript" src="${js_src}"></script>
+        <link rel="stylesheet" href="${css_src}">
+
+        <script type="application/javascript">
+          window.REDUX_INITIAL_STATE = ${jState};
+        </script>
+          
+        <script type="application/javascript" src="${js_src}" async></script>
 
       </html>
     `;

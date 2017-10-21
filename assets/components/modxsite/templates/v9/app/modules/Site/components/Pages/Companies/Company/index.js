@@ -60,7 +60,7 @@ export default class CompanyPage extends Component{
 		this.state = {};
 	}
 
-	componentDidMount(){
+	componentWillMount(){
 
 		const {
 			item,
@@ -104,11 +104,10 @@ export default class CompanyPage extends Component{
  			this.loadCompanyFullData();
  		});
 
+
 		this.loadCompanyFullData();
 
-		this.setPageTitle(name);
-
-		super.componentDidMount && super.componentDidMount();
+		super.componentWillMount && super.componentWillMount();
 	}
 
 	componentWillUnmount(){
@@ -179,8 +178,15 @@ export default class CompanyPage extends Component{
 
 
 		// console.log('componentDidUpdate', this.props.item.id, prevProps.item.id);
+		
+		console.log('Company componentDidUpdate', this.props.item === prevProps.item);
 
-		if(this.props.item.id !== prevProps.item.id){
+
+		// if(this.props.item.id !== prevProps.item.id){
+		// 	this.loadCompanyFullData();
+		// }
+
+		if(this.props.item !== prevProps.item){
 			this.loadCompanyFullData();
 		}
 
@@ -198,7 +204,7 @@ export default class CompanyPage extends Component{
 	}
 
 
-	async loadCompanyFullData(){
+	loadCompanyFullData(){
 
 		const {
 			item,
@@ -222,9 +228,10 @@ export default class CompanyPage extends Component{
 
 		const {
 			localQuery,
+			CompaniesStore,
 		} = this.context;
 
-		await localQuery({
+		localQuery({
 			operationName: "Company",
 			variables: {
 				id,
@@ -232,13 +239,19 @@ export default class CompanyPage extends Component{
 		})
 			.then(result => {
 
+				const StoreItem = CompaniesStore.getState().find(n => n.id === id);
+
 				const {
 					company,
 				} = result.data;
 
 				company && Object.assign(item, company);
 
+				// console.log('Company loadCompanyFullData item isEqual', StoreItem === item, StoreItem, item);
+
 				// console.log('Company loadCompanyFullData result', result);
+
+				this.setPageTitle(company && company.name);
 
 				this.forceUpdate();
 
@@ -357,6 +370,8 @@ export default class CompanyPage extends Component{
 		const {
 			item,
 		} = this.props;
+
+		console.log("Company render item", item);
 
 		const {
 			galleryItem,

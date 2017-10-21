@@ -203,6 +203,19 @@ export const getList = (object, args, context, info) => {
 
         data.object.map(object => {
 
+          const {
+            deleted,
+            hidemenu,
+            searchable,
+            published,
+          } = object;
+
+          // console.log("Resource server data", {
+          //   deleted,
+          //   hidemenu,
+          //   searchable,
+          //   published,
+          // });
 
           if(object.tvs){
     
@@ -258,6 +271,14 @@ export const getList = (object, args, context, info) => {
             }
 
             object.tags = object.topic_tags && object.topic_tags.split(",").filter(tag => tag && tag.replace(/ /g, "") !== "");
+
+
+            Object.assign(object, {
+              deleted: parseInt(deleted) === 1 ? true : false,
+              hidemenu: parseInt(hidemenu) === 1 ? true : false,
+              searchable: parseInt(searchable) === 1 ? true : false,
+              published: parseInt(published) === 1 ? true : false,
+            });
 
           }
           

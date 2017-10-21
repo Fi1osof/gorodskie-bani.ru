@@ -53,7 +53,9 @@ browserHistory.listen(function (location) {
 
 const render = () => {
   ReactDOM.render(
-    <MainApp>
+    <MainApp
+      appExports={{}}
+    >
       <Provider store={store}>
         <Router
           history={browserHistory}

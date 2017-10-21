@@ -11,6 +11,8 @@ const fs = require('fs');
 import configureStore from '../../../app/store';
 import routes from "../../../app/routes";
 
+import {MainApp} from "modules/Site/components/App/";
+
 var Model = require('objection').Model;
  
 import Response from './components/response';
@@ -796,8 +798,6 @@ export default class Router {
 
   processMainRequest = (req, res) => {
     
-    const store = configureStore();
-    
     const url = req.url;
 
     const decodedURI = decodeURI(req.url);
@@ -809,6 +809,7 @@ export default class Router {
     }, async (error, redirectLocation, renderProps) => {
 
       // console.log('match request', url, decodedURI);
+      // console.log('match renderProps', renderProps);
 
       const {
         redirects,
@@ -858,7 +859,7 @@ export default class Router {
         //     console.error(e);
         //   });
 
-        if(!prevent){
+        // if(!prevent){
 
           // debug("knex resreq.headers", req);
 
@@ -890,7 +891,7 @@ export default class Router {
             });
 
           return res.status(404).send('Not found');
-        }
+        // }
 
       }
 
@@ -898,14 +899,72 @@ export default class Router {
       let html;
 
       try{
+
+        // Запрашиваем данные для пользователя
+
+    
+        let store = configureStore();
+
+        let apiData;
+
+        await this.response.localQuery({
+          operationName: "apiData",
+          variables: {
+            resourceExcludeTemplates: 0,
+          },
+          req,
+        })
+        .then(r => {
+
+          // console.log('apiData result', r);
+
+          apiData = r.data;
+
+        })
+        .catch(e => {
+          console.error(e);
+        });
+
+        let state = store.getState();
+
+        Object.assign(state.document, {
+          apiData,
+        });
+
+        store = configureStore(state);
         
+        // exports={exports}
+        // userAgent={global.navigator.userAgent}
+              
+        // const componentHTML = ReactDom.renderToString(
+        //   <MainApp 
+        //     {...renderProps} 
+        //     store={store}
+        //   />
+        // );
+
+        // const componentHTML = ReactDom.renderToString(
+        //   <Provider store={store}>
+        //     <RouterContext 
+        //       {...renderProps} 
+        //     />
+        //   </Provider>
+        // );
+
         const componentHTML = ReactDom.renderToString(
-          <Provider store={store}>
-            <RouterContext {...renderProps} />
-          </Provider>
+          <MainApp>
+            <Provider store={store}>
+              <RouterContext 
+                {...renderProps} 
+              />
+            </Provider>
+          </MainApp>
         );
 
-        const state = store.getState();
+
+
+        // const stylesGenerated = exports.theme.sheetsToString();
+
 
         html = this.renderHTML(componentHTML, state);
       }
@@ -1087,6 +1146,10 @@ export default class Router {
     // console.log('process.env.NODE_ENV', process);
     // console.log('process.env.NODE_ENV webpack', webpack);
 
+    let jState = JSON.stringify(initialState);
+
+    jState = jState.replace(/<script.*?>.*?<\/script>/g, '');
+
     return `
       <!DOCTYPE html>
         <html>
@@ -1100,7 +1163,7 @@ export default class Router {
           <link rel="stylesheet" href="${css_src}">
           <base href="/" />
           <script type="application/javascript">
-            window.REDUX_INITIAL_STATE = ${JSON.stringify(initialState)};
+            window.REDUX_INITIAL_STATE = ${jState};
           </script>
 
           <script>

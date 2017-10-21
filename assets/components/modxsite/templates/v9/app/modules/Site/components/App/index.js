@@ -11,8 +11,9 @@ import * as userActions from 'modules/Redux/actions/userActions';
 import * as documentActions from 'modules/Redux/actions/documentActions';
 
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { browserHistory, Router } from 'react-router';
 import { bindActionCreators } from 'redux';
+import { Provider } from "react-redux";
 
 import Grid from 'material-ui/Grid';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -82,6 +83,34 @@ const customStyles = createMuiTheme({
 const defaultProps = {
   connector_url: '/assets/components/modxsite/connectors/connector.php',
 };
+
+
+
+export class MainApp extends Component{
+
+  render(){
+
+    // const {
+    //   store,
+    //   routes,
+    //   render,
+    // } = this.props;
+
+    // return <Provider store={store}>
+    //   <Router
+    //     history={browserHistory}
+    //     routes={routes}
+    //     render={render}
+    //   />
+    // </Provider>;
+
+    return this.props.children;
+
+  }
+
+}
+
+
 
 /*
   Инициируется один раз
@@ -812,10 +841,7 @@ export class AppMain extends Component{
   }
 
 
-  // componentWillMount(){
-  // }
-
-  componentDidMount(){
+  componentWillMount(){
 
     let {
       CoordsStore,
@@ -845,6 +871,10 @@ export class AppMain extends Component{
     this.loadApiData();
 
     return;
+
+  }
+
+  componentDidMount(){
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -1410,70 +1440,139 @@ export class AppMain extends Component{
   }
 
 
-  loadApiData = async () => {
+  // loadApiData = async () => {
 
-    let user;
+  //   let user;
 
-    await this.remoteQuery({
-      operationName: "apiData",
-      variables: {
-        limit: 0,
-      },
-    })
-    .then(data => {
+  //   await this.remoteQuery({
+  //     operationName: "apiData",
+  //     variables: {
+  //       limit: 0,
+  //     },
+  //   })
+  //   .then(data => {
 
-      // console.log('loadCompanies', data);
+  //     // console.log('loadCompanies', data);
 
+  //     let {
+  //       CompaniesStore,
+  //       RatingsStore,
+  //       UsersStore,
+  //       CommentsStore,
+  //       ResourcesStore,
+  //       TopicsStore,
+  //     } = this.state;
+
+  //     // 
+
+  //     if(data.success && data.object){
+  //       let {
+  //         companies,
+  //         user: currentUser,
+  //         users,
+  //         ratings,
+  //         comments,
+  //         resources,
+  //         topics,
+  //       } = data.object || {};
+
+  //       if(currentUser){
+  //         this.props.userActions.GetOwnDataSuccess(currentUser);
+
+  //         user = currentUser;
+  //       }
+
+  //       // let companies = object && object.map(n => new Company(n)) || [];
+  //       companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
+  //       users = users && users.map(n => this.createStoreObject(User, n)) || [];
+  //       ratings = ratings || [];
+  //       comments = comments || [];
+
+  //       CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+  //       UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
+  //       RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
+  //       CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
+  //       ResourcesStore.getDispatcher().dispatch(ResourcesStore.actions['SET_DATA'], resources || []);
+  //       TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
+
+  //       // Устанавливаем сразу локальные данные для компаний
+  //       // companies.map(n => {
+  //       //   this.prepareCompaniesLocalData(n);
+  //       // });
+  //     }
+  //   })
+  //   .catch(e => {
+  //     console.error(e);
+  //   });
+
+  //   this.initUser(user);
+
+  //   // this.forceUpdate();
+
+  //   this.setState({
+  //     inited: true,
+  //   });
+  // }
+
+
+  loadApiData(){
+
+    let user; 
+
+    let {
+      CompaniesStore,
+      RatingsStore,
+      UsersStore,
+      CommentsStore,
+      ResourcesStore,
+      TopicsStore,
+    } = this.state;
+
+    // 
+
+    const {
+      document,
+    } = this.props;
+
+    const {
+      apiData,
+    } = document;
+
+    if(apiData){
       let {
-        CompaniesStore,
-        RatingsStore,
-        UsersStore,
-        CommentsStore,
-        ResourcesStore,
-        TopicsStore,
-      } = this.state;
+        companies,
+        user: currentUser,
+        users,
+        ratings,
+        comments,
+        resources,
+        topics,
+      } = apiData || {};
 
-      // 
+      if(currentUser){
+        this.props.userActions.GetOwnDataSuccess(currentUser);
 
-      if(data.success && data.object){
-        let {
-          companies,
-          user: currentUser,
-          users,
-          ratings,
-          comments,
-          resources,
-          topics,
-        } = data.object || {};
-
-        if(currentUser){
-          this.props.userActions.GetOwnDataSuccess(currentUser);
-
-          user = currentUser;
-        }
-
-        // let companies = object && object.map(n => new Company(n)) || [];
-        companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
-        users = users && users.map(n => this.createStoreObject(User, n)) || [];
-        ratings = ratings || [];
-        comments = comments || [];
-
-        CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
-        UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
-        RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
-        CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
-        ResourcesStore.getDispatcher().dispatch(ResourcesStore.actions['SET_DATA'], resources || []);
-        TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
-
-        // Устанавливаем сразу локальные данные для компаний
-        // companies.map(n => {
-        //   this.prepareCompaniesLocalData(n);
-        // });
+        user = currentUser;
       }
-    })
-    .catch(e => {
-      console.error(e);
-    });
+
+      // let companies = object && object.map(n => new Company(n)) || [];
+      companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
+      users = users && users.map(n => this.createStoreObject(User, n)) || [];
+      ratings = ratings || [];
+      comments = comments || [];
+
+      CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+      UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
+      RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
+      CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
+      ResourcesStore.getDispatcher().dispatch(ResourcesStore.actions['SET_DATA'], resources || []);
+      TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
+
+      // Устанавливаем сразу локальные данные для компаний
+      // companies.map(n => {
+      //   this.prepareCompaniesLocalData(n);
+      // });
+    } 
 
     this.initUser(user);
 

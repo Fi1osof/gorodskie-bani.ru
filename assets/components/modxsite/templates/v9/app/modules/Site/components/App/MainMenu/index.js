@@ -258,6 +258,30 @@ export default class MainMenu extends Component{
 
               <li>
                 <a 
+                  href="javascript:;" 
+                  title="Все бани на карте" 
+                  className="dropdown-toggle" 
+                  data-toggle="dropdown"
+                  // onClick={event => this.setState({
+                  //  citiesOpened: !citiesOpened,
+                  // })}
+                >На карте <i className="fa fa-angle-down"></i></a>
+                <ul 
+                  className="dropdown-menu"
+                  style={{
+                    display: citiesOpened ? 'block' : undefined,
+                    maxHeight: "70vh",
+                    overflow: "auto",
+                  }}
+                >
+
+                  {citiesList}
+
+                </ul>
+              </li>
+
+              <li>
+                <a 
                 	href="javascript:;" 
                 	title="Рейтинги заведений" 
                 	className="dropdown-toggle"
@@ -274,30 +298,6 @@ export default class MainMenu extends Component{
                 >
                   {ratingsList}
                 </ul>
-              </li>
-
-              <li>
-              	<a 
-              		href="javascript:;" 
-              		title="Города" 
-              		className="dropdown-toggle" 
-              		data-toggle="dropdown"
-	              	// onClick={event => this.setState({
-	              	// 	citiesOpened: !citiesOpened,
-	              	// })}
-              	>Города <i className="fa fa-angle-down"></i></a>
-	              <ul 
-	              	className="dropdown-menu"
-	              	style={{
-	              		display: citiesOpened ? 'block' : undefined,
-                    maxHeight: "70vh",
-                    overflow: "auto",
-	              	}}
-	              >
-
-                  {citiesList}
-
-	              </ul>
               </li>
 
               <li>

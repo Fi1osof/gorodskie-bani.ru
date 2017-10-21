@@ -35,11 +35,6 @@ export default class Page extends Component{
 
 	componentWillMount(){
 
-	}
-
-	componentDidMount(){
-
-
 		const {
 			CommentsStore,
 			RatingsStore,
@@ -85,6 +80,10 @@ export default class Page extends Component{
 		// super.componentDidMount && super.componentDidMount();
 
 		this.setPageTitle();
+
+	}
+
+	componentDidMount(){
 	}
 
   componentDidUpdate(){

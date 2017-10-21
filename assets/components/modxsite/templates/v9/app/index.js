@@ -14,7 +14,18 @@ import configureStore from "./store";
 // this uses the singleton browserHistory provided by react-router
 // Optionally, this could be changed to leverage a created history
 // e.g. `const browserHistory = useRouterHistory(createBrowserHistory)();`
-const initialState = {};
+let initialState = {};
+
+import {MainApp} from 'modules/Site/components/App';
+
+if(
+  typeof window !== 'undefined'
+  && window.REDUX_INITIAL_STATE
+){
+  initialState = window.REDUX_INITIAL_STATE;
+}
+
+
 const store = configureStore(initialState);
 
 // alert("sdfsdf");
@@ -42,13 +53,15 @@ browserHistory.listen(function (location) {
 
 const render = () => {
   ReactDOM.render(
-    <Provider store={store}>
-      <Router
-        history={browserHistory}
-        routes={rootRoute}
-        render={applyRouterMiddleware(useScroll())}
-      />
-    </Provider>,
+    <MainApp>
+      <Provider store={store}>
+        <Router
+          history={browserHistory}
+          routes={rootRoute}
+          render={applyRouterMiddleware(useScroll())}
+        />
+      </Provider>
+    </MainApp>,
     document.getElementById("root")
   );
 };

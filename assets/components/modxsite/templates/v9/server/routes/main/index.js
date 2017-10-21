@@ -44,6 +44,8 @@ let styles = {};
 
  
 
+let apiData;
+
 
 /*
   OLD Router
@@ -109,6 +111,32 @@ export default class Router {
 
 
     this.router = this.createRouter(options);
+
+    this.loadApiData();
+
+  }
+
+  loadApiData(){
+
+    this.response.localQuery({
+      operationName: "apiData",
+      variables: {
+        resourceExcludeTemplates: 0,
+        getCompanyGallery: true,
+        getImageFormats: true,
+      },
+      req: {},
+    })
+    .then(r => {
+
+      // console.log('apiData result', r);
+
+      apiData = r.data;
+
+    })
+    .catch(e => {
+      console.error(e);
+    });
 
   }
 
@@ -907,28 +935,6 @@ export default class Router {
     
         let store = configureStore();
 
-        let apiData;
-
-        await this.response.localQuery({
-          operationName: "apiData",
-          variables: {
-            resourceExcludeTemplates: 0,
-            getCompanyGallery: true,
-            getImageFormats: true,
-          },
-          req,
-        })
-        .then(r => {
-
-          // console.log('apiData result', r);
-
-          apiData = r.data;
-
-        })
-        .catch(e => {
-          console.error(e);
-        });
-
         let state = store.getState();
 
         Object.assign(state.document, {
@@ -936,7 +942,7 @@ export default class Router {
         });
 
         store = configureStore(state);
-        
+
         // exports={exports}
         // userAgent={global.navigator.userAgent}
               

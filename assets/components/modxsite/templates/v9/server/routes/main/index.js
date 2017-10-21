@@ -889,6 +889,38 @@ export default class Router {
         //     console.error(e);
         //   });
 
+        /*
+          Некоторые правила редиректа
+        */
+
+        if(decodedURI){
+
+          let match;
+
+          if(/.+\/bani-otzivy\/$/.test(decodedURI)){
+            return res.redirect(301, '/bani-otzivy/');
+          }
+
+          // else if(/.+\/topics\/$/.test(decodedURI)){
+          //   return res.redirect(301, '/topics/');
+          // }
+          
+          
+          match = decodedURI.match(/.+(\/(topics|city|ratings)\/.*)/);
+
+          if(match && match[1]){
+            return res.redirect(301, match[1]);
+          }
+
+
+          if(/.+\/contacts.html$/.test(decodedURI)){
+            return res.redirect(301, '/contacts.html');
+          }
+
+        }
+
+
+
         // if(!prevent){
 
           // debug("knex resreq.headers", req);

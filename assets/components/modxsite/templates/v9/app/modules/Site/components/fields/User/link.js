@@ -72,8 +72,8 @@ export default class UserLink extends Component{
 			gutter={0}
 		>
 			{active === true && blocked === false ? <Link
-				to={`profile/${username}`}
-				href={`profile/${username}`}
+				to={`/profile/${username}`}
+				href={`/profile/${username}`}
 			>
 				{info}
 			</Link> : info}

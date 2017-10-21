@@ -71,8 +71,8 @@ export default class Comment extends Component{
 			<CardHeader
         avatar={
           <Link
-          	to={`profile/${username}`}
-          	href={`profile/${username}`}
+          	to={`/profile/${username}`}
+          	href={`/profile/${username}`}
           >
           	<UserAvatar 
 	          	user={Author}
@@ -80,8 +80,8 @@ export default class Comment extends Component{
           </Link>
         }
         title={<Link
-        	to={`profile/${username}`}
-        	href={`profile/${username}`}
+        	to={`/profile/${username}`}
+        	href={`/profile/${username}`}
         >
         	{fullname || username || undefined}
         </Link>}

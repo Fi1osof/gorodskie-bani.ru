@@ -87,42 +87,54 @@ a{
 }
 
 // Slick
-.slick-list{
 
-   // overflow: hidden;
+.slick-slider{
 
-   .no-js &{
+   .slick-list{
 
-      .slick-track{
-         display: flex;
+      // overflow: hidden;
+
+      .no-js &{
+
+         .slick-track{
+            display: flex;
+         }
+
       }
 
+      
+      .slick-slide { height: auto; }
    }
 
-   
-   .slick-slide { height: auto; }
-}
+   .slick-dots{
 
-.slick-dots{
+      position: relative;
+      bottom: 0;
+      margin-top: 5px;
 
-   &.slick-paging{
+      &.slick-paging{
 
-      bottom: -40px;
+         // bottom: -40px;
 
-      li{
-         
-         width: 40px;
-         height: 30px;
-         
-         img{
+         li{
+            
             width: 40px;
             height: 30px;
+            margin-top: 3px;
+            margin-bottom: 3px;
+            
+            img{
+               width: 40px;
+               height: 30px;
+            }
          }
+
       }
 
-   }
+   } 
 
-} 
+}
+
 
 .preloader{
    background: url(./img/preloader.gif) center no-repeat rgba(0,0,0,0.1);

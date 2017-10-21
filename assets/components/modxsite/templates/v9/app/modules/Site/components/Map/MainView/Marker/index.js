@@ -65,7 +65,7 @@ export default class Marker extends Component{
 				approved,
 			} = tvs || {};
 
-			let link = uri;
+			let link = `/${uri}`;
 
 			// const {
 	  //     rating,

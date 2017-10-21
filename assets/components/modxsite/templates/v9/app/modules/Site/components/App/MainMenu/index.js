@@ -205,8 +205,10 @@ export default class MainMenu extends Component{
       const {
         id,
         name,
-        uri: link,
+        uri,
       } = Type;
+
+      const link = `/${uri}`;
 
       ratingsList.push(<li
         key={id}
@@ -321,8 +323,8 @@ export default class MainMenu extends Component{
                 >
                   <li className="first">
                     <Link 
-                      to="bani-otzivy/" 
-                      href="bani-otzivy/" 
+                      to="/bani-otzivy/" 
+                      href="/bani-otzivy/" 
                       title="Обзоры и отзывы"
                       onClick={event => {
                         this.closeMenu();
@@ -333,8 +335,8 @@ export default class MainMenu extends Component{
                   </li>
                   <li className="">
                     <Link 
-                      to="topics/" 
-                      href="topics/" 
+                      to="/topics/" 
+                      href="/topics/" 
                       title="Новости"
                       onClick={event => {
                         this.closeMenu();
@@ -348,8 +350,8 @@ export default class MainMenu extends Component{
 
               <li className="last">
                 <Link 
-                  to="contacts.html" 
-                  href="contacts.html" 
+                  to="/contacts.html" 
+                  href="/contacts.html" 
                   title="Контакты"
                   onClick={event => {
                     this.closeMenu();
@@ -362,7 +364,7 @@ export default class MainMenu extends Component{
               {user
                 ?
                 <li className="dropdown">
-                  <a id="office" href="#" data-toggle="dropdown" className="dropdown-toggle"><i className="glyphicon glyphicon-user"></i><span className="caret"></span></a>
+                  <a id="office" href="javascript:;" data-toggle="dropdown" className="dropdown-toggle"><i className="glyphicon glyphicon-user"></i><span className="caret"></span></a>
                   <ul aria-labelledby="office" className="dropdown-menu">
                     <li>
                       <Link 

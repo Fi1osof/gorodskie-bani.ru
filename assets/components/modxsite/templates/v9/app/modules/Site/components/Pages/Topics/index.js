@@ -113,7 +113,7 @@ export default class TopicsPage extends Page {
 
 
 
-		console.log("Topics tag", tag);
+		// console.log("Topics tag", tag);
 
 
 		const {
@@ -132,7 +132,7 @@ export default class TopicsPage extends Page {
 		})
 		.then(r => {
 
-			console.log("Resources r", r);
+			// console.log("Resources r", r);
 
 			const {
 				topics,

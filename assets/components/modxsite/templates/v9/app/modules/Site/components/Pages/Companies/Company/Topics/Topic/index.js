@@ -127,6 +127,7 @@ export default class Topic extends Component{
 			template,
 		} = item;
 
+		const link = `/${uri}`;
 		
 		const {
 			Parent,
@@ -140,15 +141,17 @@ export default class Topic extends Component{
 			uri:CompanyUri,
 		} = Parent || {};
 
-		console.log('Parent', Parent);
+		const CompanyLink = `/${CompanyUri}`;
+
+		// console.log('Parent', Parent);
 
 		return <Card
 		>
 
 			<CardHeader
 				title={<Link
-					to={uri}
-					href={uri}
+					to={link}
+					href={link}
 				>
 					<Typography
 						type="subheading"
@@ -156,9 +159,9 @@ export default class Topic extends Component{
 						{topicName}
 					</Typography>
 				</Link>}
-        subheader={CompanyUri && <Link
-        	to={CompanyUri}
-        	href={CompanyUri}
+        subheader={CompanyLink && <Link
+        	to={CompanyLink}
+        	href={CompanyLink}
         >
         	{CompanyName}
         </Link> || undefined}

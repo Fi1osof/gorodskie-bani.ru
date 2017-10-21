@@ -73,7 +73,7 @@ export default class CompanyMiniCart extends Component{
 
 
 		// const link = `/bani/${alias}/`;
-		const link = uri;
+		const link = `/${uri}`;
 
 		return <div
 			{...other}

@@ -114,6 +114,18 @@ export default class Router {
 
     this.router = this.createRouter(options);
 
+
+    this.loadData();
+
+    setInterval(this.loadData, 1000 * 300);
+
+  }
+
+
+  loadData = () => {
+
+    // console.log("LoadData");
+
     this.loadApiData();
 
     this.loadMapData();

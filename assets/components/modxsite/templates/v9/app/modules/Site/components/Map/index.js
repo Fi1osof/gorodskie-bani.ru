@@ -1709,11 +1709,15 @@ export default class MapMainView extends Component{
 	    					<IconButton
 			    				accent
 			    				style={{
-			    					height: 30,
-			    					width: 30,
+				    					height: 40,
+				    					width: 40,
 			    				}}
 		    				>
 			    				<AddIcon 
+				    				style={{
+				    					height: 40,
+				    					width: 40,
+				    				}}
 			    				/>
 		    				</IconButton>
 		    				Добавить заведение

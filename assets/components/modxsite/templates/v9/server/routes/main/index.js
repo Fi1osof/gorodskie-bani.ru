@@ -902,6 +902,34 @@ export default class Router {
     const decodedURI = decodeURI(req.url).replace(/\@[0-9\.\,]+/, '');
 
 
+    // Яндекс наиндексировал херни
+    let redirectMatch;
+
+    if(decodedURI){
+
+      if(/.+\/bani-otzivy\/$/.test(decodedURI)){
+        return res.redirect(301, '/bani-otzivy/');
+      }
+
+      // else if(/.+\/topics\/$/.test(decodedURI)){
+      //   return res.redirect(301, '/topics/');
+      // }
+      
+      
+      redirectMatch = decodedURI.match(/.+(\/(topics|city|ratings)\/.*)/);
+
+      if(redirectMatch && redirectMatch[1]){
+        return res.redirect(301, redirectMatch[1]);
+      }
+
+
+      if(/.+\/contacts.html$/.test(decodedURI)){
+        return res.redirect(301, '/contacts.html');
+      }
+
+    }
+
+
     match({ 
       routes, 
       location: url,
@@ -964,31 +992,31 @@ export default class Router {
           Некоторые правила редиректа
         */
 
-        if(decodedURI){
+        // if(decodedURI){
 
-          let match;
+        //   let match;
 
-          if(/.+\/bani-otzivy\/$/.test(decodedURI)){
-            return res.redirect(301, '/bani-otzivy/');
-          }
+        //   if(/.+\/bani-otzivy\/$/.test(decodedURI)){
+        //     return res.redirect(301, '/bani-otzivy/');
+        //   }
 
-          // else if(/.+\/topics\/$/.test(decodedURI)){
-          //   return res.redirect(301, '/topics/');
-          // }
+        //   // else if(/.+\/topics\/$/.test(decodedURI)){
+        //   //   return res.redirect(301, '/topics/');
+        //   // }
           
           
-          match = decodedURI.match(/.+(\/(topics|city|ratings)\/.*)/);
+        //   match = decodedURI.match(/.+(\/(topics|city|ratings)\/.*)/);
 
-          if(match && match[1]){
-            return res.redirect(301, match[1]);
-          }
+        //   if(match && match[1]){
+        //     return res.redirect(301, match[1]);
+        //   }
 
 
-          if(/.+\/contacts.html$/.test(decodedURI)){
-            return res.redirect(301, '/contacts.html');
-          }
+        //   if(/.+\/contacts.html$/.test(decodedURI)){
+        //     return res.redirect(301, '/contacts.html');
+        //   }
 
-        }
+        // }
 
 
 

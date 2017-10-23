@@ -70,13 +70,13 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 
 
 	public function beforeSave(){
+
+
+		$object = & $this->object;
 		
     	// print_r($this->properties);
 
-
 		// print_r($object->toArray());
-
-		$object = & $this->object;
 
 		if($object->isNew()){
 			// return "Нельзя создавать объекты";
@@ -197,7 +197,10 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 		}
 
 
+		// print_r($object->gallery);
+
 		// return "Debug";
+
 		return parent::beforeSave();
 	}
 
@@ -261,6 +264,34 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 			$object->setTVValue(3, preg_replace('/^\/?assets\/images\//', '', $image));
 		}
 
+		$gallery = $object->gallery;
+
+		if(isset($gallery)){
+
+			// $tv = (array)$object->getTVValue(23);
+
+			$migx = array();
+
+			foreach($gallery as $item){
+				$image = preg_replace('/^\/?assets\/images\//', '', $item['image']);
+
+				if(!$image){
+					continue;
+				}
+
+				// {"MIGX_id":"2","title":"","image":"companies\/1275-sokolinaya-gora\/1 (2).jpg","description":""}
+
+				$migx[] = array(
+					"MIGX_id" => count($migx) + 1,
+					"title" => "",
+					"image" => $image,
+					"description" => "",
+				);
+			}
+
+			$object->setTVValue(23, json_encode($migx));
+
+		}
 
 		return parent::afterSave();
 	}

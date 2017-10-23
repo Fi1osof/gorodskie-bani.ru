@@ -1,6 +1,7 @@
 
 const defaultQuery = `
 
+
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -61,6 +62,10 @@ query apiData(
   
   ...ResourcesList
   ...Topics
+}
+
+mutation clearCache{
+  clearCache
 }
 
 query Companies (
@@ -1261,6 +1266,33 @@ fragment Redirect on RedirectType{
   uri
   redirect_uri
   resource_id
+}
+
+mutation addCompanyGalleryImage(
+  $companyId:Int!
+  $image:String!
+  $getRatingsAvg:Boolean = true
+  $getImageFormats:Boolean = true
+  $getCompanyComments:Boolean = true
+  $getCommentCompany:Boolean = false
+  $getCompanyFullData:Boolean = true
+  $getCompanyGallery:Boolean = true
+  $getTVs:Boolean = true
+  $companyCommentsSort:[SortBy] = {by: id, dir:asc}
+  $getCommentAuthor:Boolean = true
+  $getCompanyTopics:Boolean = true
+  $getRatingVoters:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
+){
+  addCompanyGalleryImage(
+    id: $companyId
+    image: $image
+  ){
+    ...Company
+  }
 }
 
 

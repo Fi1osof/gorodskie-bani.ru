@@ -65,7 +65,7 @@ export default class Router {
     //   return this.SendMODXRequest(action, params, req);
     // }
 
-    this.response = new Response(null, null, null, knex, config, this.clients, this.SendMessage, ::this.SendMODXRequest);
+    this.response = new Response(this, null, null, knex, config, this.clients, this.SendMessage, ::this.SendMODXRequest);
 
 
     this.response.localQuery({
@@ -132,7 +132,7 @@ export default class Router {
 
     this.loadCitiesData();
 
-    return;
+    return true;
   }
   
 
@@ -213,6 +213,12 @@ export default class Router {
       console.error(e);
     });
 
+  }
+
+
+  clearCache(){
+
+    return this.loadData();
   }
 
 

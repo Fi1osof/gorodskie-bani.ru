@@ -19,6 +19,7 @@ import {
 	CompanyType,
 	getList as getCompanyList,
   add as addCompany,
+  addGalleryImage as companyAddGalleryImage,
 } from './Company';
 
 import {
@@ -622,10 +623,20 @@ const rootResolver = (source, args, context, info) => {
           
         }
 
+        break;
+
+      case "addCompanyGalleryImage":
+
+        if(returnType === CompanyType){
+
+          // console.log("rootResolver addCompany info", info);
+
+          return companyAddGalleryImage(source, args, context, info); 
+          
+        }
 
         break;
     }
-
   }
 
 

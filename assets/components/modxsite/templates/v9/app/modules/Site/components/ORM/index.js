@@ -397,9 +397,27 @@ export default RootType;
 
 
 const mutationFields = {
+  clearCache: {
+    type: GraphQLBoolean,
+    description: "Сброс кеша",
+  },
   addCompany: {
     type: CompanyType,
     description: "Добавление нового заведения",
+  },
+  addCompanyGalleryImage: {
+    type: CompanyType,
+    description: "Добавление картинки в галерею заведения",
+    args: {
+      id: {
+        type: new GraphQLNonNull(GraphQLInt),
+        description: "ID компании",
+      },
+      image: {
+        type: new GraphQLNonNull(GraphQLString),
+        description: "УРЛ к картинке",
+      },
+    },
   },
   logCoords: {
     type: WsConnectionType,

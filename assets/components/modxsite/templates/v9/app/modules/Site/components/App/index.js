@@ -137,6 +137,7 @@ export class MainApp extends Component{
 export class AppMain extends Component{
 
   static childContextTypes = {
+    connector_url: PropTypes.string,
     location: PropTypes.object,
     request: PropTypes.func,
     apiRequest: PropTypes.func,
@@ -181,6 +182,7 @@ export class AppMain extends Component{
       documentActions,
       document,
       location,
+      connector_url,
     } = this.props;
 
     let {
@@ -197,6 +199,7 @@ export class AppMain extends Component{
 
     let context = {
       location,
+      connector_url,
       request: this.request,
       apiRequest: this.apiRequest,
       wsRequest: this.wsRequest,
@@ -1269,11 +1272,13 @@ export class AppMain extends Component{
           browserHistory.replace(uri);
         }
 
+        this.reloadApiData();
+
         return;
       }
     }
 
-    this.saveItem(store, item, 'companies/', callback);
+    return this.saveItem(store, item, 'companies/', callback);
   }
 
   saveItem = (store, item, connector_path, callback) => {
@@ -1664,6 +1669,16 @@ export class AppMain extends Component{
 
   }
 
+
+  // Перезагружаем API-данные со сбросом кеша
+  reloadApiData = async () => {
+
+    await this.remoteQuery({
+      operationName: "clearCache",
+    });
+
+    return this.loadApiData();
+  }
 
   // loadMapData(){
     
@@ -2109,13 +2124,17 @@ export class AppMain extends Component{
     return this._request(connector_url, connector_path, params, options);
   }
 
-  _request(connector_url, connector_path, params, options){
+  _request = (connector_url, connector_path, params, options) => {
 
     let defaultOptions = {
       showErrorMessage: true,
       callback: null,
       method: 'POST',
     };
+
+    const {
+      documentActions,
+    } = this.props;
 
     options = options || {};
 
@@ -2184,7 +2203,7 @@ export class AppMain extends Component{
 
         var error = data.message || "Ошибка выполнения запроса";
 
-        showErrorMessage && this.props.documentActions.addInformerMessage({
+        showErrorMessage && documentActions.addInformerMessage({
           text: error,
           autohide: 4000,
         });
@@ -2199,6 +2218,12 @@ export class AppMain extends Component{
     })
     .catch((error) => {
         console.error('Request failed', error);
+        
+        showErrorMessage && documentActions.addInformerMessage({
+          text: "Ошибка выполнения запроса",
+          autohide: 4000,
+        });
+
         if(callback){
           callback(data, {});
         }

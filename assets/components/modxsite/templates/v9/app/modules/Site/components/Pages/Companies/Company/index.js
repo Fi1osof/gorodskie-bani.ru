@@ -23,6 +23,8 @@ import Comments from 'modules/Site/components/Comments';
 
 import ImagesUploader from 'modules/Site/components/fields/ImageUploader';
 
+import GalleryEditor from 'modules/Site/components/Gallery';
+
 import CompanyTopics from './Topics';
 
 import Slider from 'react-slick';
@@ -680,54 +682,65 @@ export default class CompanyPage extends Component{
 		// 	sdfdsf
 		// </div>);
 
-		Gallery = galleryItems && galleryItems.length && <CardContent
-			style={{
-				paddingBottom: 40,
-			}}
-		>
-						 
-				{/*<Grid
-					container
-  				gutter={0}
+		Gallery = inEditMode 
+			?
+			<GalleryEditor
+        // store={_GalleryStore}
+        classes={{}}
+        item={item}
+        // onSelectContactImage={onSelectContactImage}
+        onSelectContactImage={() => {}}
+      />
+      :
+      galleryItems && galleryItems.length && 
+      <CardContent
+				style={{
+						paddingBottom: 40,
+					}}
 				>
+							 
+					{/*<Grid
+						container
+	  				gutter={0}
+					>
 
-					{galleryItems}
+						{galleryItems}
 
-				</Grid>*/}
-		
-				<div
-					className={typeof window === "undefined" ? "no-js" : ""}
-				>
-					<Slider {...{
-			      dots: true,
-			      // adaptiveHeight: true,
-			      dotsClass: "slick-dots slick-paging",
-			      infinite: true,
-			      // centerMode: true,
-			      speed: 500,
-			      slidesToShow: 1,
-			      slidesToScroll: 1,
-			      // lazyLoad: true,
-			      responsive: [ 
-			      	{ breakpoint: 768, settings: { slidesToShow: 1 } }, 
-			      	{ breakpoint: 1024, settings: { slidesToShow: 2 } }, 
-			      	{ breakpoint: 1200, settings: { slidesToShow: 3 } }, 
-			      	{ breakpoint: 100000, settings: { slidesToShow: 5 } } ,
-			      ],
-			      customPaging: function(i) {
-			        // return <a><img src={`${baseUrl}/abstract0${i+1}.jpg`}/></a>
+					</Grid>*/}
+			
+					<div
+						className={typeof window === "undefined" ? "no-js" : ""}
+					>
+						<Slider {...{
+				      dots: true,
+				      // adaptiveHeight: true,
+				      dotsClass: "slick-dots slick-paging",
+				      infinite: true,
+				      // centerMode: true,
+				      speed: 500,
+				      slidesToShow: 1,
+				      slidesToScroll: 1,
+				      // lazyLoad: true,
+				      responsive: [ 
+				      	{ breakpoint: 768, settings: { slidesToShow: 1 } }, 
+				      	{ breakpoint: 1024, settings: { slidesToShow: 2 } }, 
+				      	{ breakpoint: 1200, settings: { slidesToShow: 3 } }, 
+				      	{ breakpoint: 100000, settings: { slidesToShow: 5 } } ,
+				      ],
+				      customPaging: function(i) {
+				        // return <a><img src={`${baseUrl}/abstract0${i+1}.jpg`}/></a>
 
-			        // console.log('galleryThumbs');
+				        // console.log('galleryThumbs');
 
-			        const thumb = galleryThumbs[i];
-			        return <a><img src={thumb}/></a>
-			      },
-			    }}>
-		        {galleryItems}
-		      </Slider> 
-				</div>
+				        const thumb = galleryThumbs[i];
+				        return <a><img src={thumb}/></a>
+				      },
+				    }}>
+			        {galleryItems}
+			      </Slider> 
+					</div>
 
-		</CardContent>
+			</CardContent>
 		|| "";
 
 
@@ -926,7 +939,7 @@ export default class CompanyPage extends Component{
 
 				
 			<CardContent>
-				
+
 				<Paper
 					style={{
 						padding: 15,

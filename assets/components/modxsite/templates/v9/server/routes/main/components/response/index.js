@@ -73,14 +73,17 @@ let schema;
 
 export default class Response{
 
-  constructor (req, res, params, knexdb, config, ws_clients, SendWebSocketMessage, SendMODXRequest) {
+  // constructor (req, res, params, knexdb, config, ws_clients, SendWebSocketMessage, SendMODXRequest) {
+  constructor (scope, res, params, knexdb, config, ws_clients, SendWebSocketMessage, SendMODXRequest) {
  
+    this.scope = scope;
 
     this.db = knex = knexdb;
 
-    this.req = req;
-    this.res = res;
-    this.params = params;
+    // this.req = req;
+    // this.res = res;
+    // this.params = params;
+    
     this.config = config;
     
     // this.prepareSchema();

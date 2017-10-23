@@ -733,7 +733,7 @@ export const CompanyType = new GraphQLObjectType({
             groupBy: "company",
           });
 
-          console.log("server Company args", args);
+          // console.log("Company args", args);
 
           return rootResolver(null, args, context, info);
 
@@ -1098,6 +1098,7 @@ export default class Company extends ModelObject{
 }
 
 
+// Добавляем новую компанию
 export const add = (source, args, context, info) => {
 
   console.log("Company add");
@@ -1135,6 +1136,60 @@ export const add = (source, args, context, info) => {
   company.update(data);
 
   browserHistory.push(uri);
+
+  return company;
+
+};
+
+
+// Добавляем картинку в галерею
+export const addGalleryImage = async (source, args, context, info) => {
+
+  console.log("Company addGalleryImage args", args);
+
+  let {
+    id,
+    image,
+  } = args;
+
+  let {
+    CompaniesStore,
+  } = context.state;
+
+
+  let data = {
+    image,
+  };
+
+  console.log("Company addGalleryImage CompaniesStore.getState()", CompaniesStore.getState());
+
+  // CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions.CREATE, company);
+
+  const company = CompaniesStore.getState().find(n => n.id === id);
+  // const company = CompaniesStore.getState().find(n => n.id === 1275);
+
+  console.log("Company addGalleryImage company", company);
+
+  if(!company){
+    
+    throw(new Error("Не была получена компания"));
+
+    return null;
+  }
+
+  let {
+    gallery,
+  } = company;
+
+  gallery = gallery || [];
+
+  gallery.push(data);
+
+  company.gallery = gallery;
+
+  company.update({gallery});
+
+  // browserHistory.push(uri);
 
   return company;
 

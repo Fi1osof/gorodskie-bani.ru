@@ -194,6 +194,32 @@ const rootResolver = async (source, args, context, info) => {
 
       switch(operation.name.value){
 
+        case "clearCache":
+
+          // console.log("clearCache");
+
+          const {
+            scope,
+          } = context;
+
+          return scope && scope.clearCache() || null;
+
+          // if(result && (result instanceof PlaceContact)){
+
+          //   const {
+          //     lat,
+          //     lng,
+          //   } = args;
+
+          //   result.update({
+          //     lat,
+          //     lng,
+          //   });
+
+          // }
+
+          break;
+
         case "PlaceContactUpdateCoords":
 
 

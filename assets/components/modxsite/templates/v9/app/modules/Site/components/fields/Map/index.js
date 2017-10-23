@@ -197,6 +197,21 @@ export default class ItemMap extends Component{
 			  onChildMouseUp={::this.onChildMouseUp}
 			  onChildMouseMove={::this.onChildMouseMove}
 			  onGoogleApiLoaded={::this.onGoogleApiLoaded}
+				options={{
+			    fullscreenControl: true,
+			    overviewMapControl: false,
+			    streetViewControl: true,
+			    rotateControl: true,
+			    mapTypeControl: true,
+			    // disable poi
+			    styles: [
+			      {
+			        featureType: 'poi',
+			        elementType: 'labels',
+			        stylers: [{ visibility: 'off' }],
+			      },
+			    ],
+			  }}
 	    >
 				
 

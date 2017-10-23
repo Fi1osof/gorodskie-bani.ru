@@ -1668,6 +1668,7 @@ export default class MapMainView extends Component{
 					}}
 					options={{
 						streetViewControl: true,
+						mapTypeControl: true,
 					}}
 		    >
 		    	{items}

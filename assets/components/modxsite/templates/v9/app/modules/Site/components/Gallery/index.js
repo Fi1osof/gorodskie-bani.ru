@@ -212,6 +212,8 @@ class Gallery extends Component{
 			classes,
       // store,
 			item,
+      onSelectContactImage,
+      ...other
 		} = this.props;
 
     if(!item){
@@ -383,7 +385,9 @@ class Gallery extends Component{
     //   </div>);
     // });
 
-		return <div> 
+		return <div
+      {...other}
+    > 
 
       <Uploader 
       	expanded={expanded}

@@ -690,6 +690,9 @@ export default class CompanyPage extends Component{
         item={item}
         // onSelectContactImage={onSelectContactImage}
         onSelectContactImage={() => {}}
+        style={{
+        	marginBottom: galleryItems && galleryItems.length ? 0 : 250,
+        }}
       />
       :
       galleryItems && galleryItems.length && 

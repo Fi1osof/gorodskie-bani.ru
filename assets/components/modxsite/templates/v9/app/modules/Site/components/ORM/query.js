@@ -1,7 +1,6 @@
 
 const defaultQuery = `
 
-
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -942,6 +941,7 @@ fragment Company on Company{
   pubdate
   createdon
   createdby
+  mapIcon
   image
   ...imageFormats @include(if:$getImageFormats)
   gallery @include(if:$getCompanyGallery)

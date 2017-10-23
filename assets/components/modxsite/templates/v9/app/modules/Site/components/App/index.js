@@ -264,7 +264,7 @@ export class AppMain extends Component{
       // db,
       coords: {},
       // inited: typeof window === "undefined",
-      inited: true,
+      inited: false,
       // appExports: {},
     }
 
@@ -1577,6 +1577,11 @@ export class AppMain extends Component{
 
         this.initData(apiData);
 
+        // Если работа уже в браузере, надо переподгрузить данные карты,
+        // потому что с рейтингами фигня какая-то на стороне сервере 
+        // Скорее всего просто сравнение неверное по ключу
+        // this.loadMapData();
+
       });
 
       // console.log("ApiData response", response);
@@ -1644,6 +1649,8 @@ export class AppMain extends Component{
       // companies.map(n => {
       //   this.prepareCompaniesLocalData(n);
       // });
+
+      // console.log("MapCompanies CompaniesStore 2", CompaniesStore.getState());
     }
 
 
@@ -1656,6 +1663,87 @@ export class AppMain extends Component{
     });
 
   }
+
+
+  // loadMapData(){
+    
+
+  //  // 
+
+  //   // this.setState({
+  //   //   // clusters: this.state.mapOptions.bounds
+  //   //   clusters: this.state.bounds
+  //   //     ? this.getClusters(props)
+  //   //     : null,
+  //   // });
+
+  //   // const {
+  //   //   // CompaniesStore,
+  //   //   localQuery,
+  //   // } = this.context;
+
+  //   const {
+  //     CompaniesStore,
+  //   } = this.state;
+
+  //   // let {
+  //   //  // mapOptions: {
+  //   //  //  zoom,
+  //   //  // },
+  //   //  zoom,
+  //   // } = this.state;
+
+  //   // let {
+  //   // } = this.context;
+
+  //   let companies;
+
+  //   this.localQuery({
+  //     operationName: "MapCompanies",
+  //     variables: {
+  //       limit: 0,
+  //       "companyIds": [1275, 1542, 1259],
+  //     },
+  //   })
+  //   .then(r => {
+
+  //     console.log("Map companies", r);
+
+  //     const {
+  //       companies,
+  //     } = r.data || {};
+
+  //     // companies = result;
+
+  //     if(companies){
+  //       this.props.document.mapData.companies = companies;
+  //       this.forceUpdate();
+  //     }
+
+  //     // const StoreState = CompaniesStore.getState();
+
+  //     // companies && StoreState.map(item => {
+
+  //     //   const company = companies.find(n => n.id === item.id);
+
+  //     //   if(company){
+  //     //     Object.assign(item, company);
+  //     //   }
+
+  //     // });
+
+  //     // this.prepareClusters(companies);
+
+  //     this.forceUpdate();
+
+  //   })
+  //   .catch(e => {
+  //     console.error('MapCompanies', e);
+  //   });
+  
+  //   return;
+
+  // }
 
 
   __loadCompanies(){
@@ -2132,20 +2220,28 @@ export class AppMain extends Component{
     return this.request(context, allowMultiRequest, connector_path, params, options);
   }
 
+
   render() {
 
     let {
       children, 
-      user, 
+      user,
+      // document,
       // appExports,
       ...other
     } = this.props;
 
+    // if(!document.mapData){
+    //   return null;
+    // }
+
     let {
-      inited,
+      // inited,
       notifications_store,
     } = this.state;
  
+    const inited = true;
+
     let authOpen = user && user.loginModalOpened || false;
 
     return <MuiThemeProvider theme={customStyles}>

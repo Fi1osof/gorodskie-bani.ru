@@ -122,22 +122,23 @@ export default class Router {
   }
 
 
-  loadData = () => {
+  loadData = async () => {
 
     // console.log("LoadData");
 
-    this.loadApiData();
+    await this.loadApiData();
 
     this.loadMapData();
 
     this.loadCitiesData();
 
+    return;
   }
   
 
   loadApiData(){
 
-    this.response.localQuery({
+    return this.response.localQuery({
       operationName: "apiData",
       variables: {
         resourceExcludeTemplates: 0,
@@ -162,6 +163,8 @@ export default class Router {
 
   loadMapData(){
 
+    // Подгружаем данные без рейтингов, так как они все равно не точные
+    // (да и нагрузка на сервер лишняя)
     this.response.localQuery({
       operationName: "MapCompanies",
       variables: {
@@ -169,6 +172,7 @@ export default class Router {
         getCompanyGallery: false,
         // getImageFormats: true,
         getTVs: false,
+        // getRatingsAvg: false,
       },
       req: {},
     })
@@ -1337,7 +1341,7 @@ export default class Router {
 
     jState = jState.replace(/<script.*?>.*?<\/script>/g, '');
 
-    const {
+    let {
       name,
       longtitle,
       description,
@@ -1349,6 +1353,8 @@ export default class Router {
     title = title && `${title} | ` || "";
 
     title += 'Городские и общественные бани';
+
+    description = description && description.replace('"', '\"') || '';
 
     return `
       <!DOCTYPE html>

@@ -6,6 +6,7 @@ export const getList = async (Company, args, context, info) => {
   let {
     type,
     company,
+    resource_id,
     limit,
     start,
     page,
@@ -13,6 +14,7 @@ export const getList = async (Company, args, context, info) => {
     groupBy,
   } = args || {};
 
+  company = company !== undefined ? company : resource_id;
 
 
   // console.log('getList rating', args, info);
@@ -146,12 +148,13 @@ export const getList = async (Company, args, context, info) => {
     // 
 
   let result;
+	 	
+  // console.log("q toSQL", q.toString());
 
   await q
   .then((r) => {
 
-	 	
-	 	// console.log("q toSQL", q.toString());
+    
 
  		// console.log("Result", r);
 

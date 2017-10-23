@@ -1,7 +1,6 @@
 
 const defaultQuery = `
 
-
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -299,6 +298,7 @@ query Comments(
 # Список компаний для карты
 query MapCompanies (
   $limit:Int!
+  $companyIds:[Int]
   $getCompanyFullData:Boolean = false
   $getImageFormats:Boolean = true
   $getCompanyComments:Boolean = false
@@ -318,6 +318,7 @@ query MapCompanies (
 ){
   companiesList(
     limit:$limit
+    ids:$companyIds
   )
   @include(if:$withPagination)
   {
@@ -329,6 +330,7 @@ query MapCompanies (
   }
   companies(
     limit:$limit
+    ids:$companyIds
   )
   @skip(if:$withPagination)
   {

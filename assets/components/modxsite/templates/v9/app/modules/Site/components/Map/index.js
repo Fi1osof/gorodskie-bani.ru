@@ -152,6 +152,7 @@ export default class MapMainView extends Component{
 		  // sidebarOpen: true,
 			cluster: null,
 			inited: true,
+			mounted: false,
 		}
 	}
 
@@ -159,7 +160,18 @@ export default class MapMainView extends Component{
 
 		this.initCoords();
 
- 		this.createClusters();
+		this.createClusters();
+
+
+		/*
+			Если отрисовка на клиенте, то запрашиваем обновленные данные
+		*/
+		// if(typeof window !== "undefined"){
+
+		// 	this.loadMapData();
+
+		// }
+
 
  		return super.componentWillMount && super.componentWillMount();
 	}
@@ -248,6 +260,10 @@ export default class MapMainView extends Component{
 
 
  		this.setPageTitle();
+
+ 		this.setState({
+ 			mounted: true,
+ 		});
 	}
 
 	// shouldComponentUpdate(a, b, c, d){
@@ -360,6 +376,90 @@ export default class MapMainView extends Component{
 
 		return super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext) || true;
 	}
+
+
+  // loadMapData(){
+    
+
+  //  // 
+
+  //   // this.setState({
+  //   //   // clusters: this.state.mapOptions.bounds
+  //   //   clusters: this.state.bounds
+  //   //     ? this.getClusters(props)
+  //   //     : null,
+  //   // });
+
+  //   const {
+  //     CompaniesStore,
+  //     document,
+  //     localQuery,
+  //   } = this.context;
+
+  //   // const {
+  //   //   CompaniesStore,
+  //   // } = this.state;
+
+  //   // let {
+  //   //  // mapOptions: {
+  //   //  //  zoom,
+  //   //  // },
+  //   //  zoom,
+  //   // } = this.state;
+
+  //   // let {
+  //   // } = this.context;
+
+  //   // let companies;
+
+  //   localQuery({
+  //     operationName: "MapCompanies",
+  //     variables: {
+  //       limit: 0,
+  //       "companyIds": [1275, 1542, 1259],
+  //     },
+  //   })
+  //   .then(r => {
+
+  //     console.log("MapCompanies", r);
+
+  //     console.log("MapCompanies CompaniesStore", CompaniesStore.getState());
+
+  //     const {
+  //       companies,
+  //     } = r.data || {};
+
+  //     // companies = result;
+
+  //     if(companies){
+  //       // document.mapData.companies = companies;
+  //       // this.createClusters();
+  //     }
+
+  //     // const StoreState = CompaniesStore.getState();
+
+  //     // companies && StoreState.map(item => {
+
+  //     //   const company = companies.find(n => n.id === item.id);
+
+  //     //   if(company){
+  //     //     Object.assign(item, company);
+  //     //   }
+
+  //     // });
+
+  //     // this.prepareClusters(companies);
+
+  //     // this.forceUpdate();
+
+  //   })
+  //   .catch(e => {
+  //     console.error('MapCompanies', e);
+  //   });
+  
+  //   return;
+
+  // }
 
 
 	async setPageTitle(title){
@@ -983,8 +1083,6 @@ export default class MapMainView extends Component{
 
 	createClusters = props => {
 
-	
-
 	  const {
 			// CompaniesStore,
 			document,
@@ -1000,6 +1098,10 @@ export default class MapMainView extends Component{
 
 
 	prepareClusters(companies){
+
+		const {
+			mounted,
+		} = this.state;
 
 
   	let markersData = [];
@@ -1100,6 +1202,12 @@ export default class MapMainView extends Component{
 	  // this.setState({
 	  // 	clusters,
 	  // });
+
+	  if(mounted){
+	  	this.forceUpdate();
+	  }
+
+	  return;
 	}
 
 

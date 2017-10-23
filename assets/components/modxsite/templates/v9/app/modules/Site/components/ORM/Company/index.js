@@ -733,6 +733,7 @@ export const CompanyType = new GraphQLObjectType({
             groupBy: "company",
           });
 
+          console.log("server Company args", args);
 
           return rootResolver(null, args, context, info);
 

@@ -140,7 +140,10 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         }
 
         // По компаниям
-        if($companies = $this->getProperty("companies")){
+        if(
+            $companies = $this->getProperty("companies")
+            OR $companies = (array)$this->getProperty("ids")
+        ){
             if(!is_array($companies)){
                 $companies = explode(",", $companies);
             }

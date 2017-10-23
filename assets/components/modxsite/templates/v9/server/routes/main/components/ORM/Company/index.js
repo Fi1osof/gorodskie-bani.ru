@@ -289,6 +289,7 @@ export const getList = (object, args, context, info) => {
 
     let {
       id,
+      ids,
       limit,
       page,
       offset: start,
@@ -304,6 +305,7 @@ export const getList = (object, args, context, info) => {
     let params = {
       // with_coors_only: false,       // Только с координатами
       company_id: id,
+      ids,
       limit,
       page,
       start,

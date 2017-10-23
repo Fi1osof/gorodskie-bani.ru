@@ -198,7 +198,7 @@ export default class ItemMap extends Component{
 			  onChildMouseMove={::this.onChildMouseMove}
 			  onGoogleApiLoaded={::this.onGoogleApiLoaded}
 				options={{
-			    fullscreenControl: true,
+			    fullscreenControl: false,
 			    overviewMapControl: false,
 			    streetViewControl: true,
 			    rotateControl: true,

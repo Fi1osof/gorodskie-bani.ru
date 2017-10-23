@@ -1666,6 +1666,9 @@ export default class MapMainView extends Component{
 						overflow: "hidden",
 						background: typeof window === "undefined" ? `url(${staticMapUrl}) no-repeat center` : undefined,
 					}}
+					options={{
+						streetViewControl: true,
+					}}
 		    >
 		    	{items}
 
@@ -1698,6 +1701,7 @@ export default class MapMainView extends Component{
 			    			style={{
 			    				minWidth: 300
 			    			}}
+			    			placeholder="Поиск"
 			    			// error={error || false}
 			    	// 		textFieldProps={{
 			    	// 			helperText: helperText || undefined,

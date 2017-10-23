@@ -288,6 +288,38 @@ export default class ItemMap extends Component{
     		:
     		null
     	}
+
+
+			{map && maps
+    		?
+    		<Control
+    			map={map}
+    			maps={maps}
+    			position="BOTTOM_LEFT"
+    			style={{
+    				padding: 4,
+    			}}
+    		> 
+
+    			<a 
+    				href="https://maps.yandex.ru" 
+    				rel="nofollow"
+    				style={{
+    					color: "#fff",
+	    				textShadow: "0px 0px 5px #888",
+	    				fontSize: 16,
+    				}}
+    				target="_blank"
+    			>
+    				Yandex.Maps
+    			</a>
+
+    		</Control>
+    		
+    		:
+    		null
+    	}
+
 		</div>;
 	}
 }

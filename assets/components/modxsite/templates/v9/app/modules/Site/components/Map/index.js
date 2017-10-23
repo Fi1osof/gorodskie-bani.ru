@@ -31,6 +31,8 @@ import Marker from './MainView/Marker';
 
 import Control from 'google-map-react-control';
 
+import YandexSearch from 'modules/Site/components/YandexMap/Search';
+
 import HumanIcon from 'material-ui-icons/PermIdentity';
 import FaceIcon from 'material-ui-icons/Face';
 
@@ -1670,6 +1672,85 @@ export default class MapMainView extends Component{
 		    	{users}
 
 		    </GoogleMapReact>
+
+			{map && maps
+    		?
+    		<Control
+    			map={map}
+    			maps={maps}
+    			position="TOP_CENTER"
+    		>
+
+    			<Grid
+    				container
+    				gutter={0}
+    				align="center"
+    			>
+
+    				<Grid
+    					item
+    					xs
+    				>
+
+		    			<YandexSearch 
+			    			map={map}
+			    			maps={maps}
+			    			style={{
+			    				minWidth: 300
+			    			}}
+			    			// error={error || false}
+			    	// 		textFieldProps={{
+			    	// 			helperText: helperText || undefined,
+			    	// 			onFocus,
+			    	// 		}}
+			    	// 		onNewRequest={(event, value, mapItem) => {
+							 //  	let {
+							 //  		coordinates: {
+							 //  			0: lat,
+							 //  			1: lng,
+							 //  		},
+							 //  	} = mapItem;
+
+							 //  	const data = {
+							 //  		lat,
+							 //  		lng,
+							 //  		coords: {
+								//   		lat,
+								//   		lng,
+								//   	},
+							 //  	};
+
+							 //  	updateItem(item, data);
+
+								// }}
+		    			/>
+    					
+    				</Grid>
+    				
+	    			{/*helper 
+	    				?
+	    					<Grid
+		    					item
+		    				>
+			    				<Helper
+										contrastIcons={false}
+			            >
+			              {helper}
+			            </Helper>
+		            </Grid>
+	    				:
+	    				null
+	    			*/}
+
+    			</Grid>
+
+
+
+    		</Control>
+    		
+    		:
+    		null
+    	}
  
 
 				{map && maps
@@ -1730,6 +1811,37 @@ export default class MapMainView extends Component{
 	    		null
 	    	}
 
+				{map && maps
+	    		?
+	    		<Control
+	    			map={map}
+	    			maps={maps}
+	    			position="BOTTOM_LEFT"
+	    			style={{
+	    				padding: 4,
+	    			}}
+	    		> 
+
+	    			<a 
+	    				href="https://maps.yandex.ru" 
+	    				rel="nofollow"
+    					target="_blank"
+	    				style={{
+	    					color: "#fff",
+		    				textShadow: "0px 0px 5px #888",
+		    				fontSize: 16,
+	    				}}
+	    			>
+	    				Yandex.Maps
+	    			</a>
+
+	    		</Control>
+	    		
+	    		:
+	    		null
+	    	}
+
+
 
 				{map && maps
 	    		?
@@ -1746,7 +1858,6 @@ export default class MapMainView extends Component{
 	    		:
 	    		null
 	    	}
-
 
 				{map && maps
 	    		?

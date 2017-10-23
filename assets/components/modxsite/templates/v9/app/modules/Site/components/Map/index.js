@@ -1667,9 +1667,19 @@ export default class MapMainView extends Component{
 						background: typeof window === "undefined" ? `url(${staticMapUrl}) no-repeat center` : undefined,
 					}}
 					options={{
-						streetViewControl: true,
-						mapTypeControl: true,
-					}}
+				    overviewMapControl: false,
+				    streetViewControl: true,
+				    rotateControl: true,
+				    mapTypeControl: true,
+				    // disable poi
+				    styles: [
+				      {
+				        featureType: 'poi',
+				        elementType: 'labels',
+				        stylers: [{ visibility: 'off' }],
+				      },
+				    ],
+				  }}
 		    >
 		    	{items}
 

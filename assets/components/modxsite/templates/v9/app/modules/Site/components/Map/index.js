@@ -1784,7 +1784,7 @@ export default class MapMainView extends Component{
 				      {
 				        featureType: 'poi',
 				        elementType: 'labels',
-				        stylers: [{ visibility: 'off' }],
+				        stylers: [{ visibility: zoom > 17 ? 'on' : 'off' }],
 				      },
 				    ],
 				  }}

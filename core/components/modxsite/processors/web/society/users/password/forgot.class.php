@@ -48,6 +48,7 @@ class modWebSocietyUsersPasswordForgotProcessor extends modObjectUpdateProcessor
         }
 
         $this->setProperties(array(
+            "active"    => 1,
             "password" => $password,
         ));
 

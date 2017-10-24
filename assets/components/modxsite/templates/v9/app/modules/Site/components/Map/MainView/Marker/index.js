@@ -91,7 +91,7 @@ export default class Marker extends Component{
 				width = hovered ? 40 : 36;
 			}
 			else{
-				width = hovered ? 26 : 22;
+				width = hovered ? 34 : 28;
 			}
 
 			let iconSrc;

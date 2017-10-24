@@ -146,6 +146,11 @@ class modWebPublicActionProcessor extends modProcessor{
                     require dirname(dirname(__FILE__)) . '/society/users/password/forgot.class.php';
                     self::$actualClassName = 'modWebSocietyUsersPasswordForgotProcessor';
                     break;
+                
+                case 'crm/users/create':
+                    require dirname(dirname(__FILE__)) . '/crm/users/create.class.php';
+                    self::$actualClassName = 'modWebCrmUsersCreateProcessor';
+                    break; 
 
                 case 'crm/users/update':
 

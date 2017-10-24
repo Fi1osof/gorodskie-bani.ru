@@ -2052,7 +2052,7 @@ export class AppMain extends Component{
       return false;
     }
 
-    return user.sudo == "1" || (user.policies && user.policies[perm]) || false;
+    return user.sudo === true || (user.policies && user.policies[perm]) || false;
   }
 
 

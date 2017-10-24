@@ -564,28 +564,36 @@ export default class UsersPage extends Page {
 						}}
 					>
 
-						<Checkbox
-							checked={delegatesOnly}
-							onChange={this.onDelegatedChange}
-						/>	Только представители
-
-						<Button 
-							onClick={event => {
-								this.setState({
-									compredOpen: true,
-								});
-							}}
+						<Grid
+							container
+							align="center"
+							gutter={0}
 						>
-							Отправить компред
-						</Button>
+							
+							<Checkbox
+								checked={delegatesOnly}
+								onChange={this.onDelegatedChange}
+							/>	Только представители
 
-						{compredOpen 
-							?
-							<Compred 
-							/>
-							:
-							null
-						}
+							<Button 
+								onClick={event => {
+									this.setState({
+										compredOpen: true,
+									});
+								}}
+							>
+								Добавить контакт
+							</Button>
+
+							{compredOpen 
+								?
+								<Compred 
+								/>
+								:
+								null
+							}
+
+						</Grid>
 
 					</Paper>
 				:

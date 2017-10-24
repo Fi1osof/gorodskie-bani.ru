@@ -64,7 +64,7 @@ export default class Compred extends Component{
 			inRequest: true,
 		});
 
-		request("registration", false, 'registration', {
+		request("registration", false, 'crm/users/create', {
 			username,
 			fullname,
 			email,

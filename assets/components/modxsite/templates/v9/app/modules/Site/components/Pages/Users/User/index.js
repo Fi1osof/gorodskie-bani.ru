@@ -19,6 +19,8 @@ import Comments from 'modules/Site/components/Comments';
 
 import UserAvatar from 'modules/Site/components/fields/User/avatar';
 
+import CrmUserData from './CrmUserData';
+
 export default class UserPage extends Component {
 
 	static propTypes = {
@@ -27,10 +29,11 @@ export default class UserPage extends Component {
 	};
 
 	static contextTypes = {
+		user: PropTypes.object.isRequired,
 		UsersStore: PropTypes.object.isRequired,
 		CommentsStore: PropTypes.object.isRequired,
 		localQuery: PropTypes.func.isRequired,
-		removeQuery: PropTypes.func.isRequired,
+		remoteQuery: PropTypes.func.isRequired,
 		request: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
     userActions: PropTypes.object.isRequired,
@@ -227,6 +230,10 @@ export default class UserPage extends Component {
 		}
 
 		const {
+			user: currentUser,
+		} = this.context;
+
+		const {
 			id,
 			username,
 			fullname,
@@ -237,6 +244,19 @@ export default class UserPage extends Component {
 		const {
 			middle: image,
 		} = imageFormats || {};
+
+
+		const hasCRMPerm = currentUser.hasPermission("CRM");
+
+		let crmData;
+
+		if(hasCRMPerm){
+
+			crmData = <CrmUserData
+				user={user}
+			/>
+
+		}
 
 		return <div>
 			
@@ -305,6 +325,8 @@ export default class UserPage extends Component {
 				
 				</Grid>
 			</Grid>
+
+			{crmData}
 
 			<Comments 
 				comments={comments}

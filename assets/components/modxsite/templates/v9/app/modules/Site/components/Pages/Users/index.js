@@ -372,7 +372,7 @@ export default class UsersPage extends Page {
 		} = this.props;
 
 		const {
-			user: systemUser,
+			user: currentUser,
 			updateItem,
 		} = this.context;
 
@@ -390,7 +390,7 @@ export default class UsersPage extends Page {
 
 		let rows = [];
 
-		const hasCRMPerm = systemUser.hasPermission("CRM");
+		const hasCRMPerm = currentUser.hasPermission("CRM");
 
 		users && users.map(user => {
 

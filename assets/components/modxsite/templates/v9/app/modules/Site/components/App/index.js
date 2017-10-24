@@ -2170,69 +2170,78 @@ export class AppMain extends Component{
     //   body.append(i, value);
     // };
 
-    fetch(connector_url +'?pub_action=' + connector_path,{
-      credentials: 'same-origin',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: method,
-      // body: body,
-      body: JSON.stringify(data),
-    })
-    .then(function (response) {
+    return new Promise((resolve, reject) => {
 
-      return response.json()
-    })
-    .then( (data) => {
+      const request = fetch(connector_url +'?pub_action=' + connector_path,{
+        credentials: 'same-origin',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: method,
+        // body: body,
+        body: JSON.stringify(data),
+      })
+      .then(function (response) {
 
-      let errors = {};
+        return response.json()
+      })
+      .then( (data) => {
 
-      if(data.success){
-      }
-      else{
+        let errors = {};
 
-        if(data.data && data.data.length){
-
-          data.data.map(function(error){
-            if(error.msg != ''){
-              errors[error.id] = error.msg;
-            }
-          }, this);
+        if(data.success){
         }
+        else{
 
-        var error = data.message || "Ошибка выполнения запроса";
+          if(data.data && data.data.length){
 
-        showErrorMessage && documentActions.addInformerMessage({
-          text: error,
-          autohide: 4000,
-        });
-      }
+            data.data.map(function(error){
+              if(error.msg != ''){
+                errors[error.id] = error.msg;
+              }
+            }, this);
+          }
 
-      if(callback){
-        callback(data, errors);
-      }
-      
-      this.forceUpdate();
+          var error = data.message || "Ошибка выполнения запроса";
 
-    })
-    .catch((error) => {
-        console.error('Request failed', error);
-        
-        showErrorMessage && documentActions.addInformerMessage({
-          text: "Ошибка выполнения запроса",
-          autohide: 4000,
-        });
+          showErrorMessage && documentActions.addInformerMessage({
+            text: error,
+            autohide: 4000,
+          });
+
+          return reject(data);
+        }
 
         if(callback){
-          callback(data, {});
+          callback(data, errors);
         }
-      }
-    );
+        
+        this.forceUpdate();
+
+        return resolve(data);
+
+      })
+      .catch((error) => {
+          console.error('Request failed', error);
+          
+          showErrorMessage && documentActions.addInformerMessage({
+            text: "Ошибка выполнения запроса",
+            autohide: 4000,
+          });
+
+          if(callback){
+            callback(data, {});
+          }
+
+          reject(error);
+        }
+      );
 
 
-    this.forceUpdate();
-    return;
+      this.forceUpdate();
+
+    });
   }
   
 

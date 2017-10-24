@@ -146,7 +146,17 @@ class modWebPublicActionProcessor extends modProcessor{
                     require dirname(dirname(__FILE__)) . '/society/users/password/forgot.class.php';
                     self::$actualClassName = 'modWebSocietyUsersPasswordForgotProcessor';
                     break;
-                
+
+                case 'images/upload':
+
+                    require dirname(dirname(__FILE__)) . '/images/upload.class.php';
+                    self::$actualClassName = 'modWebImagesUploadProcessor';
+                    break;
+
+
+                /*
+                    CRM
+                */
                 case 'crm/users/create':
                     require dirname(dirname(__FILE__)) . '/crm/users/create.class.php';
                     self::$actualClassName = 'modWebCrmUsersCreateProcessor';
@@ -158,11 +168,14 @@ class modWebPublicActionProcessor extends modProcessor{
                     self::$actualClassName = 'modWebUsersUpdateProcessor';
                     break;
 
-                case 'images/upload':
+                case 'crm/users/sendOffer':
 
-                    require dirname(dirname(__FILE__)) . '/images/upload.class.php';
-                    self::$actualClassName = 'modWebImagesUploadProcessor';
+                    require dirname(dirname(__FILE__)) . '/crm/users/sendoffer.class.php';
+                    self::$actualClassName = 'modWebCrmUsersSendofferProcessor';
                     break;
+                /*
+                    EOF CRM
+                */
 
                 
                 default:;

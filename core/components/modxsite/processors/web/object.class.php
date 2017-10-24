@@ -78,7 +78,7 @@ abstract class modWebObjectProcessor extends modSiteWebObjectProcessor{
         // else
         $data = array_merge(array(
             "published"     => true,
-            "searchable"    => false,
+            "searchable"    => true,
             "show_in_tree"  => false,
             "isfolder"      => 1,
             "hidemenu"      => 0,

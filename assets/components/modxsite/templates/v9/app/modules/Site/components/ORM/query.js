@@ -1,6 +1,7 @@
 
 const defaultQuery = `
 
+
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -496,6 +497,7 @@ query Users(
   $getCommentAuthor:Boolean = false
   $usersPage:Int = 1
   $usersDelegatesOnly:Boolean = false
+  $usersMyOnly:Boolean = false
 ) {
   
   usersList(
@@ -503,6 +505,7 @@ query Users(
     ids:$userIds
     page:$usersPage
     delegatesOnly:$usersDelegatesOnly
+    myOnly:$usersMyOnly
   ) @include(if:$withPagination)
   {
     count
@@ -516,6 +519,7 @@ query Users(
     ids:$userIds
     page:$usersPage
     delegatesOnly:$usersDelegatesOnly
+    myOnly:$usersMyOnly
   ) @skip(if:$withPagination)
   {
     ...User
@@ -1294,6 +1298,7 @@ mutation addCompanyGalleryImage(
     ...Company
   }
 }
+
 
 
 

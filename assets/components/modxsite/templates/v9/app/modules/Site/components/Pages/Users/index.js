@@ -22,6 +22,7 @@ import TextField from 'material-ui/TextField';
 import SuccessIcon from 'material-ui-icons/Check';
 import FailureIcon from 'material-ui-icons/Clear';
 import SaveIcon from 'material-ui-icons/Save';
+import MoreIcon from 'material-ui-icons/MoreHoriz';
 
 import UserAvatar from 'modules/Site/components/fields/User/avatar';
 
@@ -42,6 +43,7 @@ export default class UsersPage extends Page {
 			total: 0,
 			users: [],
 			delegatesOnly: false,
+			myOnly: false,
 			compredOpen: false,
 		});
 	}
@@ -129,6 +131,7 @@ export default class UsersPage extends Page {
 		const {
 			page,
 			delegatesOnly,
+			myOnly,
 		} = this.state;
 
 		let result = localQuery({
@@ -140,6 +143,7 @@ export default class UsersPage extends Page {
 				userGetComments: true,
 				getImageFormats: true,
 				usersDelegatesOnly: delegatesOnly,
+				usersMyOnly: myOnly,
 				// resourcesLimit: 10,
 				// resourceGetAuthor: true,
 				// resourceGetComments: true,
@@ -148,7 +152,7 @@ export default class UsersPage extends Page {
 		})
 		.then(r => {
 
-			// console.log("Resources r", r);
+			console.log("Users r", r);
 
 			const {
 				usersList,
@@ -164,6 +168,9 @@ export default class UsersPage extends Page {
 				users,
 				total,
 			});
+		})
+		.catch(e => {
+			console.error(e);
 		}); 
 
 		// console.log("Resources r", result);
@@ -246,6 +253,18 @@ export default class UsersPage extends Page {
 
 		this.setState({
 			delegatesOnly: checked,
+		}, () => {
+			this.loadData();
+		});
+
+	}
+
+	onMyOnlyChange = (event, checked) => {
+
+		// console.log('onDelegatedChange', event, checked);
+
+		this.setState({
+			myOnly: checked,
 		}, () => {
 			this.loadData();
 		});
@@ -363,6 +382,7 @@ export default class UsersPage extends Page {
 			limit,
 			total,
 			delegatesOnly,
+			myOnly,
 			compredOpen,
 		} = this.state;
 
@@ -391,64 +411,11 @@ export default class UsersPage extends Page {
 
 			// console.log("user", user);
 
-			let crmColumns = [];
+			let columns = [
 
-			if(hasCRMPerm){
-
-				crmColumns.push(<TableCell
-					key="isActive"
+				<TableCell
+					key="user"
 				>
-					{active === true ? <SuccessIcon color="green"/> : active === false ? <FailureIcon color="red"/> : ""}
-				</TableCell>)
-
-				crmColumns.push(<TableCell
-					key="delegate"
-				>
-					{delegate === true ? <SuccessIcon color="green"/> : delegate === false ? <FailureIcon color="red"/> : ""}
-				</TableCell>)
-
-				crmColumns.push(<TableCell
-					key="offerDate"
-				>
-
-					<TextField
-						type="date"
-						name="offer_date"
-						value={offer_date && moment(offer_date * 1000).format("YYYY-MM-DD") || ""}
-						onChange={event => this.onUpdateField(event, user)}
-					/>
-
-				</TableCell>)
-
-				crmColumns.push(<TableCell
-					key="contract"
-				>
-
-					<TextField
-						type="date"
-						name="contract_date"
-						value={contract_date && moment(contract_date * 1000).format("YYYY-MM-DD") || ""}
-						onChange={event => this.onUpdateField(event, user)}
-					/>
-
-				</TableCell>)
-
-				crmColumns.push(<TableCell
-					key="offter"
-				>
-
-					{/*offer && <div dangerouslySetInnerHTML={{__html: offer}}></div> || ""*/}
-					{offer && <Button >Показать текст</Button>|| ""}
-
-				</TableCell>)
-
-			}
-
-			rows.push(<TableRow
-				key={id}
-			>
-				
-				<TableCell>
 
 					<Grid
 						container
@@ -487,21 +454,105 @@ export default class UsersPage extends Page {
 
 					</Grid>
 
-				</TableCell>
+				</TableCell>,
 
-				<TableCell>
+				<TableCell
+					key="username"
+				>
 					{createdon && moment(createdon * 1000).format("YYYY-MM-DD") || ""}
-				</TableCell>
+				</TableCell>,
 
-				<TableCell>
+				<TableCell
+					key="comments"
+				>
 					{comments && comments.length || ""}
-				</TableCell>
+				</TableCell>,
 				
-				<TableCell>
+				<TableCell
+					key="email"
+				>
 					{email || "Нет прав на просмотр"}
-				</TableCell>
+				</TableCell>,
+			];
 
-				{crmColumns}
+			if(hasCRMPerm){
+
+				columns.unshift(<TableCell
+					key="actions"
+				>
+					
+					<Link
+						to={`/profile/${username}`}
+						href={`/profile/${username}`}
+					>
+						<Button
+							fab
+							style={{
+								height: 30,
+								width: 30,
+							}}
+						>
+							<MoreIcon
+							/>
+						</Button>
+					</Link>
+
+				</TableCell>)
+
+				columns.push(<TableCell
+					key="isActive"
+				>
+					{active === true ? <SuccessIcon color="green"/> : active === false ? <FailureIcon color="red"/> : ""}
+				</TableCell>)
+
+				columns.push(<TableCell
+					key="delegate"
+				>
+					{delegate === true ? <SuccessIcon color="green"/> : delegate === false ? <FailureIcon color="red"/> : ""}
+				</TableCell>)
+
+				columns.push(<TableCell
+					key="offerDate"
+				>
+
+					<TextField
+						type="date"
+						name="offer_date"
+						value={offer_date && moment(offer_date * 1000).format("YYYY-MM-DD") || ""}
+						onChange={event => this.onUpdateField(event, user)}
+					/>
+
+				</TableCell>)
+
+				columns.push(<TableCell
+					key="contract"
+				>
+
+					<TextField
+						type="date"
+						name="contract_date"
+						value={contract_date && moment(contract_date * 1000).format("YYYY-MM-DD") || ""}
+						onChange={event => this.onUpdateField(event, user)}
+					/>
+
+				</TableCell>)
+
+				columns.push(<TableCell
+					key="offter"
+				>
+
+					{/*offer && <div dangerouslySetInnerHTML={{__html: offer}}></div> || ""*/}
+					{offer && <Button >Показать текст</Button>|| ""}
+
+				</TableCell>)
+
+			}
+
+			rows.push(<TableRow
+				key={id}
+			>
+
+				{columns}
 
 			</TableRow>);
 
@@ -513,36 +564,66 @@ export default class UsersPage extends Page {
 
 
 
-		let crmColumns = [];
+		let columns = [
+			<TableCell
+				key="user"
+			>
+				Пользователь
+			</TableCell>,
+			
+			<TableCell
+				key="createdon"
+			>
+				Дата регистрации
+			</TableCell>,
+			
+			<TableCell
+				key="comment"
+			>
+				Комментарии
+			</TableCell>,
+			
+			<TableCell
+				key="email"
+			>
+				Емейл
+			</TableCell>,
+		];
 
 		if(hasCRMPerm){
 
-			crmColumns.push(<TableCell
+			columns.unshift(<TableCell
+				key="actions"
+			>
+				Действия
+			</TableCell>);
+
+			columns.push(<TableCell
 				key="isActive"
 			>
 				Активен
 			</TableCell>);
 
-			crmColumns.push(<TableCell
+			columns.push(<TableCell
 				key="delegate"
 			>
 				Представитель
 			</TableCell>);
 
-			crmColumns.push(<TableCell
+			columns.push(<TableCell
 				key="offer_date"
 			>
 				Дата предложения
 			</TableCell>);
 
 
-			crmColumns.push(<TableCell
+			columns.push(<TableCell
 				key="contract"
 			>
 				Сделка
 			</TableCell>);
 
-			crmColumns.push(<TableCell
+			columns.push(<TableCell
 				key="offer"
 			>
 				Предложение
@@ -574,6 +655,11 @@ export default class UsersPage extends Page {
 								checked={delegatesOnly}
 								onChange={this.onDelegatedChange}
 							/>	Только представители
+							
+							<Checkbox
+								checked={myOnly}
+								onChange={this.onMyOnlyChange}
+							/>	Только мои
 
 							<Button 
 								onClick={event => {
@@ -615,23 +701,7 @@ export default class UsersPage extends Page {
 						
 						<TableRow>
 
-							<TableCell>
-								Пользователь
-							</TableCell>
-							
-							<TableCell>
-								Дата регистрации
-							</TableCell>
-							
-							<TableCell>
-								Комментарии
-							</TableCell>
-							
-							<TableCell>
-								Емейл
-							</TableCell>
-
-							{crmColumns}
+							{columns}
 
 						</TableRow>
 

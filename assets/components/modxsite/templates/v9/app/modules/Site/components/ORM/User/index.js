@@ -105,8 +105,15 @@ export const getList = (source, args, context, info) => {
   } = context.state;
 
   const {
+    user: {
+      user:currentUser,
+    },
+  } = context.props;
+
+  const {
     username,
     delegatesOnly,
+    myOnly,
   } = args;
 
   // console.log('user getList', args, info);
@@ -120,6 +127,16 @@ export const getList = (source, args, context, info) => {
   // } = info;
 
   let state = UsersStore.getState();
+
+  if(myOnly){
+
+    if(!currentUser){
+      return null;
+    }
+
+    state = state.filter(n => n.createdby === currentUser.id);
+
+  }
 
   if(username){
     state = state.filter(n => n.username === username);

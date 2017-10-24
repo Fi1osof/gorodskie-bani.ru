@@ -342,6 +342,10 @@ const RootType = new GraphQLObjectType({
           type: GraphQLBoolean,
           description: "Только представители",
         },
+        myOnly: {
+          type: GraphQLBoolean,
+          description: "Только мои",
+        },
       }, listArgs),
     }),
     users: {

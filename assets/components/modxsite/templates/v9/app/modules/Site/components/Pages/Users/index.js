@@ -400,6 +400,7 @@ export default class UsersPage extends Page {
 				fullname,
 				email,
 				comments,
+				createdby,
 				createdon,
 				delegate,
 				offer_date,
@@ -500,6 +501,13 @@ export default class UsersPage extends Page {
 				</TableCell>)
 
 				columns.push(<TableCell
+					key="manager"
+				>
+					{createdby || ""}
+				</TableCell>)
+
+
+				columns.push(<TableCell
 					key="isActive"
 				>
 					{active === true ? <SuccessIcon color="green"/> : active === false ? <FailureIcon color="red"/> : ""}
@@ -596,6 +604,12 @@ export default class UsersPage extends Page {
 				key="actions"
 			>
 				Действия
+			</TableCell>);
+
+			columns.push(<TableCell
+				key="manager"
+			>
+				Менеджер
 			</TableCell>);
 
 			columns.push(<TableCell

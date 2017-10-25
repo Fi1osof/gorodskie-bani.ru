@@ -2210,7 +2210,6 @@ export class AppMain extends Component{
             autohide: 4000,
           });
 
-          return reject(data);
         }
 
         if(callback){
@@ -2219,8 +2218,14 @@ export class AppMain extends Component{
         
         this.forceUpdate();
 
-        return resolve(data);
+        if(data.success){
+          resolve(data);
+        }
+        else{
+          reject(data);
+        }
 
+        return;
       })
       .catch((error) => {
           console.error('Request failed', error);

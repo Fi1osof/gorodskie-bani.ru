@@ -1328,6 +1328,52 @@ query Search(
   }
 }
 
+query searchStats(
+  $searchStatLimit:Int = 10
+  $withPagination:Boolean = false
+){
+  ...RootSearchStats
+}
+
+fragment RootSearchStats on RootType{
+  searchStatsList(
+    limit:$searchStatLimit
+  ) @include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...SearchStat
+    }
+  }
+  
+  searchStats(
+    limit:$searchStatLimit
+  ) @skip(if:$withPagination)
+  {
+    ...SearchStat
+  }  
+}
+
+fragment SearchStat on SearchStatType{
+  id
+  query
+  finded
+  date
+}
+
+mutation saveSearchStat(
+  $searchQuery:String!
+  $searchFinded:Int!
+){
+  saveSearchStat(
+    query: $searchQuery
+    finded: $searchFinded
+  ){
+    ...SearchStat
+  }
+}
+
 
 `;
 

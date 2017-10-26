@@ -52,7 +52,7 @@ export default class SearchBar extends Component{
 		super(props);
 
 		this.state = {
-			expanded: true,
+			expanded: false,
 		};
 
 	}

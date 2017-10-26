@@ -81,6 +81,14 @@ import {
 } from './Redirect';
 
 
+import {
+  SearchStatType,
+} from 'modules/Site/components/ORM/SearchStat';
+
+import {
+  create as createSearchStat,
+} from './SearchStat';
+
 
 const rootResolver = async (source, args, context, info) => {
 
@@ -235,6 +243,28 @@ const rootResolver = async (source, args, context, info) => {
               lng,
             });
 
+          }
+
+          break;
+
+        // Сохранение поискового запроса
+        case "saveSearchStat":
+
+
+          // if(result && (result instanceof SearchStatType)){
+          if(returnType === SearchStatType){
+
+            // const {
+            //   lat,
+            //   lng,
+            // } = args;
+
+            // result.update({
+            //   lat,
+            //   lng,
+            // });
+
+            return createSearchStat(null, args, context, info);
           }
 
           break;

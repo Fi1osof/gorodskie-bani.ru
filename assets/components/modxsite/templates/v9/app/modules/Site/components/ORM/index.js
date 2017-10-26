@@ -85,6 +85,10 @@ import {
   SearchResultType,
 } from './Search';
 
+import {
+  SearchStatType,
+} from './SearchStat';
+
 
 // console.log('UserType', UserType, CompanyType);
 
@@ -399,6 +403,27 @@ const RootType = new GraphQLObjectType({
 
       // }, listArgs);
     },
+    searchStatsList: new listField({
+      type: SearchStatType,
+      name: "searchStatsList",
+      description: "Список результатов поисковых запросов с постраничностью",
+      args: Object.assign({}, listArgs),
+    }),
+    searchStats: {
+      type: new GraphQLList(SearchStatType),
+      description: "Список результатов поисковых запросов",
+      args: Object.assign({
+      }, listArgs),
+    },
+    searchStat: {
+      type: SearchStatType,
+      description: SearchStatType.description,
+      args: {
+        id: {
+          type: GraphQLInt,
+        },
+      },
+    },
 
     // // ratings: {
     // //   type: new GraphQLList(RatingType),
@@ -447,6 +472,20 @@ const mutationFields = {
       lng: {
         type: new GraphQLNonNull(GraphQLFloat),
         description: "Широта",
+      },
+    },
+  },
+  saveSearchStat: {
+    type: SearchStatType,
+    description: "Сохранение статистики поиска",
+    args: {
+      query: {
+        type: new GraphQLNonNull(GraphQLString),
+        description: "Поисковый запрос",
+      },
+      finded: {
+        type: new GraphQLNonNull(GraphQLInt),
+        description: "Количество найденных объектов",
       },
     },
   },

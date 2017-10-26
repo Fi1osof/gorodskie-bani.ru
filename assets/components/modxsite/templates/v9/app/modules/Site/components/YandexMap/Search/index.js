@@ -19,6 +19,7 @@ import { YMaps} from 'react-yandex-maps';
 
 const yaContext = Object.assign({
 	localQuery: PropTypes.func.isRequired,
+	remoteQuery: PropTypes.func.isRequired,
 }, YaAutoComplete.contextTypes || {});
 
 // class YandexAutoComplete extends YandexAutoCompletePrototype{
@@ -48,6 +49,7 @@ class YandexAutoCompleteInner extends YaAutoComplete{
 
     const {
     	localQuery,
+    	remoteQuery,
     } = this.context;
 
 
@@ -65,135 +67,160 @@ class YandexAutoCompleteInner extends YaAutoComplete{
     
 		let dataSource = [];
 
- 		await ymaps.geocode(searchText)
- 		.then(
- 			res => {
- 				// console.log('res', res);
+		if(searchText && searchText.length > 2){
+
+	 		await ymaps.geocode(searchText)
+	 		.then(
+	 			res => {
+	 				// console.log('res', res);
 
 
- 				res.geoObjects.each(geoObject => {
- 					// console.log('geoObject', geoObject);
+	 				res.geoObjects.each(geoObject => {
+	 					// console.log('geoObject', geoObject);
 
- 					let {
- 						name,
- 						text,
- 						description,
- 						metaDataProperty: {
- 							GeocoderMetaData,
- 						},
- 						geometry,
- 						...other
- 					} = geoObject.properties.getAll();
+	 					let {
+	 						name,
+	 						text,
+	 						description,
+	 						metaDataProperty: {
+	 							GeocoderMetaData,
+	 						},
+	 						geometry,
+	 						...other
+	 					} = geoObject.properties.getAll();
 
- 					let {
- 						geometry: {
- 							_coordinates: coordinates,
- 						},
- 					} = geoObject;
+	 					let {
+	 						geometry: {
+	 							_coordinates: coordinates,
+	 						},
+	 					} = geoObject;
 
- 					// console.log('GeocoderMetaData', GeocoderMetaData);
- 					// console.log('geometry', geometry);
- 					// console.log('coordinates', coordinates);
+	 					// console.log('GeocoderMetaData', GeocoderMetaData);
+	 					// console.log('geometry', geometry);
+	 					// console.log('coordinates', coordinates);
 
- 					dataSource.push({
- 						id: GeocoderMetaData.id,
- 						name: name,
- 						formattedName: text,
- 						coordinates,
- 					});
- 				});
+	 					dataSource.push({
+	 						id: GeocoderMetaData.id,
+	 						name: name,
+	 						formattedName: text,
+	 						coordinates,
+	 					});
+	 				});
 
- 			}
- 		);
+	 			}
+	 		);
 
 
- 		if(includeSiteData){
+	 		if(includeSiteData){
 
-	 		await localQuery({
-	 			operationName: "Search",
-	 			variables: {
-	 				searchQuery: searchText,
-	 				getImageFormats: true,
-	 			},
-	 		})
-	 		.then(r => {
+		 		await localQuery({
+		 			operationName: "Search",
+		 			variables: {
+		 				searchQuery: searchText,
+		 				getImageFormats: true,
+		 			},
+		 		})
+		 		.then(r => {
 
-	 			const {
-	 				search,
-	 			} = r.data;
+		 			const {
+		 				search,
+		 			} = r.data;
 
-	 			search && search.map(n => {
+		 			if(search && search.length){
 
-	 				const {
-	 					id,
-	 					name,
-	 					coords,
-	 					imageFormats,
-	 				} = n;
+			 			search.map(n => {
 
-	 				if(!coords){
-	 					return;
-	 				}
+			 				const {
+			 					id,
+			 					name,
+			 					coords,
+			 					imageFormats,
+			 				} = n;
 
-	 				const {
-	 					thumb: image,
-	 				} = imageFormats || {};
+			 				if(!coords){
+			 					return;
+			 				}
 
-	 				// const image = gallery && gallery[0];
+			 				const {
+			 					thumb: image,
+			 				} = imageFormats || {};
 
-	 				// return;
+			 				// const image = gallery && gallery[0];
 
-	 				dataSource.unshift({
-						id: id,
-						name: name,
-						formattedName: <Grid
-							key={id}
-							container
-							align="center"
-							gutter={0}
-							style={{
-								flexWrap: "nowrap",
-							}}
-						>
+			 				// return;
 
-							{image && <Grid
-								item
-							>
-								<img 
-									src={image}
+			 				dataSource.unshift({
+								id: id,
+								name: name,
+								formattedName: <Grid
+									key={id}
+									container
+									align="center"
+									gutter={0}
 									style={{
-										height: 40,
-										width: 40,
-										borderRadius: "50%",
-										marginRight: 5,
+										flexWrap: "nowrap",
 									}}
-								/>	
-							</Grid>
-							 || ""}
+								>
 
-							<Grid
-								item
-								style={{
-									fontSize: 16,
-								}}
-							>
-								{name}
-							</Grid>
-						</Grid>,
-						coordinates: [coords.lat, coords.lng],
-						zoom: 17,
-					});
+									{image && <Grid
+										item
+									>
+										<img 
+											src={image}
+											style={{
+												height: 40,
+												width: 40,
+												borderRadius: "50%",
+												marginRight: 5,
+											}}
+										/>	
+									</Grid>
+									 || ""}
 
-	 			});
+									<Grid
+										item
+										style={{
+											fontSize: 16,
+										}}
+									>
+										{name}
+									</Grid>
+								</Grid>,
+								coordinates: [coords.lat, coords.lng],
+								zoom: 17,
+							});
 
-	 			// console.log("searchQuery result", r);
+			 			});
 
-	 		})
-	 		.catch(e => {
-	 			console.error(e);
-	 		});
+		 			};
 
- 		}
+		 			// Сохраняем статистику поиска
+		 			remoteQuery({
+		 				operationName: "saveSearchStat",
+		 				variables: {
+		 					searchQuery: searchText,
+		 					searchFinded: search && search.length || 0,
+		 				},
+		 			})
+		 			.then(r => {
+		 				// console.log("saveSearchStat result", r);
+		 			})
+		 			.catch(e => {
+		 				console.error("saveSearchStat error", e);
+		 			});
+
+
+		 			// console.log("searchQuery result", r);
+
+		 		})
+		 		.catch(e => {
+		 			console.error(e);
+		 		});
+
+	 		}
+			
+		}
+
 		
 		this.setState({dataSource});
 

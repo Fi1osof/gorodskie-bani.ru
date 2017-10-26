@@ -1,7 +1,6 @@
 
 const defaultQuery = `
 
-
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -70,6 +69,7 @@ mutation clearCache{
 
 query Companies (
   $limit:Int!
+  $companiesSearchQuery:String
   $getRatingsAvg:Boolean = false
   $getImageFormats:Boolean = false
   $getCompanyComments:Boolean = false
@@ -93,6 +93,7 @@ query Companies (
     limit:$limit
     ids:$companyIds
     uri:$resourceUri
+    search:$companiesSearchQuery
   ) @skip(if:$withPagination)
   {
     ...Company
@@ -101,6 +102,7 @@ query Companies (
     limit:$limit
     ids:$companyIds
     uri:$resourceUri
+    search:$companiesSearchQuery
   ) @include(if:$withPagination)
   {
     count
@@ -1299,8 +1301,32 @@ mutation addCompanyGalleryImage(
   }
 }
 
-
-
+query Search(
+  $searchLimit:Int = 10
+  $searchQuery:String!
+  $getRatingsAvg:Boolean = false
+  $getImageFormats:Boolean = false
+  $getCompanyComments:Boolean = false
+  $getCommentCompany:Boolean = false
+  $getCompanyFullData:Boolean = false
+  $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
+  $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
+){
+  search(
+    limit:$searchLimit
+    search:$searchQuery
+  ){
+    ...Company
+  }
+}
 
 
 `;

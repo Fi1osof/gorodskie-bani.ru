@@ -44,6 +44,11 @@ import {
 	getList as getResourcesList,
 } from './Resource';
 
+import {
+  SearchResultType,
+  getList as getSearchResultsList,
+} from './Search';
+
 
 
 // const rootResolver = async (source, args, context, info) => {
@@ -1181,6 +1186,13 @@ const getResolverByType = function(ofType){
   else if(ofType === ResourceType){
 
     resolver = getResourcesList;
+      
+  }
+
+  // Получаем результаты поиска
+  else if(ofType === SearchResultType){
+
+    resolver = getSearchResultsList;
       
   }
 

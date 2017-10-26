@@ -1232,12 +1232,20 @@ export const getList = (source, args, context, info) => {
 
   const {
     uri,
+    search,
   } = args;
 
   let state = CompaniesStore.getState();
 
   if(uri !== undefined){
     state = state.filter(n => n.uri === uri);
+  }
+
+  if(search){
+
+    const searchRule = new RegExp(search, 'ui');
+
+    state = state.filter(n => searchRule.test(n.name));
   }
 
   return state;

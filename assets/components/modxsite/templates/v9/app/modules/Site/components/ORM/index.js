@@ -81,6 +81,10 @@ import WsConnectionType, {
 import RedirectType, {
 } from './Redirect';
 
+import {
+  SearchResultType,
+} from './Search';
+
 
 // console.log('UserType', UserType, CompanyType);
 
@@ -387,6 +391,15 @@ const RootType = new GraphQLObjectType({
         }
       },
     },
+    search: {
+      type: new GraphQLList(SearchResultType),
+      description: "Поиск",
+      args: listArgs,
+      // args: Object.assign({
+
+      // }, listArgs);
+    },
+
     // // ratings: {
     // //   type: new GraphQLList(RatingType),
     // //   name: "RatingsList",

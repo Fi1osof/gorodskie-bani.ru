@@ -43,6 +43,10 @@ class YandexAutoCompleteInner extends YaAutoComplete{
     // console.log('searchText loadData', this.state.searchText);
 
     const {
+    	includeSiteData,
+    } = this.props;
+
+    const {
     	localQuery,
     } = this.context;
 
@@ -103,84 +107,93 @@ class YandexAutoCompleteInner extends YaAutoComplete{
  		);
 
 
- 		await localQuery({
- 			operationName: "Search",
- 			variables: {
- 				searchQuery: searchText,
- 			},
- 		})
- 		.then(r => {
+ 		if(includeSiteData){
 
- 			const {
- 				search,
- 			} = r.data;
+	 		await localQuery({
+	 			operationName: "Search",
+	 			variables: {
+	 				searchQuery: searchText,
+	 				getImageFormats: true,
+	 			},
+	 		})
+	 		.then(r => {
 
- 			search && search.map(n => {
+	 			const {
+	 				search,
+	 			} = r.data;
 
- 				const {
- 					id,
- 					name,
- 					coords,
- 					extended,
- 				} = n;
+	 			search && search.map(n => {
 
- 				if(!coords){
- 					return;
- 				}
+	 				const {
+	 					id,
+	 					name,
+	 					coords,
+	 					imageFormats,
+	 				} = n;
 
- 				const {
- 					gallery,
- 				} = extended || {};
+	 				if(!coords){
+	 					return;
+	 				}
 
- 				const image = gallery && gallery[0];
+	 				const {
+	 					thumb: image,
+	 				} = imageFormats || {};
 
- 				// return;
+	 				// const image = gallery && gallery[0];
 
- 				dataSource.unshift({
-					id: id,
-					name: name,
-					formattedName: <Grid
-						key={id}
-						container
-						align="center"
-						gutter={0}
-						style={{
-							flexWrap: "nowrap",
-						}}
-					>
+	 				// return;
 
-						{image && <Grid
-							item
+	 				dataSource.unshift({
+						id: id,
+						name: name,
+						formattedName: <Grid
+							key={id}
+							container
+							align="center"
+							gutter={0}
+							style={{
+								flexWrap: "nowrap",
+							}}
 						>
-							<img 
-								src={image}
+
+							{image && <Grid
+								item
+							>
+								<img 
+									src={image}
+									style={{
+										height: 40,
+										width: 40,
+										borderRadius: "50%",
+										marginRight: 5,
+									}}
+								/>	
+							</Grid>
+							 || ""}
+
+							<Grid
+								item
 								style={{
-									height: 60,
-									width: 60,
-									borderRadius: "50%",
+									fontSize: 16,
 								}}
-							/>	
-						</Grid>
-						 || ""}
+							>
+								{name}
+							</Grid>
+						</Grid>,
+						coordinates: [coords.lat, coords.lng],
+						zoom: 17,
+					});
 
-						<Grid
-							item
-						>
-							{name}
-						</Grid>
-					</Grid>,
-					coordinates: [coords.lat, coords.lng],
-					zoom: 17,
-				});
+	 			});
 
- 			});
+	 			// console.log("searchQuery result", r);
 
- 			console.log("searchQuery result", r);
+	 		})
+	 		.catch(e => {
+	 			console.error(e);
+	 		});
 
- 		})
- 		.catch(e => {
- 			console.error(e);
- 		});
+ 		}
 		
 		this.setState({dataSource});
 

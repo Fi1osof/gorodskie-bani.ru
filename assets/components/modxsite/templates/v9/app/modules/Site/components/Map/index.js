@@ -749,7 +749,20 @@ export default class MapMainView extends Component{
 
 		// 
 
+
+		const {
+			zoom,
+			map,
+			maps,
+		} = this.state;
+
+		// console.log("onChildClick", key, props, zoom);
+
+		// setCenter
+
 		let {
+			lat,
+			lng,
 			cluster,
 		} = props || {};
 
@@ -774,6 +787,17 @@ export default class MapMainView extends Component{
 
 		if(item){
 			openCompanyPage(item);
+		}
+		else{
+
+			if(lat && lng && zoom){
+
+				map.setCenter(new maps.LatLng(lat, lng));
+
+				map.setZoom(zoom + 1);
+
+			}
+
 		}
 
 		// this.setState({cluster_id});

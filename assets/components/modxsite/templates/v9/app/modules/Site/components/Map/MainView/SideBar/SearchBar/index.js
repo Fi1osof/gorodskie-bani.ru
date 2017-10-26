@@ -32,6 +32,7 @@ Object.assign(contextTypes, {
 	userActions: PropTypes.object.isRequired,
   // styleManager: customPropTypes.muiRequired,
 	classes: PropTypes.object.isRequired,
+	triggerGoal: PropTypes.func.isRequired,
 });
 
 Object.assign(propTypes, {
@@ -51,8 +52,19 @@ export default class SearchBar extends Component{
 		super(props);
 
 		this.state = {
-			expanded: true,
+			expanded: false,
 		};
+
+	}
+
+
+	triggerGoal(goal){
+
+		const {
+			triggerGoal,
+		} = this.context;
+
+		triggerGoal(goal);
 
 	}
 
@@ -113,9 +125,20 @@ export default class SearchBar extends Component{
 					}}
 				>
 					<IconButton
-						onClick={() => this.setState({
-							expanded: !expanded,
-						})}
+						onClick={() => {
+
+							// Если пользователь раскрывает поиск, отправляем достижение цели
+							if(!expanded){
+
+								this.triggerGoal("searchButtonClicked");
+
+							}
+
+							this.setState({
+								expanded: !expanded,
+							});
+
+						}}
 						style={{
 							borderRadius: "50%",
 					    backgroundColor: expanded ? "" : "rgba(255,255,255,0.5)",

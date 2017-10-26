@@ -102,7 +102,7 @@ let classes;
 
 var styleSheet = createStyleSheet('InteractiveLayout', (theme) => {
 
-  console.log("classes styleSheet", theme);
+  // console.log("classes styleSheet", theme);
 
   var mobile = theme.breakpoints.down('md');
   var desktop = theme.breakpoints.up('md');
@@ -244,6 +244,7 @@ export class AppMain extends Component{
 
     coords: PropTypes.object,
     setCoords: PropTypes.func,
+    triggerGoal: PropTypes.func,
   };
 
   getChildContext() {
@@ -302,6 +303,7 @@ export class AppMain extends Component{
       remoteQuery: this.remoteQuery,
       coords,
       setCoords: this.setCoords,
+      triggerGoal: this.triggerGoal,
     };
 
     return context;
@@ -394,6 +396,22 @@ export class AppMain extends Component{
       </Grid>
       
     </Grid>;
+  }
+
+
+  // Достижение цели
+  triggerGoal(goal){
+
+    if(typeof window !== "undefined"){
+
+      const {
+        yaCounter26848689,
+      } = window;
+
+      yaCounter26848689 && yaCounter26848689.reachGoal(goal);
+
+    }
+
   }
 
 

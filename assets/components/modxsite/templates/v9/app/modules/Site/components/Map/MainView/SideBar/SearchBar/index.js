@@ -108,6 +108,9 @@ export default class SearchBar extends Component{
 
 				<Grid
 					item
+					style={{
+						height: 46,
+					}}
 				>
 					<IconButton
 						onClick={() => this.setState({
@@ -115,10 +118,11 @@ export default class SearchBar extends Component{
 						})}
 						style={{
 							borderRadius: "50%",
-					    backgroundColor: "rgba(255,255,255,0.5)",
+					    backgroundColor: expanded ? "" : "rgba(255,255,255,0.5)",
 					    width: 35,
 					    height: 35,
 					    marginRight: 5,
+					    marginTop: 5,
 						}}
 					>
 						
@@ -143,17 +147,24 @@ export default class SearchBar extends Component{
 					>
 						<YandexSearch
 							includeSiteData={true}
-			    		onNewRequest={(event, value, item) => {
-			    			console.log('GooglePlaceAutocomplete onNewRequest 2', event, value, item);
+			    		// onNewRequest={(event, value, item) => {
+			    		// 	console.log('GooglePlaceAutocomplete onNewRequest 2', event, value, item);
 
-			    			// onNewRequest && onNewRequest(event, value, item);
-			    		}}
-			    		onChange={(value) => {
-			    			console.log('onChange', value);
-			    		}}
+			    		// 	// onNewRequest && onNewRequest(event, value, item);
+			    		// }}
+			    		// onChange={(value) => {
+			    		// 	console.log('onChange', value);
+			    		// }}
 			    		map={map}
 			    		maps={maps}
 			    		placeholder="Поиск"
+			    		textFieldProps={{
+			    			// style: {
+			    			// 	fontSize: 13,
+			    			// 	backgroundColor: "rgba(255,255,255,0.8)",
+			    			// },
+			    			className: "textField",
+			    		}}
 			    	/>
 					</Grid>
 					: 

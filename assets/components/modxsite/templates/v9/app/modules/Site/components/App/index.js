@@ -117,8 +117,19 @@ var styleSheet = createStyleSheet('InteractiveLayout', (theme) => {
     marginTop: 25,
     marginLeft: 10,
     marginRight: 10,
+
     "&.expanded": {
       width: 400,
+    },
+
+    "& .textField": {
+
+      "& [type=text]": {
+        fontSize: 13,
+        backgroundColor: "rgba(255,255,255,0.8)",
+        textIndent: 5,
+      },
+
     },
   };
 

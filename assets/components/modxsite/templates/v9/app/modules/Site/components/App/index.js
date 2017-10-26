@@ -160,7 +160,7 @@ export class MainApp extends Component{
 
   getChildContext() {
 
-    console.log('getChildContext classes', classes);
+    // console.log('getChildContext classes', classes);
 
     let {
       appExports,
@@ -2403,7 +2403,7 @@ class Renderer extends Component{
   
     classes = this.context.styleManager.render(styleSheet);
 
-    console.log('classes', classes, styleSheet);
+    // console.log('classes', classes, styleSheet);
 
     const {
       styleManager,

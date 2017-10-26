@@ -11,6 +11,8 @@ import * as userActions from 'modules/Redux/actions/userActions';
 import * as documentActions from 'modules/Redux/actions/documentActions';
 
 import customPropTypes from 'material-ui/utils/customPropTypes';
+import { createStyleSheet } from 'jss-theme-reactor';
+import { lightBlue } from 'material-ui/styles/colors';
 
 import { connect } from 'react-redux';
 import { browserHistory, Router } from 'react-router';
@@ -77,8 +79,16 @@ import {
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
+// const customStyles = createMuiTheme({
+//   palette: createPalette({
+//   }),
+// });
+
+// light.text.primary = '#ffffff';
+
 const customStyles = createMuiTheme({
   palette: createPalette({
+    // primary: lightBlue,
   }),
 });
 
@@ -87,14 +97,59 @@ const defaultProps = {
 };
 
 
+let classes;
+
+
+var styleSheet = createStyleSheet('InteractiveLayout', (theme) => {
+
+  console.log("classes styleSheet", theme);
+
+  var mobile = theme.breakpoints.down('md');
+  var desktop = theme.breakpoints.up('md');
+  var xs = theme.breakpoints.down('sm');
+  var smMin = theme.breakpoints.up('sm');
+  var lgMin = theme.breakpoints.up('lg');
+
+
+  let SearchBar = {
+    // width: 300,
+    position: "relative",
+    marginTop: 25,
+    marginLeft: 10,
+    marginRight: 10,
+    "&.expanded": {
+      width: 400,
+    },
+  };
+
+  SearchBar[xs] = {
+    "&.expanded": {
+      width: "auto",
+      right: 0,
+    },
+  };
+
+  // SearchBarGrid[xs] = {
+  //   // width: "100%",
+  // };
+
+  var css = {
+    SearchBar,
+  };
+
+  return css;
+});
 
 export class MainApp extends Component{
 
   static childContextTypes = {
     appExports: PropTypes.object,
+    // classes: PropTypes.object,
   };
 
   getChildContext() {
+
+    console.log('getChildContext classes', classes);
 
     let {
       appExports,
@@ -102,6 +157,7 @@ export class MainApp extends Component{
 
     let context = {
       appExports,
+      // classes,
     };
 
     return context;
@@ -136,7 +192,12 @@ export class MainApp extends Component{
 */
 export class AppMain extends Component{
 
+  static contextTypes = {
+    // styleManager: customPropTypes.muiRequired,
+  };
+
   static childContextTypes = {
+    classes: PropTypes.object,
     connector_url: PropTypes.string,
     location: PropTypes.object,
     request: PropTypes.func,
@@ -198,6 +259,7 @@ export class AppMain extends Component{
     } = this.state;
 
     let context = {
+      classes,
       location,
       connector_url,
       request: this.request,
@@ -2307,7 +2369,12 @@ class Renderer extends Component{
   }
 
 
+
   componentWillMount(){
+  
+    classes = this.context.styleManager.render(styleSheet);
+
+    console.log('classes', classes, styleSheet);
 
     const {
       styleManager,
@@ -2371,10 +2438,6 @@ class Renderer extends Component{
     </div>;
   }
 }
-
-AppMain.defaultProps = defaultProps;
-
-AppMain.propTypes = {}
 
 AppMain.defaultProps = defaultProps;
 AppMain.propTypes = {

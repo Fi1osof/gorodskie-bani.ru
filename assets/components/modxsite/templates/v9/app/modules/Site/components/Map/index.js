@@ -31,7 +31,9 @@ import Marker from './MainView/Marker';
 
 import Control from 'google-map-react-control';
 
-import YandexSearch from 'modules/Site/components/YandexMap/Search';
+// import YandexSearch from 'modules/Site/components/YandexMap/Search';
+
+import SearchBar from './MainView/SideBar/SearchBar';  
 
 import HumanIcon from 'material-ui-icons/PermIdentity';
 import FaceIcon from 'material-ui-icons/Face';
@@ -1744,132 +1746,64 @@ export default class MapMainView extends Component{
 		  */}
 	  	
 
-	  		<GoogleMapReact
-		      bootstrapURLKeys={{
-		      	key,
-		      }}
-		      defaultCenter={this.state.mapOptions.center}
-		      defaultZoom={this.state.mapOptions.zoom}
-		      center={center} // current map center
-  				zoom={this.state.zoom} // current map zoom
-	  			ref="mapProvider"
-					draggable={draggable}
-				  onGoogleApiLoaded={::this.onGoogleApiLoaded}
-				  yesIWantToUseGoogleMapApiInternals={true}
-		  		onChange={this.handleMapChange}
-				  onChildClick={::this.onChildClick}
-				  // onChildMouseDown={::this.onChildMouseDown}
-				  // onChildMouseUp={::this.onChildMouseUp}
-				  // onChildMouseMove={::this.onChildMouseMove}
-				  onChildMouseEnter={::this.onChildMouseEnter}
-				  onChildMouseLeave={::this.onChildMouseLeave}
-				 //  options={{
-					//   scrollwheel: false,
-					// }}
+  		<GoogleMapReact
+	      bootstrapURLKeys={{
+	      	key,
+	      }}
+	      defaultCenter={this.state.mapOptions.center}
+	      defaultZoom={this.state.mapOptions.zoom}
+	      center={center} // current map center
+				zoom={this.state.zoom} // current map zoom
+  			ref="mapProvider"
+				draggable={draggable}
+			  onGoogleApiLoaded={::this.onGoogleApiLoaded}
+			  yesIWantToUseGoogleMapApiInternals={true}
+	  		onChange={this.handleMapChange}
+			  onChildClick={::this.onChildClick}
+			  // onChildMouseDown={::this.onChildMouseDown}
+			  // onChildMouseUp={::this.onChildMouseUp}
+			  // onChildMouseMove={::this.onChildMouseMove}
+			  onChildMouseEnter={::this.onChildMouseEnter}
+			  onChildMouseLeave={::this.onChildMouseLeave}
+			 //  options={{
+				//   scrollwheel: false,
+				// }}
 
-					style={{
-						display: "flex",
-						flexGrow: 1,
-						position: "relative",
-						overflow: "hidden",
-						background: typeof window === "undefined" ? `url(${staticMapUrl}) no-repeat center` : undefined,
-					}}
-					options={{
-				    overviewMapControl: false,
-				    streetViewControl: true,
-				    rotateControl: true,
-				    mapTypeControl: true,
-				    // disable poi
-				    styles: [
-				      {
-				        featureType: 'poi',
-				        elementType: 'labels',
-				        stylers: [{ visibility: zoom > 17 ? 'on' : 'off' }],
-				      },
-				    ],
-				  }}
-		    >
-		    	{items}
+				style={{
+					display: "flex",
+					flexGrow: 1,
+					position: "relative",
+					overflow: "hidden",
+					background: typeof window === "undefined" ? `url(${staticMapUrl}) no-repeat center` : undefined,
+				}}
+				options={{
+			    overviewMapControl: false,
+			    streetViewControl: true,
+			    rotateControl: true,
+			    mapTypeControl: true,
+			    // disable poi
+			    styles: [
+			      {
+			        featureType: 'poi',
+			        elementType: 'labels',
+			        stylers: [{ visibility: zoom > 17 ? 'on' : 'off' }],
+			      },
+			    ],
+			  }}
+	    >
+	    	{items}
 
-		    	{users}
+	    	{users}
 
-		    </GoogleMapReact>
+	    </GoogleMapReact>
 
 			{map && maps
     		?
-    		<Control
-    			map={map}
-    			maps={maps}
-    			position="TOP_CENTER"
-    		>
 
-    			<Grid
-    				container
-    				gutter={0}
-    				align="center"
-    			>
-
-    				<Grid
-    					item
-    					xs
-    				>
-
-		    			<YandexSearch 
-			    			map={map}
-			    			maps={maps}
-			    			style={{
-			    				minWidth: 300
-			    			}}
-			    			placeholder="Поиск"
-			    			// error={error || false}
-			    	// 		textFieldProps={{
-			    	// 			helperText: helperText || undefined,
-			    	// 			onFocus,
-			    	// 		}}
-			    	// 		onNewRequest={(event, value, mapItem) => {
-							 //  	let {
-							 //  		coordinates: {
-							 //  			0: lat,
-							 //  			1: lng,
-							 //  		},
-							 //  	} = mapItem;
-
-							 //  	const data = {
-							 //  		lat,
-							 //  		lng,
-							 //  		coords: {
-								//   		lat,
-								//   		lng,
-								//   	},
-							 //  	};
-
-							 //  	updateItem(item, data);
-
-								// }}
-		    			/>
-    					
-    				</Grid>
-    				
-	    			{/*helper 
-	    				?
-	    					<Grid
-		    					item
-		    				>
-			    				<Helper
-										contrastIcons={false}
-			            >
-			              {helper}
-			            </Helper>
-		            </Grid>
-	    				:
-	    				null
-	    			*/}
-
-    			</Grid>
-
-
-
-    		</Control>
+    		<SearchBar 
+					map={map}
+					maps={maps}
+				/>
     		
     		:
     		null

@@ -293,7 +293,7 @@ export default class MainMenu extends Component{
                 	// 	ratingsOpened: !ratingsOpened,
                 	// })}
                 >
-                  Рейтинги заведений <i className="fa fa-angle-down"></i>
+                  Рейтинги <i className="fa fa-angle-down"></i>
                 </Link>
                 <ul 
                 	className="dropdown-menu"

@@ -147,6 +147,7 @@ export default class SearchBar extends Component{
 					    marginRight: 5,
 					    marginTop: 5,
 						}}
+						accent
 					>
 						
 						{expanded

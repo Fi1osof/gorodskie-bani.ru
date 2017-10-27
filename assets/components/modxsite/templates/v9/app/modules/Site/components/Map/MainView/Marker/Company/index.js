@@ -5,6 +5,11 @@ import PropTypes from 'prop-types';
 
 import {Link} from 'react-router';
 
+import Grid from 'material-ui/Grid';
+import IconButton from 'material-ui/IconButton';
+
+import CloseIcon from 'material-ui-icons/Clear';
+
 import Stars from 'modules/Site/components/Pages/Companies/Company/fields/Rating/Stars';
 
 export default class CompanyMiniCart extends Component{
@@ -37,6 +42,7 @@ export default class CompanyMiniCart extends Component{
 			item,
 			imageType,
 			ratings,
+			closeHandler,
 			...other
 		} = this.props;
 
@@ -85,12 +91,46 @@ export default class CompanyMiniCart extends Component{
 				}}
 			>
 				
-				<Link
-					to={link}
-					href={link}
+				<Grid
+					container
+					align="flex-start"
+					gutter={0}
 				>
-					{name}
-				</Link>
+					
+					<Grid
+						item
+						xs
+					>
+						<Link
+							to={link}
+							href={link}
+						>
+							{name}
+						</Link>
+					</Grid>
+					
+					{closeHandler
+						?
+						<Grid
+							item
+						>
+							<IconButton
+								onClick={closeHandler}
+								style={{
+									width: 24,
+									height: 24,
+									padding: 3,
+									marginTop: -6,
+								}}
+							>
+								<CloseIcon />
+							</IconButton>
+						</Grid>
+						:
+						null
+					}
+
+				</Grid>
 
 				<Stars 
 					value={parseFloat(rating) || 0}

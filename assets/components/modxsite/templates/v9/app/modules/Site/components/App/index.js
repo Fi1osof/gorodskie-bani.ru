@@ -387,13 +387,13 @@ export class AppMain extends Component{
         
       </Grid>
 
-      <Grid
+      {/*<Grid
         item
       >
 
         <a href="http://modxclub.ru" target="_blank" title="Разработка сайтов и интернет-магазинов на MODX Revolution"><img src="assets/images/site/logos/modx_h30.jpg" /></a>
         
-      </Grid>
+      </Grid>*/}
       
     </Grid>;
   }

@@ -14,6 +14,7 @@ import CloseIcon from 'material-ui-icons/Close';
 import Business from 'material-ui-icons/Business';
 import Texture from 'material-ui-icons/Texture';
 import AddIcon from 'material-ui-icons/AddCircle';
+import ShowAllIcon from 'material-ui-icons/InsertPhoto';
 
 import GoogleMapReact from 'google-map-react';
 // import SimpleMarker from 'google-map-react/develop/markers/SimpleMarker';
@@ -760,6 +761,8 @@ export default class MapMainView extends Component{
 
 	onChildClick(key, props){
 
+		// console.log('onChildClick', key, props, a,b);
+
 		// 
 
 
@@ -792,6 +795,7 @@ export default class MapMainView extends Component{
 				cluster_id,
 				cluster: isCluster,
 				item,
+				// hovered,
 			},
 		} = cluster;
 
@@ -799,7 +803,29 @@ export default class MapMainView extends Component{
 		// cluster
 
 		if(item){
-			openCompanyPage(item);
+			// openCompanyPage(item);
+
+			const {
+				_expandedOnMap,
+			} = item;
+
+
+	 		// Object.assign(cluster.properties, {
+	 		// 	hovered: !hovered,
+	 		// });
+
+	 		Object.assign(item, {
+	 			_expandedOnMap: !_expandedOnMap,
+	 		});
+
+	 		this.forceUpdate();
+
+	 		// console.log('item', item);
+
+	 		// item.update({
+	 		// 	_expandedOnMap: !_expandedOnMap,
+	 		// });
+
 		}
 		else{
 
@@ -855,6 +881,32 @@ export default class MapMainView extends Component{
 			map,
 			maps,
 		} = options;
+
+		// console.log('maps.event', maps.event);
+
+		map.setClickableIcons(false);
+
+		// map.addListener("click", (props) => {
+
+		// 	let {
+		// 		va,
+		// 	} = props;
+
+
+		// 	va.stopPropagation();
+		// 	va.stopImmediatePropagation();
+		// 	va.preventDefault();
+
+		// 	va.cancelBubble = true;
+		// 	// va.bubbles = false;
+
+		// 	console.log("marker getClickableIcons", map.getClickableIcons());
+
+		// 	console.log("marker clicked", props, va);
+
+		// 	return false;
+
+		// });
 
 		// 
 
@@ -1500,6 +1552,21 @@ export default class MapMainView extends Component{
 		} = this.props;
 
 		const {
+			map,
+			maps,
+			center,
+			draggable,
+			clusters,
+			// activePlaceItem,
+			// sidebarOpen,
+			zoom,
+			cluster_id,
+			bounds,
+			inited,
+			expandAllCompanies,
+		} = this.state;
+
+		const {
 			getCounters,
 			CoordsStore,
 		} = this.context;
@@ -1560,20 +1627,6 @@ export default class MapMainView extends Component{
   			{children}
   		</div>
   	}
-
-		const {
-			map,
-			maps,
-			center,
-			draggable,
-			clusters,
-			// activePlaceItem,
-			// sidebarOpen,
-			zoom,
-			cluster_id,
-			bounds,
-			inited,
-		} = this.state;
 
 		
 		// console.log("Map render clusters", clusters);
@@ -1672,6 +1725,7 @@ export default class MapMainView extends Component{
   			lng={lng}
 				item={item}
 				cluster={cluster}
+				expandAllCompanies={expandAllCompanies}
   		/>);
 
 
@@ -1847,52 +1901,52 @@ export default class MapMainView extends Component{
     	}
  
 
-				{map && maps
-	    		?
-	    		<Control
-	    			map={map}
-	    			maps={maps}
-	    			position="LEFT_TOP"
-	    		>  
-  					<IconButton
-	    				// accent
+			{map && maps
+    		?
+    		<Control
+    			map={map}
+    			maps={maps}
+    			position="LEFT_TOP"
+    		>  
+					<IconButton
+    				// accent
+    				// style={{
+    				// 	height: 40,
+    				// 	width: 40,
+    				// }}
+						style={{
+							borderRadius: "50%",
+					    backgroundColor: "rgba(255,255,255,0.5)",
+					    width: 35,
+					    height: 35,
+					    marginRight: 5,
+					    marginTop: 5,
+					    marginLeft: 10,
+						}}
+						accent
+    				onClick={e => {
+
+    					const {
+    						localQuery,
+    					} = this.context;
+
+    					localQuery({
+    						operationName: "addCompany",
+    					});
+
+    					this.triggerGoal('addCompanyClick');
+
+    				}}
+  				>
+    				<AddIcon 
 	    				// style={{
 	    				// 	height: 40,
 	    				// 	width: 40,
 	    				// }}
-							style={{
-								borderRadius: "50%",
-						    backgroundColor: "rgba(255,255,255,0.5)",
-						    width: 35,
-						    height: 35,
-						    marginRight: 5,
-						    marginTop: 5,
-						    marginLeft: 10,
-							}}
-							accent
-	    				onClick={e => {
+    				/>
+  				</IconButton> 
 
-	    					const {
-	    						localQuery,
-	    					} = this.context;
-
-	    					localQuery({
-	    						operationName: "addCompany",
-	    					});
-
-	    					this.triggerGoal('addCompanyClick');
-
-	    				}}
-    				>
-	    				<AddIcon 
-		    				// style={{
-		    				// 	height: 40,
-		    				// 	width: 40,
-		    				// }}
-	    				/>
-    				</IconButton> 
-
-	    		</Control>
+    		</Control>
 
 
 	    		// <Control
@@ -1960,77 +2014,175 @@ export default class MapMainView extends Component{
 	    		
 	    		:
 	    		null
-	    	}
+    	}
 
-				{map && maps
-	    		?
-	    		<Control
-	    			map={map}
-	    			maps={maps}
-	    			position="BOTTOM_LEFT"
-	    			style={{
-	    				padding: 4,
-	    			}}
-	    		> 
+			{map && maps
+    		?
+    		<Control
+    			map={map}
+    			maps={maps}
+    			position="LEFT_TOP"
+    		>  
+					<IconButton
+						style={{
+							borderRadius: "50%",
+					    backgroundColor: "rgba(255,255,255,0.5)",
+					    width: 35,
+					    height: 35,
+					    marginRight: 5,
+					    marginTop: 5,
+					    marginLeft: 10,
+						}}
+						accent={!expandAllCompanies}
+    				onClick={e => {
 
-	    			<a 
-	    				href="https://maps.yandex.ru" 
-	    				rel="nofollow"
-    					target="_blank"
-	    				style={{
-	    					color: "#fff",
-		    				textShadow: "0px 0px 5px #888",
-		    				fontSize: 16,
-	    				}}
-	    			>
-	    				Yandex.Maps
-	    			</a>
+    					this.setState({
+    						expandAllCompanies: !expandAllCompanies,
+    					});
 
-	    		</Control>
+    					this.triggerGoal('showAllCompanies');
+
+    				}}
+  				>
+    				<ShowAllIcon 
+    				/>
+  				</IconButton> 
+
+    		</Control>
+
+
+	    		// <Control
+	    		// 	map={map}
+	    		// 	maps={maps}
+	    		// 	position="LEFT_BOTTOM"
+	    		// > 
+
+	    		// 	<a
+	    		// 		href="javascript:;"
+	    		// 		style={{
+	    		// 			// textShadow: "0px 0px 5px #ccc",
+    			// 			fontSize: 12,
+    			// 			background: "rgba(256,256,256,0.7)",
+						 //    display: "block",
+						 //    paddingRight: 10,
+	    		// 		}}
+	    		// 		onClick={e => {
+
+	    		// 			const {
+	    		// 				localQuery,
+	    		// 			} = this.context;
+
+	    		// 			localQuery({
+	    		// 				operationName: "addCompany",
+	    		// 			});
+
+	    		// 			this.triggerGoal('addCompanyClick');
+
+	    		// 		}}
+	    		// 	>
+	    		// 		<Grid
+	    		// 			container
+	    		// 			gutter={0}
+	    		// 			align="center"
+	    		// 		>
+	    		// 			<IconButton
+			    // 				// accent
+			    // 				// style={{
+			    // 				// 	height: 40,
+			    // 				// 	width: 40,
+			    // 				// }}
+							// 		style={{
+							// 			borderRadius: "50%",
+							// 	    backgroundColor: "rgba(255,255,255,0.5)",
+							// 	    width: 35,
+							// 	    height: 35,
+							// 	    marginRight: 5,
+							// 	    marginTop: 5,
+							// 		}}
+							// 		accent
+		    	// 			>
+			    // 				<AddIcon 
+				   //  				// style={{
+				   //  				// 	height: 40,
+				   //  				// 	width: 40,
+				   //  				// }}
+			    // 				/>
+		    	// 			</IconButton>
+		    	// 			Добавить заведение
+	    		// 		</Grid>
+	    		// 	</a>
+
+	    		// </Control>
 	    		
 	    		:
 	    		null
-	    	}
+    	}
+
+			{map && maps
+    		?
+    		<Control
+    			map={map}
+    			maps={maps}
+    			position="BOTTOM_LEFT"
+    			style={{
+    				padding: 4,
+    			}}
+    		> 
+
+    			<a 
+    				href="https://maps.yandex.ru" 
+    				rel="nofollow"
+  					target="_blank"
+    				style={{
+    					color: "#fff",
+	    				textShadow: "0px 0px 5px #888",
+	    				fontSize: 16,
+    				}}
+    			>
+    				Yandex.Maps
+    			</a>
+
+    		</Control>
+    		
+    		:
+    		null
+    	}
 
 
 
-				{map && maps
-	    		?
-	    		<Control
-	    			map={map}
-	    			maps={maps}
-	    			position="BOTTOM_LEFT"
-	    		> 
+			{map && maps
+    		?
+    		<Control
+    			map={map}
+    			maps={maps}
+    			position="BOTTOM_LEFT"
+    		> 
 
-	    			{getCounters()}
+    			{getCounters()}
 
-	    		</Control>
-	    		
-	    		:
-	    		null
-	    	}
+    		</Control>
+    		
+    		:
+    		null
+    	}
 
-				{map && maps
-	    		?
-	    		<Control
-	    			map={map}
-	    			maps={maps}
-	    			position="RIGHT_BOTTOM"
-	    		> 
+			{map && maps
+    		?
+    		<Control
+    			map={map}
+    			maps={maps}
+    			position="RIGHT_BOTTOM"
+    		> 
 
-	    			{advItems}
+    			{advItems}
 
-	    		</Control>
-	    		
-	    		:
-	    		null
-	    	}
+    		</Control>
+    		
+    		:
+    		null
+    	}
 
-	  	</Grid> 
-
-	  {/*
   	</Grid>
-	  */}
 
 	}
 } 

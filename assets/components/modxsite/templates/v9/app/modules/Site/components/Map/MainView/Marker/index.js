@@ -34,6 +34,8 @@ export default class Marker extends Component{
 			// 	},
 			// }
 			cluster,
+			expandAllCompanies,
+			...other
 		} = this.props;
 
 		let {
@@ -59,6 +61,7 @@ export default class Marker extends Component{
 				ratingAvg,
 				tvs,
 				mapIcon,
+				_expandedOnMap,
 				_isDirty,
 			} = item;
 
@@ -120,7 +123,8 @@ export default class Marker extends Component{
 
 			let details;
 
-			if(hovered){
+			// if(hovered){
+			if(_expandedOnMap || expandAllCompanies){
 				// details = <div
 				// 	style={{
 				// 		position: 'absolute',
@@ -164,6 +168,15 @@ export default class Marker extends Component{
 						background: '#fff',
 						width: 200,
 					}}
+					closeHandler={expandAllCompanies ? undefined : event => {
+
+						Object.assign(item, {
+							_expandedOnMap: false,
+						});
+
+						this.forceUpdate();
+
+					}}
 				/>
 			}
 
@@ -172,8 +185,9 @@ export default class Marker extends Component{
 					width,
 					// border: '1px solid blue',
 					position: 'absolute',
-					left: -(width / 2),
-					top: 0,
+					// left: -(width / 2),
+					left: "-50%",
+					bottom: 0,
 					cursor: 'pointer',
 				}}
 			>
@@ -186,6 +200,10 @@ export default class Marker extends Component{
 					<Link
 						to={link}
 						href={link}
+						onClick={event => {
+							event.preventDefault();
+							event.stopPropagation();
+						}}
 					>
 						{icon}
 					</Link>

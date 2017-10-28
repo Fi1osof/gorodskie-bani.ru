@@ -833,7 +833,7 @@ export default class MapMainView extends Component{
 
 				map.setCenter(new maps.LatLng(lat, lng));
 
-				map.setZoom(zoom < 12 ? 12 : zoom + 1);
+				map.setZoom(zoom < 12 ? zoom + 3 : zoom + 1);
 
 			}
 

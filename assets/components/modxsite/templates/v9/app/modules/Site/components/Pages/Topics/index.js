@@ -24,6 +24,51 @@ export default class TopicsPage extends Page {
 		});
 	}
 
+
+
+	// componentWillMount(){
+
+	// 	const {
+	// 		item,
+	// 	} = this.props;
+
+	// 	const {
+	// 		name,
+	// 	} = item || {};
+
+
+	// 	let {
+	// 		TopicsStore,
+	// 	} = this.context;
+
+ // 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
+
+ // 			this.loadCompanyFullData();
+ // 		});
+
+	// 	super.componentWillMount && super.componentWillMount();
+	// }
+
+	// componentWillUnmount(){
+
+ // 		let {
+	// 		TopicsStore,
+ // 		} = this.context;
+
+
+ //    if(this.CompaniesStoreListener){
+
+ //      let dispatch = CompaniesStore.getDispatcher();
+
+ //      dispatch._callbacks[this.CompaniesStoreListener] && dispatch.unregister(this.CompaniesStoreListener);
+
+ //      this.CompaniesStoreListener = undefined;
+ //    }
+
+
+ // 		return super.componentWillUnmount && super.componentWillUnmount();
+	// }
+
 	componentDidMount(){
 
 		// this.loadData();
@@ -99,7 +144,7 @@ export default class TopicsPage extends Page {
 
 	loadData(){
 
-		// console.log("Topics loadData");
+		console.log("Topics loadData");
 
 
 		if(typeof window === "undefined"){
@@ -151,6 +196,8 @@ export default class TopicsPage extends Page {
 				this.setState({
 					topics,
 				});
+
+				// console.log("Resources topic", topics && topics.find(n => n.id === 1522 ));
 
 				// this.state.topics = topics;
 

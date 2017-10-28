@@ -12,9 +12,12 @@ import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import Chip from 'material-ui/Chip';
+import TextField from 'material-ui/TextField';
 
 import CommentsIcon from 'material-ui-icons/Chat';
 import MoreIcon from 'material-ui-icons/More';
+import EditIcon from 'material-ui-icons/Edit';
+import SaveIcon from 'material-ui-icons/Save';
 
 import UserLink from 'modules/Site/components/fields/User/link';
 
@@ -35,6 +38,7 @@ export default class Topic extends Component{
 
 	static contextTypes = {
 		localQuery: PropTypes.func.isRequired,
+		updateTopicItem: PropTypes.func.isRequired,
 		// setPageTitle: PropTypes.func.isRequired,
 	};
 
@@ -137,6 +141,90 @@ export default class Topic extends Component{
 	// }
 
 
+	updateItem(item, data, silent){
+
+		const {
+			updateTopicItem,
+		} = this.context;
+
+		return updateTopicItem(item, data, silent);
+
+	}
+
+	// Почему-то не приходит объект события
+	onFocus = (name) => {
+
+		// console.log('onFocus', event, a,b);
+
+		this.clearErrors(name);
+
+		return;
+
+	}
+
+
+	clearErrors(name){
+		
+		const {
+			item,
+		} = this.props;
+
+		let {
+			_errors: errors,
+		} = item;
+
+		if(errors && errors[name]){
+			errors[name] = "";
+			this.forceUpdate();
+		}
+
+	}
+
+	onChange = event => {
+
+		const {
+			item,
+		} = this.props;
+
+		let data = {};
+
+		// console.log("onChange item", item);
+
+		const {
+			name,
+			value,
+		} = event.target;
+
+		this.clearErrors(name);
+
+		data[name] = value;
+
+		// switch(name){
+
+		// 	case 'address':
+		// 	case 'metro':
+		// 	case 'phones':
+		// 	case 'site':
+		// 	case 'work_time':
+		// 	case 'prices':
+
+		// 		let tvs = item.tvs || {};
+
+		// 		tvs[name] = value;
+
+		// 		data.tvs = tvs;
+
+		// 		break;
+
+		// }
+
+		console.log("onChange name, value", name, value);
+
+		this.updateItem(item, data);
+
+	}
+
+
 	render(){
 
 		const {
@@ -152,6 +240,7 @@ export default class Topic extends Component{
 		const {
 			id,
 			name:topicName,
+			pagetitle,
 			uri,
 			short_text,
 			summary,
@@ -161,7 +250,11 @@ export default class Topic extends Component{
 			comments,
 			pubdate,
 			tags,
+			_errors: errors,
+			_Dirty,
 		} = item;
+
+		const inEditMode = _Dirty ? true : false;
 
 		const link = `/${uri}`;
 		
@@ -233,16 +326,85 @@ export default class Topic extends Component{
 		>
 
 			<CardHeader
-				title={<Link
-					to={link}
-					href={link}
+				title={<Typography
+					type="subheading"
 				>
-					<Typography
-						type="subheading"
+					<Grid
+						container
+						gutter={0}
+						center="center"
 					>
-						{topicName}
-					</Typography>
-				</Link>}
+
+						<Grid
+							item
+							xs
+						>
+							{inEditMode
+		        		?
+									<TextField 
+										label="Название публикации"
+										error={errors && errors.pagetitle ? true : false}
+										helperText={errors && errors.pagetitle || ""}
+										name="pagetitle"
+										value={pagetitle || ""}
+										onChange={this.onChange}
+										onFocus={() => this.onFocus('pagetitle')}
+									/>
+		        		:
+		        		<Link
+									to={link}
+									href={link}
+								> 
+									{topicName} 
+								</Link>
+		        	}
+							
+						</Grid>
+
+						{_Dirty
+							?
+							<Grid
+	      				item
+	      			>
+	      				
+	      				<IconButton
+	        				onClick={event => {
+	        					// this.saveItem();
+	        				}}
+	        			>
+	        				<SaveIcon 
+	        					color="red"
+	        				/>
+	        			</IconButton>
+
+	      			</Grid>
+							:
+							<Grid
+								item
+							>
+
+	      				<IconButton
+	        				onClick={event => {
+	        					// item.update({});
+
+	        					// console.log("item", item);
+
+	        					this.updateItem(item, {
+	        					});
+
+	        				}}
+	        			>
+	        				<EditIcon 
+	        					// color="red"
+	        				/>
+	        			</IconButton>
+	        				
+							</Grid>
+						}
+
+						
+					</Grid>
+				</Typography>}
         subheader={CompanyLink && <Link
         	to={CompanyLink}
         	href={CompanyLink}

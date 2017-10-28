@@ -1131,8 +1131,13 @@ export default class Router {
 
         // const stylesGenerated = exports.theme.sheetsToString();
 
+        let searchable;
 
-        html = this.renderHTML(componentHTML, state, resource, style);
+        if(/\/profile\/.*?\/add-topic/.test(decodedURI)){
+          searchable = false;
+        }
+
+        html = this.renderHTML(componentHTML, state, resource, style, searchable);
       }
       catch(e){
         console.error(e);
@@ -1270,7 +1275,7 @@ export default class Router {
 
   // };
 
-  renderHTML(componentHTML, initialState, resource, style) {
+  renderHTML(componentHTML, initialState, resource, style, searchable) {
 
     let assetsUrl;
 
@@ -1351,7 +1356,7 @@ export default class Router {
       name,
       longtitle,
       description,
-      searchable,
+      searchable: resourceSearchable,
     } = resource || {};
 
     let title = longtitle || name || "";
@@ -1370,7 +1375,7 @@ export default class Router {
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>${title}</title>
           <meta name="description" content="${description}"> 
-          <meta name="robots" content="${searchable === false ? "noindex, nofollow" : "index, follow"}" />
+          <meta name="robots" content="${searchable === false || resourceSearchable === false ? "noindex, nofollow" : "index, follow"}" />
           <link rel="shortcut icon" href="/favicon.ico"/>
           <link rel="alternate" hreflang="ru" href="http://gorodskie-bani.ru/" />
           <base href="/" />

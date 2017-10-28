@@ -278,6 +278,22 @@ export default class UsersPage extends Page {
 		/>;
 
 	}
+	
+	// renderAction(action){
+
+	// 	switch(action){
+
+	// 		case 'add-topic':
+
+	// 			return <AddTopic
+	// 			/>;
+
+	// 			break;
+
+	// 		default: return null;
+	// 	}
+
+	// }
 
 	updateUser(user, data){
 
@@ -758,11 +774,19 @@ export default class UsersPage extends Page {
 		} = this.props;
 
 		let {
+			action,
 			username,
 		} = params || {};
 
 		let content;
 
+		// if(action){
+			
+		// 	content = this.renderAction(action);
+
+		// }
+		// else 
+		
 		if(username){
 			
 			content = this.renderUser(username);

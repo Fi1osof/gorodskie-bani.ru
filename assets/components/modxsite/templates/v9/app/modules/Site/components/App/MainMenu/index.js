@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 
 import Grid from 'material-ui/Grid';
+import IconButton from 'material-ui/IconButton';
 import LoginIcon from 'material-ui-icons/PermIdentity';
+import AddIcon from 'material-ui-icons/Add';
 
 import WsProxy from 'modules/Site/components/WsProxy';
 
@@ -329,6 +331,10 @@ export default class MainMenu extends Component{
                       onClick={event => {
                         this.closeMenu();
                       }}
+                      style={{
+                        paddingLeft: 25,
+                        paddingRight: 25,
+                      }}
                     >
                       Обзоры и отзывы 
                     </Link>
@@ -341,10 +347,51 @@ export default class MainMenu extends Component{
                       onClick={event => {
                         this.closeMenu();
                       }}
+                      style={{
+                        paddingLeft: 25,
+                        paddingRight: 25,
+                      }}
                     >
                       Новости
                     </Link>
                   </li>
+                  {user 
+                    ?
+                    <li className="">
+                      <Link 
+                        to={`/profile/${username}/add-topic`} 
+                        href={`/profile/${username}/add-topic`}
+                        title="Добавить публикацию"
+                        rel="nofollow"
+                        onClick={event => {
+                          this.closeMenu();
+                        }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          paddingLeft: 25,
+                          paddingRight: 25,
+                        }}
+                      >
+                        <IconButton
+                          accent
+                          style={{
+                            padding: 0,
+                            margin: 0,
+                            height: 24,
+                            width: 24,
+                            marginLeft: -25,
+                          }}
+                        >
+                          <AddIcon 
+                          /> 
+                        </IconButton>
+                        Добавить публикацию
+                      </Link>
+                    </li>
+                    :
+                    null
+                  }
                 </ul>
               </li>
 

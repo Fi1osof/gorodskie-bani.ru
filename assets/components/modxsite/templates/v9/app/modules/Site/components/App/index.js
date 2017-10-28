@@ -226,6 +226,7 @@ export class AppMain extends Component{
     saveItem: PropTypes.func,
     updateContactItem: PropTypes.func,
     saveContactItem: PropTypes.func,
+    updateTopicItem: PropTypes.func,
     setPageTitle: PropTypes.func,
     CoordsStore: PropTypes.object,
     CompaniesStore: PropTypes.object,
@@ -285,6 +286,7 @@ export class AppMain extends Component{
       saveItem: this.saveItem,
       updateContactItem: this.updateContactItem,
       saveContactItem: this.saveContactItem,
+      updateTopicItem: this.updateTopicItem,
       setPageTitle: this.setPageTitle,
       getCounters: this.getCounters,
       user,
@@ -1281,9 +1283,37 @@ export class AppMain extends Component{
     }
   }
 
-  updateItem = (item, data, store) => {
+  // updateItem = (item, data, store) => {
 
-    
+  //   if(!item){
+  //     console.error("Не указан объект");
+  //     return false;
+  //   }
+
+  //   if(!store){
+  //     console.error("Не указано хранилище");
+  //     return false;
+  //   }
+
+  //   let newState = {};
+
+  //   Object.assign(newState, data);
+
+  //   let _isDirty = {};
+
+  //   item._isDirty && Object.assign(_isDirty, item._isDirty);
+
+  //   Object.assign(_isDirty, newState);
+
+  //   newState._isDirty = _isDirty;
+
+  //   store.getDispatcher().dispatch(store.actions['UPDATE'], item, newState);
+
+  //   return;
+  // }
+
+  // silent - Тихое обновление, без указания изменнных колонок
+  updateItem = (item, data, store, silent) => {
 
     if(!item){
       console.error("Не указан объект");
@@ -1295,81 +1325,25 @@ export class AppMain extends Component{
       return false;
     }
 
-
     let newState = {};
 
     Object.assign(newState, data);
 
-    let _isDirty = {};
+    if(!silent){
+      
+      let _isDirty = {};
 
-    item._isDirty && Object.assign(_isDirty, item._isDirty);
+      item._isDirty && Object.assign(_isDirty, item._isDirty);
 
-    Object.assign(_isDirty, newState);
+      Object.assign(_isDirty, newState);
 
-    newState._isDirty = _isDirty;
+      newState._isDirty = _isDirty;
+
+    }
 
     store.getDispatcher().dispatch(store.actions['UPDATE'], item, newState);
 
     return;
-  }
-
-  updateContactItem = (item, data) => {
-
-    let {
-      CompaniesStore,
-    } = this.state;
-
-    // if(data.coords){
-    //   Object.assign(data, data.coords);
-    // }
-
-    // 
-
-    // 
-    // 
-
-
-    this.updateItem(item, data, CompaniesStore);
-  }
-
-
-
-
-
-  saveContactItem = (item) => {
-    // 
-
-    let {
-      CompaniesStore: store,
-    } = this.state;
-
-    let {
-      id: itemId,
-    } = item;
-
-    const callback = (data, errors) => { 
-
-      if(data.success && data.object){
-
-        const {
-          id,
-          uri,
-        } = data.object;
-
-        if(id !== itemId){
-
-          // const uri = `/bani/${id}/`;
-          
-          browserHistory.replace(uri);
-        }
-
-        this.reloadApiData();
-
-        return;
-      }
-    }
-
-    return this.saveItem(store, item, 'companies/', callback);
   }
 
   saveItem = (store, item, connector_path, callback) => {
@@ -1562,6 +1536,79 @@ export class AppMain extends Component{
 
     this.forceUpdate();
     return;
+  }
+
+  updateContactItem = (item, data, silent) => {
+
+    let {
+      CompaniesStore,
+    } = this.state;
+
+    // if(data.coords){
+    //   Object.assign(data, data.coords);
+    // }
+
+    // 
+
+    // 
+    // 
+
+
+    this.updateItem(item, data, CompaniesStore, silent);
+  }
+
+
+  saveContactItem = (item) => {
+    // 
+
+    let {
+      CompaniesStore: store,
+    } = this.state;
+
+    let {
+      id: itemId,
+    } = item;
+
+    const callback = (data, errors) => { 
+
+      if(data.success && data.object){
+
+        const {
+          id,
+          uri,
+        } = data.object;
+
+        if(id !== itemId){
+
+          // const uri = `/bani/${id}/`;
+          
+          browserHistory.replace(uri);
+        }
+
+        this.reloadApiData();
+
+        return;
+      }
+    }
+
+    return this.saveItem(store, item, 'companies/', callback);
+  }
+
+
+
+  updateTopicItem = (item, data, silent) => {
+
+    let {
+      TopicsStore,
+    } = this.state;
+
+    item = item && TopicsStore.getState().find(n => n.id === item.id);
+
+    if(!item){
+      throw(new Error("Не был получен объект топика"));
+    }
+
+    this.updateItem(item, data, TopicsStore, silent);
   }
 
 

@@ -9,6 +9,8 @@ import {
   GraphQLBoolean,
 } from 'graphql';
 
+import GraphQLJSON from 'graphql-type-json';
+
 // import {
 //   // SchemaObject,
 //   // order,
@@ -16,6 +18,8 @@ import {
 // } from '../';
 
 import moment from 'moment';
+
+import {browserHistory} from 'react-router';
 
 // moment.locale('ru');
 
@@ -32,6 +36,8 @@ import {
 import {
   UserType,
 } from '../User';
+
+import ErrorType from '../Error';
 
 import {
   imageType,
@@ -424,9 +430,52 @@ export const ResourceType = new GraphQLObjectType({
           return rootResolver(null, args, context, info);
         },
       },
+      _errors: {
+        type: new GraphQLList(ErrorType),
+        description: "Ошибки после попытки сохранения",
+      },
+      _Dirty: {
+        type: GraphQLJSON,
+        description: "Массив измененных данных",
+        resolve: source => {
+
+          return source && source._isDirty || null;
+          // return source && source._isDirty ? true : false;
+
+        },
+      },
     }
   }
 });
+
+
+// Добавляем новый топик
+export const add = (source, args, context, info) => {
+
+  console.log("Resource add");
+
+  let {
+    TopicsStore,
+  } = context.state;
+
+  const id = Math.round(Math.random() * 10000000) * -1;
+
+  const uri = `topics/${id}/`;
+
+  let data = {
+  };
+
+  let item = {};
+
+  TopicsStore.getDispatcher().dispatch(TopicsStore.actions.CREATE, item);
+
+  // item.update(data);
+
+  browserHistory.push(uri);
+
+  return item;
+
+};
 
 
 export const getList = (source, args, context, info) => {

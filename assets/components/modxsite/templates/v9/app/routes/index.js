@@ -205,6 +205,16 @@ let routes = {
         }],
       }],
     },
+    // {
+    //   path: "/office",
+    //   component: UsersPage,
+    //   childRoutes: [{
+    //     path: "/office/:section",
+    //     childRoutes: [{
+    //       path: "/profile/:section/:action",
+    //     }],
+    //   }],
+    // },
     {
       path: "/profile",
     },

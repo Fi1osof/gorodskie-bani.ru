@@ -917,9 +917,7 @@ export default class CompanyPage extends Component{
         				
         				<IconButton
 	        				onClick={event => {
-	        					item.update({
-	        						a: "DSfds",
-	        					});
+	        					item.update({});
 	        				}}
 	        			>
 	        				<EditIcon 

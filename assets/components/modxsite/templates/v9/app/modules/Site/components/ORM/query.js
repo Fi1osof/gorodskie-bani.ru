@@ -1,6 +1,7 @@
 
 const defaultQuery = `
 
+
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -870,6 +871,11 @@ fragment ResourceFields on ResourceType{
     lat
     lng
   }
+  _errors {
+    name
+    error_message
+  }
+  _Dirty
 }
 
 fragment Comment on CommentType{
@@ -1373,6 +1379,16 @@ mutation saveSearchStat(
     ...SearchStat
   }
 }
+
+mutation addTopic(
+  $getTVs:Boolean = true
+){
+  addTopic{
+    ...ResourceFields
+  }
+}
+
+
 
 
 `;

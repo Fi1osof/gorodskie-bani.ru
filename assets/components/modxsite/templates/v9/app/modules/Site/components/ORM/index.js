@@ -489,6 +489,10 @@ const mutationFields = {
       },
     },
   },
+  addTopic: {
+    type: ResourceType,
+    description: "Добавление нового топика",
+  },
 }
 
 

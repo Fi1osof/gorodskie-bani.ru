@@ -41,7 +41,8 @@ import {
 
 import {
   ResourceType,
-	getList as getResourcesList,
+  getList as getResourcesList,
+	add as addTopic,
 } from './Resource';
 
 import {
@@ -637,6 +638,18 @@ const rootResolver = (source, args, context, info) => {
           // console.log("rootResolver addCompany info", info);
 
           return companyAddGalleryImage(source, args, context, info); 
+          
+        }
+
+        break;
+
+      case "addTopic":
+
+        if(returnType === ResourceType){
+
+          // console.log("rootResolver addCompany info", info);
+
+          return addTopic(source, args, context, info); 
           
         }
 

@@ -99,6 +99,28 @@ export default class MainMenu extends Component{
         cities,
       });
 
+    })
+    .catch(e => {
+      console.error(e);
+    });
+
+  }
+
+  addTopic(){
+
+    const {
+      localQuery,
+    } = this.context;
+
+
+    localQuery({
+      operationName: "addTopic",
+    })
+    .then(r => {
+
+    })
+    .catch(e => {
+      console.error(e);
     });
 
   }
@@ -358,13 +380,15 @@ export default class MainMenu extends Component{
                   {user 
                     ?
                     <li className="">
-                      <Link 
-                        to={`/profile/${username}/add-topic`} 
-                        href={`/profile/${username}/add-topic`}
+                      <a 
+                        // to={`/profile/${username}/add-topic`} 
+                        // href={`/profile/${username}/add-topic`}
+                        href="javascript:;"
                         title="Добавить публикацию"
                         rel="nofollow"
                         onClick={event => {
                           this.closeMenu();
+                          this.addTopic();
                         }}
                         style={{
                           display: "flex",
@@ -387,7 +411,7 @@ export default class MainMenu extends Component{
                           /> 
                         </IconButton>
                         Добавить публикацию
-                      </Link>
+                      </a>
                     </li>
                     :
                     null

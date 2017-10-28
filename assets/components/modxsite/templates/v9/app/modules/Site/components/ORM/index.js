@@ -10,6 +10,7 @@ import {
   GraphQLBoolean,
 } from 'graphql';
 
+import GraphQLJSON from 'graphql-type-json';
 
 import { List } from 'immutable';
 
@@ -88,6 +89,8 @@ import {
 import {
   SearchStatType,
 } from './SearchStat';
+
+import EditVersionType from './EditVersion';
 
 
 // console.log('UserType', UserType, CompanyType);
@@ -424,6 +427,27 @@ const RootType = new GraphQLObjectType({
         },
       },
     },
+    editVersionsList: new listField({
+      type: EditVersionType,
+      name: "editVersionsList",
+      description: "Список внесенных изменний с постраничностью",
+      args: Object.assign({}, listArgs),
+    }),
+    editVersions: {
+      type: new GraphQLList(EditVersionType),
+      description: "Список результатов поисковых запросов",
+      args: Object.assign({
+      }, listArgs),
+    },
+    editVersion: {
+      type: EditVersionType,
+      description: EditVersionType.description,
+      args: {
+        id: {
+          type: GraphQLInt,
+        },
+      },
+    },
 
     // // ratings: {
     // //   type: new GraphQLList(RatingType),
@@ -458,6 +482,20 @@ const mutationFields = {
       image: {
         type: new GraphQLNonNull(GraphQLString),
         description: "УРЛ к картинке",
+      },
+    },
+  },
+  updateCompany: {
+    type: EditVersionType,
+    description: "Сохранение измененных данных компании",
+    args: {
+      target_id: {
+        type: new GraphQLNonNull(GraphQLInt),
+        description: "ID компании",
+      },
+      data: {
+        type: new GraphQLNonNull(GraphQLJSON),
+        description: "Измененные данные компании",
       },
     },
   },

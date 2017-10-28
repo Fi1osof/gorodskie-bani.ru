@@ -90,6 +90,13 @@ import {
 } from './SearchStat';
 
 
+import EditVersionType from 'modules/Site/components/ORM/EditVersion';
+
+import {
+  create as createEditVersion,
+} from './EditVersion';
+
+
 const rootResolver = async (source, args, context, info) => {
 
 
@@ -200,6 +207,8 @@ const rootResolver = async (source, args, context, info) => {
 
     if(operation && operation.name){
 
+      // console.log("operation.name", operation.name, returnType);
+
       switch(operation.name.value){
 
         case "clearCache":
@@ -250,21 +259,23 @@ const rootResolver = async (source, args, context, info) => {
         // Сохранение поискового запроса
         case "saveSearchStat":
 
-
-          // if(result && (result instanceof SearchStatType)){
           if(returnType === SearchStatType){
 
-            // const {
-            //   lat,
-            //   lng,
-            // } = args;
-
-            // result.update({
-            //   lat,
-            //   lng,
-            // });
-
             return createSearchStat(null, args, context, info);
+
+          }
+
+          break;
+
+        // Сохранение поискового запроса
+        case "updateCompany":
+
+          if(returnType === EditVersionType){
+
+            // console.log("EditVersionType create args", args);
+
+            return createEditVersion(null, args, context, info);
+
           }
 
           break;

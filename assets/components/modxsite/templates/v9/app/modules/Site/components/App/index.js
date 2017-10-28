@@ -1415,13 +1415,13 @@ export class AppMain extends Component{
       }
 
       // Пропускаем свойства-объекты
-      if(
-        typeof value === "object" 
-        && !Array.isArray(value)
-        && value !== null
-      ){
-        continue;
-      }
+      // if(
+      //   typeof value === "object" 
+      //   && !Array.isArray(value)
+      //   && value !== null
+      // ){
+      //   continue;
+      // }
 
       // Пропускаем временные свойства
       if(/^\_/.test(i)){

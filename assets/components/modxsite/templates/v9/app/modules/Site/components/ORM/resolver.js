@@ -51,8 +51,6 @@ import {
   getList as getSearchResultsList,
 } from './Search';
 
-
-
 // const rootResolver = async (source, args, context, info) => {
 
 

@@ -1420,6 +1420,56 @@ mutation addComment(
   }
 }
 
+query editVersions(
+  $editVersionLimit:Int = 10
+  $withPagination:Boolean = false
+){
+  ...RootEditVersions
+}
+
+fragment RootEditVersions on RootType{
+  editVersionsList(
+    limit:$editVersionLimit
+  ) @include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...editVersion
+    }
+  }
+  editVersions(
+    limit:$editVersionLimit
+  ) @skip(if:$withPagination)
+  {
+    ...editVersion
+  }
+}
+
+
+fragment editVersion on EditVersionType{
+  id
+  target_id
+  editedby
+  editedon
+  status
+  data
+}
+
+
+mutation updateCompany(
+  $updateCompanyId:Int!
+  $updateCompanyData:JSON!
+){
+  updateCompany(
+    target_id: $updateCompanyId
+    data:$updateCompanyData
+  ){
+    ...editVersion
+  }
+}
+
+
 
 `;
 

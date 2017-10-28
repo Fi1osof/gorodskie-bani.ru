@@ -105,7 +105,6 @@ export default class OfferForm extends Component{
 
 		this.setState({
 			editorState,
-			subject: "",
 		});
 
 	}

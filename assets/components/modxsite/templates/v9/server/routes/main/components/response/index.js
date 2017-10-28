@@ -1957,7 +1957,7 @@ export default class Response{
         contextValue: Object.assign({}, this, {
           SendMODXRequest: async (action, params) => {
 
-            console.log('SendMODXRequest action, params', action, params);
+            // console.log('SendMODXRequest action, params', action, params);
 
             return this.SendMODXRequest(action, params, req);
 
@@ -2012,11 +2012,11 @@ export default class Response{
 
             }
 
-            console.error("localQuery result", result);
+            // console.error("localQuery result", result);
 
-            console.error("localQuery result errors", errors);
+            // console.error("localQuery result errors", errors);
 
-            console.error("localQuery result JSON error", JSON.stringify(result));
+            // console.error("localQuery result JSON error", JSON.stringify(result));
 
             return reject(responseMessage, {...responseObject});
 

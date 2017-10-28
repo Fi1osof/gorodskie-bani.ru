@@ -52,7 +52,7 @@ export const create = async (source, args, context, info) => {
   const saveResult = await request
   .then((data) => {
   
-    console.log("Company update result", data);
+    // console.log("Company update result", data);
 
     if(!data.success){
 
@@ -66,9 +66,9 @@ export const create = async (source, args, context, info) => {
 
       let user_id = saveErrors && saveErrors.find(n => n.id === "user_id");
 
-      editedby = user_id && parseInt(user_id) || undefined;
+      editedby = user_id && parseInt(user_id.msg) || undefined;
 
-      throw(editedby);
+      // throw(editedby);
 
       if(error_code){
 
@@ -78,13 +78,16 @@ export const create = async (source, args, context, info) => {
 
           case 'UNAUTHORIZED':
 
-            responseMessage = "Вы были неавторизованы, поэтому данные будут опубликованы после проверки модератором. Отправленные вами данные сохранены. Спасибо!";
+            responseMessage = "Вы не были авторизованы, поэтому данные будут опубликованы после проверки модератором. Отправленные вами данные сохранены. Спасибо!";
+
+            break; 
+
 
           case 'NOT_OWNER':
 
             responseMessage = "Вы не являетесь владельцем компании, поэтому данные будут опубликованы после проверки модератором. Отправленные вами данные сохранены. Спасибо!";
 
-            break;
+            break; 
 
           default: preventError = false;
         }
@@ -107,13 +110,19 @@ export const create = async (source, args, context, info) => {
 
     }
 
-    result = data;
+    // result = data;
+
+    return data;
   })
   .catch((e) => {
     throw(new Error(e));
   });
 
   // return result;
+
+  if(saveResult && saveResult.success){
+    return saveResult;
+  }
 
 
   const {

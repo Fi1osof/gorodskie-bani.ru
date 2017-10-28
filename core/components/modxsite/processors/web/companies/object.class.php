@@ -186,7 +186,7 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 				return "Вы не атворизованы. Пожалуйста, авторизуйтесь.";
 			}
 
-			if($object->createdby != $this->modx->user->id){
+			else if($object->createdby != $this->modx->user->id){
 				$this->addFieldError("error_code", "NOT_OWNER");
 				return "Вы не можете сохранить изменения в чужой компании. Если это ваша компания, пожалуйста, свяжитесь с нами по почте info@gorodskie-bani.ru";
 			}

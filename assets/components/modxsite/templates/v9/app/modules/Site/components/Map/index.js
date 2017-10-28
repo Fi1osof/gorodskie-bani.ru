@@ -1899,6 +1899,108 @@ export default class MapMainView extends Component{
     		:
     		null
     	}
+
+			{map && maps
+    		?
+    		<Control
+    			map={map}
+    			maps={maps}
+    			position="LEFT_TOP"
+    		>  
+					<IconButton
+						style={{
+							borderRadius: "50%",
+					    backgroundColor: "rgba(255,255,255,0.5)",
+					    width: 35,
+					    height: 35,
+					    marginRight: 5,
+					    marginTop: 5,
+					    marginLeft: 10,
+						}}
+						accent={!expandAllCompanies}
+    				onClick={e => {
+
+    					this.setState({
+    						expandAllCompanies: !expandAllCompanies,
+    					});
+
+    					this.triggerGoal('showAllCompanies');
+
+    				}}
+  				>
+    				<ShowAllIcon 
+    				/>
+  				</IconButton> 
+
+    		</Control>
+
+
+	    		// <Control
+	    		// 	map={map}
+	    		// 	maps={maps}
+	    		// 	position="LEFT_BOTTOM"
+	    		// > 
+
+	    		// 	<a
+	    		// 		href="javascript:;"
+	    		// 		style={{
+	    		// 			// textShadow: "0px 0px 5px #ccc",
+    			// 			fontSize: 12,
+    			// 			background: "rgba(256,256,256,0.7)",
+						 //    display: "block",
+						 //    paddingRight: 10,
+	    		// 		}}
+	    		// 		onClick={e => {
+
+	    		// 			const {
+	    		// 				localQuery,
+	    		// 			} = this.context;
+
+	    		// 			localQuery({
+	    		// 				operationName: "addCompany",
+	    		// 			});
+
+	    		// 			this.triggerGoal('addCompanyClick');
+
+	    		// 		}}
+	    		// 	>
+	    		// 		<Grid
+	    		// 			container
+	    		// 			gutter={0}
+	    		// 			align="center"
+	    		// 		>
+	    		// 			<IconButton
+			    // 				// accent
+			    // 				// style={{
+			    // 				// 	height: 40,
+			    // 				// 	width: 40,
+			    // 				// }}
+							// 		style={{
+							// 			borderRadius: "50%",
+							// 	    backgroundColor: "rgba(255,255,255,0.5)",
+							// 	    width: 35,
+							// 	    height: 35,
+							// 	    marginRight: 5,
+							// 	    marginTop: 5,
+							// 		}}
+							// 		accent
+		    	// 			>
+			    // 				<AddIcon 
+				   //  				// style={{
+				   //  				// 	height: 40,
+				   //  				// 	width: 40,
+				   //  				// }}
+			    // 				/>
+		    	// 			</IconButton>
+		    	// 			Добавить заведение
+	    		// 		</Grid>
+	    		// 	</a>
+
+	    		// </Control>
+	    		
+	    		:
+	    		null
+    	}
  
 
 			{map && maps
@@ -2015,108 +2117,7 @@ export default class MapMainView extends Component{
 	    		:
 	    		null
     	}
-
-			{map && maps
-    		?
-    		<Control
-    			map={map}
-    			maps={maps}
-    			position="LEFT_TOP"
-    		>  
-					<IconButton
-						style={{
-							borderRadius: "50%",
-					    backgroundColor: "rgba(255,255,255,0.5)",
-					    width: 35,
-					    height: 35,
-					    marginRight: 5,
-					    marginTop: 5,
-					    marginLeft: 10,
-						}}
-						accent={!expandAllCompanies}
-    				onClick={e => {
-
-    					this.setState({
-    						expandAllCompanies: !expandAllCompanies,
-    					});
-
-    					this.triggerGoal('showAllCompanies');
-
-    				}}
-  				>
-    				<ShowAllIcon 
-    				/>
-  				</IconButton> 
-
-    		</Control>
-
-
-	    		// <Control
-	    		// 	map={map}
-	    		// 	maps={maps}
-	    		// 	position="LEFT_BOTTOM"
-	    		// > 
-
-	    		// 	<a
-	    		// 		href="javascript:;"
-	    		// 		style={{
-	    		// 			// textShadow: "0px 0px 5px #ccc",
-    			// 			fontSize: 12,
-    			// 			background: "rgba(256,256,256,0.7)",
-						 //    display: "block",
-						 //    paddingRight: 10,
-	    		// 		}}
-	    		// 		onClick={e => {
-
-	    		// 			const {
-	    		// 				localQuery,
-	    		// 			} = this.context;
-
-	    		// 			localQuery({
-	    		// 				operationName: "addCompany",
-	    		// 			});
-
-	    		// 			this.triggerGoal('addCompanyClick');
-
-	    		// 		}}
-	    		// 	>
-	    		// 		<Grid
-	    		// 			container
-	    		// 			gutter={0}
-	    		// 			align="center"
-	    		// 		>
-	    		// 			<IconButton
-			    // 				// accent
-			    // 				// style={{
-			    // 				// 	height: 40,
-			    // 				// 	width: 40,
-			    // 				// }}
-							// 		style={{
-							// 			borderRadius: "50%",
-							// 	    backgroundColor: "rgba(255,255,255,0.5)",
-							// 	    width: 35,
-							// 	    height: 35,
-							// 	    marginRight: 5,
-							// 	    marginTop: 5,
-							// 		}}
-							// 		accent
-		    	// 			>
-			    // 				<AddIcon 
-				   //  				// style={{
-				   //  				// 	height: 40,
-				   //  				// 	width: 40,
-				   //  				// }}
-			    // 				/>
-		    	// 			</IconButton>
-		    	// 			Добавить заведение
-	    		// 		</Grid>
-	    		// 	</a>
-
-	    		// </Control>
-	    		
-	    		:
-	    		null
-    	}
+    	
 
 			{map && maps
     		?

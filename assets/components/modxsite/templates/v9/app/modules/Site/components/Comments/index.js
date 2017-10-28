@@ -85,6 +85,7 @@ export default class Comments extends Component{
 
 		const {
 			comments,
+			newCommentForm,
 		} = this.props;
 
 		const {
@@ -107,35 +108,39 @@ export default class Comments extends Component{
 		return <div>
 			{commentsList}
 
-			<div
-				style={{
-					marginTop: 30,
-				}}
-			>
+			{newCommentForm
+				?
+				<div
+					style={{
+						marginTop: 30,
+					}}
+				>
 
-				{newComment
-					?
-					<Comment 
-						item={newComment}
-						onSuccess={r => {
-							this.setState({
-								newComment: null,
-							});
-						}}
-					/>
-					:
-					<Button
-						style={{
-							textTransform: "none",
-						}}
-						onClick={::this.addComment}
-					>
-						<CommentIcon />	Написать комментарий
-					</Button>
-				}
+					{newComment
+						?
+						<Comment 
+							item={newComment}
+							onSuccess={r => {
+								this.setState({
+									newComment: null,
+								});
+							}}
+						/>
+						:
+						<Button
+							style={{
+								textTransform: "none",
+							}}
+							onClick={::this.addComment}
+						>
+							<CommentIcon />	Написать комментарий
+						</Button>
+					}
 
-
-			</div>
+				</div>
+				:
+				null
+			}
 
 		</div>
 	}

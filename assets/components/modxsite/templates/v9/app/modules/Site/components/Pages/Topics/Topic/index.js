@@ -569,6 +569,7 @@ export default class Topic extends Component{
 				<Comments 
 					comments={comments}
 					resource={item}
+					newCommentForm={true}
 				/>
 				:
 				null

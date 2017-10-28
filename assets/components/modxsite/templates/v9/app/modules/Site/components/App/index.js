@@ -227,6 +227,7 @@ export class AppMain extends Component{
     updateContactItem: PropTypes.func,
     saveContactItem: PropTypes.func,
     updateTopicItem: PropTypes.func,
+    saveTopicItem: PropTypes.func,
     setPageTitle: PropTypes.func,
     CoordsStore: PropTypes.object,
     CompaniesStore: PropTypes.object,
@@ -287,6 +288,7 @@ export class AppMain extends Component{
       updateContactItem: this.updateContactItem,
       saveContactItem: this.saveContactItem,
       updateTopicItem: this.updateTopicItem,
+      saveTopicItem: this.saveTopicItem,
       setPageTitle: this.setPageTitle,
       getCounters: this.getCounters,
       user,
@@ -1609,6 +1611,49 @@ export class AppMain extends Component{
     }
 
     this.updateItem(item, data, TopicsStore, silent);
+  }
+
+
+  saveTopicItem = (item) => {
+    // 
+
+    let {
+      TopicsStore: store,
+    } = this.state;
+
+    item = item && store.getState().find(n => n.id === item.id);
+
+    if(!item){
+      throw(new Error("Не был получен объект топика"));
+    }
+
+    let {
+      id: itemId,
+    } = item;
+
+    const callback = (data, errors) => { 
+
+      if(data.success && data.object){
+
+        const {
+          id,
+          uri,
+        } = data.object;
+
+        if(id !== itemId){
+
+          // const uri = `/topics/${id}/`;
+          
+          browserHistory.replace(uri);
+        }
+
+        this.reloadApiData();
+
+        return;
+      }
+    }
+
+    return this.saveItem(store, item, 'topic/', callback);
   }
 
 

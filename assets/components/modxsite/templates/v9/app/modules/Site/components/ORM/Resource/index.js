@@ -430,8 +430,12 @@ export const ResourceType = new GraphQLObjectType({
           return rootResolver(null, args, context, info);
         },
       },
+      // _errors: {
+      //   type: new GraphQLList(ErrorType),
+      //   description: "Ошибки после попытки сохранения",
+      // },
       _errors: {
-        type: new GraphQLList(ErrorType),
+        type: GraphQLJSON,
         description: "Ошибки после попытки сохранения",
       },
       _Dirty: {
@@ -452,11 +456,17 @@ export const ResourceType = new GraphQLObjectType({
 // Добавляем новый топик
 export const add = (source, args, context, info) => {
 
-  console.log("Resource add");
+  // console.log("Resource add");
 
   let {
     TopicsStore,
   } = context.state;
+
+  const {
+    user: {
+      user: currentUser,
+    },
+  } = context.props;
 
   const id = Math.round(Math.random() * 10000000) * -1;
 
@@ -465,7 +475,13 @@ export const add = (source, args, context, info) => {
   let data = {
   };
 
-  let item = {};
+  let item = {
+    id,
+    uri,
+    createdby: currentUser && currentUser.id || undefined,
+    createdon: Math.round(new Date().getTime() / 1000),
+    _isDirty: {},
+  };
 
   TopicsStore.getDispatcher().dispatch(TopicsStore.actions.CREATE, item);
 

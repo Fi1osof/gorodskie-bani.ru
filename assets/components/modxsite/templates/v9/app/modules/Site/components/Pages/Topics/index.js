@@ -144,7 +144,7 @@ export default class TopicsPage extends Page {
 
 	loadData(){
 
-		console.log("Topics loadData");
+		// console.log("Topics loadData");
 
 
 		if(typeof window === "undefined"){

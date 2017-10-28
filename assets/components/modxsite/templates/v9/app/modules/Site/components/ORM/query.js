@@ -1,7 +1,6 @@
 
 const defaultQuery = `
 
-
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -871,10 +870,7 @@ fragment ResourceFields on ResourceType{
     lat
     lng
   }
-  _errors {
-    name
-    error_message
-  }
+  _errors
   _Dirty
 }
 

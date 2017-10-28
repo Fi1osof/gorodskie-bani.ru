@@ -57,9 +57,9 @@ class modWebSocietyTopicsValidator extends modWebValidator{
         }
         if(!$topic_tags){
             # $error = "Не указан ни один тег";
-            $error = $this->modx->lexicon('topic_post.error.type_topic_tags');
-            $this->addFieldError('topic_tags', $error);
-            return $error;
+            // $error = $this->modx->lexicon('topic_post.error.type_topic_tags');
+            // $this->addFieldError('topic_tags', $error);
+            // return $error;
         }
         else{
             // Иначе сохраняем активные теги в топик

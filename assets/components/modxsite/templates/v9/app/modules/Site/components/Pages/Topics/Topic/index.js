@@ -23,6 +23,8 @@ import UserLink from 'modules/Site/components/fields/User/link';
 
 import Comments from 'modules/Site/components/Comments';
 
+import Editor from 'modules/Site/components/fields/Editor';
+
 export default class Topic extends Component{
 
 	static propTypes = {
@@ -39,6 +41,7 @@ export default class Topic extends Component{
 	static contextTypes = {
 		localQuery: PropTypes.func.isRequired,
 		updateTopicItem: PropTypes.func.isRequired,
+		saveTopicItem: PropTypes.func.isRequired,
 		// setPageTitle: PropTypes.func.isRequired,
 	};
 
@@ -148,6 +151,20 @@ export default class Topic extends Component{
 		} = this.context;
 
 		return updateTopicItem(item, data, silent);
+
+	}
+
+	saveItem(){
+
+		const {
+			saveTopicItem,
+		} = this.context;
+
+		const {
+			item,
+		} = this.props;
+
+		return saveTopicItem(item);
 
 	}
 
@@ -287,16 +304,32 @@ export default class Topic extends Component{
 		let content;
 
 
-		if(open){
+		if(open || inEditMode){
 
-			content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
+			// content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
+			// content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
+
+			content =	<Editor 
+				value={topicContent || ""}
+				readOnly={!inEditMode}
+				name="content"
+				label={inEditMode ? "Содержимое публикации" : undefined}
+				error={errors && errors.content ? true : false}
+				helperText={errors && errors.content || ""}
+				onChange={this.onChange}
+				onFocus={() => this.onFocus('content')}
+			/>
 
 		}
 		else{
 
 			content = <div>
 
-				<span dangerouslySetInnerHTML={{__html: short_text || summary}} />
+				{/*<span dangerouslySetInnerHTML={{__html: short_text || summary}} />*/}
+
+				<Editor 
+					value={short_text || summary || topicContent || ""}
+				/>
 
 				{short_text != topicContent 
 					? 
@@ -369,7 +402,7 @@ export default class Topic extends Component{
 	      				
 	      				<IconButton
 	        				onClick={event => {
-	        					// this.saveItem();
+	        					this.saveItem();
 	        				}}
 	        			>
 	        				<SaveIcon 

@@ -23,6 +23,37 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
     
     
     public function initialize(){
+
+        $request_body = file_get_contents('php://input');
+
+        if($request_body AND $data = json_decode($request_body, 1)){
+            $this->setProperties($data);
+        }
+        
+        foreach($this->properties as $field => & $value){
+
+            if(!is_scalar($value)){
+                continue;
+            }
+
+            $v = (string)$value;
+
+            if($v === "null"){
+                $value = null;
+            }
+            else if($v === "true"){
+                $value = true;
+            }
+            else if($v === "false"){
+                $value = false;
+            }
+            else if($v === "NaN"){
+                unset($this->properties[$field]);
+            }
+            else if($v === "undefined"){
+                unset($this->properties[$field]);
+            }
+        }
         
         $this->setDefaultProperties(array(
             'no_send_emails'    => 0,       // Не отсылать емейл-рассылку пользователям о новом топике  
@@ -30,6 +61,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
         ));
         
         $this->setProperties(array(
+            "id"        => null,
             "parent" => 309,
             "template"  => 15,
             "tv24"       => $this->modx->hasPermission('society.approve_topics') ? '1' : '',
@@ -332,9 +364,10 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
     
     public function cleanup(){
         
-        # return $this->success('Топик успешно создан', array(
-        return $this->success($this->modx->lexicon('topic_post.success'), array(
+        return $this->success('Топик успешно создан', array(
+        // return $this->success($this->modx->lexicon('topic_post.success'), array(
             "id"    => $this->object->id,
+            "uri"    => $this->object->uri,
         ));
     }
     

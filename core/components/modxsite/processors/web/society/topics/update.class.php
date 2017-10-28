@@ -12,8 +12,41 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
     }
     
     public function initialize(){
+
+        $request_body = file_get_contents('php://input');
+
+        if($request_body AND $data = json_decode($request_body, 1)){
+            $this->setProperties($data);
+        }
         
-        if(!$id = (int)$this->getProperty('topic_id')){
+        foreach($this->properties as $field => & $value){
+
+            if(!is_scalar($value)){
+                continue;
+            }
+
+            $v = (string)$value;
+
+            if($v === "null"){
+                $value = null;
+            }
+            else if($v === "true"){
+                $value = true;
+            }
+            else if($v === "false"){
+                $value = false;
+            }
+            else if($v === "NaN"){
+                unset($this->properties[$field]);
+            }
+            else if($v === "undefined"){
+                unset($this->properties[$field]);
+            }
+        }
+
+        
+        // if(!$id = (int)$this->getProperty('topic_id')){
+        if(!$id = (int)$this->getProperty('id')){
             return "Не был указан ID топика";
         }
         else{

@@ -44,6 +44,7 @@ class modWebPublicActionProcessor extends modProcessor{
                     
                 
                 case 'topic/save':
+                case 'topic/create':
                     require dirname(dirname(__FILE__)) . '/society/topics/create.class.php';
                     self::$actualClassName = 'modWebSocietyTopicsCreateProcessor';
                     break; 

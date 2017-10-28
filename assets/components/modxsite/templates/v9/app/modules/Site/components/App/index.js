@@ -1545,6 +1545,233 @@ export class AppMain extends Component{
     return result;
   }
 
+  
+  saveVersionObject = async (store, item, graphQLParams) => {
+    
+
+    let {
+      documentActions: {
+        addInformerMessage,
+      },
+    } = this.props;
+
+    // 
+
+    if(!store){
+
+      console.error("Не было получено хранилище");
+      return;
+    }
+
+    if(
+      !item
+      || item._sending === true
+    ){
+      return;
+    }
+
+    // let {
+    //   id,
+    //   _isDirty,
+    // } = item;
+
+    // if(!_isDirty){
+
+    //   addInformerMessage({
+    //     text: "Нечего сохранять",
+    //     autohide: 4000,
+    //   });
+    //   return;
+    // }
+
+    let dispatcher = store.getDispatcher();
+
+    item._sending = true;
+      
+    // var action = id && id > 0 ? 'update' : 'create';
+
+    // var options = options || {};
+
+    // var body = {};
+
+    // body['id'] = id;;
+ 
+
+    // for(var i in _isDirty){
+    //   var value = _isDirty[i];
+
+    //   if(value === undefined){
+    //     continue;
+    //   }
+
+    //   // Пропускаем свойства-объекты
+    //   // if(
+    //   //   typeof value === "object" 
+    //   //   && !Array.isArray(value)
+    //   //   && value !== null
+    //   // ){
+    //   //   continue;
+    //   // }
+
+    //   // Пропускаем временные свойства
+    //   if(/^\_/.test(i)){
+    //     continue;
+    //   }
+
+    //   // 
+
+    //   body[i] = value;
+    // };
+
+    let result = await this.remoteQuery(graphQLParams)
+      .then(r => {
+        console.log("saveVersionObject", r); 
+
+        // let newObject = data.object || {};
+
+        // var errors = {};
+
+        // if(data.success === true){
+
+        //   // var items = lodash.clone(this.state.items);
+
+   
+
+        //   Object.assign(newObject, {
+        //     _isDirty: undefined,
+        //   });
+
+
+        //   addInformerMessage({
+        //     type: "success",
+        //     text: data.message || "Объект успешно сохранен",
+        //     autohide: 4000,
+        //   });
+        // }
+        // else{
+
+        //   if(data.data && data.data.length){
+        //     data.data.map(function(error){
+        //       var value = error.msg;
+        //       if(value && value != ''){
+        //         errors[error.id] = value;
+        //       }
+        //     });
+        //   }
+
+        //   errors.error_message = data.message;
+
+        //   // addInformerMessage && 
+
+        //   //   addInformerMessage({
+        //   //     text: data.message || "Ошибка выполнения запроса",
+        //   //     autohide: 4000,
+        //   //   });
+
+        //   // this.forceUpdate();
+        // }
+
+        // newState.errors = this.state.errors || {};
+
+        // newState.errors[item.id || 0] = errors;
+
+        // item._errors = errors;
+
+        // callback && callback(data, errors);
+        
+        // if(callback){
+        // }
+        
+        // this.forceUpdate();
+    
+
+        // item._sending = false;
+
+        // 
+
+        // this.forceUpdate();
+
+        // TODO store.commit
+
+        // Object.assign(newObject, {
+        //   _errors: errors,
+        //   _sending: false,
+        // });
+        // dispatcher.dispatch(store.actions["SAVE"], item, newObject); 
+
+        return r;
+
+      })
+      .catch(e => {
+        console.error(e);
+
+        // addInformerMessage(e.message || "Ошибка выполнения запроса");
+
+        // result = e;
+
+        // item._sending = false;
+
+        const {
+          success,
+          message,
+          data,
+        } = e;
+
+        var errors = {}; 
+
+        if(data && data.length){
+
+          data.map(function(error){
+            var value = error.msg;
+            if(value && value != ''){
+              errors[error.id] = value;
+            }
+          });
+
+        }
+
+        errors.error_message = message || "Ошибка выполнения запроса"; 
+
+        // newState.errors = this.state.errors || {};
+
+        // newState.errors[item.id || 0] = errors;
+
+        // item._errors = errors;
+
+        // callback && callback(data, errors);
+        
+        // if(callback){
+        // }
+        
+        // this.forceUpdate();
+    
+
+        // item._sending = false;
+
+        // 
+
+        // this.forceUpdate();
+
+        // TODO store.commit
+
+        Object.assign(item, {
+          _errors: errors,
+          _sending: false,
+        });
+
+
+
+        // throw(new Error(e));
+        throw(e);
+      });
+
+    item._sending = false;
+
+    this.forceUpdate();
+
+    return result;
+  }
+
   updateContactItem = (item, data, silent) => {
 
     let {
@@ -1565,40 +1792,100 @@ export class AppMain extends Component{
   }
 
 
-  saveContactItem = (item) => {
+  saveContactItem = async (item) => {
     // 
 
-    let {
+    const {
       CompaniesStore: store,
     } = this.state;
 
+    const {
+      documentActions,
+    } = this.props;
+
     let {
       id: itemId,
+      _isDirty,
     } = item;
 
-    const callback = (data, errors) => { 
+    if(!_isDirty){
 
-      if(data.success && data.object){
-
-        const {
-          id,
-          uri,
-        } = data.object;
-
-        if(id !== itemId){
-
-          // const uri = `/bani/${id}/`;
-          
-          browserHistory.replace(uri);
-        }
-
-        this.reloadApiData();
-
-        return;
-      }
+      addInformerMessage({
+        text: "Нечего сохранять",
+        autohide: 4000,
+      });
+      return;
     }
 
-    return this.saveItem(store, item, 'companies/', callback);
+    if(itemId > 0){
+
+      return await this.saveVersionObject(store, item, {
+        operationName: "updateCompany",
+        variables: {
+          updateCompanyId: itemId,
+          updateCompanyData: _isDirty,
+        },
+      })
+      .then(r => {
+
+        console.log("updateCompany result", r);
+
+        const {
+          updateCompany,
+        } = r && r.object || {};
+
+        if(updateCompany){
+
+          const {
+            message,
+          } = updateCompany;
+
+          if(message){
+            documentActions.addInformerMessage({
+              text: message,
+              autohide: 20000,
+            });
+          }
+
+          item._isDirty = null;
+
+          this.reloadApiData();
+
+        }
+        
+      })
+      .catch(e => {
+        console.error(e);
+      });
+
+    }
+    else{
+
+      const callback = (data, errors) => { 
+
+        if(data.success && data.object){
+
+          const {
+            id,
+            uri,
+          } = data.object;
+
+          if(id !== itemId){
+
+            // const uri = `/bani/${id}/`;
+            
+            browserHistory.replace(uri);
+          }
+
+          this.reloadApiData();
+
+          return;
+        }
+      }
+
+      return this.saveItem(store, item, 'companies/', callback);
+
+    }
   }
 
 

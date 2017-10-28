@@ -1916,6 +1916,10 @@ export default class Response{
       result = this.success("", response && response.data || null, res);
     })
     .catch(e => {
+
+
+      console.error("Response process e", e);
+
       result = this.failure(e, null, res);
     });
 
@@ -1953,6 +1957,8 @@ export default class Response{
         contextValue: Object.assign({}, this, {
           SendMODXRequest: async (action, params) => {
 
+            console.log('SendMODXRequest action, params', action, params);
+
             return this.SendMODXRequest(action, params, req);
 
           },
@@ -1972,14 +1978,66 @@ export default class Response{
               ...other
             } = errors[0];
 
-            console.error("localQuery error", result);
-            return reject(message, {...other});
+            let responseMessage = message;
+
+            let responseObject = other;
+
+            if(message && typeof message === "string"){
+
+              try{
+
+                let response = JSON.parse(message);
+
+                reject(response);
+
+                // const {
+                //   success,
+                //   message: rMessage,
+                //   data,
+                // } = response || {};
+
+                // responseMessage = rMessage;
+                // responseObject = data;
+
+                // console.error("localQuery error response", response);
+
+                // responseObject = {
+                //   dsfgdsf: "FDgfdgfdg 4444",
+                // };
+
+              }
+              catch(e){
+
+              }
+
+            }
+
+            console.error("localQuery result", result);
+
+            console.error("localQuery result errors", errors);
+
+            console.error("localQuery result JSON error", JSON.stringify(result));
+
+            return reject(responseMessage, {...responseObject});
+
+            // return reject({
+            //   success: false,
+            //   message: "SDfdsf",
+            //   object: {
+            //     dsfdsf: "SDfdsf",
+            //   },
+            // });
           }
+
+          // console.error("localQuery result error", result);
+
+          // console.error("localQuery result JSON error", JSON.stringify(result));
 
           return resolve(result);
         })
         .catch(e => {
           console.error("localQuery error", e);
+          console.error("localQuery JSON error", JSON.stringify(e));
           reject(e);
         });
     });
@@ -2130,6 +2188,9 @@ export default class Response{
   }
 
   failure(message, object, res){
+          
+    console.error("Response failure", message, object);
+    console.error("Response failure JSON", JSON.stringify(message));
 
     return this.outputResponse(res, false, message, object)
   }
@@ -2143,6 +2204,10 @@ export default class Response{
       message,
       object,
     };
+
+    if(typeof message === "object"){
+      output = message;
+    }
 
     // this.res.writeHead(200, {'Content-Type': 'application/json'});
     // this.res.end(JSON.stringify(output));

@@ -1,6 +1,7 @@
 
 const defaultQuery = `
 
+
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -1454,6 +1455,8 @@ fragment editVersion on EditVersionType{
   editedon
   status
   data
+  message
+  errors
 }
 
 

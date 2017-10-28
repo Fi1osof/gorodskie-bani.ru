@@ -1480,7 +1480,7 @@ export default class Router {
   async SendMODXRequest(action, params, req){
 
     // console.log('SendMODXRequest', req, params);
-    // console.log('SendMODXRequest', params);
+    console.log('SendMODXRequest', params);
 
     // return {};
 
@@ -1534,26 +1534,27 @@ export default class Router {
       // var postData = querystring.stringify(params);
 
 
-      form = new FormData()
+      // form = new FormData()
 
-      for(var i in params){
+      // for(var i in params){
         
-        var value = params[i];
+      //   var value = params[i];
 
-        value = (typeof value !== "undefined") && value.toString && value.toString() || undefined;
+      //   value = (typeof value !== "undefined") && value.toString && value.toString() || undefined;
 
-        if(value !== undefined){
-          form.append(i, value);
-        }
-      }
+      //   if(value !== undefined){
+      //     form.append(i, value);
+      //   }
+      // }
 
       // form.append('limit', 3);
       // form.append('with_coors_only', 'true');
 
-      options.body = form;
+      // options.body = form;
 
       // Object.assign(options.headers, form.getHeaders());
 
+      options.body = JSON.stringify(params);
       
     }
 

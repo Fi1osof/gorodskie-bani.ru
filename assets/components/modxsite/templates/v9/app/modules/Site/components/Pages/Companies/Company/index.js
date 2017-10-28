@@ -61,7 +61,9 @@ export default class CompanyPage extends Component{
 
 		super(props);
 
-		this.state = {};
+		this.state = {
+			sending: false,
+		};
 	}
 
 	componentWillMount(){
@@ -273,7 +275,7 @@ export default class CompanyPage extends Component{
 		return updateContactItem(item, data);
 	}
 
-	saveItem = () => {
+	saveItem = async () => {
 
 		const {
 			item,
@@ -283,7 +285,22 @@ export default class CompanyPage extends Component{
 			saveContactItem,
 		} = this.context;
 
-		return saveContactItem(item);
+		this.setState({
+			sending: true,
+		});
+
+		await saveContactItem(item)
+			.then(r => {
+				console.log("Save Company item result", r);
+			})
+			.catch(e => {
+				console.error(e);
+			});
+
+		this.setState({
+			sending: false,
+		});
+		
 	}
 
 
@@ -379,6 +396,7 @@ export default class CompanyPage extends Component{
 
 		const {
 			galleryItem,
+			sending,
 		} = this.state;
 
 		const {
@@ -900,6 +918,7 @@ export default class CompanyPage extends Component{
 	        				onClick={event => {
 	        					this.saveItem();
 	        				}}
+	        				disabled={sending}
 	        			>
 	        				<SaveIcon 
 	        					color="red"

@@ -74,7 +74,8 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 
 		$object = & $this->object;
 		
-    	// print_r($this->properties);
+    	$this->modx->log(1, print_r($this->properties, 1), "FILE");
+    	$this->modx->log(1, print_r($this->modx->user->toArray(), 1), "FILE");
 
 		// print_r($object->toArray());
 
@@ -160,7 +161,12 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 		// 	$this->addFieldError("address", "Необходимо указать адрес заведения");
 		// }
 
+		// return "Debug";
+
 		if(!$this->modx->hasPermission("SUDO") && !$this->hasErrors()){
+				
+			$this->addFieldError("user_id", $this->modx->user->id);
+
 
 			if(!$object->createdby){
 
@@ -176,10 +182,12 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 			}
 
 			if(!$this->modx->user->id){
+				$this->addFieldError("error_code", "UNAUTHORIZED");
 				return "Вы не атворизованы. Пожалуйста, авторизуйтесь.";
 			}
 
 			if($object->createdby != $this->modx->user->id){
+				$this->addFieldError("error_code", "NOT_OWNER");
 				return "Вы не можете сохранить изменения в чужой компании. Если это ваша компания, пожалуйста, свяжитесь с нами по почте info@gorodskie-bani.ru";
 			}
 

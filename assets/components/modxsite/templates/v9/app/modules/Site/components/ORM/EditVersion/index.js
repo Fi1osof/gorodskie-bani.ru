@@ -40,6 +40,14 @@ const EditVersionType = new GraphQLObjectType({
 			type: GraphQLString,
 			description: "Статус изменения. 0 - Новый. 1 - Подтвержден. 2 - Отменен",
 		},
+		message: {
+			type: GraphQLString,
+			description: "Серверное сообщение",
+		},
+    errors: {
+      type: GraphQLJSON,
+      description: "Ошибки после попытки сохранения",
+    },
 	},
 });
 

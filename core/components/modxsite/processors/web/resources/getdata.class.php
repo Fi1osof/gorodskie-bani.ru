@@ -7,45 +7,76 @@ class modWebResourcesGetdataProcessor extends modSiteWebResourcesGetdataProcesso
     public function initialize(){
         
 
-        foreach($this->properties as $name => & $value){
+        $request_body = file_get_contents('php://input');
 
-            if(is_scalar($value)){
+        if($request_body AND $data = json_decode($request_body, 1)){
+            $this->setProperties($data);
+        }
+        
+        foreach($this->properties as $field => & $value){
 
-                switch((string)$value){
-
-                    case 'true':
-
-                        $value = true;
-
-                        break;
-
-                    case 'false':
-
-                        $value = false;
-
-                        break;
-
-                    case '0':
-
-                        $value = 0;
-
-                        break;
-
-                    case 'null':
-
-                        $value = null;
-
-                        break;
-
-                    case 'undefined':
-
-                        unset($this->properties[$name]);
-
-                        break;
-                }
+            if(!is_scalar($value)){
+                continue;
             }
 
+            $v = (string)$value;
+
+            if($v === "null"){
+                $value = null;
+            }
+            else if($v === "true"){
+                $value = true;
+            }
+            else if($v === "false"){
+                $value = false;
+            }
+            else if($v === "NaN"){
+                unset($this->properties[$field]);
+            }
+            else if($v === "undefined"){
+                unset($this->properties[$field]);
+            }
         }
+
+        // foreach($this->properties as $name => & $value){
+
+        //     if(is_scalar($value)){
+
+        //         switch((string)$value){
+
+        //             case 'true':
+
+        //                 $value = true;
+
+        //                 break;
+
+        //             case 'false':
+
+        //                 $value = false;
+
+        //                 break;
+
+        //             case '0':
+
+        //                 $value = 0;
+
+        //                 break;
+
+        //             case 'null':
+
+        //                 $value = null;
+
+        //                 break;
+
+        //             case 'undefined':
+
+        //                 unset($this->properties[$name]);
+
+        //                 break;
+        //         }
+        //     }
+
+        // }
 
         $this->setDefaultProperties(array( 
             /*

@@ -304,10 +304,7 @@ export default class Topic extends Component{
 		let content;
 
 
-		if(open || inEditMode){
-
-			// content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
-			// content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
+		if(inEditMode){
 
 			content =	<Editor 
 				value={topicContent || ""}
@@ -321,15 +318,21 @@ export default class Topic extends Component{
 			/>
 
 		}
+		else if(open){
+
+			// content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
+			content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
+
+		}
 		else{
 
 			content = <div>
 
-				{/*<span dangerouslySetInnerHTML={{__html: short_text || summary}} />*/}
+				<span dangerouslySetInnerHTML={{__html: short_text || summary}} />
 
-				<Editor 
+				{/*<Editor 
 					value={short_text || summary || topicContent || ""}
-				/>
+				/>*/}
 
 				{short_text != topicContent 
 					? 

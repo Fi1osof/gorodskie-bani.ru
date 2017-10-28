@@ -45,6 +45,11 @@ export default class Comments extends Component{
 
 		return <div>
 			{commentsList}
+
+			<div>
+				Написать комментарий	
+			</div>
+
 		</div>
 	}
 }

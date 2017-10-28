@@ -18,6 +18,8 @@ import {
 
 import {stateToHTML} from 'draft-js-export-html';
 
+import TextField from 'material-ui/TextField';
+
 
 const date = moment(new Date().getTime() + (24*60*60*7*1000)).format("DD-MM-YYYY");
 
@@ -103,7 +105,23 @@ export default class OfferForm extends Component{
 
 		this.setState({
 			editorState,
+			subject: "",
 		});
+
+	}
+
+	onChange = event => { 
+
+		let data = {};
+
+		const {
+			name,
+			value,
+		} = event.target;
+
+		data[name] = value;
+
+		this.setState(data);
 
 	}
 
@@ -112,6 +130,7 @@ export default class OfferForm extends Component{
 
 		const {
 			editorState,
+			subject,
 		} = this.state;
 
 		const {
@@ -132,6 +151,7 @@ export default class OfferForm extends Component{
 
 		request('offer', false, 'crm/users/sendOffer', {
 			id,
+			subject,
 			offer: html,
 		})
 		.then(r => {
@@ -154,6 +174,7 @@ export default class OfferForm extends Component{
 
 		const {
 			editorState,
+			subject,
 		} = this.state;
 
 		// console.log('editorState', editorState);
@@ -169,6 +190,13 @@ export default class OfferForm extends Component{
 			/>
 
 			<CardContent>
+
+				<TextField 
+					label="Тема письма"
+					name="subject"
+					value={subject}
+					onChange={::this.onChange}
+				/>
 				
       	<Editor 
       		editorState={editorState} 

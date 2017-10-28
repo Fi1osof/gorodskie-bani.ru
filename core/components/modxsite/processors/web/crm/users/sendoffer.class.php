@@ -34,6 +34,10 @@ class modWebCrmUsersSendofferProcessor extends modWebCrmUsersObjectProcessor{
 
     	$offer = $this->getProperty("offer");
 
+        if(!$subject = trim($this->getProperty("subject"))){
+            $subject = "Коммерческое предложение";
+        }
+
     	$offer = <<<HTML
 
 			{$offer}
@@ -45,7 +49,7 @@ class modWebCrmUsersSendofferProcessor extends modWebCrmUsersObjectProcessor{
 HTML;
 
     	$object->sendEmail($offer, array(
-    		"subject"	=> "Коммерческое предложение",
+    		"subject"	=> $subject,
     		"sender"	=> $senderProfile->email,
     		"from"	=> $senderProfile->email,
     		"fromName"	=> "{$senderProfile->fullname}. {$site_name}",

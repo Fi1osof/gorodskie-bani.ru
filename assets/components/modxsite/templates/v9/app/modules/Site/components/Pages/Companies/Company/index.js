@@ -29,6 +29,8 @@ import CompanyTopics from './Topics';
 
 import Slider from 'react-slick';
 
+import Editor from 'modules/Site/components/fields/Editor';
+
 // import GoogleMapReact from 'google-map-react';
 
 import RatingField from './fields/Rating';
@@ -1135,16 +1137,35 @@ export default class CompanyPage extends Component{
 							
 							{inEditMode
 								?
-								<TextField 
+								// <TextField 
+								// 	label="Время работы"
+								// 	error={errors && errors.work_time ? true : false}
+								// 	helperText={errors && errors.work_time || "Распишите график работы заведения"}
+								// 	name="work_time"
+								// 	value={work_time || ""}
+								// 	multiline
+								// 	onChange={this.onChange}
+								// 	onFocus={() => this.onFocus('work_time')}
+								// />
+								<Editor 
+									// value={text || ""}
+									// // readOnly={!inEditMode}
+									// name="text"
+									// label={inEditMode ? "Текст комментария" : undefined}
+									// // error={errors && errors.text ? true : false}
+									// // helperText={errors && errors.text || ""}
+									// onChange={this.onChange}
+									// // onFocus={() => this.onFocus('text')}
 									label="Время работы"
 									error={errors && errors.work_time ? true : false}
 									helperText={errors && errors.work_time || "Распишите график работы заведения"}
 									name="work_time"
 									value={work_time || ""}
-									multiline
+									// multiline
 									onChange={this.onChange}
 									onFocus={() => this.onFocus('work_time')}
 								/>
+
 								:
 								work_time ? <div
 									style={{
@@ -1157,11 +1178,14 @@ export default class CompanyPage extends Component{
 										}}
 									>Время работы:&nbsp;</b>
 
-									{approved
+									<div
+										dangerouslySetInnerHTML={{ __html: work_time }}
+									/>
+
+									{/*approved
 										?
 										<div
 											dangerouslySetInnerHTML={{ __html: work_time }}
-										/>
 										:
 										<div
 											style={{
@@ -1170,7 +1194,7 @@ export default class CompanyPage extends Component{
 										>
 											{work_time}
 										</div>
-									}
+									*/}
 
 								</div>
 
@@ -1178,16 +1202,25 @@ export default class CompanyPage extends Component{
 
 							{inEditMode
 								?
-								<TextField 
-									label="Цены"
-									error={errors && errors.prices ? true : false}
-									helperText={errors && errors.prices || "Распишите цены, включая цены на допуслуги"}
-									name="prices"
-									value={prices || ""}
-									multiline
-									onChange={this.onChange}
-									onFocus={() => this.onFocus('prices')}
-								/>
+								// <TextField 
+								// 	label="Цены"
+								// 	error={errors && errors.prices ? true : false}
+								// 	helperText={errors && errors.prices || "Распишите цены, включая цены на допуслуги"}
+								// 	name="prices"
+								// 	value={prices || ""}
+								// 	multiline
+								// 	onChange={this.onChange}
+								// 	onFocus={() => this.onFocus('prices')}
+								// />
+									<Editor 
+										label="Цены"
+										error={errors && errors.prices ? true : false}
+										helperText={errors && errors.prices || "Распишите цены, включая цены на допуслуги"}
+										name="prices"
+										value={prices || ""}
+										onChange={this.onChange}
+										onFocus={() => this.onFocus('prices')}
+									/>
 								:
 								
 								prices
@@ -1202,7 +1235,10 @@ export default class CompanyPage extends Component{
 													float: 'left',
 												}}
 											>Цены:&nbsp;</b> 
-											{approved
+											<div
+												dangerouslySetInnerHTML={{ __html: prices }}
+											/>
+											{/*approved
 												?
 												<div
 													dangerouslySetInnerHTML={{ __html: prices }}
@@ -1215,7 +1251,7 @@ export default class CompanyPage extends Component{
 												>
 													{prices}
 												</div>
-											}
+											*/}
 										</div>
 									:
 									null

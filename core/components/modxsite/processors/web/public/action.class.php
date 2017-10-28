@@ -56,6 +56,7 @@ class modWebPublicActionProcessor extends modProcessor{
                     
                 
                 case 'topics/comments/save':
+                case 'comment/create':
                     require dirname(dirname(__FILE__)) . '/society/topics/comments/create.class.php';
                     self::$actualClassName = 'modWebSocietyTopicsCommentsCreateProcessor';
                     break; 

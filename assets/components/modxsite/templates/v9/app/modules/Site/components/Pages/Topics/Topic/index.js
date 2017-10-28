@@ -235,7 +235,7 @@ export default class Topic extends Component{
 
 		// }
 
-		console.log("onChange name, value", name, value);
+		// console.log("onChange name, value", name, value);
 
 		this.updateItem(item, data);
 
@@ -568,6 +568,7 @@ export default class Topic extends Component{
 				?
 				<Comments 
 					comments={comments}
+					resource={item}
 				/>
 				:
 				null

@@ -493,6 +493,28 @@ const mutationFields = {
     type: ResourceType,
     description: "Добавление нового топика",
   },
+  addComment: {
+    type: CommentType,
+    description: "Добавление нового комментария",
+    args: {
+      target_id: {
+        type: new GraphQLNonNull(GraphQLInt),
+        description: "ID целевого объекта",
+      },
+      target_class: {
+        type: new GraphQLNonNull(GraphQLString),
+        description: "Класс целевого объекта",
+      },
+      parent: {
+        type: GraphQLInt,
+        description: "ID родительского комментария",
+      },
+      text: {
+        type: GraphQLString,
+        description: "Текст комментария",
+      },
+    },
+  },
 }
 
 

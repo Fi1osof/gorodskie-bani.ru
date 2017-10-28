@@ -228,6 +228,8 @@ export class AppMain extends Component{
     saveContactItem: PropTypes.func,
     updateTopicItem: PropTypes.func,
     saveTopicItem: PropTypes.func,
+    updateCommentItem: PropTypes.func,
+    saveCommentItem: PropTypes.func,
     setPageTitle: PropTypes.func,
     CoordsStore: PropTypes.object,
     CompaniesStore: PropTypes.object,
@@ -289,6 +291,8 @@ export class AppMain extends Component{
       saveContactItem: this.saveContactItem,
       updateTopicItem: this.updateTopicItem,
       saveTopicItem: this.saveTopicItem,
+      updateCommentItem: this.updateCommentItem,
+      saveCommentItem: this.saveCommentItem,
       setPageTitle: this.setPageTitle,
       getCounters: this.getCounters,
       user,
@@ -1348,7 +1352,7 @@ export class AppMain extends Component{
     return;
   }
 
-  saveItem = (store, item, connector_path, callback) => {
+  saveItem = async (store, item, connector_path, callback) => {
 
     
     
@@ -1429,7 +1433,7 @@ export class AppMain extends Component{
       body[i] = value;
     };
 
-    this.request(connector_path, false, `${connector_path}${action}`, body, {
+    let result = await this.request(connector_path, false, `${connector_path}${action}`, body, {
       callback: (data, errors) => {
         // 
         // self.setState({items: data.object});
@@ -1537,7 +1541,8 @@ export class AppMain extends Component{
     //   );
 
     this.forceUpdate();
-    return;
+
+    return result;
   }
 
   updateContactItem = (item, data, silent) => {
@@ -1655,6 +1660,66 @@ export class AppMain extends Component{
 
     return this.saveItem(store, item, 'topic/', callback);
   }
+
+
+  updateCommentItem = (item, data, silent) => {
+
+    let {
+      CommentsStore,
+    } = this.state;
+
+    item = item && CommentsStore.getState().find(n => n.id === item.id);
+
+    if(!item){
+      throw(new Error("Не был получен объект комментария"));
+    }
+
+    this.updateItem(item, data, CommentsStore, silent);
+  }
+
+
+  saveCommentItem = (item) => {
+    // 
+
+    let {
+      CommentsStore: store,
+    } = this.state;
+
+    item = item && store.getState().find(n => n.id === item.id);
+
+    if(!item){
+      throw(new Error("Не был получен объект комментария"));
+    }
+
+    let {
+      id: itemId,
+    } = item;
+
+    const callback = (data, errors) => { 
+
+      if(data.success && data.object){
+
+        // const {
+        //   id,
+        //   uri,
+        // } = data.object;
+
+        // if(id !== itemId){
+
+        //   // const uri = `/topics/${id}/`;
+          
+        //   browserHistory.replace(uri);
+        // }
+
+        this.reloadApiData();
+
+        return;
+      }
+    }
+
+    return this.saveItem(store, item, 'comment/', callback);
+  }
+
 
 
   // loadApiData = async () => {

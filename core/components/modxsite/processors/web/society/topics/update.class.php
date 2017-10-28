@@ -8,10 +8,18 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
     
     
     public function checkPermissions(){
-        return $this->modx->user->id && parent::checkPermissions();
+        // return $this->modx->user->id && parent::checkPermissions();
+        return true;
     }
+
     
     public function initialize(){
+
+
+        if(!$this->modx->user->id){
+            return "Необходимо авторизоваться";
+        }
+        
 
         $request_body = file_get_contents('php://input');
 

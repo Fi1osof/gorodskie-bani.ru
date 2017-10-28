@@ -1,59 +1,3 @@
-// CommentType = new GraphQLObjectType({
-//       name: 'CommentType',
-//       description: 'Комментарии',
-//       fields: () => {
-
-//         return {
-//           id: {
-//             type: GraphQLInt
-//           },
-//           thread_id: {
-//             type: GraphQLString
-//           },
-//           text: {
-//             type: GraphQLString
-//           },
-//           author_username: {
-//             type: GraphQLString
-//           },
-//           author_fullname: {
-//             type: GraphQLString
-//           },
-//           author_avatar: {
-//             type: GraphQLString
-//           },
-//           parent: {
-//             type: GraphQLInt
-//           },
-//           createdon: {
-//             type: GraphQLString,
-//             // description: 'Время создания комментария в миллисекундах',
-//             resolve: (comment, args) => {
-//               return comment.createdon ? moment(comment.createdon).format('MMMM DD, YYYY | HH:mm:ss') : null;
-//             },
-//           },
-//           // ratings: {
-//           //   type: new GraphQLList(RatingsType),
-//           //   resolve: (rating_type) => {
-
-//           //     const {
-//           //       id: type,
-//           //     } = rating_type;
-
-//           //     let args = {
-//           //       type,
-//           //       groupBy: 'rating_type',
-//           //       limit: 0,
-//           //     };
-
-//           //     console.log('RatingsResolver args', args, rating_type);
-
-//           //     return this.RatingsResolver(null, args);
-//           //   },
-//           // },
-//         };
-//       },
-//     });
 
 
 import {
@@ -64,6 +8,8 @@ import {
   GraphQLInputObjectType,
   GraphQLEnumType,
 } from 'graphql';
+
+import GraphQLJSON from 'graphql-type-json';
 
 import moment from 'moment';
 
@@ -329,6 +275,20 @@ export const CommentType = new GraphQLObjectType({
           return result;
         },
       },
+      _errors: {
+        type: GraphQLJSON,
+        description: "Ошибки после попытки сохранения",
+      },
+      _Dirty: {
+        type: GraphQLJSON,
+        description: "Массив измененных данных",
+        resolve: source => {
+
+          return source && source._isDirty || null;
+          // return source && source._isDirty ? true : false;
+
+        },
+      },
       // ratings: {
       //   type: new GraphQLList(RatingsType),
       //   resolve: (rating_type) => {
@@ -383,7 +343,59 @@ export default class Comment extends ModelObject{
 }
 
 
+// Добавляем новый топик
+export const add = (source, args, context, info) => {
+
+  // console.log("Comment add args", args);
+
+  let {
+    CommentsStore,
+  } = context.state;
+
+  const {
+    user: {
+      user: currentUser,
+    },
+  } = context.props;
+
+  const id = Math.round(Math.random() * 10000000) * -1;
+
+  const {
+    target_id,
+  } = args;
+
+  let data = {
+  };
+
+  const createdon = new Date().getTime();
+
+  let item = Object.assign(args || {}, {
+    id,
+    resource_id: target_id,
+    createdby: currentUser && currentUser.id || undefined,
+    // createdon: Math.round(new Date().getTime() / 1000),
+    createdon: moment(createdon).format('YYYY-MM-DD'),
+    // published: 1,
+    deleted: 0,
+    _isDirty: {
+      target_id,
+    },
+  });
+
+  CommentsStore.getDispatcher().dispatch(CommentsStore.actions.CREATE, item);
+
+  // item.update(data);
+
+  // browserHistory.push(uri);
+
+  return item;
+
+};
+
+
 export const getList = (source, args, context, info) => {
+
+  // console.log('Comments args', args);
 
   const {
     CommentsStore,

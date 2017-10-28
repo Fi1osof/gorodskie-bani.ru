@@ -35,7 +35,8 @@ import {
 
 import {
   CommentType,
-	getList as getCommentsList,
+  getList as getCommentsList,
+	add as addComment,
 } from './Comment';
 
 
@@ -650,6 +651,18 @@ const rootResolver = (source, args, context, info) => {
           // console.log("rootResolver addCompany info", info);
 
           return addTopic(source, args, context, info); 
+          
+        }
+
+        break;
+
+      case "addComment":
+
+        if(returnType === CommentType){
+
+          // console.log("rootResolver addCompany info", info);
+
+          return addComment(source, args, context, info); 
           
         }
 

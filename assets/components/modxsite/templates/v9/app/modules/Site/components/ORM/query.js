@@ -816,7 +816,9 @@ fragment Resource on ResourceType{
   {
     ...User
   }
-  comments @include(if:$resourceGetComments)
+  comments(
+    sort:{by: id, dir:asc}
+  ) @include(if:$resourceGetComments)
   {
     ...CommentFields
     Author @include(if:$getCommentAuthor)
@@ -898,7 +900,10 @@ fragment CommentFields on CommentType{
   published
   deleted
   createdon
+  createdonFormatted
   createdby
+  _errors
+  _Dirty
 }
 
 fragment Rating on RatingType{
@@ -1384,7 +1389,36 @@ mutation addTopic(
   }
 }
 
-
+mutation addComment(
+  $commentTargetId:Int!
+  $commentTargetClass:String = "modResource"
+  $commentText:String
+  $getCompanyFullData:Boolean = false
+  $getImageFormats:Boolean = true
+  $getCompanyComments:Boolean = false
+  $getCommentCompany:Boolean = false
+  $getRatingsAvg:Boolean = false
+  $getCompanyGallery:Boolean = false
+  $commentParent:Int
+  $getTVs:Boolean = false
+  $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = true
+  $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
+){
+  addComment(
+    target_id:$commentTargetId
+    target_class:$commentTargetClass
+    parent:$commentParent
+    text:$commentText
+  ){
+    ...Comment
+  }
+}
 
 
 `;

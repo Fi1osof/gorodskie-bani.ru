@@ -7,11 +7,13 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
     
     public function checkPermissions(){
         
-        if(!$this->modx->user->id){
-            return false;
-        }
+        // if(!$this->modx->user->id){
+        //     return false;
+        // }
         
-        return parent::checkPermissions();
+        // return parent::checkPermissions();
+
+        return true;
     }
     
     
@@ -23,8 +25,44 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
     
     
     public function initialize(){
+
+        if(!$this->modx->user->id){
+            return "Необходимо авторизоваться";
+        }
+
+        $request_body = file_get_contents('php://input');
+
+        if($request_body AND $data = json_decode($request_body, 1)){
+            $this->setProperties($data);
+        }
+        
+        foreach($this->properties as $field => & $value){
+
+            if(!is_scalar($value)){
+                continue;
+            }
+
+            $v = (string)$value;
+
+            if($v === "null"){
+                $value = null;
+            }
+            else if($v === "true"){
+                $value = true;
+            }
+            else if($v === "false"){
+                $value = false;
+            }
+            else if($v === "NaN"){
+                unset($this->properties[$field]);
+            }
+            else if($v === "undefined"){
+                unset($this->properties[$field]);
+            }
+        }
         
         $this->setProperties(array(
+            "id"        => null,
             "createdby" => $this->modx->user->id,
             "createdon" => time(),
         ));
@@ -349,6 +387,9 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
             }
             
         }
+        
+        $this->modx->cacheManager->refresh();
+        $this->modx->cacheManager->clearCache();
         
         
         # return $this->success('Комментарий успешно опубликован', array(

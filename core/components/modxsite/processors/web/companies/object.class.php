@@ -92,6 +92,14 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 			// ));
 
 		}
+		else{
+
+			$object->fromArray(array(
+				"editedon"	=> time(),
+				"editedby"	=> $this->modx->user->id,
+			));
+			
+		}
 
 		$tvs = array(
 			"address",

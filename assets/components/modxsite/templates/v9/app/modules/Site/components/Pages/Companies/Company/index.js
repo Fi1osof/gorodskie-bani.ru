@@ -904,7 +904,8 @@ export default class CompanyPage extends Component{
 
     			<Grid
     				item
-    				xs
+    				xs={12}
+    				sm
     			>
 	        	{inEditMode
 	        		?
@@ -1092,7 +1093,8 @@ export default class CompanyPage extends Component{
 
 						<Grid
 							item
-							xs
+							xs={12}
+							sm
 						>
 
 							{inEditMode

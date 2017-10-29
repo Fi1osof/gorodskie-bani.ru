@@ -365,6 +365,9 @@ export default class MainMenu extends Component{
                         cookies.set("importantArticleReaded", "1");
 
                         this.triggerGoal("importantArticle");
+
+                        this.closeMenu();
+
                       }}
                     >
                       <AtentionIcon 

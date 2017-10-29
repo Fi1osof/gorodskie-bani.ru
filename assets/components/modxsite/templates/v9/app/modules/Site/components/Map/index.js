@@ -2005,114 +2005,114 @@ export default class MapMainView extends Component{
 
 			{map && maps
     		?
-    		<Control
-    			map={map}
-    			maps={maps}
-    			position="LEFT_TOP"
-    		>  
-					<IconButton
-    				// accent
-    				// style={{
-    				// 	height: 40,
-    				// 	width: 40,
-    				// }}
-						style={{
-							borderRadius: "50%",
-					    backgroundColor: "rgba(255,255,255,0.5)",
-					    width: 35,
-					    height: 35,
-					    marginRight: 5,
-					    marginTop: 5,
-					    marginLeft: 10,
-						}}
-						accent
-    				onClick={e => {
+    	// 	<Control
+    	// 		map={map}
+    	// 		maps={maps}
+    	// 		position="LEFT_TOP"
+    	// 	>  
+					// <IconButton
+    	// 			// accent
+    	// 			// style={{
+    	// 			// 	height: 40,
+    	// 			// 	width: 40,
+    	// 			// }}
+					// 	style={{
+					// 		borderRadius: "50%",
+					//     backgroundColor: "rgba(255,255,255,0.5)",
+					//     width: 35,
+					//     height: 35,
+					//     marginRight: 5,
+					//     marginTop: 5,
+					//     marginLeft: 10,
+					// 	}}
+					// 	accent
+    	// 			onClick={e => {
 
-    					const {
-    						localQuery,
-    					} = this.context;
+    	// 				const {
+    	// 					localQuery,
+    	// 				} = this.context;
 
-    					localQuery({
-    						operationName: "addCompany",
-    					});
+    	// 				localQuery({
+    	// 					operationName: "addCompany",
+    	// 				});
 
-    					this.triggerGoal('addCompanyClick');
+    	// 				this.triggerGoal('addCompanyClick');
 
-    				}}
-  				>
-    				<AddIcon 
-	    				// style={{
-	    				// 	height: 40,
-	    				// 	width: 40,
-	    				// }}
-    				/>
-  				</IconButton> 
+    	// 			}}
+  			// 	>
+    	// 			<AddIcon 
+	    // 				// style={{
+	    // 				// 	height: 40,
+	    // 				// 	width: 40,
+	    // 				// }}
+    	// 			/>
+  			// 	</IconButton> 
 
-    		</Control>
+    	// 	</Control>
 
 
-	    		// <Control
-	    		// 	map={map}
-	    		// 	maps={maps}
-	    		// 	position="LEFT_BOTTOM"
-	    		// > 
+	    		<Control
+	    			map={map}
+	    			maps={maps}
+	    			position="LEFT_BOTTOM"
+	    		> 
 
-	    		// 	<a
-	    		// 		href="javascript:;"
-	    		// 		style={{
-	    		// 			// textShadow: "0px 0px 5px #ccc",
-    			// 			fontSize: 12,
-    			// 			background: "rgba(256,256,256,0.7)",
-						 //    display: "block",
-						 //    paddingRight: 10,
-	    		// 		}}
-	    		// 		onClick={e => {
+	    			<a
+	    				href="javascript:;"
+	    				style={{
+	    					// textShadow: "0px 0px 5px #ccc",
+    						fontSize: 12,
+    						background: "rgba(256,256,256,0.7)",
+						    display: "block",
+						    paddingRight: 10,
+	    				}}
+	    				onClick={e => {
 
-	    		// 			const {
-	    		// 				localQuery,
-	    		// 			} = this.context;
+	    					const {
+	    						localQuery,
+	    					} = this.context;
 
-	    		// 			localQuery({
-	    		// 				operationName: "addCompany",
-	    		// 			});
+	    					localQuery({
+	    						operationName: "addCompany",
+	    					});
 
-	    		// 			this.triggerGoal('addCompanyClick');
+	    					this.triggerGoal('addCompanyClick');
 
-	    		// 		}}
-	    		// 	>
-	    		// 		<Grid
-	    		// 			container
-	    		// 			gutter={0}
-	    		// 			align="center"
-	    		// 		>
-	    		// 			<IconButton
-			    // 				// accent
-			    // 				// style={{
-			    // 				// 	height: 40,
-			    // 				// 	width: 40,
-			    // 				// }}
-							// 		style={{
-							// 			borderRadius: "50%",
-							// 	    backgroundColor: "rgba(255,255,255,0.5)",
-							// 	    width: 35,
-							// 	    height: 35,
-							// 	    marginRight: 5,
-							// 	    marginTop: 5,
-							// 		}}
-							// 		accent
-		    	// 			>
-			    // 				<AddIcon 
-				   //  				// style={{
-				   //  				// 	height: 40,
-				   //  				// 	width: 40,
-				   //  				// }}
-			    // 				/>
-		    	// 			</IconButton>
-		    	// 			Добавить заведение
-	    		// 		</Grid>
-	    		// 	</a>
+	    				}}
+	    			>
+	    				<Grid
+	    					container
+	    					gutter={0}
+	    					align="center"
+	    				>
+	    					<IconButton
+			    				// accent
+			    				// style={{
+			    				// 	height: 40,
+			    				// 	width: 40,
+			    				// }}
+									style={{
+										borderRadius: "50%",
+								    backgroundColor: "rgba(255,255,255,0.5)",
+								    width: 35,
+								    height: 35,
+								    marginRight: 5,
+								    marginTop: 5,
+									}}
+									accent
+		    				>
+			    				<AddIcon 
+				    				// style={{
+				    				// 	height: 40,
+				    				// 	width: 40,
+				    				// }}
+			    				/>
+		    				</IconButton>
+		    				Добавить заведение
+	    				</Grid>
+	    			</a>
 
-	    		// </Control>
+	    		</Control>
 	    		
 	    		:
 	    		null

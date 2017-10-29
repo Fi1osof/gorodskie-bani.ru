@@ -241,6 +241,14 @@ export const CompanyType = new GraphQLObjectType({
         type: GraphQLInt,
         description: "Дата создания в секундах",
       },
+      editedby: {
+        type: GraphQLInt,
+        description: "Кем отредактировано",
+      },
+      editedon: {
+        type: GraphQLInt,
+        description: "Дата редактирования в секундах",
+      },
       publishedon: {
         type: GraphQLInt,
         description: "Дата публикации в секундах",

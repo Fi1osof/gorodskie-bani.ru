@@ -1,7 +1,6 @@
 
 const defaultQuery = `
 
-
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -955,6 +954,8 @@ fragment Company on Company{
   pubdate
   createdon
   createdby
+  editedby
+  editedon
   mapIcon
   image
   ...imageFormats @include(if:$getImageFormats)
@@ -1471,7 +1472,6 @@ mutation updateCompany(
     ...editVersion
   }
 }
-
 
 
 `;

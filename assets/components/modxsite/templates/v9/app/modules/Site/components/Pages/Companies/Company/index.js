@@ -35,6 +35,8 @@ import Editor from 'modules/Site/components/fields/Editor';
 
 import RatingField from './fields/Rating';
 
+import moment from 'moment';
+
 
 export default class CompanyPage extends Component{
 
@@ -410,9 +412,11 @@ export default class CompanyPage extends Component{
 			tvs,
 			content,
 			city,
+			createdon,
 			createdby,
 			coords,
 			comments,
+			editedon,
 			_errors: errors,
 			_isDirty,
 		} = item;
@@ -432,11 +436,14 @@ export default class CompanyPage extends Component{
 			approved,
 		} = tvs || {};
 
+		let editDate = editedon || createdon;
+
 
 		const helper = <Helper
 			contrastIcons={false}
 			ref="helper"
-    ><Paper
+    >
+    	<Paper
 				style={{
 					padding: 15,
 				}}
@@ -885,6 +892,16 @@ export default class CompanyPage extends Component{
 		}
 
 
+		let editDateInfo = <Grid
+			item
+			xs={12}
+		>
+
+			<b>Дата последнего редактирования: </b> {editDate && moment(editDate * 1000).format("DD-MM-YYYY")}
+
+		</Grid>;
+
+
 		return <Card
 			style={{
 				boxShadow: "none",
@@ -1293,6 +1310,9 @@ export default class CompanyPage extends Component{
 									null
 							}
 						</Grid>
+
+
+						{editDateInfo}
 
 					</Grid>
 				</Paper>

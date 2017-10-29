@@ -8,8 +8,11 @@ import Grid from 'material-ui/Grid';
 import IconButton from 'material-ui/IconButton';
 import LoginIcon from 'material-ui-icons/PermIdentity';
 import AddIcon from 'material-ui-icons/Add';
+import AtentionIcon from 'material-ui-icons/ErrorOutline';
 
 import WsProxy from 'modules/Site/components/WsProxy';
+
+import cookies from 'js-cookie';
 
 export default class MainMenu extends Component{
 
@@ -25,6 +28,7 @@ export default class MainMenu extends Component{
     RatingsStore: PropTypes.object.isRequired,
     localQuery: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
+    triggerGoal: PropTypes.func.isRequired,
   };
 
 	constructor(props){
@@ -132,6 +136,17 @@ export default class MainMenu extends Component{
   }
 
 
+  triggerGoal(goal){
+
+    const {
+      triggerGoal,
+    } = this.context;
+
+    triggerGoal(goal);
+
+  }
+
+
 	render(){
 
     const {
@@ -154,6 +169,11 @@ export default class MainMenu extends Component{
 		} = this.state;
 
     let base_url = "/";
+
+
+    const importantArticleReaded = cookies.get("importantArticleReaded", "1");
+
+    const importantPage = typeof window === "undefined" || importantArticleReaded === "1" ? null : '/topics/obnovlennaya-versiya-portala-gorodskix-ban-1641.html';
 
     if(coords){
 
@@ -329,95 +349,125 @@ export default class MainMenu extends Component{
                 </ul>
               </li>
 
-              <li>
-                <Link
-                  to="/topics/" 
-                  href="/topics/" 
-                  title="Рейтинги заведений" 
-                  className="dropdown-toggle"
-                  data-toggle="dropdown"
-                  // onClick={event => this.setState({
-                  //  ratingsOpened: !ratingsOpened,
-                  // })}
-                >
-                  Публикации <i className="fa fa-angle-down"></i>
-                </Link>
-                <ul 
-                  className="dropdown-menu"
-                >
-                  <li className="first">
-                    <Link 
-                      to="/bani-otzivy/" 
-                      href="/bani-otzivy/" 
-                      title="Обзоры и отзывы"
-                      onClick={event => {
-                        this.closeMenu();
-                      }}
+              {importantPage
+                ?
+                  <li>
+                    <Link
+                      to={importantPage}
+                      href={importantPage}
+                      title="Важная новость" 
+                      className="flex align-center"
                       style={{
-                        paddingLeft: 25,
-                        paddingRight: 25,
+                        display: 'flex',
+                      }}
+                      onClick={event => {
+
+                        cookies.set("importantArticleReaded", "1");
+
+                        this.triggerGoal("importantArticle");
                       }}
                     >
-                      Обзоры и отзывы 
+                      <AtentionIcon 
+                        color="red"
+                        style={{
+                          marginRight: 3,
+                        }}
+                      />
+                      Важная новость
                     </Link>
                   </li>
-                  <li className="">
-                    <Link 
+                :
+                  <li>
+                    <Link
                       to="/topics/" 
                       href="/topics/" 
-                      title="Новости"
-                      onClick={event => {
-                        this.closeMenu();
-                      }}
-                      style={{
-                        paddingLeft: 25,
-                        paddingRight: 25,
-                      }}
+                      title="Рейтинги заведений" 
+                      className="dropdown-toggle"
+                      data-toggle="dropdown"
+                      // onClick={event => this.setState({
+                      //  ratingsOpened: !ratingsOpened,
+                      // })}
                     >
-                      Новости
+                      Публикации <i className="fa fa-angle-down"></i>
                     </Link>
-                  </li>
-                  {user 
-                    ?
-                    <li className="">
-                      <a 
-                        // to={`/profile/${username}/add-topic`} 
-                        // href={`/profile/${username}/add-topic`}
-                        href="javascript:;"
-                        title="Добавить публикацию"
-                        rel="nofollow"
-                        onClick={event => {
-                          this.closeMenu();
-                          this.addTopic();
-                        }}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          paddingLeft: 25,
-                          paddingRight: 25,
-                        }}
-                      >
-                        <IconButton
-                          accent
+                    <ul 
+                      className="dropdown-menu"
+                    >
+                      <li className="first">
+                        <Link 
+                          to="/bani-otzivy/" 
+                          href="/bani-otzivy/" 
+                          title="Обзоры и отзывы"
+                          onClick={event => {
+                            this.closeMenu();
+                          }}
                           style={{
-                            padding: 0,
-                            margin: 0,
-                            height: 24,
-                            width: 24,
-                            marginLeft: -25,
+                            paddingLeft: 25,
+                            paddingRight: 25,
                           }}
                         >
-                          <AddIcon 
-                          /> 
-                        </IconButton>
-                        Добавить публикацию
-                      </a>
-                    </li>
-                    :
-                    null
-                  }
-                </ul>
-              </li>
+                          Обзоры и отзывы 
+                        </Link>
+                      </li>
+                      <li className="">
+                        <Link 
+                          to="/topics/" 
+                          href="/topics/" 
+                          title="Новости"
+                          onClick={event => {
+                            this.closeMenu();
+                          }}
+                          style={{
+                            paddingLeft: 25,
+                            paddingRight: 25,
+                          }}
+                        >
+                          Новости
+                        </Link>
+                      </li>
+                      {user 
+                        ?
+                        <li className="">
+                          <a 
+                            // to={`/profile/${username}/add-topic`} 
+                            // href={`/profile/${username}/add-topic`}
+                            href="javascript:;"
+                            title="Добавить публикацию"
+                            rel="nofollow"
+                            onClick={event => {
+                              this.closeMenu();
+                              this.addTopic();
+                            }}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              paddingLeft: 25,
+                              paddingRight: 25,
+                            }}
+                          >
+                            <IconButton
+                              accent
+                              style={{
+                                padding: 0,
+                                margin: 0,
+                                height: 24,
+                                width: 24,
+                                marginLeft: -25,
+                              }}
+                            >
+                              <AddIcon 
+                              /> 
+                            </IconButton>
+                            Добавить публикацию
+                          </a>
+                        </li>
+                        :
+                        null
+                      }
+                    </ul>
+                  </li>
+              }
+
 
               <li className="last">
                 <Link 

@@ -90,9 +90,21 @@ a{
 
 .slick-slider{
 
+   &.no-expanded{
+
+      .slick-list{
+
+         height: auto !important;
+
+      }
+
+   }
+
    .slick-list{
 
       // overflow: hidden;
+
+      // height: auto !important;
 
       .no-js &{
 
@@ -103,9 +115,9 @@ a{
       }
 
       
-      // .slick-slide { 
-      //    height: auto; 
-      // }
+      .slick-slide { 
+         height: auto; 
+      }
    }
 
    .slick-dots{

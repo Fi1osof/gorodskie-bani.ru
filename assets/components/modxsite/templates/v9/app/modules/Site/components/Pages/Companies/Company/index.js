@@ -742,32 +742,38 @@ export default class CompanyPage extends Component{
 					<div
 						className={typeof window === "undefined" ? "no-js" : ""}
 					>
-						<Slider {...{
-				      dots: true,
-				      adaptiveHeight: true,
-				      // adaptiveHeight: galleryExpanded ? true : false,
-				      dotsClass: "slick-dots slick-paging",
-				      infinite: true,
-				      // centerMode: true,
-				      speed: 2000,
-				      slidesToShow: 1,
-				      slidesToScroll: 1,
-				      // lazyLoad: true,
-				      responsive: [ 
-				      	{ breakpoint: 768, settings: { slidesToShow: 1 } }, 
-				      	{ breakpoint: 1024, settings: { slidesToShow: galleryExpanded ? 1 : 2 } }, 
-				      	{ breakpoint: 1200, settings: { slidesToShow: galleryExpanded ? 1 : 3 } }, 
-				      	{ breakpoint: 100000, settings: { slidesToShow: galleryExpanded ? 1 : 5 } } ,
-				      ],
-				      customPaging: function(i) {
-				        // return <a><img src={`${baseUrl}/abstract0${i+1}.jpg`}/></a>
+						<Slider {
+							...{
+					      dots: true,
+					      // lazyLoad: typeof window === "undefined" ? false : true,
+					      // adaptiveHeight: true,
+					      adaptiveHeight: galleryExpanded ? true : false,
+					      dotsClass: "slick-dots slick-paging",
+					      infinite: true,
+					      // centerMode: true,
+					      speed: 2000,
+					      slidesToShow: 1,
+					      slidesToScroll: 1,
+					      // lazyLoad: true,
+					      responsive: [ 
+					      	{ breakpoint: 768, settings: { slidesToShow: 1 } }, 
+					      	{ breakpoint: 1024, settings: { slidesToShow: galleryExpanded ? 1 : 2 } }, 
+					      	{ breakpoint: 1200, settings: { slidesToShow: galleryExpanded ? 1 : 3 } }, 
+					      	{ breakpoint: 100000, settings: { slidesToShow: galleryExpanded ? 1 : 5 } } ,
+					      ],
+					      customPaging: function(i) {
+					        // return <a><img src={`${baseUrl}/abstract0${i+1}.jpg`}/></a>
 
-				        // console.log('galleryThumbs');
+					        // console.log('galleryThumbs');
 
-				        const thumb = galleryThumbs[i];
-				        return <a><img src={thumb}/></a>
-				      },
-				    }}>
+					        const thumb = galleryThumbs[i];
+					        return <a><img src={thumb}/></a>
+					      },
+					    }}
+				      className={[
+				      	galleryExpanded ? "" : "no-expanded",
+				      ].join(" ")}
+			      >
 			        {galleryItems}
 			      </Slider> 
 					</div>

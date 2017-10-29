@@ -47,7 +47,17 @@ const store = configureStore(initialState);
 import 'bootstrap/dist/js/bootstrap';
 
 browserHistory.listen(function (location) {
-  typeof window !== "undefined" && window.ga && window.ga('send', 'pageview', location.pathname);
+  if(typeof window !== "undefined"){
+
+    window.ga && window.ga('send', 'pageview', location.pathname);
+
+    if(typeof yaCounter26848689 === "object"){
+
+      yaCounter26848689.clickmap && yaCounter26848689.clickmap().hit(location.pathname);
+
+    }
+
+  }
 });
 
 

@@ -13,6 +13,7 @@ import {
   RatingsPage,
   ContactsPage,
   CRMPage,
+  CompaniesEditsPage,
   // Lesson1,
   // PageGraphiQL,
 } from "modules/Site";
@@ -204,6 +205,11 @@ let routes = {
           // component: UsersPage,
         }],
       }],
+    },
+    {
+      path: "/edits",
+      description: "Изменения в данных заведений",
+      component: CompaniesEditsPage,
     },
     // {
     //   path: "/office",

@@ -164,6 +164,7 @@ export const create = async (source, args, context, info) => {
     await q
     .select("*")
     // .select(knex.raw('unix_timestamp(date) as `date`'))
+    .select(knex.raw('unix_timestamp(editedon) as editedon'))
     .whereIn("id", r)
     .then(r => {
       
@@ -206,4 +207,146 @@ export const create = async (source, args, context, info) => {
 
 
   return result;
+}
+
+
+export const getList = async (Company, args, context, info) => {
+
+  let {
+    limit,
+    start,
+    page,
+    sort,
+    status,
+  } = args || {};
+
+
+
+  // console.log('edit_versions getList args', args);
+
+  const {
+    fieldNodes: {
+      0: {
+        selectionSet,
+      }
+    },
+  } = info;
+
+  const totalSelection = selectionSet && selectionSet.selections && selectionSet.selections.find(n => n.name.value === "total");
+
+
+  const {
+    db: knex,
+    getPrefix,
+  } = context;
+
+  const prefix = getPrefix();
+
+  let rowsCount = 0;
+
+  var q = knex(`${prefix}edit_versions as edit_versions`)
+  .select('edit_versions.*')
+  .select(knex.raw('unix_timestamp(edit_versions.editedon) as editedon'))
+  ;
+    
+
+  if(status && status.length){
+    q.whereIn('edit_versions.status', status);
+  }
+
+  // q.innerJoin(`${prefix}site_content as site_content`, 'site_content.id', 'redirects.resource_id');
+
+
+  // if(uri){
+  //   q.where('redirects.uri', uri);
+  // }
+
+  // console.log('edit_versions getList toSQL', q.toString());
+
+  if(totalSelection){
+
+    await knex.select(knex.raw(`count(*) as total`))
+      .from(q.clone().clearSelect().select(knex.raw('NULL')).as('t1'))
+      .then(r => {
+
+        rowsCount = r && r[0].total || 0;
+
+        // console.log('q2 result', r);
+      });
+
+      // console.log('q2 toSQL', q2.toSQL());
+      // console.log('q2 toSQL2', q2.toString());
+  }
+
+
+
+  if(sort){
+    sort.map(n => {
+
+      let {
+        by,
+        dir,
+      } = n;
+
+      if(by){
+
+      // $c->sortby("if(Parent.id > 0, Parent.name, {$alias}.name) ASC, if(Parent.id > 0, {$alias}.name, '')", "ASC");
+
+        switch(by){
+
+          case 'rand()':
+
+            by = knex.raw('RAND()');
+
+            break;
+          
+          default:;
+        }
+
+        q.orderBy(by, dir || 'ASC');
+      }
+
+    });
+  }
+
+
+  if(limit > 0){
+    q.limit(limit);
+  }
+
+    // 
+
+  let result;
+
+  await q
+  .then((r) => {
+
+    r && r.map(row => {
+
+      try{
+
+        row.data = row.data && JSON.parse(row.data) || null;
+
+      }
+      catch(e){
+        console.error(e);
+      }
+
+    });
+
+    result = {
+      total: rowsCount,
+      count: r.length,
+      object: r,
+      limit,
+      page,
+    };
+
+  })
+  .catch(e => {
+    console.error(e);
+  });
+
+
+  return result; 
 }

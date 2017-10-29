@@ -238,6 +238,7 @@ export class AppMain extends Component{
     TopicsStore: PropTypes.object,
     CommentsStore: PropTypes.object,
     UsersStore: PropTypes.object,
+    EditVersionsStore: PropTypes.object,
     // CompaniesStore: PropTypes.object,
     // orm: PropTypes.object,
     schema: PropTypes.object,
@@ -271,6 +272,7 @@ export class AppMain extends Component{
       TopicsStore,
       CommentsStore,
       UsersStore,
+      EditVersionsStore,
       coords,
     } = this.state;
 
@@ -306,6 +308,7 @@ export class AppMain extends Component{
       CompaniesStore,
       RatingsStore,
       UsersStore,
+      EditVersionsStore,
       schema,
       localQuery: this.localQuery,
       remoteQuery: this.remoteQuery,
@@ -345,6 +348,7 @@ export class AppMain extends Component{
       CommentsStore: new DataStore(new Dispatcher()),
       ResourcesStore: new DataStore(new Dispatcher()),
       TopicsStore: new DataStore(new Dispatcher()),
+      EditVersionsStore: new DataStore(new Dispatcher()),
       // orm,
       schema,
       // db,
@@ -2146,6 +2150,7 @@ export class AppMain extends Component{
       CommentsStore,
       ResourcesStore,
       TopicsStore,
+      EditVersionsStore,
     } = this.state;
 
     let user; 
@@ -2159,6 +2164,7 @@ export class AppMain extends Component{
         comments,
         resources,
         topics,
+        editVersions,
       } = apiData || {};
 
       if(currentUser){
@@ -2178,12 +2184,23 @@ export class AppMain extends Component{
       ratings = ratings || [];
       comments = comments || [];
 
+      EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], editVersions || []);
+      
       CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
       UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
       RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
       CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
       ResourcesStore.getDispatcher().dispatch(ResourcesStore.actions['SET_DATA'], resources || []);
       TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
+
+
+      // console.log('editVersions data', editVersions);
+      // EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], [{
+      //   id: 46,
+      // }]);
+
+
+
 
       // Устанавливаем сразу локальные данные для компаний
       // companies.map(n => {

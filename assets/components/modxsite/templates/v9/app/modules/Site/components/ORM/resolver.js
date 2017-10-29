@@ -46,10 +46,16 @@ import {
 	add as addTopic,
 } from './Resource';
 
+
 import {
   SearchResultType,
   getList as getSearchResultsList,
 } from './Search';
+
+
+import EditVersionType, {
+  getList as getEditVersionsList,
+} from './EditVersion';
 
 // const rootResolver = async (source, args, context, info) => {
 
@@ -1217,6 +1223,13 @@ const getResolverByType = function(ofType){
   else if(ofType === SearchResultType){
 
     resolver = getSearchResultsList;
+      
+  }
+
+  // Получаем результаты поиска
+  else if(ofType === EditVersionType){
+
+    resolver = getEditVersionsList;
       
   }
 

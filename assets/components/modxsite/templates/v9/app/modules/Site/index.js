@@ -12,6 +12,7 @@ import CommentsPage from './components/Pages/Comments';
 import RatingsPage from './components/Pages/Ratings';
 import ContactsPage from './components/Pages/Static/Contacts';
 import CRMPage from './components/Pages/CRM';
+import CompaniesEditsPage from './components/Pages/EditVersions';
 
 export {
   MainApp,
@@ -26,4 +27,5 @@ export {
   RatingsPage,
   ContactsPage,
   CRMPage,
+  CompaniesEditsPage,
 };

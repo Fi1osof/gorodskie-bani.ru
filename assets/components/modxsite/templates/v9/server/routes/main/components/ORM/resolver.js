@@ -93,6 +93,7 @@ import {
 import EditVersionType from 'modules/Site/components/ORM/EditVersion';
 
 import {
+  getList as getEditVersionList,
   create as createEditVersion,
 } from './EditVersion';
 
@@ -380,6 +381,23 @@ const getObjectsList = async (ofType, source, args, context, info) => {
   if(ofType === RedirectType){
 
     await getRedirects(source, args, context, info)
+      .then(r => {
+
+        object = r;
+
+        // console.log('getWsConnectionsList resolver result', r);
+
+      })
+      .catch(e => {
+        console.error(e);
+      });
+      
+  }
+
+
+  if(ofType === EditVersionType){
+
+    await getEditVersionList(source, args, context, info)
       .then(r => {
 
         object = r;

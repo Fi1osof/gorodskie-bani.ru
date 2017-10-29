@@ -431,7 +431,12 @@ const RootType = new GraphQLObjectType({
       type: EditVersionType,
       name: "editVersionsList",
       description: "Список внесенных изменний с постраничностью",
-      args: Object.assign({}, listArgs),
+      args: Object.assign({
+        status: {
+          type: new GraphQLList(GraphQLString),
+          description: "Статус",
+        },
+      }, listArgs),
     }),
     editVersions: {
       type: new GraphQLList(EditVersionType),

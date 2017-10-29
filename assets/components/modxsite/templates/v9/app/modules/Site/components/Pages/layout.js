@@ -21,6 +21,7 @@ export default class Page extends Component{
 		CommentsStore: PropTypes.object.isRequired,
 		UsersStore: PropTypes.object.isRequired,
 		RatingsStore: PropTypes.object.isRequired,
+		EditVersionsStore: PropTypes.object.isRequired,
 		getCounters: PropTypes.func.isRequired,
 		localQuery: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
@@ -42,6 +43,7 @@ export default class Page extends Component{
 			TopicsStore,
 			ResourcesStore,
 			UsersStore,
+			EditVersionsStore,
 		} = this.context;
 
 		this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
@@ -76,6 +78,14 @@ export default class Page extends Component{
 
 		});
 
+		this.EditVersionsListener = EditVersionsStore.getDispatcher().register(payload => {
+
+			// console.log('UsersStore payload', payload);
+
+			this.loadData();
+
+		});
+
 		this.loadData();
 			
 		// super.componentDidMount && super.componentDidMount();
@@ -83,6 +93,83 @@ export default class Page extends Component{
 		this.setPageTitle();
 
 	}
+
+	componentWillUnmount(){
+
+		const {
+			CommentsStore,
+			RatingsStore,
+			TopicsStore,
+			ResourcesStore,
+			UsersStore,
+			EditVersionsStore,
+		} = this.context;
+
+
+
+    if(this.CommentsStoreListener){
+
+      let dispatch = CommentsStore.getDispatcher();
+
+      dispatch._callbacks[this.CommentsStoreListener] && dispatch.unregister(this.CommentsStoreListener);
+
+      this.CommentsStoreListener = undefined;
+    }
+
+
+    if(this.RatingsStoreListener){
+
+      let dispatch = RatingsStore.getDispatcher();
+
+      dispatch._callbacks[this.RatingsStoreListener] && dispatch.unregister(this.RatingsStoreListener);
+
+      this.RatingsStoreListener = undefined;
+    }
+
+
+    if(this.TopicsStoreListener){
+
+      let dispatch = TopicsStore.getDispatcher();
+
+      dispatch._callbacks[this.TopicsStoreListener] && dispatch.unregister(this.TopicsStoreListener);
+
+      this.TopicsStoreListener = undefined;
+    }
+
+
+    if(this.ResourcesStoreListener){
+
+      let dispatch = ResourcesStore.getDispatcher();
+
+      dispatch._callbacks[this.ResourcesStoreListener] && dispatch.unregister(this.ResourcesStoreListener);
+
+      this.ResourcesStoreListener = undefined;
+    }
+
+
+    if(this.UsersStoreListener){
+
+      let dispatch = UsersStore.getDispatcher();
+
+      dispatch._callbacks[this.UsersStoreListener] && dispatch.unregister(this.UsersStoreListener);
+
+      this.UsersStoreListener = undefined;
+    }
+
+
+    if(this.EditVersionsListener){
+
+      let dispatch = UsersStore.getDispatcher();
+
+      dispatch._callbacks[this.EditVersionsStore] && dispatch.unregister(this.EditVersionsListener);
+
+      this.EditVersionsListener = undefined;
+    }
+    
+
+	}
+
+
 
 	componentDidMount(){
 	}

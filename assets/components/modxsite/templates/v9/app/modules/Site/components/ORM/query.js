@@ -1,6 +1,7 @@
 
 const defaultQuery = `
 
+
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -28,6 +29,13 @@ query apiData(
   $resourceTag:String
   $resourceUri:String
   $resourceGetContent:Boolean = true
+  $editVersionStatus:[String]
+  $editVersionLimit:Int = 0
+  $editVersionSort:[SortBy] = [{
+    by:id,
+    dir:desc
+  }]
+  $editVersionGetEditor:Boolean = false
 ){
   companies(
     limit:$limit
@@ -60,7 +68,10 @@ query apiData(
   }
   
   ...ResourcesList
+  
   ...Topics
+  
+  ...RootEditVersions
 }
 
 mutation clearCache{
@@ -1423,14 +1434,23 @@ mutation addComment(
 }
 
 query editVersions(
+  $editVersionStatus:[String]
   $editVersionLimit:Int = 10
   $withPagination:Boolean = false
+  $editVersionSort:[SortBy] = [{
+    by:id,
+    dir:desc
+  }]
+  $getImageFormats:Boolean = false
+  $editVersionGetEditor:Boolean = false
 ){
   ...RootEditVersions
 }
 
 fragment RootEditVersions on RootType{
   editVersionsList(
+    status:$editVersionStatus
+    sort:$editVersionSort
     limit:$editVersionLimit
   ) @include(if:$withPagination)
   {
@@ -1441,6 +1461,8 @@ fragment RootEditVersions on RootType{
     }
   }
   editVersions(
+    status:$editVersionStatus
+    sort:$editVersionSort
     limit:$editVersionLimit
   ) @skip(if:$withPagination)
   {
@@ -1450,7 +1472,16 @@ fragment RootEditVersions on RootType{
 
 
 fragment editVersion on EditVersionType{
-  id
+  
+  ...editVersionFields
+  
+  EditedBy @include(if:$editVersionGetEditor)
+  {
+    ...UserFields
+  }
+}
+
+fragment editVersionFields on EditVersionType{id
   target_id
   editedby
   editedon
@@ -1464,6 +1495,8 @@ fragment editVersion on EditVersionType{
 mutation updateCompany(
   $updateCompanyId:Int!
   $updateCompanyData:JSON!
+  $getImageFormats:Boolean = false
+  $editVersionGetEditor:Boolean = false
 ){
   updateCompany(
     target_id: $updateCompanyId
@@ -1472,6 +1505,7 @@ mutation updateCompany(
     ...editVersion
   }
 }
+
 
 
 `;

@@ -26,6 +26,7 @@ export default class Page extends Component{
 		localQuery: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
+    triggerGoal: PropTypes.func.isRequired,
 	};
 
 	constructor(props){

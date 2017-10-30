@@ -205,7 +205,17 @@ const resourcesArgs = Object.assign({
   },
 }, listArgs);
 
-// console.log('RatingsList', RatingsList);
+
+const editVersionArgs = Object.assign({
+  status: {
+    type: new GraphQLList(GraphQLString),
+    description: "Статус",
+  },
+  companyId: {
+    type: GraphQLInt,
+    description: "ID комапнии, в которой выполнены изменения",
+  },
+}, listArgs);
 
 const RootType = new GraphQLObjectType({
   name: 'RootType',
@@ -431,18 +441,12 @@ const RootType = new GraphQLObjectType({
       type: EditVersionType,
       name: "editVersionsList",
       description: "Список внесенных изменний с постраничностью",
-      args: Object.assign({
-        status: {
-          type: new GraphQLList(GraphQLString),
-          description: "Статус",
-        },
-      }, listArgs),
+      args: editVersionArgs,
     }),
     editVersions: {
       type: new GraphQLList(EditVersionType),
       description: "Список результатов поисковых запросов",
-      args: Object.assign({
-      }, listArgs),
+      args: editVersionArgs,
     },
     editVersion: {
       type: EditVersionType,

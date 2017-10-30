@@ -217,6 +217,7 @@ export const getList = async (Company, args, context, info) => {
     start,
     page,
     sort,
+    companyId,
     status,
   } = args || {};
 
@@ -252,6 +253,10 @@ export const getList = async (Company, args, context, info) => {
 
   if(status && status.length){
     q.whereIn('edit_versions.status', status);
+  }
+
+  if(companyId !== undefined){
+    q.where('edit_versions.target_id', companyId);
   }
 
   // q.innerJoin(`${prefix}site_content as site_content`, 'site_content.id', 'redirects.resource_id');

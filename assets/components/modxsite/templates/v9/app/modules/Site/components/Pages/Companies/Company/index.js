@@ -10,6 +10,7 @@ import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
+import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 
 import SaveIcon from 'material-ui-icons/Save';
@@ -37,6 +38,12 @@ import RatingField from './fields/Rating';
 
 import moment from 'moment';
 
+if(typeof window !== "undefined"){
+	window.moment = moment;
+}
+
+
+import EditVersions from 'modules/Site/components/Pages/EditVersions';
 
 export default class CompanyPage extends Component{
 
@@ -66,6 +73,7 @@ export default class CompanyPage extends Component{
 		this.state = {
 			sending: false,
 			galleryExpanded: false,
+			diffs: null,
 		};
 	}
 
@@ -244,6 +252,8 @@ export default class CompanyPage extends Component{
 			operationName: "Company",
 			variables: {
 				id,
+				companyGetEditVersions: true,
+				editVersionGetEditor: true,
 			},
 		})
 			.then(result => {
@@ -379,6 +389,21 @@ export default class CompanyPage extends Component{
 
 	}
 
+
+	previewDiffs(diffs){
+
+		// console.log("previewDiffs", diffs);
+
+		const {
+			diffs: currentDiffs,
+		} = this.state;
+
+		this.setState({
+			diffs: currentDiffs && currentDiffs === diffs ? null : diffs,
+		});
+
+	}
+
 	
 	render(){
 
@@ -391,8 +416,11 @@ export default class CompanyPage extends Component{
     	user: currentUser,
     } = user || {};
 
-		const {
+		let {
 			item,
+			item: {
+				...itemData,
+			},
 		} = this.props;
 
 		// console.log("Company render item", item);
@@ -401,10 +429,21 @@ export default class CompanyPage extends Component{
 			galleryItem,
 			galleryExpanded,
 			sending,
+			diffs,
 		} = this.state;
 
-		const {
+
+		// let item = Object.assign({}, itemData);
+
+		// Перегружаем измененные данные
+		if(diffs && diffs.data){
+			Object.assign(itemData, diffs.data);
+		}
+
+
+		let {
 			id,
+			id: companyId,
 			name,
 			uri,
 			imageFormats: image,
@@ -417,9 +456,11 @@ export default class CompanyPage extends Component{
 			coords,
 			comments,
 			editedon,
+			editVersions,
 			_errors: errors,
 			_isDirty,
-		} = item;
+		// } = item;
+		} = itemData;
 
 		const inEditMode = _isDirty ? true : false;
 
@@ -892,12 +933,51 @@ export default class CompanyPage extends Component{
 		}
 
 
+		let editVersionsList;
+
+		if(editVersions){
+
+
+			editVersionsList = <div>
+				
+				{diffs
+					?
+					<Button
+						onClick={event => {
+							this.setState({
+								diffs: null,
+							});
+						}}
+						raised
+						accent
+					>
+						Отменить изменения и показать оригинал
+					</Button>
+					:
+					null
+				}
+
+				<EditVersions 
+					companyId={companyId}
+					previewDiffs={::this.previewDiffs}
+					diffs={diffs}
+				/>
+			</div>
+
+		}
+
+
 		let editDateInfo = <Grid
 			item
 			xs={12}
+			style={{
+				marginTop: 15,
+			}}
 		>
 
 			<b>Дата последнего редактирования: </b> {editDate && moment(editDate * 1000).format("DD-MM-YYYY")}
+
+			{editVersionsList}
 
 		</Grid>;
 

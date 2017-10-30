@@ -5,11 +5,14 @@ import PropTypes from 'prop-types';
 
 import Page from '../layout';
 
+import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import AcceptedIcon from 'material-ui-icons/Check';
 import RejectedIcon from 'material-ui-icons/Clear';
+
+import {Link} from 'react-router';
 
 import moment from 'moment';
 
@@ -57,13 +60,19 @@ export default class EditVersionsPage extends Page{
 			localQuery,
 		} = this.context;
 
+		const {
+			companyId,
+		} = this.props;
+
 
 		localQuery({
 			operationName: "editVersions",
 			variables: {
 				editVersionLimit: 0,
 				editVersionGetEditor: true,
+				editVersionGetCompany: true,
 				getImageFormats: true,
+				editVersionCompanyId: companyId,
 			},
 		})
 		.then(r => {
@@ -109,12 +118,38 @@ export default class EditVersionsPage extends Page{
   }
 
 
+  triggerGoal(goal){
+
+    const {
+      triggerGoal,
+    } = this.context;
+
+    triggerGoal(goal);
+
+  }
+
+
 	renderContent(){
 
-		// const {
-		// 	EditVersionsStore,
-		// 	// RatingsStore,
-		// } = this.context;
+		const {
+			user: {
+				user: currentUser,
+				hasPermission,
+			},
+		} = this.context;
+
+		const {
+			companyId,
+			previewDiffs,
+			diffs,
+		} = this.props;
+
+
+		const sudo = hasPermission("sudo");
+
+		// console.log("hasPermission", sudo);
+
+		const companyView = companyId ? true : false;
 
 		// try{
 
@@ -143,12 +178,6 @@ export default class EditVersionsPage extends Page{
 		let thead = [
 
 			<TableCell
-				key="building"
-			>
-				Заведение
-			</TableCell>,
-
-			<TableCell
 				key="editedon"
 			>
 				Дата
@@ -163,14 +192,41 @@ export default class EditVersionsPage extends Page{
 			<TableCell
 				key="editedby"
 			>
-				Редактор
+				Автор изменений
 			</TableCell>,
 
 		];
 
+
+		if(!companyView){
+			thead.unshift(<TableCell
+				key="building"
+			>
+				Заведение
+			</TableCell>);
+		}
+
+
+		if(companyView){
+			thead.push(<TableCell
+				key="actions"
+			>
+				Действие
+			</TableCell>);
+		}
+
+		if(sudo){
+			thead.push(<TableCell
+				key="data"
+			>
+				Данные
+			</TableCell>);
+		}
+
 		let tbody = [];
 
 		// console.log('items', items);
+
 
 		items && items.map(item => {
 
@@ -178,8 +234,39 @@ export default class EditVersionsPage extends Page{
 				id,
 				editedon,
 				status,
+				data,
 				EditedBy,
+				Company,
 			} = item;
+
+			let jsonData;
+
+			if(sudo){
+
+				jsonData = JSON.stringify(data);
+
+			}
+
+			const {
+				id: company_id,
+				name: company_name,
+				uri: company_uri,
+			} = Company || {};
+
+			let actions = [];
+
+			actions.push(<Button
+				key="view"
+				onClick={event => {
+
+					this.triggerGoal("companyEditDiffsClicked");
+
+					previewDiffs && previewDiffs(item);
+				}}
+				accent={diffs === item ? true : false}
+			>
+				{diffs === item ? "Отменить изменения" : "Посмотреть изменения"}				
+			</Button>);
 
 			let statusStr;
 
@@ -228,8 +315,28 @@ export default class EditVersionsPage extends Page{
 				key={id}
 			>
 				
-				<TableCell>
-				</TableCell>
+				{!companyView
+					?
+					<TableCell>
+
+						{company_id 
+							?
+
+								<Link
+									to={company_uri}
+									href={company_uri}
+								>
+									{company_name}
+								</Link>
+
+							:
+							""
+						}
+
+					</TableCell>
+					:
+					null
+				}
 				
 				<TableCell>
 					{editedon && moment(editedon * 1000).format('DD-MM-YYYY HH:mm:ss') || ''}
@@ -242,10 +349,34 @@ export default class EditVersionsPage extends Page{
 				<TableCell>
 					{EditedBy && <UserLink 
 						user={EditedBy}
-					/> || ""}
+					/> || "Анонимный пользователь"}
 				</TableCell>
+				
+				{companyView 
+					? 
+					<TableCell>
+						{actions}
+					</TableCell>
+					:
+					null
+				}
+				
+				{sudo 
+					? 
+					<TableCell
+						style={{
+							whiteSpace: "pre-wrap",
+						}}
+					>
+						{jsonData || ""}
+					</TableCell>
+					:
+					null
+				}
 
 			</TableRow>);
+
+
 
 		});
 

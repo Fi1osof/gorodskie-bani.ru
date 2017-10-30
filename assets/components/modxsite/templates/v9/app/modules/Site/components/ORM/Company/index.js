@@ -22,6 +22,9 @@ import {
 //   // ModelObject,
 // } from '../';
 
+
+import EditVersionType from '../EditVersion';
+
 import ModelObject from '../object';
 
 import {
@@ -881,6 +884,33 @@ export const CompanyType = new GraphQLObjectType({
           //   });
 
           // return result;
+        },
+      },
+      editVersions: {
+        description: 'Версии изменения',
+        type: new GraphQLList(EditVersionType),
+        resolve: async (source, args, context, info) => {
+
+          const {
+            rootResolver,
+          } = context;
+
+          const {
+            id: companyId,
+          } = source;
+
+          if(!companyId){
+            return null;
+          }
+          
+
+          Object.assign(args, {
+            companyId,
+            limit: 0,
+          });
+
+          return rootResolver(null, args, context, info);
+
         },
       },
     }

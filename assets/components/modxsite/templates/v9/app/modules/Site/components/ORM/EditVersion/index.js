@@ -16,11 +16,17 @@ import {
   UserType,
 } from '../User';
 
+import {
+  CompanyType,
+  // getMany as getCompanies,
+  // getOne as getCompany,
+} from '../Company';
+
 
 const EditVersionType = new GraphQLObjectType({
 	name: "EditVersionType",
 	description: "История изменения объекта",
-	fields: {
+	fields: () => ({
 		id: {
 			type: GraphQLInt,
 			description: "Идентификатор поля",
@@ -81,7 +87,35 @@ const EditVersionType = new GraphQLObjectType({
         return rootResolver(null, args, context, info);
       },
     },
-	},
+    Company: {
+      type: CompanyType,
+      description: "Компания, для которой выполнены изменения",
+      resolve: async (source, args, context, info) => {
+
+        const {
+          fieldName,
+        } = info;
+
+        const {
+          rootResolver,
+        } = context;
+
+        const {
+          target_id,
+        } = source;
+
+        if(!target_id){
+          return null;
+        }
+
+        Object.assign(args, {
+          id: target_id,
+        });
+
+        return rootResolver(null, args, context, info);
+      },
+    },
+	}),
 });
 
 export default EditVersionType;
@@ -97,8 +131,8 @@ export const getList = (source, args, context, info) => {
   } = context.state;
 
   const {
-    // resource_id,
-    // parent,
+    companyId,
+    status,
     // createdby,
   } = args;
 
@@ -109,18 +143,20 @@ export const getList = (source, args, context, info) => {
   // state = state.filter(n => n.published === 1 && n.deleted === 0);
 
   // Фильтр по документу
-  // if(resource_id){
+  if(companyId){
 
-  //   state = state.filter(n => n.resource_id === resource_id);
+    state = state.filter(n => n.target_id === companyId);
 
-  // }
+  }
 
   // // Фильтр по родителю
-  // if(parent){
+  if(status && status.length){
 
-  //   state = state.filter(n => n.parent === parent);
+  	console.log("status", status);
 
-  // }
+    state = state.filter(n => status.indexOf(n.status) !== -1);
+
+  }
 
   // // Фильтр по автору
   // if(createdby){

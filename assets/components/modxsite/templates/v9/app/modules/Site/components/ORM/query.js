@@ -35,6 +35,9 @@ query apiData(
     dir:desc
   }]
   $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
+  $editVersionCompanyId:Int
+  $companyGetEditVersions:Boolean = false
 ){
   companies(
     limit:$limit
@@ -98,6 +101,9 @@ query Companies (
   $userGetComments:Boolean = false
   $resourceUri:String
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   companies(
     limit:$limit
@@ -140,6 +146,9 @@ query Company(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   company(
     id: $id
@@ -182,6 +191,9 @@ query Ratings(
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   ...RatingsList
 }
@@ -220,6 +232,9 @@ query MainMenuData(
   $resourceParent:Int = 1296
   $resourceUri:String
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   ...RatingsList
   
@@ -281,6 +296,9 @@ query Comments(
   $commentsPage:Int = 1
   $commentsIds:[Int]
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   commentsList(
     ids: $commentsIds
@@ -332,6 +350,9 @@ query MapCompanies (
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   companiesList(
     limit:$limit
@@ -382,6 +403,9 @@ query CompanyRatings(
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   ratings(  
     limit:$limit
@@ -426,6 +450,9 @@ query CompanyComments(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   comments(  
     limit:$limit
@@ -472,6 +499,9 @@ query CompanyAvgRatings(
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   ratings(  
     limit:1
@@ -669,6 +699,9 @@ query RatingsPageData(
   $ratingGetType:Boolean = false
   $resourceUri:String
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   
   ...ResourcesList
@@ -950,6 +983,70 @@ fragment Rating on RatingType{
 }
 
 fragment Company on Company{
+  
+  ...CompanyFields
+  
+  ... on Company @include(if:$getCompanyFullData)
+  {
+    description 
+    content
+  }
+  
+  comments (
+    sort:$companyCommentsSort
+  )@include(if:$getCompanyComments)
+  {
+    id
+    thread_id
+    text
+    author_username
+    author_fullname
+    author_avatar
+    createdby
+    parent
+    published
+    deleted
+    createdon
+    Company @include(if:$getCommentCompany)
+    {
+      ...CompanyFields
+    }
+    Author @include(if:$getCommentAuthor)
+    {
+      ...User
+    }
+  }
+  
+  ratingAvg @include(if: $getRatingsAvg) 
+  {
+    rating
+    max_vote
+    min_vote
+    type
+    target_id
+    quantity
+    quantity_voters
+    voted_companies
+    voted_users
+    voter
+    voters @include(if:$getRatingVoters)
+    {
+      ...User
+    }
+  }
+  
+  topics @include(if:$getCompanyTopics)
+  {
+    ...Topic
+  }
+  
+  editVersions @include(if:$companyGetEditVersions)
+  {
+    ...editVersion
+  }
+}
+
+fragment CompanyFields on Company{
   id
   name
   longtitle
@@ -969,6 +1066,7 @@ fragment Company on Company{
   mapIcon
   image
   ...imageFormats @include(if:$getImageFormats)
+  
   gallery @include(if:$getCompanyGallery)
   {
     image
@@ -999,62 +1097,6 @@ fragment Company on Company{
     metro
     approved
   }
-  ... on Company @include(if:$getCompanyFullData)
-  {
-    description 
-    content
-  }
-  comments (
-    sort:$companyCommentsSort
-  )
-  @include(if:$getCompanyComments)
-  {
-    id
-    thread_id
-    text
-    author_username
-    author_fullname
-    author_avatar
-    createdby
-    parent
-    published
-    deleted
-    createdon
-    Company @include(if:$getCommentCompany)
-    {
-      ...CompanyFields
-    }
-    Author @include(if:$getCommentAuthor)
-    {
-      ...User
-    }
-  }
-  ratingAvg @include(if: $getRatingsAvg) 
-  {
-    rating
-    max_vote
-    min_vote
-    type
-    target_id
-    quantity
-    quantity_voters
-    voted_companies
-    voted_users
-    voter
-    voters @include(if:$getRatingVoters)
-    {
-      ...User
-    }
-  }
-  topics @include(if:$getCompanyTopics)
-  {
-    ...Topic
-  }
-}
-
-fragment CompanyFields on Company{
-  id
-  name 
 }
 
 fragment imageFormats on Company{
@@ -1184,6 +1226,9 @@ mutation addCompany(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   addCompany{
     ...Company
@@ -1322,6 +1367,9 @@ mutation addCompanyGalleryImage(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   addCompanyGalleryImage(
     id: $companyId
@@ -1349,6 +1397,9 @@ query Search(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   search(
     limit:$searchLimit
@@ -1432,6 +1483,9 @@ mutation addComment(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
 ){
   addComment(
     target_id:$commentTargetId
@@ -1445,14 +1499,18 @@ mutation addComment(
 
 query editVersions(
   $editVersionStatus:[String]
+  $editVersionCompanyId:Int
   $editVersionLimit:Int = 10
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
   $withPagination:Boolean = false
   $editVersionSort:[SortBy] = [{
     by:id,
     dir:desc
   }]
   $getImageFormats:Boolean = false
-  $editVersionGetEditor:Boolean = false
+  $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
 ){
   ...RootEditVersions
 }
@@ -1460,6 +1518,7 @@ query editVersions(
 fragment RootEditVersions on RootType{
   editVersionsList(
     status:$editVersionStatus
+    companyId:$editVersionCompanyId
     sort:$editVersionSort
     limit:$editVersionLimit
   ) @include(if:$withPagination)
@@ -1472,6 +1531,7 @@ fragment RootEditVersions on RootType{
   }
   editVersions(
     status:$editVersionStatus
+    companyId:$editVersionCompanyId
     sort:$editVersionSort
     limit:$editVersionLimit
   ) @skip(if:$withPagination)
@@ -1488,6 +1548,11 @@ fragment editVersion on EditVersionType{
   EditedBy @include(if:$editVersionGetEditor)
   {
     ...UserFields
+  }
+  
+  Company @include(if:$editVersionGetCompany)
+  {
+    ...CompanyFields
   }
 }
 
@@ -1507,6 +1572,9 @@ mutation updateCompany(
   $updateCompanyData:JSON!
   $getImageFormats:Boolean = false
   $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
+  $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
 ){
   updateCompany(
     target_id: $updateCompanyId

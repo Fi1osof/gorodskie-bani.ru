@@ -1233,8 +1233,9 @@ export default class User extends Component {
                 <Grid 
                   item
                   xs={12}
-                  sm={6}
-                  lg={3}
+                  sm
+                  // sm={6}
+                  // lg={3}
                 >
                   <Typography 
                     type="title"
@@ -1261,8 +1262,9 @@ export default class User extends Component {
                   <Grid 
                     item
                     xs={12}
-                    sm={6}
-                    lg={3}
+                    sm
+                    // sm={6}
+                    // lg={3}
                   > 
                     <Typography 
                       type="subheading"
@@ -1275,10 +1277,21 @@ export default class User extends Component {
 
                     <ListItem
                     >
-                      <ListItemIcon>
-                        <CalendarIcon />
+                      <ListItemIcon
+                      > 
+                        <CalendarIcon 
+                        /> 
+
                       </ListItemIcon>
+                        
                       {moment(createdon * 1000).format("DD MMMM YYYY")}
+
+                      {/*<div
+                                              className="flex align-center"
+                                            >
+                                              <CalendarIcon /> {moment(createdon * 1000).format("DD MMMM YYYY")}
+                                            </div>*/}
+                      
                     </ListItem> 
 
                     {email
@@ -1321,27 +1334,7 @@ export default class User extends Component {
                   </Grid>
                   :
                   null
-                }
- 
-                
-
-                <Grid 
-                  item
-                  xs={12}
-                  sm={6}
-                  lg={3}
-                >
-                  
-                </Grid>
-
-                <Grid 
-                  item
-                  xs={12}
-                  sm={6}
-                  lg={3}
-                >
-                  
-                </Grid>
+                } 
                 
 
               </Grid>

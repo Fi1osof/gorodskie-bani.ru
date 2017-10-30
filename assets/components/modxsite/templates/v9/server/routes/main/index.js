@@ -1123,6 +1123,7 @@ export default class Router {
         const stylesGenerated = appExports.theme && appExports.theme.sheetsToString();
 
         // console.log('stylesGenerated', stylesGenerated);
+        // console.log('appExports.outputState', appExports.outputState);
 
 
         let style = '<style>';
@@ -1137,7 +1138,7 @@ export default class Router {
           searchable = false;
         }
 
-        html = this.renderHTML(componentHTML, state, resource, style, searchable);
+        html = this.renderHTML(componentHTML, state, resource, style, searchable, appExports);
       }
       catch(e){
         console.error(e);
@@ -1275,7 +1276,7 @@ export default class Router {
 
   // };
 
-  renderHTML(componentHTML, initialState, resource, style, searchable) {
+  renderHTML(componentHTML, initialState, resource, style, searchable, appExports) {
 
     let assetsUrl;
 
@@ -1288,7 +1289,12 @@ export default class Router {
 
     let buildPath = basePath + "build/";
 
+    // console.log('componentHTML', componentHTML);
+
+    console.log('initialState outputState', initialState.document.outputState);
+
     if(process.env.NODE_ENV === 'production'){
+
       assetsUrl = "/assets/components/modxsite/templates/v9/build/";
 
       var htmlFileName = "index.html";
@@ -1342,8 +1348,13 @@ export default class Router {
 
     let jState = "";
 
+
+    const outputState = initialState.document.outputState;
+
     Object.assign(initialState.document, {
       apiData: null,
+      outputState: null,
+      inputState: appExports.outputState,
       // mapData,
       // citiesData,
     });

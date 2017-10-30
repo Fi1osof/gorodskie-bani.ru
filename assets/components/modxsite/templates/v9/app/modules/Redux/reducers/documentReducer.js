@@ -8,6 +8,8 @@ const initialState = {
   apiData: {},
   mapData: {},
   citiesData: {},
+  // outputState: null,
+  inputState: null,
 };
 
 /*

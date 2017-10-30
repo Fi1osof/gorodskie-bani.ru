@@ -72,7 +72,12 @@ export default class CompanyPage extends Component{
 
 		super(props);
 
+		const {
+			item,
+		} = props;
+
 		this.state = {
+			item,
 			sending: false,
 			galleryExpanded: false,
 			diffs: null,
@@ -423,7 +428,7 @@ export default class CompanyPage extends Component{
 			item: {
 				...itemData,
 			},
-		} = this.props;
+		} = this.state;
 
 		// console.log("Company render item", item);
 

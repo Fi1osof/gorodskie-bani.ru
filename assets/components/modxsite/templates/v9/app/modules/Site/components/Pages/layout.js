@@ -11,6 +11,8 @@ const defaultProps = {}
 export default class Page extends Component{
 
 	static contextTypes = {
+		document: PropTypes.object.isRequired,
+		appExports: PropTypes.object.isRequired,
 		setPageTitle: PropTypes.func.isRequired,
 		user: PropTypes.object.isRequired,
 		updateItem: PropTypes.func.isRequired,

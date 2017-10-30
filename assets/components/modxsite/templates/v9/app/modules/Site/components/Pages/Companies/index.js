@@ -35,10 +35,46 @@ export default class CompaniesPage extends Page {
 		return !companyId && super.setPageTitle(title || "Городские бани");
 	}
 
+
+	componentWillMount(){
+
+		let {
+			CompaniesStore,
+			document,
+			appExports,
+		} = this.context;
+
+		// let{
+
+		// }
+
+		if(typeof window === "undefined"){
+
+			// console.log('outputState', document);
+
+			appExports.outputState = CompaniesStore.getState().toArray();
+			
+
+			// console.log('document.outputState', document.outputState);
+
+		}
+		else{
+				
+			this.state.inputState = document.inputState;
+
+		}
+
+
+		super.componentWillMount && super.componentWillMount();
+
+	}
+
+
 	renderContent(){
 
 		const {
 			router,
+			CompaniesStore,
 		} = this.context;
 
 		const {
@@ -46,8 +82,8 @@ export default class CompaniesPage extends Page {
 		} = this.props;
 
 		const {
-			CompaniesStore,
-		} = this.context;
+			inputState,
+		} = this.state;
 
 		const {
 			companyId,
@@ -72,6 +108,13 @@ export default class CompaniesPage extends Page {
 
 			// item = CompaniesStore.getState().find(n => n.uri === pathname || n.id == companyId || n.alias == companyId);
 			item = CompaniesStore.getState().find(n => n.uri === pathname || n.uri === `${pathname}/`);
+
+			// Если не был найден документ в общем хранилище, ищем во входящем стейте
+			if(!item){
+				
+				item = inputState.find(n => n.uri === pathname || n.uri === `${pathname}/`);
+
+			}
 
 			if(item){
 

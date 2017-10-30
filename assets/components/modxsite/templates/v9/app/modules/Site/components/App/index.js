@@ -3068,7 +3068,7 @@ function mapStateToProps(state) {
 
   var currentState = {};
 
-  Object.assign(currentState, state.document);
+  // Object.assign(currentState, state.document);
 
   currentState.user = state.user;
   currentState.document = state.document;

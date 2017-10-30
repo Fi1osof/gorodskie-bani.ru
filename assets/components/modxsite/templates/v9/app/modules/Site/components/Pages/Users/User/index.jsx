@@ -236,6 +236,26 @@ export default class User extends Component {
   }
 
 
+
+  componentDidUpdate(prevProps, prevState, prevContext){
+
+    const {
+      username,
+    } = this.props;
+
+    const {
+      username: prevUsername,
+    } = prevProps;
+
+
+    if((username || prevUsername) && username !== prevUsername){
+      this.loadData();
+    }
+
+    super.componentDidUpdate && super.componentDidUpdate();
+  }
+
+
   loadData(){
 
 

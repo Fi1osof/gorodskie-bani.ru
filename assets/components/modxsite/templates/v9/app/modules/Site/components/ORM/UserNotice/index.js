@@ -11,8 +11,8 @@ import {
   GraphQLNonNull,
 } from 'graphql';
 
-export default new GraphQLObjectType({
-	name: "UserNotice",
+const UserNoticeType = new GraphQLObjectType({
+	name: "UserNoticeType",
 	fields: {
 		id: {
 			type: new GraphQLNonNull(GraphQLInt),
@@ -32,3 +32,6 @@ export default new GraphQLObjectType({
 		},
 	},
 });
+
+
+export default UserNoticeType;

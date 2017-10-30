@@ -1,7 +1,6 @@
 
 const defaultQuery = `
 
-
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -1105,7 +1104,18 @@ fragment UserFields on UserType{
     middle
     big
   }
+  notices{
+    ...UserNoticeFields
+  }
   _Dirty
+}
+
+
+fragment UserNoticeFields on UserNoticeType{
+  id
+  type
+  comment
+  active
 }
 
 query test(
@@ -1505,7 +1515,6 @@ mutation updateCompany(
     ...editVersion
   }
 }
-
 
 
 `;

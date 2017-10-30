@@ -230,6 +230,8 @@ export class AppMain extends Component{
     saveTopicItem: PropTypes.func,
     updateCommentItem: PropTypes.func,
     saveCommentItem: PropTypes.func,
+    updateCurrentUser: PropTypes.func,
+    saveCurrentUser: PropTypes.func,
     setPageTitle: PropTypes.func,
     CoordsStore: PropTypes.object,
     CompaniesStore: PropTypes.object,
@@ -294,6 +296,8 @@ export class AppMain extends Component{
       updateTopicItem: this.updateTopicItem,
       saveTopicItem: this.saveTopicItem,
       updateCommentItem: this.updateCommentItem,
+      updateCurrentUser: this.updateCurrentUser,
+      saveCurrentUser: this.saveCurrentUser,
       saveCommentItem: this.saveCommentItem,
       setPageTitle: this.setPageTitle,
       getCounters: this.getCounters,
@@ -1330,10 +1334,10 @@ export class AppMain extends Component{
       return false;
     }
 
-    if(!store){
-      console.error("Не указано хранилище");
-      return false;
-    }
+    // if(!store){
+    //   console.error("Не указано хранилище");
+    //   return false;
+    // }
 
     let newState = {};
 
@@ -1351,7 +1355,15 @@ export class AppMain extends Component{
 
     }
 
-    store.getDispatcher().dispatch(store.actions['UPDATE'], item, newState);
+    if(store){
+
+      store.getDispatcher().dispatch(store.actions['UPDATE'], item, newState);
+
+    }
+    else{
+      Object.assign(item, newState);
+    }
+
 
     return;
   }
@@ -1371,11 +1383,11 @@ export class AppMain extends Component{
 
     // 
 
-    if(!store){
+    // if(!store){
 
-      console.error("Не было получено хранилище");
-      return;
-    }
+    //   console.error("Не было получено хранилище");
+    //   return;
+    // }
 
     if(
       !item
@@ -1398,9 +1410,9 @@ export class AppMain extends Component{
       return;
     }
 
-    let dispatcher = store.getDispatcher();
-
     item._sending = true;
+
+
       
     var action = id && id > 0 ? 'update' : 'create';
 
@@ -1512,7 +1524,19 @@ export class AppMain extends Component{
           _errors: errors,
           _sending: false,
         });
-        dispatcher.dispatch(store.actions["SAVE"], item, newObject); 
+
+        if(store){
+
+          let dispatcher = store.getDispatcher();
+          
+          dispatcher.dispatch(store.actions["SAVE"], item, newObject); 
+
+        }
+        else{
+          
+          Object.assign(item, newObject);
+
+        }
 
         this.forceUpdate();
       }
@@ -2012,6 +2036,69 @@ export class AppMain extends Component{
   }
 
 
+  updateCurrentUser = (data, silent) => {
+
+    // let {
+    //   CommentsStore,
+    // } = this.state;
+
+    // item = item && CommentsStore.getState().find(n => n.id === item.id);
+
+    let {
+      user: {
+        user: item,
+      },
+    } = this.props;
+
+    if(!item){
+      throw(new Error("Не был получен объект пользователя"));
+    }
+
+    this.updateItem(item, data, null, silent);
+  }
+
+
+  saveCurrentUser = () => {
+    // 
+    let {
+      user: {
+        user: item,
+      },
+    } = this.props;
+
+    if(!item){
+      throw(new Error("Не был получен объект пользователя"));
+    }
+
+    // let {
+    //   id: itemId,
+    // } = item;
+
+    // const callback = (data, errors) => { 
+
+    //   if(data.success && data.object){
+
+    //     // const {
+    //     //   id,
+    //     //   uri,
+    //     // } = data.object;
+
+    //     // if(id !== itemId){
+
+    //     //   // const uri = `/topics/${id}/`;
+          
+    //     //   browserHistory.replace(uri);
+    //     // }
+
+    //     this.reloadApiData();
+
+    //     return;
+    //   }
+    // }
+
+    return this.saveItem(null, item, 'user/own_profile/');
+  }
+
 
   // loadApiData = async () => {
 
@@ -2185,7 +2272,7 @@ export class AppMain extends Component{
       comments = comments || [];
 
       EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], editVersions || []);
-      
+
       CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
       UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
       RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);

@@ -71,6 +71,7 @@ export const getList = (object, args, context, info) => {
             sudo,
             delegate,
             // createdon,
+            notices,
           } = user;
 
           Object.assign(user, {
@@ -79,6 +80,15 @@ export const getList = (object, args, context, info) => {
             sudo: sudo === '1' ? true : false,
             delegate: delegate === '1' ? true : false,
             // createdon: parseInt(createdon) || null,
+            notices: notices && notices.map(n => {
+
+              Object.assign(n, {
+                id: parseInt(n.id),
+                active: parseInt(n.active) === 1 ? true : false,
+              });
+
+              return n;
+            }) || null,
           });
 
         });

@@ -18,15 +18,14 @@ import {
   CommentType,
 } from '../Comment';
 
+import UserNoticeType from '../UserNotice';
+
 import {
   listField,
+  imageType,
   // ObjectsListType,
 } from '../fields';
 
-
-import {
-  imageType,
-} from '../fields';
 
 
 // import {
@@ -241,6 +240,10 @@ export const UserType = new GraphQLObjectType({
 
           return rootResolver(null, args, context, info);
         },
+      },
+      notices: {
+        type: new GraphQLList(UserNoticeType),
+        description: "Список настроек уведомлений",
       },
       _Dirty: {
         type: GraphQLBoolean,

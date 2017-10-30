@@ -16,10 +16,6 @@ abstract class modWebObjectProcessor extends modSiteWebObjectProcessor{
         if($request_body AND $data = json_decode($request_body, 1)){
             $this->setProperties($data);
         }
-
-        if(isset($this->properties['id'])){
-            $this->properties['id'] = (int)$this->properties['id'];
-        }
         
         foreach($this->properties as $field => & $value){
 
@@ -44,6 +40,10 @@ abstract class modWebObjectProcessor extends modSiteWebObjectProcessor{
             else if($v === "undefined"){
                 unset($this->properties[$field]);
             }
+        }
+
+        if(isset($this->properties['id'])){
+            $this->properties['id'] = (int)$this->properties['id'];
         }
         
         return parent::initialize();

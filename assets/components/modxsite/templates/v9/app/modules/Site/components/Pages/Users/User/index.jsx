@@ -88,6 +88,8 @@ const contextTypes = Object.assign({
   router: PropTypes.object.isRequired,
   userActions: PropTypes.object.isRequired,
   documentActions: PropTypes.object.isRequired,
+  updateCurrentUser: PropTypes.func.isRequired,
+  saveCurrentUser: PropTypes.func.isRequired,
 
   request: PropTypes.func.isRequired,
   localQuery: PropTypes.func.isRequired,
@@ -582,12 +584,12 @@ export default class User extends Component {
     this.updateState(newState);
   }
 
-  updateState(newState){
+  // updateState(newState){
 
-    newState.isDirty = true;
+  //   newState.isDirty = true;
 
-    this.setState(newState);
-  }
+  //   this.setState(newState);
+  // }
 
   shouldComponentUpdate(nextProps, nextState){
 
@@ -598,101 +600,119 @@ export default class User extends Component {
     return true;
   }
 
-  Save(){
+  // Save(){
 
-    var body = new FormData();
+  //   var body = new FormData();
 
-    for(var i in this.state){
-      if(/^new_/.test(i)){
-        var value = this.state[i];
+  //   for(var i in this.state){
+  //     if(/^new_/.test(i)){
+  //       var value = this.state[i];
 
-        if(typeof value == "undefined"){
-          continue;
-        }
+  //       if(typeof value == "undefined"){
+  //         continue;
+  //       }
 
-        if(value == null){
-          value = "";
-        }
+  //       if(value == null){
+  //         value = "";
+  //       }
 
-        body.append(i.replace(/^new_/, ''), value);
-      }
-    }
+  //       body.append(i.replace(/^new_/, ''), value);
+  //     }
+  //   }
 
-    let action = 'user/own_profile/update';
+  //   let action = 'user/own_profile/update';
 
-    var headers = new Headers();
+  //   var headers = new Headers();
 
-    let CONNECTOR_URL = 'assets/components/modxsite/connectors/connector.php';
+  //   let CONNECTOR_URL = 'assets/components/modxsite/connectors/connector.php';
 
-    fetch(CONNECTOR_URL +'?pub_action=' + action,{
-      credentials: 'same-origin',
-      headers: headers,
-      method: "POST",
-      body: body,
+  //   fetch(CONNECTOR_URL +'?pub_action=' + action,{
+  //     credentials: 'same-origin',
+  //     headers: headers,
+  //     method: "POST",
+  //     body: body,
+  //   })
+  //     .then(function (response) {
+  //       return response.json()
+  //     })
+  //     .then(function (data) {
+
+  //       if(data.success){
+
+
+
+  //         // Обновляем текущего пользователя
+  //         let{
+  //           data: user,
+  //         } = this.props.document.document;
+
+  //         Object.assign(user, data.object);
+
+
+  //         var newState = {
+  //           isDirty: false,
+  //           inEditMode: false,
+  //           ShowStatusMessage: true,
+  //           StatusMessage: data.message || "Профиль успешно обновлен",
+  //           StatusMessageDuration: 3000,
+  //         };
+
+  //         if(data.object){
+  //           for(var i in data.object){
+  //             newState[i] = data.object[i];
+  //           }
+  //         }
+
+  //         this.clearEditedData(newState);
+
+  //         this.props.userActions.GetOwnData();
+
+
+
+  //       }
+  //       else{
+
+  //         var newState = {
+  //           ShowStatusMessage: true,
+  //           StatusMessage: data.message || "Ошибка выполнения запроса",
+  //           StatusMessageDuration: 7000,
+  //         };
+
+  //         var errors = [];
+
+  //         if(data.data){
+  //           data.data.map(function(item){
+  //             errors.push(item.msg);
+  //           });
+
+  //           newState.StatusMessage += "; " + errors.join(", ");
+  //         }
+
+  //         this.setState(newState);
+  //       }
+  //     }.bind(this))
+  //     .catch(function (error) {
+  //         console.log('Request failed', error);
+  //       }
+  //     );
+  // }
+
+  async Save(){
+
+    const {
+      saveCurrentUser,
+    } = this.context;
+
+    await saveCurrentUser()
+    .then(r => {
+      console.log('saveCurrentUser result', r);
     })
-      .then(function (response) {
-        return response.json()
-      })
-      .then(function (data) {
+    .catch(e => {
+      console.error(r);
+    });
 
-        if(data.success){
+    this.forceUpdate();
 
-
-
-          // Обновляем текущего пользователя
-          let{
-            data: user,
-          } = this.props.document.document;
-
-          Object.assign(user, data.object);
-
-
-          var newState = {
-            isDirty: false,
-            inEditMode: false,
-            ShowStatusMessage: true,
-            StatusMessage: data.message || "Профиль успешно обновлен",
-            StatusMessageDuration: 3000,
-          };
-
-          if(data.object){
-            for(var i in data.object){
-              newState[i] = data.object[i];
-            }
-          }
-
-          this.clearEditedData(newState);
-
-          this.props.userActions.GetOwnData();
-
-
-
-        }
-        else{
-
-          var newState = {
-            ShowStatusMessage: true,
-            StatusMessage: data.message || "Ошибка выполнения запроса",
-            StatusMessageDuration: 7000,
-          };
-
-          var errors = [];
-
-          if(data.data){
-            data.data.map(function(item){
-              errors.push(item.msg);
-            });
-
-            newState.StatusMessage += "; " + errors.join(", ");
-          }
-
-          this.setState(newState);
-        }
-      }.bind(this))
-      .catch(function (error) {
-          console.log('Request failed', error);
-        }
-      );
   }
 
   onDrop (files) { 
@@ -755,48 +775,77 @@ export default class User extends Component {
     });
   }
 
-  onCheckNotice(notice_id, checked){
+  async onCheckNotice(notice_id, checked){
  
 
     let {
-      current_user: user,
-    } = this.state;
+      user: {
+        user,
+      },
+    } = this.context;
 
     let {
       notices,
     } = user || {}
 
-    console.log('notices', notices, notice_id, checked);    
+    // console.log('notices', notices, notice_id, checked);    
 
-    if(notices && notices.length){
+    let notice = notices && notices.find(n => n.id === notice_id);
 
-      this.setState((prevState) => {
-
-        var notices = prevState.current_user.notices;
-
-        var new_notices = [];
-
-        notices.map(function(item){
-          if(item.id === notice_id){ 
-            item.active = (checked === true ? "1" : "0");
-          }
-
-          if(item.active === "1"){
-            new_notices.push(item.id);
-          }
-        });
-
-        return {
-          notices: notices,
-          new_notices: new_notices,
-        };
-      }, () => { 
-        this.Save();
-      });
+    if(notice){
+      notice.active = checked;
     }
+
+    await this.updateCurrentUser({
+      notices,
+    });
+
+    await this.Save();
+
+    this.forceUpdate();
+
+
+    // if(notices && notices.length){
+
+    //   this.setState((prevState) => {
+
+    //     var notices = prevState.current_user.notices;
+
+    //     var new_notices = [];
+
+    //     notices.map(function(item){
+    //       if(item.id === notice_id){ 
+    //         item.active = (checked === true ? "1" : "0");
+    //       }
+
+    //       if(item.active === "1"){
+    //         new_notices.push(item.id);
+    //       }
+    //     });
+
+    //     return {
+    //       notices: notices,
+    //       new_notices: new_notices,
+    //     };
+    //   }, () => { 
+    //     this.Save();
+    //   });
+    // }
 
     return;
   }
+
+
+  updateCurrentUser(data, silent){
+
+    const {
+      updateCurrentUser,
+    } = this.context;
+
+    updateCurrentUser(data, silent);
+
+  }
+
 
   render(){
 
@@ -914,7 +963,7 @@ export default class User extends Component {
 
     }
 
-    let notices;
+    let noticesList = [];
 
 
     if(user){
@@ -959,37 +1008,45 @@ export default class User extends Component {
 
       var payment;
 
-      {/*if(isCurrentUser){
+      if(isCurrentUser){
       
-              // var api_key = this.state.new_api_key || this.state.api_key;
-      
-              payment = <Payment user={this.props.user}/>
-      
-              
-      
-      
-      
-              addition_info = <div>
-                {payment}
-              </div>
-      
-              var notices = [];
-      
-              if(user_notices && user_notices.length){
-                user_notices.map(function(item){
-                  notices.push(<ListItem
-                      key={item.id}
-                    >
-                      <Switch className={classes.Switch}
-                        onClick={(event) => this.onCheckNotice(item.id, !(item.active === "1"))}
-                        checked={item.active === "1"}
-                      />
-      
-                      <ListItemText primary={item.comment}/>
-                    </ListItem>);
-                }, this);
-              } 
-            }*/}
+        // var api_key = this.state.new_api_key || this.state.api_key;
+
+        // payment = <Payment user={this.props.user}/>
+
+        
+
+
+
+        // addition_info = <div>
+        //   {payment}
+        // </div>
+
+        // var notices = [];
+
+        if(user_notices && user_notices.length){
+          user_notices.map(item => {
+
+            const {
+              id: noticeId,
+              type,
+              comment,
+              active,
+            } = item;
+
+            noticesList.push(<ListItem
+                key={noticeId}
+              >
+                <Switch className={classes.Switch}
+                  onClick={(event) => this.onCheckNotice(noticeId, !active)}
+                  checked={active}
+                />
+
+                <ListItemText primary={comment}/>
+              </ListItem>);
+          }, this);
+        } 
+      }
 
 
       if(this.state.inEditMode){
@@ -1286,7 +1343,7 @@ export default class User extends Component {
                   </Typography>
 
                   <List>
-                    {notices}
+                    {noticesList}
                   </List>
 
                 </Grid>

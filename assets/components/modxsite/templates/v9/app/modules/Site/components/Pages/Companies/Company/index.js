@@ -16,6 +16,8 @@ import IconButton from 'material-ui/IconButton';
 import SaveIcon from 'material-ui-icons/Save';
 import EditIcon from 'material-ui-icons/Edit';
 import AddIcon from 'material-ui-icons/AddCircle';
+// import ListIcon from 'material-ui-icons/List';
+import ListIcon from 'material-ui-icons/ErrorOutline';
 
 import Helper from 'modules/Site/components/Helper';
 
@@ -935,7 +937,7 @@ export default class CompanyPage extends Component{
 
 		let editVersionsList;
 
-		if(editVersions){
+		if(editVersions && editVersions.length){
 
 
 			editVersionsList = <div>
@@ -962,6 +964,22 @@ export default class CompanyPage extends Component{
 					previewDiffs={::this.previewDiffs}
 					diffs={diffs}
 				/>
+			</div>
+
+		}
+		else{
+
+			editVersionsList = <div>
+				<Link
+					to="/edits/"
+					href="/edits/"
+					rel="nofollow"
+					className="flex align-center"
+				>
+					<ListIcon 
+						color="#F57C00"
+					/> Смотреть ленту изменений
+				</Link>
 			</div>
 
 		}

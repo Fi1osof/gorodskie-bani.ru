@@ -58,7 +58,7 @@ var classes;
  
 // let moment = require('moment');
 
-import 'moment/src/locale/ru';
+
 import moment from 'moment';
 // moment.locale('ru');
 

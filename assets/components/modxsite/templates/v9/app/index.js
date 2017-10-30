@@ -9,6 +9,14 @@ import { useScroll } from "react-router-scroll";
 // Import routes
 import rootRoute from "./routes";
 
+
+
+if(typeof window !== "undefined"){
+
+  require('moment/src/locale/ru');
+
+}
+
 import configureStore from "./store";
 // Create redux store with history
 // this uses the singleton browserHistory provided by react-router

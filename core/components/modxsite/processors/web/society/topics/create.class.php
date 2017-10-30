@@ -268,6 +268,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
             "active"    => 1,
             "Profile.blocked"   => 0,
             "id:not in" => $sended_to,
+            "Notices.active"    => 1,
         ));
         
         $users_query->where(array(

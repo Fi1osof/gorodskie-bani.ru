@@ -152,7 +152,7 @@ export default class UsersPage extends Page {
 		})
 		.then(r => {
 
-			console.log("Users r", r);
+			// console.log("Users r", r);
 
 			const {
 				usersList,

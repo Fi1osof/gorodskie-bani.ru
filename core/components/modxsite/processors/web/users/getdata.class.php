@@ -129,6 +129,8 @@ class modWebUsersGetdataProcessor extends modSiteWebUsersGetdataProcessor{
         
         $canViewAllData = $this->modx->hasPermission("canViewAllData");
 
+        $ownProfile = $this->getProperty("ownProfile");
+
         foreach($list as & $l){
             if(empty($l['image'])){
                 $l['image'] = "anonymous.jpg";
@@ -143,6 +145,47 @@ class modWebUsersGetdataProcessor extends modSiteWebUsersGetdataProcessor{
                 unset($l['offer_date']);
                 unset($l['offer_date']);
                 unset($l['contract_date']);
+
+            }
+
+
+
+            if($ownProfile){
+
+                /*
+                 * Получаем информацию по настройкам уведомлений
+                 * */
+                $l['notices'] = array();
+                $q = $this->modx->newQuery("SocietyNoticeType");
+
+                $alias = $q->getAlias();
+
+                $q->leftJoin("SocietyNoticeUser", "NoticeUsers", "SocietyNoticeType.id = NoticeUsers.notice_id AND NoticeUsers.user_id = {$l['id']}");
+
+    //            $q->where(array(
+    //                "NoticeUsers.user_id" => $l['id'],
+    //            ));
+
+                $q->select(array(
+                    "{$alias}.id",
+                    "type",
+                    "comment",
+                    "if(NoticeUsers.active is not null, NoticeUsers.active, 0) as active",
+                ));
+
+                $q->sortby("rank", "ASC");
+
+                $s = $q->prepare();
+
+                // print $q->toSQL();
+
+                $s->execute();
+
+                while($row = $s->fetch(PDO::FETCH_ASSOC)){
+    //                print_r($row);
+
+                    $l['notices'][] = $row;
+                }
 
             }
 

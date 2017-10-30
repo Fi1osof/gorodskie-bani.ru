@@ -168,6 +168,7 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
             "active"    => 1,
             "Profile.blocked"   => 0,
             "id:not in" => $sended_to,
+            "Notices.active"    => 1,
         ));
         $users_query->leftJoin('SocietyNoticeUser', 'Notices');
         $users_query->leftJoin('SocietyNoticeType', 'NoticeType', "NoticeType.id = Notices.notice_id");

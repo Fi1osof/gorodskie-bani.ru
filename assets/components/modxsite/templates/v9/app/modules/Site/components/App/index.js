@@ -2036,35 +2036,63 @@ export class AppMain extends Component{
   }
 
 
-  updateCurrentUser = (data, silent) => {
+  // updateCurrentUser = (data, silent) => {
 
-    // let {
-    //   CommentsStore,
-    // } = this.state;
+  //   // let {
+  //   //   CommentsStore,
+  //   // } = this.state;
 
-    // item = item && CommentsStore.getState().find(n => n.id === item.id);
+  //   // item = item && CommentsStore.getState().find(n => n.id === item.id);
+
+  //   let {
+  //     user: {
+  //       user: item,
+  //     },
+  //   } = this.props;
+
+  //   if(!item){
+  //     throw(new Error("Не был получен объект пользователя"));
+  //   }
+
+  //   this.updateItem(item, data, null, silent);
+  // }
+
+
+  updateCurrentUser = (item, data, silent) => {
 
     let {
-      user: {
-        user: item,
-      },
-    } = this.props;
+      UsersStore,
+    } = this.state;
+
+    item = item && UsersStore.getState().find(n => n.id === item.id);
+
+    // let {
+    //   user: {
+    //     user: item,
+    //   },
+    // } = this.props;
 
     if(!item){
       throw(new Error("Не был получен объект пользователя"));
     }
 
-    this.updateItem(item, data, null, silent);
+    this.updateItem(item, data, UsersStore, silent);
   }
 
 
-  saveCurrentUser = () => {
+  saveCurrentUser = (item) => {
     // 
+    // let {
+    //   user: {
+    //     user: item,
+    //   },
+    // } = this.props;
+
     let {
-      user: {
-        user: item,
-      },
-    } = this.props;
+      UsersStore,
+    } = this.state;
+
+    item = item && UsersStore.getState().find(n => n.id === item.id);
 
     if(!item){
       throw(new Error("Не был получен объект пользователя"));

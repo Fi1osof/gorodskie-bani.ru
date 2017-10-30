@@ -85,7 +85,7 @@ class modWebUsersOwnprofileUpdateProcessor extends modObjectUpdateProcessor{
                 "fullname",
                 "new_password",
                 "notices",
-                "photo",
+                "image",
                 "phone",
             ))){
                 // $this->unsetProperty($name);
@@ -129,34 +129,34 @@ class modWebUsersOwnprofileUpdateProcessor extends modObjectUpdateProcessor{
          * Фото
          * */
 
-        if($image = $this->getProperty("photo")){
-            if(preg_match("/data:image\/(\w+?);base64,(.+)/u", $image, $match)){
+        // if($image = $this->getProperty("photo")){
+        //     if(preg_match("/data:image\/(\w+?);base64,(.+)/u", $image, $match)){
 
-                $path = $this->images_path;
+        //         $path = $this->images_path;
 
-                $ext = $match[1];
-                $images_dir = MODX_BASE_PATH ;
-                $image_name = md5($image).".{$ext}";
-                $relative_path = $path . $image_name;
-                $full_path = $images_dir . $relative_path;
+        //         $ext = $match[1];
+        //         $images_dir = MODX_BASE_PATH ;
+        //         $image_name = md5($image).".{$ext}";
+        //         $relative_path = $path . $image_name;
+        //         $full_path = $images_dir . $relative_path;
 
-                if(!file_exists($full_path)){
-                    $fo = fopen($full_path, "wb");
+        //         if(!file_exists($full_path)){
+        //             $fo = fopen($full_path, "wb");
 
-                    fwrite($fo, base64_decode($match[2]));
+        //             fwrite($fo, base64_decode($match[2]));
 
-                    fclose($fo);
-                }
+        //             fclose($fo);
+        //         }
 
-                if(file_exists($full_path)){
-                    $Profile->set("photo", $image_name);
-                    $this->setProperty("photo", $image_name);
-                }
-                else{
-                    return "Ошибка сохранения фото";
-                }
-            }
-        }
+        //         if(file_exists($full_path)){
+        //             $Profile->set("photo", $image_name);
+        //             $this->setProperty("photo", $image_name);
+        //         }
+        //         else{
+        //             return "Ошибка сохранения фото";
+        //         }
+        //     }
+        // }
 
         return parent::beforeSet();
     }
@@ -199,6 +199,16 @@ class modWebUsersOwnprofileUpdateProcessor extends modObjectUpdateProcessor{
             $this->addFieldError('email', 'Укажите корректный email');
         }
 
+        if($image = $Profile->image){
+
+            // $image = str_replace("//", );
+            $image = preg_replace('/\/{2,}/', '/', $image);
+
+            $image = preg_replace('/^\/?assets\/images\//', '', $image);
+
+            $Profile->set("photo", $image);
+
+        }
 
         
         # 
@@ -402,6 +412,9 @@ class modWebUsersOwnprofileUpdateProcessor extends modObjectUpdateProcessor{
 //             "api_key" => $object->api_key,
 //             "notices" => $notices,
 //         );
+        
+        $this->modx->cacheManager->refresh();
+        $this->modx->cacheManager->clearCache();
 
         $data = $object->toArray();
 

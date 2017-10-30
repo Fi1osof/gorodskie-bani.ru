@@ -134,8 +134,20 @@ class modWebUsersGetdataProcessor extends modSiteWebUsersGetdataProcessor{
         foreach($list as & $l){
             if(empty($l['image'])){
                 $l['image'] = "anonymous.jpg";
+
             }
-            $l['image'] = trim($avatars_url . $l['image'], '/');
+            
+            if(preg_match('/^lazy\//', $l['image'])){
+
+                $l['image'] = trim('assets/images/' . $l['image'], '/');
+
+            }
+            else{
+                
+                $l['image'] = trim($avatars_url . $l['image'], '/');
+            }
+
+
 
             if(!$canViewAllData){
 

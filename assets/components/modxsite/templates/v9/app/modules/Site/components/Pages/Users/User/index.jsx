@@ -269,7 +269,7 @@ export default class User extends Component {
     })
     .then(r => {
 
-      console.log("User r", r);
+      // console.log("User r", r);
 
       const {
         user,
@@ -575,17 +575,20 @@ export default class User extends Component {
       default: value = state.getCurrentContent().getFirstBlock().text;
     }
 
-    newState["new_" + field] = value;
+    // newState["new_" + field] = value;
+    // newState["new_" + field] = value;
     newUserState[field] = value;
 
     // Обновляем текущего пользователя
-    let{
-      data: user,
-    } = this.props.document.document;
+    // let{
+    //   data: user,
+    // } = this.props.document.document;
 
-    Object.assign(user, newUserState);
+    // Object.assign(user, newUserState);
 
-    this.updateState(newState);
+    // this.updateState(newState);
+
+    this.updateCurrentUser(newUserState);
   }
 
   // updateState(newState){
@@ -707,9 +710,18 @@ export default class User extends Component {
       saveCurrentUser,
     } = this.context;
 
-    await saveCurrentUser()
+    const {
+      user,
+    } = this.state;
+
+    await saveCurrentUser(user)
     .then(r => {
-      console.log('saveCurrentUser result', r);
+      // console.log('saveCurrentUser result', r);
+
+      this.setState({
+        inEditMode: false,
+      });
+
     })
     .catch(e => {
       console.error(r);
@@ -819,7 +831,7 @@ export default class User extends Component {
                 }); 
  
 
-                console.log('uploadImageCallBack item', link);
+                // console.log('uploadImageCallBack item', link);
 
                 // this.setState({
                 //   expanded: false,
@@ -921,7 +933,11 @@ export default class User extends Component {
       updateCurrentUser,
     } = this.context;
 
-    updateCurrentUser(data, silent);
+    const {
+      user,
+    } = this.state;
+
+    updateCurrentUser(user, data, silent);
 
   }
 

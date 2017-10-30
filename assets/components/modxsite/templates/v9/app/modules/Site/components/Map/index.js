@@ -107,10 +107,10 @@ export default class MapMainView extends Component{
 
 		// updateItem: PropTypes.func.isRequired,
 		// savePlaceItem: PropTypes.func.isRequired,
+		appExports: PropTypes.object.isRequired,
 		document: PropTypes.object.isRequired,
 		openCompanyPage: PropTypes.func.isRequired,
 		wsRequest: PropTypes.func.isRequired,
-		// loadCompanyMapData: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
 		CoordsStore: PropTypes.object.isRequired,
 		CompaniesStore: PropTypes.object.isRequired,
@@ -176,27 +176,111 @@ export default class MapMainView extends Component{
 
 		this.initCoords();
 
-		this.createClusters();
-
+	  const {
+			// CompaniesStore,
+			document,
+			appExports,
+		} = this.context;
 
 		/*
 			Если отрисовка на клиенте, то запрашиваем обновленные данные
 		*/
-		// if(typeof window !== "undefined"){
 
-		// 	this.loadMapData();
 
-		// }
+		if(typeof window === "undefined"){
 
+			let mapData = document.mapData;
+		
+			this.state.mapData = mapData;
+
+			appExports.mapData = mapData;
+
+		}
+		else{
+
+			const {
+				mapData,
+			} = document;
+
+			this.state.mapData = mapData;
+
+		}
+
+		this.createClusters();
 
  		return super.componentWillMount && super.componentWillMount();
 	}
+	
+	componentDidMount(){
+
+		const {
+			CompaniesStore,
+			RatingsStore,
+      CoordsStore,
+			localQuery,
+			router: {
+				params,
+			},
+		} = this.context;
+
+
+		const {
+			mapData,
+		} = this.state;
+
+
+		// Если нет данных карты, подгружаем
+		if(!mapData){
+
+			this.loadMapData();
+
+		}
+
+
+		const {
+			city, 
+		} = params || {};
+
+ 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
+ 		
+ 			// this.setPageTitle();
+
+ 			// this.createClusters();
+
+ 			this.loadMapData();
+
+ 		});
+
+ 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
+
+ 			// this.createClusters();
+ 			this.loadMapData();
+
+ 		});
+
+ 		this.CoordsStoreListener = CoordsStore.getDispatcher().register(payload => {
+
+ 			// this.forceUpdate();
+ 			this.loadMapData();
+
+ 		});
+
+
+ 		this.setPageTitle();
+
+ 		this.setState({
+ 			mounted: true,
+ 		});
+
+	}
+	
 
 	componentWillUnmount(){
 
  		let {
 			CompaniesStore,
 			RatingsStore,
+      CoordsStore,
  		} = this.context;
 
 
@@ -220,67 +304,19 @@ export default class MapMainView extends Component{
     }
 
 
+    if(this.CoordsStoreListener){
+
+      let dispatch = CoordsStore.getDispatcher();
+
+      dispatch._callbacks[this.CoordsStoreListener] && dispatch.unregister(this.CoordsStoreListener);
+
+      this.CoordsStoreListener = undefined;
+    }
+
+
  		return super.componentWillUnmount && super.componentWillUnmount();
 	}
 
-	
-	componentDidMount(){
-
- 		// let {
- 		// 	router,
- 		// } = this.context;
-
- 		// let {
- 		// 	lat,
- 		// 	lng,
- 		// } = router.params;
-
- 		// if(lat && lng){
- 		// 	// this.setMapPosition(lat, lng);
-   	//    // defaultCenter={this.props.center}
-
- 		// }
-
-		const {
-			CompaniesStore,
-			RatingsStore,
-      CoordsStore,
-			localQuery,
-			router: {
-				params,
-			},
-		} = this.context;
-
-		const {
-			city, 
-		} = params || {};
-
- 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
- 		
- 			// this.setPageTitle();
-
- 			this.createClusters();
-
- 		});
-
- 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
-
- 			this.createClusters();
- 		});
-
- 		this.CoordsStoreListener = CoordsStore.getDispatcher().register(payload => {
-
- 			this.forceUpdate();
-
- 		});
-
-
- 		this.setPageTitle();
-
- 		this.setState({
- 			mounted: true,
- 		});
-	}
 
 	// shouldComponentUpdate(a, b, c, d){
 
@@ -394,88 +430,98 @@ export default class MapMainView extends Component{
 	}
 
 
-  // loadMapData(){
+
+  loadMapData(){
     
 
-  //  // 
+   // 
 
-  //   // this.setState({
-  //   //   // clusters: this.state.mapOptions.bounds
-  //   //   clusters: this.state.bounds
-  //   //     ? this.getClusters(props)
-  //   //     : null,
-  //   // });
+    // this.setState({
+    //   // clusters: this.state.mapOptions.bounds
+    //   clusters: this.state.bounds
+    //     ? this.getClusters(props)
+    //     : null,
+    // });
 
-  //   const {
-  //     CompaniesStore,
-  //     document,
-  //     localQuery,
-  //   } = this.context;
+    const {
+      // CompaniesStore,
+      // document,
+      localQuery,
+    } = this.context;
 
-  //   // const {
-  //   //   CompaniesStore,
-  //   // } = this.state;
+    // const {
+    //   CompaniesStore,
+    // } = this.state;
 
-  //   // let {
-  //   //  // mapOptions: {
-  //   //  //  zoom,
-  //   //  // },
-  //   //  zoom,
-  //   // } = this.state;
+    // let {
+    //  // mapOptions: {
+    //  //  zoom,
+    //  // },
+    //  zoom,
+    // } = this.state;
 
-  //   // let {
-  //   // } = this.context;
+    // let {
+    // } = this.context;
 
-  //   // let companies;
+    // let companies;
 
-  //   localQuery({
-  //     operationName: "MapCompanies",
-  //     variables: {
-  //       limit: 0,
-  //       "companyIds": [1275, 1542, 1259],
-  //     },
-  //   })
-  //   .then(r => {
+    localQuery({
+      operationName: "MapCompanies",
+      variables: {
+        limit: 0,
+        // "companyIds": [1275, 1542, 1259],
+      },
+    })
+    .then(r => {
 
-  //     console.log("MapCompanies", r);
+      // console.log("MapCompanies", r);
 
-  //     console.log("MapCompanies CompaniesStore", CompaniesStore.getState());
+      // console.log("MapCompanies CompaniesStore", CompaniesStore.getState());
 
-  //     const {
-  //       companies,
-  //     } = r.data || {};
+      const {
+        companies,
+      } = r.data || {};
 
-  //     // companies = result;
+      this.setState({
+      	mapData: r.data,
+      }, () => {
 
-  //     if(companies){
-  //       // document.mapData.companies = companies;
-  //       // this.createClusters();
-  //     }
+      	this.createClusters();
 
-  //     // const StoreState = CompaniesStore.getState();
+      });
 
-  //     // companies && StoreState.map(item => {
+      // companies = result;
 
-  //     //   const company = companies.find(n => n.id === item.id);
+      // if(companies){
+      //   // document.mapData.companies = companies;
+      //   // this.createClusters();
+      // }
 
-  //     //   if(company){
-  //     //     Object.assign(item, company);
-  //     //   }
+      // const StoreState = CompaniesStore.getState();
 
-  //     // });
+      // companies && StoreState.map(item => {
 
-  //     // this.prepareClusters(companies);
+      //   const company = companies.find(n => n.id === item.id);
 
-  //     // this.forceUpdate();
+      //   if(company){
+      //     Object.assign(item, company);
+      //   }
 
-  //   })
-  //   .catch(e => {
-  //     console.error('MapCompanies', e);
-  //   });
+      // });
+
+      // this.prepareClusters(companies);
+
+      // this.forceUpdate();
+
+    })
+    .catch(e => {
+      console.error('MapCompanies', e);
+    });
   
-  //   return;
+    return;
 
-  // }
+  }
+
 
 
 	async setPageTitle(title){
@@ -1174,14 +1220,13 @@ export default class MapMainView extends Component{
 
 	createClusters = props => {
 
-	  const {
-			// CompaniesStore,
-			document,
-		} = this.context;
+		const {
+			mapData,
+		} = this.state;
 
 		const {
 			companies,
-		} = document.mapData || {};
+		} = mapData || {};
 
 		this.prepareClusters(companies);
 
@@ -1534,15 +1579,6 @@ export default class MapMainView extends Component{
 		};
 	}
 
-	// loadCompanyMapData(item, force){
-		
-	// 	const {
-	// 		loadCompanyMapData,
-	// 	} = this.context;
-
-	// 	loadCompanyMapData(item, force);
-	// }
-
 	render(){
 
 		const key = "AIzaSyBdNZDE_QadLccHx5yDc96VL0M19-ZPUvU";
@@ -1709,15 +1745,6 @@ export default class MapMainView extends Component{
 			let {
 				id,
 			} = item || {}
-
-			// if(item){
-			// 	this.loadCompanyMapData(item);
-			// }
-
-			// Если точка не в рамках карты, пропускаем 
-			// if(!this.isInScreen(cluster)){
-			// 	return;
-			// }
 
   		items.push(<Marker
   			key={id && `${id}_${type}` || `marker_${items.length}`} 

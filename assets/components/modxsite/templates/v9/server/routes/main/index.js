@@ -1355,7 +1355,7 @@ export default class Router {
       apiData: null,
       outputState: null,
       inputState: appExports.outputState,
-      // mapData,
+      mapData: appExports.mapData || null,
       // citiesData,
     });
 

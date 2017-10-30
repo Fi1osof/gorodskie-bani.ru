@@ -68,10 +68,6 @@ export default class CompaniesPage extends Page {
 
 			appExports.outputState = outputState && outputState.toArray();
 
-			console.log('pathname', pathname);
-
-			console.log('outputState', outputState);
-
 		}
 		else{
 				

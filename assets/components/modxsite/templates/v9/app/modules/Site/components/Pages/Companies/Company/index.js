@@ -220,6 +220,8 @@ export default class CompanyPage extends Component{
 
 	setPageTitle(title){
 
+		// console.log("setPageTitle 2", title);
+
 		const {
 			setPageTitle,
 		} = this.context;
@@ -236,6 +238,7 @@ export default class CompanyPage extends Component{
 
 		const {
 			id,
+			name,
 		} = item;
 
 		if(!id){
@@ -277,7 +280,7 @@ export default class CompanyPage extends Component{
 
 				// console.log('Company loadCompanyFullData result', result);
 
-				this.setPageTitle(company && company.name);
+				this.setPageTitle(company && company.name || name);
 
 				this.forceUpdate();
 

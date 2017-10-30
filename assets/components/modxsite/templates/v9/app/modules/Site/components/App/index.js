@@ -1285,6 +1285,8 @@ export class AppMain extends Component{
 
   setPageTitle = (title) => {
 
+    title = title || "Городские бани";
+
     if(title && !/Городские бани/u.test(title)){
       title += " | Городские бани";
     }

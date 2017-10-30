@@ -24,6 +24,8 @@ export default class CompaniesPage extends Page {
 
 	setPageTitle(title){
 
+		// console.log("setPageTitle", title);
+
 		const {
 			params,
 		} = this.props;
@@ -42,20 +44,33 @@ export default class CompaniesPage extends Page {
 			CompaniesStore,
 			document,
 			appExports,
+			router,
 		} = this.context;
 
-		// let{
+		let pathname = router.location && router.location.pathname;
 
-		// }
 
 		if(typeof window === "undefined"){
 
-			// console.log('outputState', document);
 
-			appExports.outputState = CompaniesStore.getState().toArray();
+			let outputState = CompaniesStore.getState();
 			
+			if(pathname && outputState){
 
-			// console.log('document.outputState', document.outputState);
+				pathname = decodeURI(pathname);
+
+				pathname = pathname.replace(/^\//, '');
+				
+				outputState = outputState.filter(n => n.uri === pathname || n.uri === `${pathname}/`);
+
+			}
+
+
+			appExports.outputState = outputState && outputState.toArray();
+
+			console.log('pathname', pathname);
+
+			console.log('outputState', outputState);
 
 		}
 		else{
@@ -82,12 +97,12 @@ export default class CompaniesPage extends Page {
 		} = this.props;
 
 		const {
-			inputState,
-		} = this.state;
-
-		const {
 			companyId,
 		} = params || {};
+
+		const {
+			inputState,
+		} = this.state;
 
 		let item;
 		let company;
@@ -107,12 +122,15 @@ export default class CompaniesPage extends Page {
 			// console.log('location companyId', companyId);
 
 			// item = CompaniesStore.getState().find(n => n.uri === pathname || n.id == companyId || n.alias == companyId);
+
+
+
 			item = CompaniesStore.getState().find(n => n.uri === pathname || n.uri === `${pathname}/`);
 
 			// Если не был найден документ в общем хранилище, ищем во входящем стейте
 			if(!item){
 				
-				item = inputState.find(n => n.uri === pathname || n.uri === `${pathname}/`);
+				item = inputState && inputState.find(n => n.uri === pathname || n.uri === `${pathname}/`);
 
 			}
 

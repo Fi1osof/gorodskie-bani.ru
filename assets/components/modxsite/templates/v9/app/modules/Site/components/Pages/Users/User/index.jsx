@@ -56,7 +56,10 @@ const styleSheet = createStyleSheet('SwitchListSecondary', (theme) => ({
 
 var classes;
  
-let moment = require('moment');
+// let moment = require('moment');
+
+import 'moment/src/locale/ru';
+import moment from 'moment';
 // moment.locale('ru');
 
 // import Layout from '../../layout';
@@ -93,6 +96,7 @@ const contextTypes = Object.assign({
 
   request: PropTypes.func.isRequired,
   localQuery: PropTypes.func.isRequired,
+  connector_url: PropTypes.string.isRequired,
   // setPagetitle: PropTypes.func.isRequired,
   styleManager: customPropTypes.muiRequired,
 }, {});
@@ -740,15 +744,21 @@ export default class User extends Component {
           dz.setState({
             loadingImage: false
           })
-          return
+          return;
         }
       }
 
-      this.setState({
-        new_photo: base64,
-        ShowPhotoMessage: true,
-        PhotoMessageText: "Фото изменено",
-      });
+      this.uploadImageCallBack(file);
+
+      // this.setState({
+      //   new_photo: base64,
+      //   ShowPhotoMessage: true,
+      //   PhotoMessageText: "Фото изменено",
+      // });
+
+      // this.updateCurrentUser({
+      //   photo: base64,
+      // });
 
       // base64ImageToRGBMatrix(base64, (err, data) => {
       //   if (err) return console.error(err)
@@ -761,6 +771,75 @@ export default class User extends Component {
     }
     fr.readAsDataURL(file)
   }
+
+
+  uploadImageCallBack = (file) => { 
+
+    // let {
+    //   // store,
+    //   item,
+    // } = this.props;
+
+    let {
+      connector_url,
+      localQuery,
+    } = this.context;
+
+    // const {
+    //   id,
+    // } = item;
+
+    return new Promise(
+      (resolve, reject) => { 
+
+        var body = new FormData(); 
+
+        body.append('file', file);
+
+        fetch(connector_url +'?pub_action=images/upload',{
+          credentials: 'same-origin',
+          method: "POST",
+          body: body,
+        })
+          .then(function (response) {
+            return response.json()
+          })
+          .then( (data) => { ;
+
+            if(data.success){ 
+
+              if(data.object && data.object.url){
+
+                let link = data.object.url;
+
+                resolve({
+                  data: { 
+                    link: link,
+                  } 
+                }); 
+ 
+
+                console.log('uploadImageCallBack item', link);
+
+                // this.setState({
+                //   expanded: false,
+                // });
+
+                this.updateCurrentUser({
+                  image: link,
+                });
+              }
+            } 
+          })
+          .catch( (error) => {
+              console.error('Request failed', error);
+              // alert("Ошибка выполнения запроса");
+            }
+          );
+      }
+    );
+  }
+
 
   handleActionTouchTap(a,b,c){ 
     this.setState({
@@ -915,6 +994,7 @@ export default class User extends Component {
       blocked,
       active,
       api_key,
+      createdon,
     } = user || {};
 
     let {
@@ -972,12 +1052,16 @@ export default class User extends Component {
 
       var Photo;
 
-      let photoStyle = {};
+      let photoStyle = {
+        width: 150,
+        height: 150,
+        margin: "auto",
+      };
 
       if(isCurrentUser){
-        photoStyle = {
+        Object.assign(photoStyle, {
           cursor: 'pointer',
-        }
+        });
       }
 
       Photo = <Avatar 
@@ -997,7 +1081,11 @@ export default class User extends Component {
           className='dropZone avatar'
         >
           {Photo}
-          <div>
+          <div
+            style={{
+              textAlign: "center",
+            }}
+          >
             {loadingImage ? 'Загружается...' : 'Перетащите сюда изображение или кликните для загрузки.'}
           </div>
           </Dropzone>;
@@ -1065,256 +1153,186 @@ export default class User extends Component {
 
       card = <Grid
         container
+        gutter={0}
       >
-        <Grid 
-          item
-          style={{
-            width: 215,
-          }}
-        >
 
-          {Photo}
-
-        </Grid>
 
         <Grid
           item
-          xs
+          sx={12}
         >
 
           <Grid
             container
-            align="flex-start"
+            gutter={0}
           >
-            
+
             <Grid 
               item
-              xs={12}
-              sm={6}
-              lg={3}
+              style={{
+                width: 180,
+                marginLeft: 32,
+                marginBottom: 10,
+              }}
             >
-              <Typography 
-                type="title"
-                style={{
-                  marginLeft: 31,
-                }}
-              >
-                {fullname_field}
-              </Typography>
 
-              <ListItem
-                
-              >
-                {edit_buttons}
-              </ListItem> 
- 
+              {Photo}
 
             </Grid>
 
 
 
-            {this.state.regdate
-              ?
-              <Grid 
-                item
-                xs={12}
-                sm={6}
-                lg={3}
-              > 
-                <Typography 
-                  type="subheading"
-                  style={{
-                    marginLeft: 17,
-                  }}
-                >
-                  Зарегистрирован
-                </Typography>
+          </Grid>
 
-                <ListItem
-                >
-                  <ListItemIcon>
-                    <CalendarIcon />
-                  </ListItemIcon>
-                  {moment.unix(this.state.regdate).format("DD MMMM YYYY")}
-                </ListItem> 
-
-                {this.state.email
-                  ?
-                  <div>
-                    <Typography 
-                      type="subheading"
-                      style={{
-                        marginLeft: 17,
-                        marginTop: 25,
-                      }}
-                    >
-                      Емейл
-                    </Typography>
-
-                    <ListItem
-                      button
-                      onTouchTap={event => {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        this.onHandleEmail(this.state.email);
-                      }}
-                    >
-                      <ListItemIcon
-                      >
-                        <CommunicationEmail />
-                      </ListItemIcon>
-                      {this.state.email}
-                    </ListItem> 
-                  </div>
-                  :
-                  null
-                }
-
-
-                
-
-                {isCurrentUser 
-                  ? 
-                    <div>
-                      <Typography 
-                        type="subheading"
-                        style={{
-                          marginLeft: 17,
-                          marginTop: 25,
-                        }}
-                      >
-                        Ключ для репозитория
-                      </Typography>
-                      
-                      <ListItem
-                        button={this.state.inEditMode != true}
-                        onTouchTap={this.state.inEditMode != true ? (event => this.editProfile(event)) : undefined}
-                      >
-                        <ListItemIcon>
-                          <KeyIcon />
-                        </ListItemIcon>
-                        
-                        
-                        {this.state.inEditMode == true
-                          ?
-                          <Field
-                            value={api_key}
-                            name="api_key"
-                            onChange={this.onFieldChange.bind(this)}
-                            readOnly={!this.state.inEditMode}
-                            placeholder="Укажите ключ самостоятельно"
-                          />
-                          :
-                          api_key ? api_key : "Не указан"
-                        }
-                      </ListItem> 
-                    </div>
-                  :
-                  null
-                }
+        </Grid>
 
 
 
-              </Grid>
-              :
-              null
-            }
 
- 
+
+
+        
+        <Grid
+          item
+          sx={12}
+        >
+
+          <Grid
+            container
+            gutter={0}
+          >
 
             
 
-            {/*services && services.length
-              ?
-                <Grid
+            <Grid
+              item
+              xs
+            >
+
+              <Grid
+                container
+                align="flex-start"
+              >
+                
+                <Grid 
                   item
                   xs={12}
                   sm={6}
                   lg={3}
                 >
-                  <Typography
-                    type="subheading"
+                  <Typography 
+                    type="title"
                     style={{
-                      marginLeft: 17,
+                      marginLeft: 31,
                     }}
                   >
-                    Услуги в портфолио
+                    {fullname_field}
                   </Typography>
 
-                  <ServicesList 
-                    services={services}
-                    renderer={(services, getIcon, getUrl) => {
+                  <ListItem
+                    
+                  >
+                    {edit_buttons}
+                  </ListItem> 
+     
+
+                </Grid>
 
 
-                      return <List>
-                        {services.map(service => {
-                          // console.log('renderer', company);
 
+                {createdon
+                  ?
+                  <Grid 
+                    item
+                    xs={12}
+                    sm={6}
+                    lg={3}
+                  > 
+                    <Typography 
+                      type="subheading"
+                      style={{
+                        marginLeft: 17,
+                      }}
+                    >
+                      Зарегистрирован
+                    </Typography>
 
-                          let{
-                            id,
-                            name,
-                            count,
-                          } = service;
+                    <ListItem
+                    >
+                      <ListItemIcon>
+                        <CalendarIcon />
+                      </ListItemIcon>
+                      {moment(createdon * 1000).format("DD MMMM YYYY")}
+                    </ListItem> 
 
-                          let url = getUrl(user_id, id);
+                    {email
+                      ?
+                      <div>
+                        <Typography 
+                          type="subheading"
+                          style={{
+                            marginLeft: 17,
+                            marginTop: 25,
+                          }}
+                        >
+                          Емейл
+                        </Typography>
 
-                          // console.log('getUrl', url);
-
-                          return <Link
-                            key={id}
-                            to={url}
-                            href={url}
-                            className="underline-none"
+                        <ListItem
+                          button
+                          onTouchTap={event => {
+                            event.stopPropagation();
+                            event.preventDefault();
+                            this.onHandleEmail(this.state.email);
+                          }}
+                        >
+                          <ListItemIcon
                           >
-                            <ListItem 
-                              // button
-                            > 
-                              <ListItemIcon>
-                                <Badge
-                                  badgeContent={count}
-                                  accent
-                                >
-                                  {getIcon(service)}
-                                </Badge>
-                              </ListItemIcon>
-                              {name}
-                            </ListItem>
-                            
-                          </Link>
-                        })}
-                      </List>
-                    }}
-                  />
+                            <CommunicationEmail />
+                          </ListItemIcon>
+                          {email}
+                        </ListItem> 
+                      </div>
+                      :
+                      null
+                    }
+
+
+                     
+
+
+
+                  </Grid>
+                  :
+                  null
+                }
+ 
+                
+
+                <Grid 
+                  item
+                  xs={12}
+                  sm={6}
+                  lg={3}
+                >
                   
                 </Grid>
-              :
-              null
-            */}
 
-            
-            
+                <Grid 
+                  item
+                  xs={12}
+                  sm={6}
+                  lg={3}
+                >
+                  
+                </Grid>
+                
 
-            <Grid 
-              item
-              xs={12}
-              sm={6}
-              lg={3}
-            >
-              
-            </Grid>
-
-            <Grid 
-              item
-              xs={12}
-              sm={6}
-              lg={3}
-            >
-              
+              </Grid>
             </Grid>
             
-
           </Grid>
+          
         </Grid>
         
         {isCurrentUser
@@ -1373,6 +1391,10 @@ export default class User extends Component {
     return (
       <Grid
         container
+        gutter={0}
+        style={{
+          marginTop: 30,
+        }}
       >
 
 

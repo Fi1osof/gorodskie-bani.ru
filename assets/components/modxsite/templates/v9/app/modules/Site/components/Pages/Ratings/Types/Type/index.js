@@ -44,7 +44,7 @@ export default class RatingTypesType extends Component{
 	}
 
 
-	componentDidUpdate(prevProps, prevState){
+	componentDidUpdate(prevProps, prevState, prevContext){
 
 		const {
 			limit,
@@ -62,7 +62,7 @@ export default class RatingTypesType extends Component{
 			});
 		}
 
-		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState);
+		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
 	}
 
 

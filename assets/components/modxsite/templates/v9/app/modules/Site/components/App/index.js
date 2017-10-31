@@ -208,6 +208,7 @@ export class AppMain extends Component{
   };
 
   static childContextTypes = {
+    inited: PropTypes.bool,
     classes: PropTypes.object,
     connector_url: PropTypes.string,
     location: PropTypes.object,
@@ -266,6 +267,7 @@ export class AppMain extends Component{
     } = this.props;
 
     let {
+      inited,
       CoordsStore,
       CompaniesStore,
       RatingsStore,
@@ -279,6 +281,7 @@ export class AppMain extends Component{
     } = this.state;
 
     let context = {
+      inited,
       classes,
       location,
       connector_url,

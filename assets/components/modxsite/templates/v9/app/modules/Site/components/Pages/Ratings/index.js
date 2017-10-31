@@ -83,7 +83,7 @@ export default class RatingsPage extends Page {
 		}
 
 
-		super.componentDidUpdate && super.componentDidUpdate();
+		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
 	}
 
 

@@ -11,6 +11,7 @@ const defaultProps = {}
 export default class Page extends Component{
 
 	static contextTypes = {
+		inited: PropTypes.bool.isRequired,
 		document: PropTypes.object.isRequired,
 		appExports: PropTypes.object.isRequired,
 		setPageTitle: PropTypes.func.isRequired,
@@ -89,7 +90,7 @@ export default class Page extends Component{
 
 		});
 
-		this.loadData();
+		this.loadData(true);
 			
 		// super.componentDidMount && super.componentDidMount();
 
@@ -175,13 +176,33 @@ export default class Page extends Component{
 
 
 	componentDidMount(){
+
+		this.forceUpdate();
+
 	}
 
-  componentDidUpdate(){
+  componentDidUpdate(prevProps, prevState, prevContext){
 
     if(this.props.debug){
       console.log("Page componentDidUpdate", this);
     }
+
+    const {
+    	inited,
+    } = this.context;
+
+    const {
+    	inited: prevInited,
+    } = prevContext || {};
+
+    // console.log("componentDidUpdate", inited, prevInited);
+
+    if(prevContext !== undefined && !prevInited && inited){
+    	
+    	this.loadData();
+
+    }
+
   }
 
 
@@ -197,7 +218,7 @@ export default class Page extends Component{
   }
 
 
-  loadData(){
+  loadData(beforeMount){
 
 		// console.log("Page loadData");
 

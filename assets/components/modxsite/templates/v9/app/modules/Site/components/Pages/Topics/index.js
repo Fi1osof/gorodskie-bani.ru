@@ -26,28 +26,91 @@ export default class TopicsPage extends Page {
 
 
 
-	// componentWillMount(){
+	componentWillMount(){
 
-	// 	const {
-	// 		item,
-	// 	} = this.props;
+		// const {
+		// 	item,
+		// } = this.props;
 
-	// 	const {
-	// 		name,
-	// 	} = item || {};
+		// const {
+		// 	name,
+		// } = item || {};
 
 
-	// 	let {
-	// 		TopicsStore,
-	// 	} = this.context;
+		// let {
+		// 	TopicsStore,
+		// } = this.context;
 
- // 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
+ 	// 	this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
 
- // 			this.loadCompanyFullData();
- // 		});
+ 	// 		this.loadCompanyFullData();
+ 	// 	});
 
-	// 	super.componentWillMount && super.componentWillMount();
-	// }
+		let {
+			document,
+			appExports,
+		} = this.context;
+
+		// let pathname = router.location && router.location.pathname;
+
+
+		// if(typeof window === "undefined"){
+
+
+		// 	let outputState = CompaniesStore.getState();
+			
+		// 	if(pathname && outputState){
+
+		// 		pathname = decodeURI(pathname);
+
+		// 		pathname = pathname.replace(/^\//, '');
+				
+		// 		outputState = outputState.filter(n => n.uri === pathname || n.uri === `${pathname}/`);
+
+		// 	}
+
+		// 	appExports.outputState = outputState && outputState.toArray();
+
+
+		// }
+		// else{
+				
+		// 	this.state.inputState = document.inputState;
+
+		// }
+
+
+
+		if(typeof window === "undefined"){
+
+		  const topics = this.getLocalData();
+
+		  this.state.topics = topics;
+
+			appExports.outputState = topics;
+
+		}
+		else{
+				
+			this.state.topics = document.inputState;
+
+		}
+
+		super.componentWillMount && super.componentWillMount();
+	}
+
+
+	getLocalData(){
+
+	  const {
+	    TopicsStore,
+	  } = this.context;
+
+	  const topics = TopicsStore.getState();
+		
+		return topics;
+		
+	}
 
 	// componentWillUnmount(){
 
@@ -142,21 +205,27 @@ export default class TopicsPage extends Page {
 	}
 	
 
-	loadData(){
-
-		// console.log("Topics loadData");
+	loadData(beforeMount){
 
 
-		if(typeof window === "undefined"){
+		// if(typeof window === "undefined"){
 			
-		  const {
-		    TopicsStore,
-		  } = this.context;
+		//   // const {
+		//   //   TopicsStore,
+		//   // } = this.context;
 
-		  this.state.topics = TopicsStore.getState();
+		//   // this.state.topics = TopicsStore.getState();
 
-		}
-		else{
+		// }
+		// else{
+
+			const {
+				inited,
+			} = this.context;
+
+			if(!inited){
+				return;
+			}
 
 			const {
 				params,
@@ -167,15 +236,11 @@ export default class TopicsPage extends Page {
 			} = params || {};
 
 
-
-			// console.log("Topics tag", tag);
-
-
 			const {
 				localQuery,
 			} = this.context;
 
-			let result = localQuery({
+			return localQuery({
 				operationName: this.getOperationName(),
 				variables: {
 					// resourcesLimit: 10,
@@ -187,25 +252,49 @@ export default class TopicsPage extends Page {
 			})
 			.then(r => {
 
-				// console.log("Resources r", r);
+				console.log("Resources r", beforeMount, r);
 
 				const {
 					topics,
 				} = r.data;
 
-				this.setState({
-					topics,
-				});
+				// this.setState({
+				// 	topics,
+				// });
 
-				// console.log("Resources topic", topics && topics.find(n => n.id === 1522 ));
+				// if(beforeMount){
 
-				// this.state.topics = topics;
+				// 	this.state.topics = topics;
+
+				// }
+				// else{
+					
+				// 	this.setState({
+				// 		topics,
+				// 	});
+
+				// }
+
+				if(typeof window === "undefined"){
+
+					this.state.topics = topics;
+
+				}
+				else{
+					
+					this.setState({
+						topics,
+					});
+
+				}
+
+				// this.setState({
+				// 	topics,
+				// });
 
 			}); 
 
-		}
-
-
+		// }
 
 		// console.log("Resources r", result);
 		

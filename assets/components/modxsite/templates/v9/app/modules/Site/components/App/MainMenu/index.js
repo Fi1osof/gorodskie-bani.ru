@@ -362,7 +362,7 @@ export default class MainMenu extends Component{
                       }}
                       onClick={event => {
 
-                        cookies.set("importantArticleReaded", "1");
+                        cookies.set("importantArticleReaded", "1", { expires: 15 });
 
                         this.triggerGoal("importantArticle");
 

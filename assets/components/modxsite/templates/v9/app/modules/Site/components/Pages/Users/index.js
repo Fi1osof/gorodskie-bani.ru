@@ -117,7 +117,7 @@ export default class UsersPage extends Page {
 
 		// }
 
-		super.componentDidUpdate && super.componentDidUpdate();
+		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
 	}
 	
 

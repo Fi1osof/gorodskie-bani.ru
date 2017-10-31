@@ -19,6 +19,15 @@ export default class OtzivyPage extends TopicsPage {
 	}
 
 
+	getLocalData(){
+
+	  let topics = super.getLocalData();
+		
+		return topics && topics.filter(n => n.template === 28);
+		
+	}
+
+
   setPageTitle(title){
 
 		super.setPageTitle(title || "Обзоры и отзывы");

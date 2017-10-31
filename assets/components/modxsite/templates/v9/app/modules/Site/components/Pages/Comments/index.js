@@ -45,7 +45,7 @@ export default class CommentsPage extends Page {
 
 	componentDidUpdate(prevProps, prevState, prevContext){
 
-		console.log('Comments componentDidUpdate', prevProps, prevState, prevContext);
+		// console.log('Comments componentDidUpdate', prevProps, prevState, prevContext);
 
 		const {
 			router,
@@ -96,7 +96,7 @@ export default class CommentsPage extends Page {
 
 		// }
 
-		super.componentDidUpdate && super.componentDidUpdate();
+		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
 	}
 	
 

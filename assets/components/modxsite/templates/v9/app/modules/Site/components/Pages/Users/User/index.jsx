@@ -252,7 +252,7 @@ export default class User extends Component {
       this.loadData();
     }
 
-    super.componentDidUpdate && super.componentDidUpdate();
+    super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
   }
 
 

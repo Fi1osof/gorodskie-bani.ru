@@ -198,7 +198,7 @@ export default class CompanyPage extends Component{
 	}
 
 
-	componentDidUpdate(prevProps, prevState){
+	componentDidUpdate(prevProps, prevState, prevContext){
 
 
 		// console.log('componentDidUpdate', this.props.item.id, prevProps.item.id);
@@ -214,7 +214,7 @@ export default class CompanyPage extends Component{
 			this.loadCompanyFullData();
 		}
 
-		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState);
+		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
 	}
 
 

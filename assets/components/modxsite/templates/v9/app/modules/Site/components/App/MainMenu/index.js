@@ -173,7 +173,7 @@ export default class MainMenu extends Component{
 
     const importantArticleReaded = cookies.get("importantArticleReaded", "1");
 
-    const importantPage = typeof window === "undefined" || importantArticleReaded === "1" ? null : '/topics/obnovlennaya-versiya-portala-gorodskix-ban-1641.html';
+    const importantPage = typeof window === "undefined" || importantArticleReaded === "1" ? null : '/topics/redaktirovanie-informaczii-o-bannyix-zavedeniyax-1655.html';
 
     if(coords){
 

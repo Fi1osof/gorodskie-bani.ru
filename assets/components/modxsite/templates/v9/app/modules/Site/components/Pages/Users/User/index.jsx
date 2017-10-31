@@ -44,6 +44,8 @@ import AddIcon from 'material-ui-icons/AddCircleOutline';
 import Field from './fields/';
 // import Payment from './payment/';
 
+import CrmUserData from './CrmUserData';
+
 const Dropzone = require('react-dropzone');
 
 const styleSheet = createStyleSheet('SwitchListSecondary', (theme) => ({
@@ -981,6 +983,7 @@ export default class User extends Component {
     const {
       user: {
         user: current_user,
+        hasPermission,
       },
     } = this.context;
 
@@ -1002,6 +1005,7 @@ export default class User extends Component {
       sudo,
     } = current_user || {};
 
+    const hasCRMPerm = current_user && hasPermission("CRM");
 
     // let {
     //   data: user,
@@ -1406,6 +1410,20 @@ export default class User extends Component {
               </Grid>
               
             </Grid>
+          :
+          null
+        }
+
+        {hasCRMPerm
+          ?
+          <Grid
+            item
+            xs={12}
+          >
+            <CrmUserData
+              user={user}
+            />
+          </Grid> 
           :
           null
         }

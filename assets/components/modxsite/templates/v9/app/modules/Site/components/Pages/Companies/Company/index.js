@@ -16,6 +16,7 @@ import IconButton from 'material-ui/IconButton';
 import SaveIcon from 'material-ui-icons/Save';
 import EditIcon from 'material-ui-icons/Edit';
 import AddIcon from 'material-ui-icons/AddCircle';
+import WarningIcon from 'material-ui-icons/Warning';
 // import ListIcon from 'material-ui-icons/List';
 import ListIcon from 'material-ui-icons/ErrorOutline';
 
@@ -501,8 +502,7 @@ export default class CompanyPage extends Component{
 			>
 				<div>
 					Размещать информацию о своем заведении у нас можно бесплатно. 
-					Платно стоят некоторые отдельные функции (если хотите знать какие, свяжитесь с нами по почте <a href="mailto:info@gorodskie-bani.ru">info@gorodskie-bani.ru</a>). 
-					<a
+					Платно стоят некоторые отдельные функции (если хотите знать какие, свяжитесь с нами по почте <a href="mailto:info@gorodskie-bani.ru">info@gorodskie-bani.ru</a>). <a
 						href="javascript:;"
 						style={{
 							// textShadow: "0px 0px 5px #ccc",
@@ -510,6 +510,7 @@ export default class CompanyPage extends Component{
 							// background: "rgba(256,256,256,0.7)",
 					  //   display: "block",
 					  //   paddingRight: 10,
+					  	display: "inline-flex",
 						}}
 						onClick={e => {
 
@@ -526,12 +527,13 @@ export default class CompanyPage extends Component{
 							});
 
 						}}
+						className="flex align-center"
 					>
-						<Grid
+						{/*<Grid
 							container
 							gutter={0}
 							align="center"
-						>
+						>*/}
 							<IconButton
 			  				accent
 			  				style={{
@@ -543,11 +545,11 @@ export default class CompanyPage extends Component{
 			  				/>
 							</IconButton>
 							Добавить заведение
-						</Grid>
+						{/*</Grid>*/}
 					</a>
 				</div>
 				
-				<p>
+				{/*<p>
 					Если вы являетесь владельцем заведения, вам доступна функция редактирования его. Для начала редактирования просто кликните соответствующую иконку.
 				</p> 
 				
@@ -555,7 +557,23 @@ export default class CompanyPage extends Component{
 					Если вы не являетесь владельцем заведения, вы не сможете сохранить внесенные изменения 
 					(хотя возможность редактирования вам будет доступна даже если вы не авторизованный.).
 					В таком случае данная функция будет доступна вам в качестве ознакомительной.
-				</p> 
+				</p> */}
+
+				<p>
+					<WarningIcon 
+						color="#F57C00"
+						style={{
+							// height: 26,
+							// width: 26,
+							// flex: "none",
+							marginRight: 5,
+						}}
+					/>
+					Информацию о заведении может отредактировать любой желающий. Подробнее об этом <Link
+						to="/topics/obnovlennaya-versiya-portala-gorodskix-ban-1641.html"
+						href="/topics/obnovlennaya-versiya-portala-gorodskix-ban-1641.html"
+					>читайте здесь</Link>
+				</p>
 
 				<p>
 					Если горит красная иконка в виде дискеты, это означает, что информация о вашем заведении отредактирована. Кликнув по этой иконке
@@ -993,7 +1011,7 @@ export default class CompanyPage extends Component{
 		}
 
 
-		let editDateInfo = <Grid
+		let editDateInfo = id > 0 && <Grid
 			item
 			xs={12}
 			style={{
@@ -1005,7 +1023,7 @@ export default class CompanyPage extends Component{
 
 			{editVersionsList}
 
-		</Grid>;
+		</Grid> || null;
 
 
 		return <Card
@@ -1013,6 +1031,36 @@ export default class CompanyPage extends Component{
 				boxShadow: "none",
 			}}
 		>
+
+			{id < 0 
+				?
+				<CardContent
+					style={{
+						display: "flex",
+					}}
+				>
+					
+					<WarningIcon 
+						color="#F57C00"
+						style={{
+							height: 26,
+							width: 26,
+							flex: "none",
+							marginRight: 5,
+						}}
+					/> <span
+						style={{
+							fontSize: 16,
+						}}
+					>Размещение информации о банных заведениях на портале "Городские бани" бесплатное. Подробнее <Link
+						to="/topics/obnovlennaya-versiya-portala-gorodskix-ban-1641.html"
+						href="/topics/obnovlennaya-versiya-portala-gorodskix-ban-1641.html"
+					>читайте здесь</Link></span>.
+
+				</CardContent>
+				:
+				null
+			}
 			
 			<CardHeader 
         title={<Grid

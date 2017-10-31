@@ -2088,7 +2088,7 @@ export default class MapMainView extends Component{
 	    				href="javascript:;"
 	    				style={{
 	    					// textShadow: "0px 0px 5px #ccc",
-    						fontSize: 12,
+						    fontSize: 15,
     						background: "rgba(256,256,256,0.7)",
 						    display: "block",
 						    paddingRight: 10,
@@ -2121,18 +2121,19 @@ export default class MapMainView extends Component{
 									style={{
 										borderRadius: "50%",
 								    backgroundColor: "rgba(255,255,255,0.5)",
-								    width: 35,
-								    height: 35,
+								    width: 45,
+								    height: 45,
 								    marginRight: 5,
-								    marginTop: 5,
+								    marginTop: 0,
 									}}
 									accent
+									className="flex align-center"
 		    				>
 			    				<AddIcon 
-				    				// style={{
-				    				// 	height: 40,
-				    				// 	width: 40,
-				    				// }}
+				    				style={{
+				    					height: 45,
+				    					width: 45,
+				    				}}
 			    				/>
 		    				</IconButton>
 		    				Добавить заведение

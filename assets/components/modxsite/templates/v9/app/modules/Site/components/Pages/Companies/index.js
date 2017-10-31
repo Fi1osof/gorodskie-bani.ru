@@ -81,6 +81,17 @@ export default class CompaniesPage extends Page {
 	}
 
 
+	triggerGoal(goal){
+
+		const {
+			triggerGoal,
+		} = this.context;
+
+		triggerGoal(goal);
+
+	}
+
+
 	renderContent(){
 
 		const {
@@ -152,7 +163,20 @@ export default class CompaniesPage extends Page {
 							}}
 						>
 
-							Ссылка на редактируемый документ устарела. Если вы обновляли страницу и не сохранили документ, он удалился и необходимо создать новый.
+							Ссылка на редактируемый документ устарела.
+							Если вы обновляли страницу и не сохранили документ, он удалился и необходимо <a href="javascript:;" onClick={e => {
+
+	    					const {
+	    						localQuery,
+	    					} = this.context;
+
+	    					localQuery({
+	    						operationName: "addCompany",
+	    					});
+
+	    					this.triggerGoal('addCompanyClick');
+
+	    				}}>создать новый</a>.
 							
 						</Paper>
 

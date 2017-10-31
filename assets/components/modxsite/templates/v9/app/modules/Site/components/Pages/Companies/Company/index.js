@@ -1037,6 +1037,7 @@ export default class CompanyPage extends Component{
 					previewDiffs={::this.previewDiffs}
 					acceptDiffs={::this.acceptDiffs}
 					diffs={diffs}
+					activeOnly={true}
 				/>
 			</div>
 

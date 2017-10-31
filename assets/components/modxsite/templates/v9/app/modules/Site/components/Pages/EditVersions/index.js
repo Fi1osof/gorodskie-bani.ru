@@ -25,7 +25,7 @@ import UserLink from 'modules/Site/components/fields/User/link.js';
 
 
 const defaultProps = Object.assign({
-	activeOnly: true,
+	activeOnly: false,
 }, Page.defaultProps || {});
 
 

@@ -16,6 +16,8 @@ import {
   GraphQLBoolean,
 } from 'graphql';
 
+import GraphQLJSON from 'graphql-type-json';
+
 // import {
 //   // SchemaObject,
 //   // order,
@@ -912,6 +914,14 @@ export const CompanyType = new GraphQLObjectType({
           return rootResolver(null, args, context, info);
 
         },
+      },
+      errors: {
+        type: GraphQLJSON,
+        description: "Ошибки после попытки сохранения",
+      },
+      _isDirty: {
+        type: GraphQLJSON,
+        description: "Измененные данные",
       },
     }
   }

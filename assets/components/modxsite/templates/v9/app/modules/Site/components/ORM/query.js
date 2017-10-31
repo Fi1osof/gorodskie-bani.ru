@@ -1097,6 +1097,8 @@ fragment CompanyFields on Company{
     metro
     approved
   }
+  errors
+  _isDirty
 }
 
 fragment imageFormats on Company{

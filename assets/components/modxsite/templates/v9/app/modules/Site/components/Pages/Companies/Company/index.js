@@ -89,7 +89,7 @@ export default class CompanyPage extends Component{
 
 		const {
 			item,
-		} = this.props;
+		} = this.state;
 
 		const {
 			name,
@@ -105,6 +105,8 @@ export default class CompanyPage extends Component{
 		} = this.context;
 
  		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
+
+ 			// console.log("CompaniesStoreListener payload", payload);
 
  			this.loadCompanyFullData();
  		});
@@ -211,7 +213,7 @@ export default class CompanyPage extends Component{
 		// 	this.loadCompanyFullData();
 		// }
 
-		if(this.props.item !== prevProps.item){
+		if(this.state.item !== prevState.item){
 			this.loadCompanyFullData();
 		}
 
@@ -235,7 +237,7 @@ export default class CompanyPage extends Component{
 
 		const {
 			item,
-		} = this.props;
+		} = this.state;
 
 		const {
 			id,
@@ -296,14 +298,16 @@ export default class CompanyPage extends Component{
 			updateContactItem,
 		} = this.context;
 
-		return updateContactItem(item, data);
+		updateContactItem(item, data);
+
+		// console.log("updateItem", result);
 	}
 
 	saveItem = async () => {
 
 		const {
 			item,
-		} = this.props;
+		} = this.state;
 
 		const {
 			saveContactItem,
@@ -332,7 +336,7 @@ export default class CompanyPage extends Component{
 		
 		const {
 			item,
-		} = this.props;
+		} = this.state;
 
 		let {
 			_errors: errors,
@@ -360,7 +364,7 @@ export default class CompanyPage extends Component{
 
 		const {
 			item,
-		} = this.props;
+		} = this.state;
 
 		let data = {};
 
@@ -396,7 +400,7 @@ export default class CompanyPage extends Component{
 
 		// console.log("onChange name, value", name, value);
 
-		item.update(data);
+		this.updateItem(item, data);
 
 	}
 
@@ -884,8 +888,6 @@ export default class CompanyPage extends Component{
 
 	        		// console.log("onChange data", data);
 
-	        		// item.update(data);
-
 	        		this.clearErrors('coords');
 	        	}}
 	        	error={errors && errors.coords ? true : false}
@@ -1125,7 +1127,7 @@ export default class CompanyPage extends Component{
         				
         				<IconButton
 	        				onClick={event => {
-	        					item.update({});
+	        					this.updateItem(item, {});
 	        				}}
 	        			>
 	        				<EditIcon 
@@ -1223,7 +1225,7 @@ export default class CompanyPage extends Component{
 
 		                      if(image && image.url){
 			                      
-			                      item.update({
+			                      this.updateItem(item, {
 			                      	image: image.url,
 			                      });
 

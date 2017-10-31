@@ -1370,7 +1370,7 @@ export class AppMain extends Component{
     }
 
 
-    return;
+    return item;
   }
 
   saveItem = async (store, item, connector_path, callback) => {
@@ -1815,13 +1815,21 @@ export class AppMain extends Component{
     //   Object.assign(data, data.coords);
     // }
 
+    if(!item || !item.id){
+      return;
+    }
+
+    item = CompaniesStore.getState().find(n => n.id === item.id);
+
+    // console.log("updateContactItem item", item);
+
     // 
 
     // 
     // 
 
 
-    this.updateItem(item, data, CompaniesStore, silent);
+    return this.updateItem(item, data, CompaniesStore, silent);
   }
 
 

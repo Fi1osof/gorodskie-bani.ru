@@ -264,6 +264,9 @@ export default class EditVersionsPage extends Page{
 					previewDiffs && previewDiffs(item);
 				}}
 				accent={diffs === item ? true : false}
+				style={{
+					textTransform: "none",
+				}}
 			>
 				{diffs === item ? "Отменить изменения" : "Посмотреть изменения"}				
 			</Button>);

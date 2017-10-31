@@ -25,10 +25,18 @@ export const create = async (source, args, context, info) => {
 
   let {
     target_id,
-    data,
+    data: argsData,
   } = args || {};
 
+  let {
+    diffsId,
+    ...data,
+  } = argsData || {};
+
+  let createdby;
   let editedby;
+  let editedon;
+  let status;
 
   let responseMessage;
 
@@ -66,7 +74,7 @@ export const create = async (source, args, context, info) => {
 
       let user_id = saveErrors && saveErrors.find(n => n.id === "user_id");
 
-      editedby = user_id && parseInt(user_id.msg) || undefined;
+      createdby = user_id && parseInt(user_id.msg) || undefined;
 
       // throw(editedby);
 
@@ -109,6 +117,21 @@ export const create = async (source, args, context, info) => {
       }
 
     }
+    else{
+
+      const {
+
+        editedby: resultEditedby,
+
+      } = data.object || {};
+
+      editedby = resultEditedby;
+
+      editedon = new Date();
+
+      status = "1";
+
+    }
 
     // result = data;
 
@@ -121,7 +144,19 @@ export const create = async (source, args, context, info) => {
   // return result;
 
   if(saveResult && saveResult.success){
-    return saveResult;
+
+    if(diffsId === undefined){
+
+      return saveResult;
+
+    }
+    else{
+
+      // editedby = createdby && parseInt(createdby) || undefined;
+      // editedon = Math.round(new Date().getTime() / 1000);
+
+    }
+
   }
 
 
@@ -148,12 +183,30 @@ export const create = async (source, args, context, info) => {
 
   const insert = q.clone();
 
-  insert
-    .insert({
-      target_id,
-      data,
-      editedby,
-    });
+
+  let updateData = {
+    target_id,
+    data,
+    createdby,
+    editedby,
+    editedon,
+    status,
+  };
+
+  if(diffsId === undefined){
+
+    insert
+      .insert(updateData);
+
+  }
+  else{
+
+    insert
+      .update(updateData)
+      .where("id", diffsId);
+
+  }
+
 
   await insert
   .returning('*')
@@ -165,6 +218,7 @@ export const create = async (source, args, context, info) => {
     .select("*")
     // .select(knex.raw('unix_timestamp(date) as `date`'))
     .select(knex.raw('unix_timestamp(editedon) as editedon'))
+    .select(knex.raw('unix_timestamp(createdon) as createdon'))
     .whereIn("id", r)
     .then(r => {
       
@@ -219,6 +273,8 @@ export const getList = async (Company, args, context, info) => {
     sort,
     companyId,
     status,
+    createdby,
+    editedby,
   } = args || {};
 
 
@@ -247,6 +303,7 @@ export const getList = async (Company, args, context, info) => {
 
   var q = knex(`${prefix}edit_versions as edit_versions`)
   .select('edit_versions.*')
+  .select(knex.raw('unix_timestamp(edit_versions.createdon) as createdon'))
   .select(knex.raw('unix_timestamp(edit_versions.editedon) as editedon'))
   ;
     
@@ -257,6 +314,14 @@ export const getList = async (Company, args, context, info) => {
 
   if(companyId !== undefined){
     q.where('edit_versions.target_id', companyId);
+  }
+
+  if(createdby !== undefined){
+    q.where('edit_versions.createdby', createdby);
+  }
+
+  if(editedby !== undefined){
+    q.where('edit_versions.editedby', editedby);
   }
 
   // q.innerJoin(`${prefix}site_content as site_content`, 'site_content.id', 'redirects.resource_id');

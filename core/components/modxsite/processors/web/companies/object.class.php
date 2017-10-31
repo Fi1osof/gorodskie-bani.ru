@@ -54,6 +54,7 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 
     public function beforeSet(){
 
+		$object = & $this->object;
         
     	$name = $this->getProperty("name");
     	
@@ -64,6 +65,17 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
     	}
     	
         // print_r($this->properties);
+
+		if($object->isNew()){
+		}
+		else{
+
+			$this->setProperties(array(
+				"editedon"	=> time(),
+				"editedby"	=> $this->modx->user->id,
+			));
+			
+		}
 
     	return parent::beforeSet();
     }
@@ -94,10 +106,10 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 		}
 		else{
 
-			$object->fromArray(array(
-				"editedon"	=> time(),
-				"editedby"	=> $this->modx->user->id,
-			));
+			// $object->fromArray(array(
+			// 	"editedon"	=> time(),
+			// 	"editedby"	=> $this->modx->user->id,
+			// ));
 			
 		}
 

@@ -1,6 +1,7 @@
 
 const defaultQuery = `
 
+
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -34,6 +35,7 @@ query apiData(
     by:id,
     dir:desc
   }]
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
   $editVersionCompanyId:Int
@@ -102,6 +104,7 @@ query Companies (
   $resourceUri:String
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -147,6 +150,7 @@ query Company(
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -192,6 +196,7 @@ query Ratings(
   $ratingGetType:Boolean = false
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -233,6 +238,7 @@ query MainMenuData(
   $resourceUri:String
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -297,6 +303,7 @@ query Comments(
   $commentsIds:[Int]
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -351,6 +358,7 @@ query MapCompanies (
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -404,6 +412,7 @@ query CompanyRatings(
   $ratingGetType:Boolean = false
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -451,6 +460,7 @@ query CompanyComments(
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -500,6 +510,7 @@ query CompanyAvgRatings(
   $ratingGetType:Boolean = false
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -700,6 +711,7 @@ query RatingsPageData(
   $resourceUri:String
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -1229,6 +1241,7 @@ mutation addCompany(
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -1370,6 +1383,7 @@ mutation addCompanyGalleryImage(
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -1400,6 +1414,7 @@ query Search(
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -1486,6 +1501,7 @@ mutation addComment(
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
   $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
@@ -1503,6 +1519,7 @@ query editVersions(
   $editVersionStatus:[String]
   $editVersionCompanyId:Int
   $editVersionLimit:Int = 10
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
   $withPagination:Boolean = false
@@ -1547,6 +1564,11 @@ fragment editVersion on EditVersionType{
   
   ...editVersionFields
   
+  CreatedBy @include(if:$editVersionGetCreator)
+  {
+    ...UserFields
+  }
+  
   EditedBy @include(if:$editVersionGetEditor)
   {
     ...UserFields
@@ -1560,6 +1582,8 @@ fragment editVersion on EditVersionType{
 
 fragment editVersionFields on EditVersionType{id
   target_id
+  createdby
+  createdon
   editedby
   editedon
   status
@@ -1573,6 +1597,7 @@ mutation updateCompany(
   $updateCompanyId:Int!
   $updateCompanyData:JSON!
   $getImageFormats:Boolean = false
+  $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
   $getCompanyGallery:Boolean = false
@@ -1585,6 +1610,7 @@ mutation updateCompany(
     ...editVersion
   }
 }
+
 
 
 `;

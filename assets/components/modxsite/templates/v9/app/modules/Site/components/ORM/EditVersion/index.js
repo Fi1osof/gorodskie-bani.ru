@@ -39,13 +39,21 @@ const EditVersionType = new GraphQLObjectType({
 			type: GraphQLJSON,
 			description: "Изменнные данные",
 		},
+    createdby: {
+      type: GraphQLInt,
+      description: "Кто внес изменения",
+    },
+    createdon: {
+      type: GraphQLInt,
+      description: "Дата изменения",
+    },
 		editedby: {
 			type: GraphQLInt,
-			description: "Кто внес изменения",
+			description: "Кто редактировал",
 		},
 		editedon: {
 			type: GraphQLInt,
-			description: "Дата изменения",
+			description: "Дата редактирования",
 		},
 		status: {
 			type: GraphQLString,
@@ -59,9 +67,37 @@ const EditVersionType = new GraphQLObjectType({
       type: GraphQLJSON,
       description: "Ошибки после попытки сохранения",
     },
-    EditedBy: {
+    CreatedBy: {
       type: UserType,
       description: "Автор изменений",
+      resolve: async (source, args, context, info) => {
+
+        const {
+          fieldName,
+        } = info;
+
+        const {
+          rootResolver,
+        } = context;
+
+        const {
+          createdby: userId,
+        } = source;
+
+        if(!userId){
+          return null;
+        }
+
+        Object.assign(args, {
+          id: userId,
+        });
+
+        return rootResolver(null, args, context, info);
+      },
+    },
+    EditedBy: {
+      type: UserType,
+      description: "Редактор изменений",
       resolve: async (source, args, context, info) => {
 
         const {
@@ -133,7 +169,8 @@ export const getList = (source, args, context, info) => {
   const {
     companyId,
     status,
-    // createdby,
+    createdby,
+    editedby,
   } = args;
 
   let state = EditVersionsStore.getState();
@@ -148,11 +185,23 @@ export const getList = (source, args, context, info) => {
     state = state.filter(n => n.target_id === companyId);
 
   }
+  
+  if(createdby){
+
+    state = state.filter(n => n.createdby === createdby);
+
+  }
+
+  if(editedby){
+
+    state = state.filter(n => n.editedby === editedby);
+
+  }
 
   // // Фильтр по родителю
   if(status && status.length){
 
-  	console.log("status", status);
+  	// console.log("status", status);
 
     state = state.filter(n => status.indexOf(n.status) !== -1);
 

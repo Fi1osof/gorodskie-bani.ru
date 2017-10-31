@@ -266,6 +266,7 @@ export default class CompanyPage extends Component{
 			variables: {
 				id,
 				companyGetEditVersions: true,
+				editVersionGetCreator: true,
 				editVersionGetEditor: true,
 			},
 		})
@@ -319,7 +320,7 @@ export default class CompanyPage extends Component{
 
 		await saveContactItem(item)
 			.then(r => {
-				console.log("Save Company item result", r);
+				// console.log("Save Company item result", r);
 			})
 			.catch(e => {
 				console.error(e);
@@ -416,6 +417,50 @@ export default class CompanyPage extends Component{
 		this.setState({
 			diffs: currentDiffs && currentDiffs === diffs ? null : diffs,
 		});
+
+	}
+
+
+	acceptDiffs(diffs){
+
+		const {
+			item,
+		} = this.state;
+
+		// console.log("acceptDiffs", diffs);
+
+		// console.log("acceptDiffs item", item);
+
+		if(!item || !diffs || !diffs.data ){
+			return;
+		}
+
+		this.setState({
+			diffs: null,
+		}, () => {
+
+			const {
+				id: diffsId,
+				data: {
+					id,
+					...newData,
+				},
+			} = diffs;
+
+			this.updateItem(item, Object.assign(newData || {}, {
+				diffsId,
+			}));
+			
+		});
+
+
+		// const {
+		// 	diffs: currentDiffs,
+		// } = this.state;
+
+		// this.setState({
+		// 	diffs: currentDiffs && currentDiffs === diffs ? null : diffs,
+		// });
 
 	}
 
@@ -965,7 +1010,7 @@ export default class CompanyPage extends Component{
 
 		let editVersionsList;
 
-		if(editVersions && editVersions.length){
+		if(editVersions && editVersions.filter(n => n.status === "0").length){
 
 
 			editVersionsList = <div>
@@ -990,6 +1035,7 @@ export default class CompanyPage extends Component{
 				<EditVersions 
 					companyId={companyId}
 					previewDiffs={::this.previewDiffs}
+					acceptDiffs={::this.acceptDiffs}
 					diffs={diffs}
 				/>
 			</div>
@@ -1003,10 +1049,26 @@ export default class CompanyPage extends Component{
 					href="/edits/"
 					rel="nofollow"
 					className="flex align-center"
+					// onClick={(event) => {
+
+					// 	// Если есть изменения у самой компании, смотрим их
+					// 	if(editVersions && editVersions.length){
+
+					// 		event.preventDefault();
+					// 		event.stopPropagation();
+
+					// 		this.setState({
+					// 			expandHistory: true,
+					// 		});
+
+					// 		return;
+					// 	}
+
+					// }}
 				>
 					<ListIcon 
 						color="#F57C00"
-					/> Смотреть ленту изменений
+					/> Лента изменений
 				</Link>
 			</div>
 

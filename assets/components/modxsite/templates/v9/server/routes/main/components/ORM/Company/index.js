@@ -131,8 +131,8 @@ export class SchemaType extends ObjectType{
   getCollection(object, args, context){
 
     
-    console.log('CompanyType getCollection', object, args, context);
-    console.log('CompanyType getCollection this', this);
+    // console.log('CompanyType getCollection', object, args, context);
+    // console.log('CompanyType getCollection this', this);
 
     return [{
       id: 234,

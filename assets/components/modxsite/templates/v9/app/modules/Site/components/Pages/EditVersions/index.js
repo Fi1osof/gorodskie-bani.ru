@@ -5,12 +5,17 @@ import PropTypes from 'prop-types';
 
 import Page from '../layout';
 
+import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
+import Switch from 'material-ui/Switch';
+import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import AcceptedIcon from 'material-ui-icons/Check';
 import RejectedIcon from 'material-ui-icons/Clear';
+import VisibilityIcon from 'material-ui-icons/Visibility';
+import VisibilityOffIcon from 'material-ui-icons/VisibilityOff';
 
 import {Link} from 'react-router';
 
@@ -18,9 +23,37 @@ import moment from 'moment';
 
 import UserLink from 'modules/Site/components/fields/User/link.js';
 
+
+const defaultProps = Object.assign({
+	activeOnly: true,
+}, Page.defaultProps || {});
+
+
+const propTypes = Object.assign({
+	activeOnly: PropTypes.boolean,
+}, Page.propTypes || {});
+
+
 export default class EditVersionsPage extends Page{
 
+	static propTypes = propTypes;
+	
+	static defaultProps = defaultProps;
 
+
+	constructor(props){
+
+		super(props);
+
+		const {
+			activeOnly,
+		} = props;
+
+		this.state = Object.assign(this.state || {}, {
+			activeOnly,
+		});
+
+	}
 
   // setPageTitle(title){
 
@@ -64,15 +97,21 @@ export default class EditVersionsPage extends Page{
 			companyId,
 		} = this.props;
 
+		const {
+			activeOnly,
+		} = this.state;
+
 
 		localQuery({
 			operationName: "editVersions",
 			variables: {
 				editVersionLimit: 0,
 				editVersionGetEditor: true,
+				editVersionGetCreator: true,
 				editVersionGetCompany: true,
 				getImageFormats: true,
 				editVersionCompanyId: companyId,
+				editVersionStatus: activeOnly ? ["0"] : undefined,
 			},
 		})
 		.then(r => {
@@ -141,9 +180,14 @@ export default class EditVersionsPage extends Page{
 		const {
 			companyId,
 			previewDiffs,
+			acceptDiffs,
 			diffs,
 		} = this.props;
 
+
+		const {
+			activeOnly,
+		} = this.state;
 
 		const sudo = hasPermission("sudo");
 
@@ -178,7 +222,7 @@ export default class EditVersionsPage extends Page{
 		let thead = [
 
 			<TableCell
-				key="editedon"
+				key="createdon"
 			>
 				Дата
 			</TableCell>,
@@ -232,9 +276,11 @@ export default class EditVersionsPage extends Page{
 
 			const {
 				id,
+				createdon,
 				editedon,
 				status,
 				data,
+				CreatedBy,
 				EditedBy,
 				Company,
 			} = item;
@@ -255,21 +301,63 @@ export default class EditVersionsPage extends Page{
 
 			let actions = [];
 
-			actions.push(<Button
+			actions.push(<div
 				key="view"
-				onClick={event => {
-
-					this.triggerGoal("companyEditDiffsClicked");
-
-					previewDiffs && previewDiffs(item);
-				}}
-				accent={diffs === item ? true : false}
-				style={{
-					textTransform: "none",
-				}}
 			>
-				{diffs === item ? "Отменить изменения" : "Посмотреть изменения"}				
-			</Button>);
+				<Button
+					onClick={event => {
+
+						this.triggerGoal("companyEditDiffsClicked");
+
+						previewDiffs && previewDiffs(item);
+					}}
+					accent={diffs === item ? true : false}
+					style={{
+						textTransform: "none",
+					}}
+				>
+					{diffs === item ? <VisibilityOffIcon /> : <VisibilityIcon /> }
+					
+					<span
+						style={{
+							paddingLeft: 3,
+						}}
+					>
+						{diffs === item ? "Отменить изменения" : "Посмотреть изменения"}	
+					</span>
+
+				</Button>
+			</div>);
+
+			if(sudo && status === "0"){
+
+				actions.push(<Button
+					key="accept"
+					onClick={event => {
+
+						// this.triggerGoal("companyEditDiffsClicked");
+
+						acceptDiffs && acceptDiffs(item);
+					}}
+					style={{
+						textTransform: "none",
+					}}
+				>
+
+					<AcceptedIcon />
+					
+					<span
+						style={{
+							paddingLeft: 3,
+						}}
+					>
+						Принять изменения
+					</span>
+
+				</Button>);
+
+			}
+
 
 			let statusStr;
 
@@ -342,7 +430,7 @@ export default class EditVersionsPage extends Page{
 				}
 				
 				<TableCell>
-					{editedon && moment(editedon * 1000).format('DD-MM-YYYY HH:mm:ss') || ''}
+					{createdon && moment(createdon * 1000).format('DD-MM-YYYY HH:mm:ss') || ''}
 				</TableCell>
 				
 				<TableCell>
@@ -350,8 +438,8 @@ export default class EditVersionsPage extends Page{
 				</TableCell>
 				
 				<TableCell>
-					{EditedBy && <UserLink 
-						user={EditedBy}
+					{CreatedBy && <UserLink 
+						user={CreatedBy}
 					/> || "Анонимный пользователь"}
 				</TableCell>
 				
@@ -384,33 +472,71 @@ export default class EditVersionsPage extends Page{
 		});
 
 
-		return <Paper
+		return <div
 			style={{
-				margin: "30px 0",
-				padding: 15,
 				width: "100%",
-				overflow: "auto",
 			}}
 		>
-			<Table>
-				
-				<TableHead>
+			
+			<Typography
+				type="subheading"
+				style={{
+					margin: 15,
+				}}
+			>
+				Список последних изменений в данных банных заведений
+			</Typography>
+
+			<div>
+				<Grid
+					container
+					gutter={0}
+					align="center"
+				>
+ 
+					<Switch
+	          checked={activeOnly}
+	          onChange={event => {
+	          	this.setState({
+	          		activeOnly: !activeOnly,
+	          	}, () => this.loadData());
+	          }}
+	          aria-label="checkedA"
+	        /> <span>Только новые изменения</span>
+						 
 					
-					<TableRow>
+				</Grid>
+			</div>
+
+			<Paper
+				style={{
+					margin: "30px 0",
+					padding: 15,
+					width: "100%",
+					overflow: "auto",
+				}}
+			>
+				<Table>
+					
+					<TableHead>
 						
-						{thead}
+						<TableRow>
+							
+							{thead}
 
-					</TableRow>
+						</TableRow>
 
-				</TableHead>
+					</TableHead>
 
-				<TableBody>
-					
-					{tbody}
+					<TableBody>
+						
+						{tbody}
 
-				</TableBody>
+					</TableBody>
 
-			</Table>
-		</Paper>
+				</Table>
+			</Paper>
+
+		</div>
 	}
 }

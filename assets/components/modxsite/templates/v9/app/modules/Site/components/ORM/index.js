@@ -215,6 +215,14 @@ const editVersionArgs = Object.assign({
     type: GraphQLInt,
     description: "ID комапнии, в которой выполнены изменения",
   },
+  createdby: {
+    type: GraphQLInt,
+    description: "Автор изменений",
+  },
+  editedby: {
+    type: GraphQLInt,
+    description: "Редактор изменений",
+  },
 }, listArgs);
 
 const RootType = new GraphQLObjectType({

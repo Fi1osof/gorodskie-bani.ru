@@ -184,35 +184,36 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 		// return "Debug";
 
 		if(!$this->modx->hasPermission("SUDO") && !$this->hasErrors()){
-				
-			$this->addFieldError("user_id", $this->modx->user->id);
 
 
-			if(!$object->createdby){
 
-				if($object->isNew()){
+			
+			if($object->isNew()){
+
+				// Вводим разную логику для авторизованных и неавторизованных пользователей
+				if(!$this->modx->user->id){
 
 					return "Необходимо авторизоваться";
 
 				}
-				else{
-					return "Не указан владелец";
-				}
 
-			}
+				// else
 
-			if(!$this->modx->user->id){
-				$this->addFieldError("error_code", "UNAUTHORIZED");
-				return "Вы не атворизованы. Пожалуйста, авторизуйтесь.";
-			}
 
-			else if($object->createdby != $this->modx->user->id){
-				$this->addFieldError("error_code", "NOT_OWNER");
-				return "Вы не можете сохранить изменения в чужой компании. Если это ваша компания, пожалуйста, свяжитесь с нами по почте info@gorodskie-bani.ru";
-			}
 
-			if($object->isNew()){
+				// if(!$object->createdby){
 
+				// 	if($object->isNew()){
+
+
+				// 	}
+				// 	else{
+				// 		return "Не указан владелец";
+				// 	}
+
+				// }
+
+				// Подсчет созданных объектов
 				if($this->modx->getCount("modResource", array(
 					"class_key"	=> $this->classKey,
 					"createdby"	=> $this->modx->user->id,
@@ -221,6 +222,22 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 				}
 
 			}
+			else{
+
+				$this->addFieldError("user_id", $this->modx->user->id);
+				
+				if(!$this->modx->user->id){
+					$this->addFieldError("error_code", "UNAUTHORIZED");
+					return "Сохранены изменения как от анонимного пользователя";
+				}
+
+				else if($object->createdby != $this->modx->user->id){
+					$this->addFieldError("error_code", "NOT_OWNER");
+					return "Вы не можете сохранить изменения в чужой компании. Если это ваша компания, пожалуйста, свяжитесь с нами по почте info@gorodskie-bani.ru";
+				}
+				
+			}
+
 
 		}
 

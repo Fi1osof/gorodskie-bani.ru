@@ -2320,27 +2320,36 @@ export class AppMain extends Component{
       EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], editVersions || []);
 
       
-      // companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
-      // CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
 
       let companiesState = CompaniesStore.getState();
 
-      companies &&  companies.map(n => {
+      if(companiesState.size){
 
-        if(companiesState.findIndex(i => i.id === n.id ) !== -1){
+        companies &&  companies.map(n => {
 
-          Object.assign(i, n);
+          if(companiesState.findIndex(i => i.id === n.id ) !== -1){
 
-        }
-        else{
+            Object.assign(i, n);
+
+          }
+          else{
+            
+            companiesState = companiesState.push(this.createStoreObject(Company, n));
+
+          }
+
+        });
           
-          companiesState = companiesState.push(this.createStoreObject(Company, n));
-
-        }
-      
         CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companiesState.toArray());
 
-      });
+      }
+      else{
+
+        companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
+        CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+
+      }
+
 
 
 

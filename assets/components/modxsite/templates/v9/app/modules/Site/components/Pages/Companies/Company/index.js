@@ -312,6 +312,7 @@ export default class CompanyPage extends Component{
 
 		const {
 			saveContactItem,
+			documentActions,
 		} = this.context;
 
 		this.setState({
@@ -323,6 +324,32 @@ export default class CompanyPage extends Component{
 				// console.log("Save Company item result", r);
 			})
 			.catch(e => {
+
+				const {
+					message,
+					data,
+					errors,
+				} = e;
+
+				// console.log("Save Company item error", errors);
+
+				if(errors){
+
+					for(var i in errors){
+
+						const error = errors[i];
+
+						error && documentActions.addInformerMessage(error);
+
+						// error && documentActions.addInformerMessage({
+						// 	text: error,
+						// 	autohide: 4000,
+						// });
+
+					}
+
+				}
+
 				console.error(e);
 			});
 

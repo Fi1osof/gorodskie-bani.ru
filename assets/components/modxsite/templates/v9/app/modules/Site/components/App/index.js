@@ -973,6 +973,9 @@ export class AppMain extends Component{
             return resolve(data);
           }
           else{
+
+            console.log("remoteQuery error", data);
+
             return reject(data);
           }
         },
@@ -1896,6 +1899,9 @@ export class AppMain extends Component{
         
       })
       .catch(e => {
+
+        console.log("updateCompany error", r);
+
         console.error(e);
       });
 
@@ -2303,7 +2309,6 @@ export class AppMain extends Component{
 
       // let companies = object && object.map(n => new Company(n)) || [];
 
-      companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
       users = users && users.map(n => this.createStoreObject(User, n)) || [];
 
       // companies = companies || [];
@@ -2314,7 +2319,31 @@ export class AppMain extends Component{
 
       EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], editVersions || []);
 
-      CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+      
+      // companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
+      // CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+
+      let companiesState = CompaniesStore.getState();
+
+      companies &&  companies.map(n => {
+
+        if(companiesState.findIndex(i => i.id === n.id ) !== -1){
+
+          Object.assign(i, n);
+
+        }
+        else{
+          
+          companiesState = companiesState.push(this.createStoreObject(Company, n));
+
+        }
+      
+        CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companiesState.toArray());
+
+      });
+
+
+
       UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
       RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
       CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
@@ -2868,11 +2897,15 @@ export class AppMain extends Component{
       })
       .then( (data) => {
 
+        let message;
+
         let errors = {};
 
         if(data.success){
         }
         else{
+
+          // console.error('Request result', data);
 
           if(data.data && data.data.length){
 
@@ -2883,10 +2916,10 @@ export class AppMain extends Component{
             }, this);
           }
 
-          var error = data.message || "Ошибка выполнения запроса";
+          message = data.message || "Ошибка выполнения запроса";
 
           showErrorMessage && documentActions.addInformerMessage({
-            text: error,
+            text: message,
             autohide: 4000,
           });
 
@@ -2902,7 +2935,11 @@ export class AppMain extends Component{
           resolve(data);
         }
         else{
-          reject(data);
+          reject({
+            message,
+            data, 
+            errors,
+          });
         }
 
         return;

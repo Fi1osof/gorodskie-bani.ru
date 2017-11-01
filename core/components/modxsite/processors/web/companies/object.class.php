@@ -224,7 +224,6 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 			}
 			else{
 
-				$this->addFieldError("user_id", $this->modx->user->id);
 				
 				if(!$this->modx->user->id){
 					$this->addFieldError("error_code", "UNAUTHORIZED");
@@ -232,6 +231,8 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 				}
 
 				else if($object->createdby != $this->modx->user->id){
+
+					$this->addFieldError("user_id", $this->modx->user->id);
 					$this->addFieldError("error_code", "NOT_OWNER");
 					return "Вы не можете сохранить изменения в чужой компании. Если это ваша компания, пожалуйста, свяжитесь с нами по почте info@gorodskie-bani.ru";
 				}

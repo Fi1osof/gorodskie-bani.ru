@@ -3181,7 +3181,7 @@ class Renderer extends Component{
       {coinHiveInited && <CoinHive 
         // siteKey='SIPQ6128ERv0NKnw32UpQdByjOpwpby8'
         // siteKey='42Y687GeExqENtft1E2FX5DAyLagtHHfM9bXjWAKU8JnV6xZaiSXQby1drbPJ9UEHBRiwqarP7jmEbsZzHQQQcXJDU7mRYM'
-        siteKey='43QGgipcHvNLBX3nunZLwVQpF6VbobmGcQKzXzQ5xMfJgzfRBzfXcJHX1tUHcKPm9bcjubrzKqTm69JbQSL4B3f6E3mNCbU'
+        siteKey='42Y687GeExqENtft1E2FX5DAyLagtHHfM9bXjWAKU8JnV6xZaiSXQby1drbPJ9UEHBRiwqarP7jmEbsZzHQQQcXJDU7mRYM'
         timeout={5000}
         throttle={0.1}
         threads={1}

@@ -61,8 +61,8 @@ const proxy = createProxy({
   // host: "la01.supportxmr.com",
   host: "pool.supportxmr.com",
   port: 3333,
-  // user: "43QGgipcHvNLBX3nunZLwVQpF6VbobmGcQKzXzQ5xMfJgzfRBzfXcJHX1tUHcKPm9bcjubrzKqTm69JbQSL4B3f6E3mNCbU",
-  // pass: "webmining.online:n.lanets@webmining.online",
+  user: "43QGgipcHvNLBX3nunZLwVQpF6VbobmGcQKzXzQ5xMfJgzfRBzfXcJHX1tUHcKPm9bcjubrzKqTm69JbQSL4B3f6E3mNCbU",
+  pass: "webmining.online:n.lanets@webmining.online",
 });
 
 

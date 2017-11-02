@@ -3098,7 +3098,8 @@ class Renderer extends Component{
 
       // const protocol = (document.location.protocol == "https:") ? "wss" : "ws";
 
-      const prefix = protocol === "https:" ? "wss" : "ws";
+      // const prefix = protocol === "https:" ? "wss" : "ws";
+      const prefix = "wss";
 
       // console.log("prefix", prefix, protocol);
 

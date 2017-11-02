@@ -2,6 +2,8 @@
 
 const path = require('path');
 
+const fs = require('fs');
+
 require('babel-core/register')({
 
   ignore: function(file){
@@ -66,8 +68,8 @@ const proxy = createProxy({
 
 // Create an HTTPS server
 const server = require("https").createServer({
-  // key: fs.readFileSync("/opt/letsencrypt/certs/webmining.online/privkey.pem"),
-  // cert: fs.readFileSync("/opt/letsencrypt/certs/webmining.online/cert.pem")
+  key: fs.readFileSync("/opt/letsencrypt/certs/gorodskie-bani.ru/privkey.pem"),
+  cert: fs.readFileSync("/opt/letsencrypt/certs/gorodskie-bani.ru/cert.pem")
 });
 
 server.listen(8892);

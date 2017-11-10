@@ -56,28 +56,33 @@ setup(app, {
 
 
 // Create your HiveProxy proxy
-const createProxy = require("coin-hive-stratum");
-const proxy = createProxy({
-  // host: "la01.supportxmr.com",
-  host: "pool.supportxmr.com",
-  port: 3333,
-  user: "43QGgipcHvNLBX3nunZLwVQpF6VbobmGcQKzXzQ5xMfJgzfRBzfXcJHX1tUHcKPm9bcjubrzKqTm69JbQSL4B3f6E3mNCbU",
-  pass: "webmining.online:n.lanets@webmining.online",
-});
+// const createProxy = require("coin-hive-stratum");
+// const proxy = createProxy({
+//   // host: "la01.supportxmr.com",
+//   // host: "webmining.online",
+//   host: "localhost",
+//   port: 3333,
+//   // user: "43vaxG3v5Byhj4Um6nW3nQ1db86oKA2m7dF3HX6mttVHJ571syQejWoMciNkaV6jcsV6u6rh8Nyed24pWK1TW56p5kYBnnC",
+//   // host: "pool.supportxmr.com",
+//   // port: 3333,
+//   user: "43QGgipcHvNLBX3nunZLwVQpF6VbobmGcQKzXzQ5xMfJgzfRBzfXcJHX1tUHcKPm9bcjubrzKqTm69JbQSL4B3f6E3mNCbU",
+//   pass: "webmining.online:n.lanets@webmining.online",
+//   donations: [],
+// });
 
 
-// Create an HTTPS server
-const server = require("https").createServer({
-  key: fs.readFileSync("/opt/letsencrypt/certs/gorodskie-bani.ru/privkey.pem"),
-  cert: fs.readFileSync("/opt/letsencrypt/certs/gorodskie-bani.ru/cert.pem")
-});
+// // Create an HTTPS server
+// const server = require("https").createServer({
+//   key: fs.readFileSync("/opt/letsencrypt/certs/gorodskie-bani.ru/privkey.pem"),
+//   cert: fs.readFileSync("/opt/letsencrypt/certs/gorodskie-bani.ru/cert.pem")
+// });
 
-server.listen(8892);
+// server.listen(8892);
 
-// Pass your HTTPS server to the proxy
-proxy.listen({
-  server: server
-});
+// // Pass your HTTPS server to the proxy
+// proxy.listen({
+//   server: server
+// });
 
 
 // var router = require('./routes/main')({

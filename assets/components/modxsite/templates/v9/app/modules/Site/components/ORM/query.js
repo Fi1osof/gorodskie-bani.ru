@@ -3,8 +3,7 @@ const defaultQuery = `
 
 
 query apiData(
-  $limit:Int = 0
-  $apiGetCompenies:Boolean = true
+  $limit:Int = 50
   $getRatingsAvg:Boolean = false
   $getImageFormats:Boolean = false
   $getCompanyComments:Boolean = false
@@ -14,10 +13,10 @@ query apiData(
   $companyCommentsSort:[SortBy]
   $getTVs:Boolean = true
   $getCommentAuthor:Boolean = false
-  $resourcesLimit:Int = 0
+  $resourcesLimit:Int = 50
   $withPagination:Boolean = false
   $resourceTemplate:Int
-  $resourceExcludeTemplates:[Int] = [27,28,15]
+  $resourceExcludeTemplates:[Int]
   $resourceType:ResourceTypeEnum
   $resourceParent:Int
   $getCompanyTopics:Boolean = false
@@ -28,26 +27,24 @@ query apiData(
   $userGetComments:Boolean = false
   $resourceTag:String
   $resourceUri:String
-  $resourceGetContent:Boolean = true
-  $editVersionStatus:[String]
-  $editVersionLimit:Int = 0
-  $editVersionSort:[SortBy] = [{
-    by:id,
-    dir:desc
-  }]
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
-  $editVersionCompanyId:Int
-  $companyGetEditVersions:Boolean = false
+  $beerGetPlaces:Boolean = false
+  $placesBeersLimit:Int = 100
 ){
   companies(
     limit:$limit
     # offset:1
-  ) @include(if:$apiGetCompenies)
-  {
+  ) {
     ...Company
   }
+  
+  beers(
+    limit:$limit
+  ){
+    ...Beer
+  }
+  
+  ...RootPlacesBeers
+  
   ratings(
     limit:$limit
   ){
@@ -72,19 +69,11 @@ query apiData(
   }
   
   ...ResourcesList
-  
   ...Topics
-  
-  ...RootEditVersions
-}
-
-mutation clearCache{
-  clearCache
 }
 
 query Companies (
   $limit:Int!
-  $companiesSearchQuery:String
   $getRatingsAvg:Boolean = false
   $getImageFormats:Boolean = false
   $getCompanyComments:Boolean = false
@@ -102,17 +91,11 @@ query Companies (
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $resourceUri:String
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
 ){
   companies(
     limit:$limit
     ids:$companyIds
     uri:$resourceUri
-    search:$companiesSearchQuery
   ) @skip(if:$withPagination)
   {
     ...Company
@@ -121,7 +104,6 @@ query Companies (
     limit:$limit
     ids:$companyIds
     uri:$resourceUri
-    search:$companiesSearchQuery
   ) @include(if:$withPagination)
   {
     count
@@ -134,7 +116,7 @@ query Companies (
 
 query Company(
   $id:Int!
-  $getRatingsAvg:Boolean = true
+  $getRatingsAvg:Boolean = false
   $getImageFormats:Boolean = true
   $getCompanyComments:Boolean = true
   $getCommentCompany:Boolean = false
@@ -148,11 +130,6 @@ query Company(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
 ){
   company(
     id: $id
@@ -167,6 +144,110 @@ query Company(
       quantity_voters
     }
   }
+}
+
+fragment Company on Company{
+  id
+  name
+  longtitle
+  alias
+  uri
+  city_id
+  city
+  city_uri
+  template
+  # published
+  # publishedon
+  # pubdate
+  # createdon
+  # createdby
+  image
+  ...imageFormats @include(if:$getImageFormats)
+  gallery @include(if:$getCompanyGallery)
+  {
+    image
+    imageFormats @include(if:$getImageFormats)
+    {
+      original
+      thumb
+      marker_thumb
+      slider_thumb
+      small
+      middle
+      big
+    }
+  }
+  coords{
+    lat
+    lng
+  }
+  tvs @include(if:$getTVs)
+  {
+    address
+    site
+    facility_type
+    phones
+    work_time
+    prices
+    metro
+    approved
+  }
+  ... on Company @include(if:$getCompanyFullData)
+  {
+    description 
+    content
+  }
+  comments (
+    sort:$companyCommentsSort
+  )
+  @include(if:$getCompanyComments)
+  {
+    id
+    thread_id
+    text
+    author_username
+    author_fullname
+    author_avatar
+    createdby
+    parent
+    published
+    deleted
+    createdon
+    Company @include(if:$getCommentCompany)
+    {
+      ...CompanyFields
+    }
+    Author @include(if:$getCommentAuthor)
+    {
+      ...User
+    }
+  }
+  ratingAvg @include(if: $getRatingsAvg) 
+  {
+    rating
+    max_vote
+    min_vote
+    type
+    target_id
+    quantity
+    quantity_voters
+    voted_companies
+    voted_users
+    voter
+    voters @include(if:$getRatingVoters)
+    {
+      ...User
+    }
+  }
+  topics @include(if:$getCompanyTopics)
+  {
+    ...Topic
+  }
+}
+
+fragment CompanyFields on Company{
+  id
+  name 
 }
 
 
@@ -194,11 +275,6 @@ query Ratings(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
 ){
   ...RatingsList
 }
@@ -229,20 +305,15 @@ query MainMenuData(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = true
-  
   $resourcesLimit:Int = 0
   $resourceTemplate:Int
   $resourceExcludeTemplates:[Int]
   $resourceType:ResourceTypeEnum
-  $resourceParent:Int = 1296
+  $resourceParent:Int = 2714
   $resourceUri:String
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
+  $resourceIds:[Int]
 ){
-  ...RatingsList
+  ...RatingsList @skip(if:true)
   
   ...ResourcesList
 }
@@ -301,11 +372,6 @@ query Comments(
   $userGetComments:Boolean = false
   $commentsPage:Int = 1
   $commentsIds:[Int]
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
 ){
   commentsList(
     ids: $commentsIds
@@ -339,13 +405,12 @@ query Comments(
 
 # Список компаний для карты
 query MapCompanies (
-  $limit:Int!
-  $companyIds:[Int]
+  $limit:Int = 100
   $getCompanyFullData:Boolean = false
   $getImageFormats:Boolean = true
   $getCompanyComments:Boolean = false
   $getCommentCompany:Boolean = false
-  $getRatingsAvg:Boolean = true
+  $getRatingsAvg:Boolean = false
   $withPagination:Boolean = false
   $getCompanyGallery:Boolean = false
   $getTVs:Boolean = true
@@ -356,15 +421,9 @@ query MapCompanies (
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
 ){
   companiesList(
     limit:$limit
-    ids:$companyIds
   )
   @include(if:$withPagination)
   {
@@ -376,7 +435,6 @@ query MapCompanies (
   }
   companies(
     limit:$limit
-    ids:$companyIds
   )
   @skip(if:$withPagination)
   {
@@ -410,11 +468,6 @@ query CompanyRatings(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
 ){
   ratings(  
     limit:$limit
@@ -458,11 +511,6 @@ query CompanyComments(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
 ){
   comments(  
     limit:$limit
@@ -508,11 +556,6 @@ query CompanyAvgRatings(
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
 ){
   ratings(  
     limit:1
@@ -536,7 +579,6 @@ query CompanyTopics(
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
   $resourceTag:String
-  $resourceGetContent:Boolean = true
 ){
     ...Topics
 }
@@ -550,7 +592,6 @@ query Users(
   $getCommentAuthor:Boolean = false
   $usersPage:Int = 1
   $usersDelegatesOnly:Boolean = false
-  $usersMyOnly:Boolean = false
 ) {
   
   usersList(
@@ -558,7 +599,6 @@ query Users(
     ids:$userIds
     page:$usersPage
     delegatesOnly:$usersDelegatesOnly
-    myOnly:$usersMyOnly
   ) @include(if:$withPagination)
   {
     count
@@ -572,7 +612,6 @@ query Users(
     ids:$userIds
     page:$usersPage
     delegatesOnly:$usersDelegatesOnly
-    myOnly:$usersMyOnly
   ) @skip(if:$withPagination)
   {
     ...User
@@ -613,7 +652,7 @@ query Resources(
   $withPagination:Boolean = false
   $getTVs:Boolean = true
   $resourceTemplate:Int
-  $resourceExcludeTemplates:[Int] = [27,28,15]
+  $resourceExcludeTemplates:[Int]
   $resourceType:ResourceTypeEnum
   $getImageFormats:Boolean = true
   $resourceGetAuthor:Boolean = false
@@ -622,18 +661,10 @@ query Resources(
   $userGetComments:Boolean = false
   $resourceParent:Int
   $resourceUri:String
-  $resourceGetContent:Boolean = true
+  $resourceIds:[Int]
 ){
   
   ...ResourcesList
-  # resources(
-  #   limit:$resourcesLimit
-  #   template:$resourceTemplate
-  #   excludeTemplates:$resourceExcludeTemplates
-  # )@skip(if:$withPagination)
-  # {
-  #   ...Resource
-  # }
 }
 
 query Cities(
@@ -648,11 +679,10 @@ query Cities(
   $resourceGetComments:Boolean = false
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
-  $resourceParent:Int = 1296
+  $resourceParent:Int = 2714
   $resourceUri:String
-  $resourceGetContent:Boolean = true
+  $resourceIds:[Int]
 ){
-  
   ...ResourcesList
 }
 
@@ -671,7 +701,7 @@ query RatingTypes(
   $userGetComments:Boolean = false
   $resourceParent:Int = 1349
   $resourceUri:String
-  $resourceGetContent:Boolean = true
+  $resourceIds:[Int]
 ){
   
   ...ResourcesList
@@ -709,11 +739,7 @@ query RatingsPageData(
   $userGetComments:Boolean = false
   $ratingGetType:Boolean = false
   $resourceUri:String
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
+  $resourceIds:[Int]
 ){
   
   ...ResourcesList
@@ -734,7 +760,6 @@ query Topics(
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
   $resourceTag:String
-  $resourceGetContent:Boolean = true
 ){
   
   ...Topics
@@ -751,7 +776,6 @@ query ObzoryZavedeniy(
   $resourceIds:[Int]
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
-  $resourceGetContent:Boolean = true
 ){
   
   ...Obzory
@@ -834,6 +858,7 @@ fragment Topic on ResourceType{
 
 fragment ResourcesList on RootType{
   resourcesList(
+    ids:$resourceIds
     limit:$resourcesLimit
     template:$resourceTemplate
     excludeTemplates:$resourceExcludeTemplates
@@ -849,6 +874,7 @@ fragment ResourcesList on RootType{
     }
   }
   resources(
+    ids:$resourceIds
     limit:$resourcesLimit
     template:$resourceTemplate
     excludeTemplates:$resourceExcludeTemplates
@@ -865,15 +891,11 @@ fragment Resource on ResourceType{
   
   ...ResourceFields
   
-  content @include(if:$resourceGetContent)
-  
   Author @include(if:$resourceGetAuthor)
   {
     ...User
   }
-  comments(
-    sort:{by: id, dir:asc}
-  ) @include(if:$resourceGetComments)
+  comments @include(if:$resourceGetComments)
   {
     ...CommentFields
     Author @include(if:$getCommentAuthor)
@@ -891,6 +913,7 @@ fragment ResourceFields on ResourceType{
   template
   parent
   description
+  content
   alias
   uri
   deleted
@@ -899,7 +922,6 @@ fragment ResourceFields on ResourceType{
   pubdate
   createdon
   hidemenu
-  searchable
   short_text
   tags
   image
@@ -907,7 +929,6 @@ fragment ResourceFields on ResourceType{
     thumb
     marker_thumb
     slider_thumb
-    slider_dot_thumb
     small
     middle
     big
@@ -927,8 +948,6 @@ fragment ResourceFields on ResourceType{
     lat
     lng
   }
-  _errors
-  _Dirty
 }
 
 fragment Comment on CommentType{
@@ -955,10 +974,7 @@ fragment CommentFields on CommentType{
   published
   deleted
   createdon
-  createdonFormatted
   createdby
-  _errors
-  _Dirty
 }
 
 fragment Rating on RatingType{
@@ -994,132 +1010,12 @@ fragment Rating on RatingType{
   }
 }
 
-fragment Company on Company{
-  
-  ...CompanyFields
-  
-  ... on Company @include(if:$getCompanyFullData)
-  {
-    description 
-    content
-  }
-  
-  comments (
-    sort:$companyCommentsSort
-  )@include(if:$getCompanyComments)
-  {
-    id
-    thread_id
-    text
-    author_username
-    author_fullname
-    author_avatar
-    createdby
-    parent
-    published
-    deleted
-    createdon
-    Company @include(if:$getCommentCompany)
-    {
-      ...CompanyFields
-    }
-    Author @include(if:$getCommentAuthor)
-    {
-      ...User
-    }
-  }
-  
-  ratingAvg @include(if: $getRatingsAvg) 
-  {
-    rating
-    max_vote
-    min_vote
-    type
-    target_id
-    quantity
-    quantity_voters
-    voted_companies
-    voted_users
-    voter
-    voters @include(if:$getRatingVoters)
-    {
-      ...User
-    }
-  }
-  
-  topics @include(if:$getCompanyTopics)
-  {
-    ...Topic
-  }
-  
-  editVersions @include(if:$companyGetEditVersions)
-  {
-    ...editVersion
-  }
-}
-
-fragment CompanyFields on Company{
-  id
-  name
-  longtitle
-  alias
-  uri
-  city_id
-  city
-  city_uri
-  template
-  published
-  publishedon
-  pubdate
-  createdon
-  createdby
-  editedby
-  editedon
-  mapIcon
-  image
-  ...imageFormats @include(if:$getImageFormats)
-  
-  gallery @include(if:$getCompanyGallery)
-  {
-    image
-    imageFormats @include(if:$getImageFormats)
-    {
-      original
-      thumb
-      marker_thumb
-      slider_thumb
-      slider_dot_thumb
-      small
-      middle
-      big
-    }
-  }
-  coords{
-    lat
-    lng
-  }
-  tvs @include(if:$getTVs)
-  {
-    address
-    site
-    facility_type
-    phones
-    work_time
-    prices
-    metro
-    approved
-  }
-  errors
-  _isDirty
-}
-
 fragment imageFormats on Company{
     imageFormats {
       original
       thumb
       marker_thumb
       slider_thumb
-      slider_dot_thumb
       small
       middle
       big
@@ -1160,68 +1056,7 @@ fragment UserFields on UserType{
     middle
     big
   }
-  notices{
-    ...UserNoticeFields
-  }
   _Dirty
-}
-
-
-fragment UserNoticeFields on UserNoticeType{
-  id
-  type
-  comment
-  active
-}
-
-query test(
-  $limit:Int = 10
-){
-  companies(
-    limit:$limit
-    ids:[1275]
-  ){
-    id
-    name
-    # topics{
-    #   id
-    #   name
-    # }
-    # ratingsByType{
-    #   id
-    #   rating
-    #   max_vote
-    #   min_vote
-    #   type
-    #   target_id
-    #   quantity
-    #   voted_users
-    # }
-    comments{
-      id
-      published
-      deleted
-      text
-    }
-    # ratingAvg {
-    #   id
-    #   rating
-    #   max_vote
-    #   min_vote
-    #   type
-    #   quantity
-    #   companies{
-    #     id
-    #     name
-    #     pagetitle
-    #     ratings {
-    #       id
-    #       target_id
-    #       target_class
-    #     }
-    #   }
-    # }
-  }
 }
 
 mutation addCompany(
@@ -1239,11 +1074,6 @@ mutation addCompany(
   $resourceGetAuthor:Boolean = false
   $resourceGetComments:Boolean = false
   $userGetComments:Boolean = false
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
 ){
   addCompany{
     ...Company
@@ -1330,287 +1160,164 @@ mutation logCoords(
   }
 }
 
-query Redirects(
-  $redirectsLimit:Int = 10
+query Beers(
+  $getImageFormats:Boolean = false
+  $beersLimit:Int = 10
   $withPagination:Boolean = false
+  $beerGetPlaces:Boolean = false
 ){
-  ...RootRedirectsList
+  
+  ...Beers
 }
 
-fragment RootRedirectsList on RootType{
-  redirectsList(
-    limit:$redirectsLimit
-  ) @include(if:$withPagination)
+fragment Beers on RootType{
+  
+  beersList(
+    limit:$beersLimit
+  )@include(if:$withPagination)
   {
     count
     total
     object{
-      ...Redirect
+      ...Beer
     }
   }
-  
-  redirects(
-    limit:$redirectsLimit
+  beers(
+    limit:$beersLimit
   ) @skip(if:$withPagination)
   {
-    ...Redirect
+    ...Beer
+  }
+  
+}
+
+fragment Beer on BeerType{
+  
+  ...BeerFields
+  
+  places @include(if:$beerGetPlaces)
+  {
+    ...PlaceBeer
   }
 }
 
-fragment Redirect on RedirectType{
+fragment BeerFields on BeerType{
+  
   id
-  uri
-  redirect_uri
-  resource_id
-}
-
-mutation addCompanyGalleryImage(
-  $companyId:Int!
-  $image:String!
-  $getRatingsAvg:Boolean = true
-  $getImageFormats:Boolean = true
-  $getCompanyComments:Boolean = true
-  $getCommentCompany:Boolean = false
-  $getCompanyFullData:Boolean = true
-  $getCompanyGallery:Boolean = true
-  $getTVs:Boolean = true
-  $companyCommentsSort:[SortBy] = {by: id, dir:asc}
-  $getCommentAuthor:Boolean = true
-  $getCompanyTopics:Boolean = true
-  $getRatingVoters:Boolean = true
-  $resourceGetAuthor:Boolean = false
-  $resourceGetComments:Boolean = false
-  $userGetComments:Boolean = false
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
-){
-  addCompanyGalleryImage(
-    id: $companyId
-    image: $image
-  ){
-    ...Company
+  name
+  description
+  image
+  imageFormats @include(if:$getImageFormats)
+  {
+    original
+    thumb
+    marker_thumb
+    slider_thumb
+    slider_dot_thumb
+    small
+    middle
+    big
   }
+  region
+  manufacture_years
+  alcohol
+  wort_percent
+  components
+  bitter
+  color
+  rating
 }
 
-query Search(
-  $searchLimit:Int = 10
-  $searchQuery:String!
-  $getRatingsAvg:Boolean = false
-  $getImageFormats:Boolean = false
-  $getCompanyComments:Boolean = false
-  $getCommentCompany:Boolean = false
-  $getCompanyFullData:Boolean = false
-  $getCompanyGallery:Boolean = false
-  $getTVs:Boolean = false
-  $companyCommentsSort:[SortBy]
-  $getCommentAuthor:Boolean = false
-  $getCompanyTopics:Boolean = false
-  $getRatingVoters:Boolean = false
-  $resourceGetAuthor:Boolean = false
-  $resourceGetComments:Boolean = false
-  $userGetComments:Boolean = false
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
-){
-  search(
-    limit:$searchLimit
-    search:$searchQuery
-  ){
-    ...Company
-  }
-}
-
-query searchStats(
-  $searchStatLimit:Int = 10
+query Photos(
+  $photosLimit:Int = 10
   $withPagination:Boolean = false
+  $getImageFormats:Boolean = false
 ){
-  ...RootSearchStats
+  ...RootPhotos
 }
 
-fragment RootSearchStats on RootType{
-  searchStatsList(
-    limit:$searchStatLimit
+fragment RootPhotos on RootType{
+  
+  photosList(
+    limit:$photosLimit
   ) @include(if:$withPagination)
   {
     count
     total
     object{
-      ...SearchStat
+      ...Photo
     }
   }
   
-  searchStats(
-    limit:$searchStatLimit
+  photos(
+    limit:$photosLimit
   ) @skip(if:$withPagination)
   {
-    ...SearchStat
-  }  
+    ...Photo
+  }
 }
 
-fragment SearchStat on SearchStatType{
+
+fragment Photo on PhotoType{
   id
-  query
-  finded
-  date
-}
-
-mutation saveSearchStat(
-  $searchQuery:String!
-  $searchFinded:Int!
-){
-  saveSearchStat(
-    query: $searchQuery
-    finded: $searchFinded
-  ){
-    ...SearchStat
+  parent_id
+  user_id
+  type_id
+  name
+  description
+  num_comments
+  created_at
+  updated_at
+  image
+  imageFormats @include(if:$getImageFormats)
+  {
+    original
+    thumb
+    marker_thumb
+    slider_thumb
+    slider_dot_thumb
+    small
+    middle
+    big
   }
 }
 
-mutation addTopic(
-  $getTVs:Boolean = true
-){
-  addTopic{
-    ...ResourceFields
-  }
-}
-
-mutation addComment(
-  $commentTargetId:Int!
-  $commentTargetClass:String = "modResource"
-  $commentText:String
-  $getCompanyFullData:Boolean = false
-  $getImageFormats:Boolean = true
-  $getCompanyComments:Boolean = false
-  $getCommentCompany:Boolean = false
-  $getRatingsAvg:Boolean = false
-  $getCompanyGallery:Boolean = false
-  $commentParent:Int
-  $getTVs:Boolean = false
-  $companyCommentsSort:[SortBy]
-  $getCommentAuthor:Boolean = true
-  $getCompanyTopics:Boolean = false
-  $getRatingVoters:Boolean = false
-  $resourceGetAuthor:Boolean = false
-  $resourceGetComments:Boolean = false
-  $userGetComments:Boolean = false
-  $resourceGetContent:Boolean = true
-  $companyGetEditVersions:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
-){
-  addComment(
-    target_id:$commentTargetId
-    target_class:$commentTargetClass
-    parent:$commentParent
-    text:$commentText
-  ){
-    ...Comment
-  }
-}
-
-query editVersions(
-  $editVersionStatus:[String]
-  $editVersionCompanyId:Int
-  $editVersionLimit:Int = 10
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
+query PlacesBeers(
+  $placesBeersLimit:Int = 10
   $withPagination:Boolean = false
-  $editVersionSort:[SortBy] = [{
-    by:id,
-    dir:desc
-  }]
-  $getImageFormats:Boolean = false
-  $getCompanyGallery:Boolean = false
-  $getTVs:Boolean = false
 ){
-  ...RootEditVersions
+  ...RootPlacesBeers
 }
 
-fragment RootEditVersions on RootType{
-  editVersionsList(
-    status:$editVersionStatus
-    companyId:$editVersionCompanyId
-    sort:$editVersionSort
-    limit:$editVersionLimit
-  ) @include(if:$withPagination)
+fragment RootPlacesBeers on RootType{
+  placesBeersList(
+    limit:$placesBeersLimit
+  ) @include(if: $withPagination)
   {
     count
     total
     object{
-      ...editVersion
+      ...PlaceBeer
     }
   }
-  editVersions(
-    status:$editVersionStatus
-    companyId:$editVersionCompanyId
-    sort:$editVersionSort
-    limit:$editVersionLimit
-  ) @skip(if:$withPagination)
+  
+  placesBeers(
+    limit:$placesBeersLimit
+  ) @skip(if: $withPagination)
   {
-    ...editVersion
+    ...PlaceBeer
   }
 }
 
-
-fragment editVersion on EditVersionType{
-  
-  ...editVersionFields
-  
-  CreatedBy @include(if:$editVersionGetCreator)
-  {
-    ...UserFields
-  }
-  
-  EditedBy @include(if:$editVersionGetEditor)
-  {
-    ...UserFields
-  }
-  
-  Company @include(if:$editVersionGetCompany)
-  {
-    ...CompanyFields
-  }
+fragment PlaceBeer on PlaceBeerType{
+  ...PlaceBeerFields
 }
 
-fragment editVersionFields on EditVersionType{id
-  target_id
-  createdby
-  createdon
-  editedby
-  editedon
-  status
-  data
-  message
-  errors
+fragment PlaceBeerFields on PlaceBeerType{
+  id
+  place_id
+  beer_id
 }
-
-
-mutation updateCompany(
-  $updateCompanyId:Int!
-  $updateCompanyData:JSON!
-  $getImageFormats:Boolean = false
-  $editVersionGetCreator:Boolean = false
-  $editVersionGetEditor:Boolean = false
-  $editVersionGetCompany:Boolean = false
-  $getCompanyGallery:Boolean = false
-  $getTVs:Boolean = false
-){
-  updateCompany(
-    target_id: $updateCompanyId
-    data:$updateCompanyData
-  ){
-    ...editVersion
-  }
-}
-
 
 
 `;

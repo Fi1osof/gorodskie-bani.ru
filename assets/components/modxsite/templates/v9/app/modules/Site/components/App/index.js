@@ -36,7 +36,7 @@ import Auth from '../Auth';
 
 // import ORM from '../ORM';
 
-import CoinHive from 'react-coin-hive/src';
+// import CoinHive from 'react-coin-hive/src';
 
 import RootType, {
   Mutation,
@@ -3072,13 +3072,13 @@ class Renderer extends Component{
 
   componentDidMount(){
 
-    if(typeof window !== "undefined"){
-      setTimeout(() => {
-        this.setState({
-          coinHiveInited: true,
-        });
-      }, 5000);
-    }
+    // if(typeof window !== "undefined"){
+    //   setTimeout(() => {
+    //     this.setState({
+    //       coinHiveInited: true,
+    //     });
+    //   }, 5000);
+    // }
 
   }
 

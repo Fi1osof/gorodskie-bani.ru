@@ -225,10 +225,10 @@ let routes = {
       path: "/profile",
     },
     {
-      // path: "/bani/",
+      path: "/bani",
+      component: CompaniesPage,
       childRoutes: [{
         path: "/bani/:companyId",
-        component: CompaniesPage,
       }],
       // childRoutes: [{
       //   path: "/city/:city/:companyId/",

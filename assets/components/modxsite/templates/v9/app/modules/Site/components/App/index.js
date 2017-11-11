@@ -2325,9 +2325,11 @@ export class AppMain extends Component{
 
         companies &&  companies.map(n => {
 
-          if(companiesState.findIndex(i => i.id === n.id ) !== -1){
+          let item = companiesState.find(i => i.id === n.id );
 
-            Object.assign(i, n);
+          if(item){
+
+            Object.assign(item, n);
 
           }
           else{

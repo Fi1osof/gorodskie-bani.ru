@@ -6,9 +6,12 @@ import Page from '../layout';
 
 import {Link, browserHistory} from 'react-router';
 
+import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 
 import Company from './Company';
+
+import CompaniesList from './List';
 
 export default class CompaniesPage extends Page {
 
@@ -18,7 +21,9 @@ export default class CompaniesPage extends Page {
 		super(props);
 
 		Object.assign(this.state, {
+			companies: undefined,
 		});
+
 	}
 	
 
@@ -50,12 +55,15 @@ export default class CompaniesPage extends Page {
 		let pathname = router.location && router.location.pathname;
 
 
+		const companyId = this.getCompanyId();
+
 		if(typeof window === "undefined"){
 
-
 			let outputState = CompaniesStore.getState();
+
+			// console.log('outputState', outputState.toArray());
 			
-			if(pathname && outputState){
+			if(companyId && pathname && outputState){
 
 				pathname = decodeURI(pathname);
 
@@ -63,20 +71,56 @@ export default class CompaniesPage extends Page {
 				
 				outputState = outputState.filter(n => n.uri === pathname || n.uri === `${pathname}/`);
 
+				appExports.outputState = outputState && outputState.toArray();
+
 			}
-
-
-			appExports.outputState = outputState && outputState.toArray();
 
 		}
 		else{
 				
 			this.state.inputState = document.inputState;
 
+			console.log('document.inputState', document.inputState);
+
 		}
 
 
 		super.componentWillMount && super.componentWillMount();
+
+	}
+
+	
+	loadData(){
+
+		const {
+			localQuery,
+		} = this.context;
+
+		const page = this.getPage();
+
+		localQuery({
+			operationName: "MapCompanies",
+			variables: {
+				limit: 12,
+				withPagination: true,
+				page,
+			},
+		})
+		.then(r => {
+			console.log("Companies result", r);
+			// console.log("Companies result 2", companies);
+
+			const {
+				companiesList: companies,
+			} = r.data;
+
+			this.setState({
+				companies,
+			});
+		})
+		.catch(e => {
+			console.error(e);
+		});
 
 	}
 
@@ -92,11 +136,10 @@ export default class CompaniesPage extends Page {
 	}
 
 
-	renderContent(){
+	getCompanyId(){
 
 		const {
 			router,
-			CompaniesStore,
 		} = this.context;
 
 		const {
@@ -107,13 +150,32 @@ export default class CompaniesPage extends Page {
 			companyId,
 		} = params || {};
 
+		return companyId;
+
+	}
+
+
+	renderContent(){
+
+		const {
+			router,
+			CompaniesStore,
+		} = this.context;
+
 		const {
 			inputState,
+			companies,		// Для списка компаний именно это свойство используется
 		} = this.state;
 
 		let item;
-		let company;
+		let content;
 
+		const companyId = this.getCompanyId();
+
+		/*
+			Если указан ID компании, то выводим компанию.
+			Иначе выводим список компаний
+		*/
 		if(companyId){
 
 			// let location = browserHistory && browserHistory.getCurrentLocation();
@@ -157,7 +219,7 @@ export default class CompaniesPage extends Page {
 					// Если это временный объект, то выводим сообщение об ошибке
 					if(!item && id < 0){
 						
-						company = <Paper
+						content = <Paper
 							style={{
 								padding: 15,
 							}}
@@ -190,11 +252,34 @@ export default class CompaniesPage extends Page {
 
 			if(item){
 
-				company = <Company
+				content = <Company
 					item={item}
 				/>
 
 			}
+		}
+		else{
+
+			if(companies === undefined){
+				content = <div
+					style={{
+						height: "100vh",
+					}}
+				>
+					<div 
+            className="preloader"
+          />
+         </div>
+			}
+			else{
+
+				content = <CompaniesList 
+					data={companies}
+				/>
+
+			}
+
+
 		}
 
 		// console.log('CompaniesPage 2 item', item, companyId);
@@ -202,10 +287,12 @@ export default class CompaniesPage extends Page {
 		return <div
 			style={{
 				width: "100%",
+				marginTop: 20,
+				// border: "1px solid",
 			}}
 		>
 
-			{company}
+			{content}
 
 		</div>
 	}

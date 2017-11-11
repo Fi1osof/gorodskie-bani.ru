@@ -170,10 +170,11 @@ export default class MainMenu extends Component{
 
     let base_url = "/";
 
+    let importantPage;
 
-    const importantArticleReaded = cookies.get("importantArticleReaded", "1");
+    // const importantArticleReaded = cookies.get("importantArticleReaded", "1");
 
-    const importantPage = typeof window === "undefined" || importantArticleReaded === "1" ? null : '/topics/redaktirovanie-informaczii-o-bannyix-zavedeniyax-1655.html';
+    // importantPage = typeof window === "undefined" || importantArticleReaded === "1" ? null : '/topics/redaktirovanie-informaczii-o-bannyix-zavedeniyax-1655.html';
 
     if(coords){
 

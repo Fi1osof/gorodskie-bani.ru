@@ -1932,6 +1932,36 @@ export default class MapMainView extends Component{
     		<Control
     			map={map}
     			maps={maps}
+    			position="TOP_LEFT"
+    		>  
+
+					<Link
+						to={`/bani/`}
+						href={`/bani/`}
+						style={{
+							background: "#fff",
+							color: "#666",
+					    display: "block",
+					    margin: "10px 0 0 -10px",
+					    padding: "8px",
+					    borderRadius: 2,
+							boxShadow: "0 0 0 1px #00000014",
+						}}
+					>
+						Показать списком
+					</Link>
+						
+
+    		</Control>
+    		:
+    		null
+    	}
+
+			{map && maps
+    		?
+    		<Control
+    			map={map}
+    			maps={maps}
     			position="LEFT_TOP"
     		>  
 					<IconButton

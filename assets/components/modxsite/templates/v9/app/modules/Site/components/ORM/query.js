@@ -2,6 +2,7 @@
 const defaultQuery = `
 
 
+
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -340,6 +341,7 @@ query Comments(
 # Список компаний для карты
 query MapCompanies (
   $limit:Int!
+  $page:Int
   $companyIds:[Int]
   $getCompanyFullData:Boolean = false
   $getImageFormats:Boolean = true
@@ -363,6 +365,7 @@ query MapCompanies (
   $editVersionGetCompany:Boolean = false
 ){
   companiesList(
+    page:$page
     limit:$limit
     ids:$companyIds
   )
@@ -370,11 +373,14 @@ query MapCompanies (
   {
     count
     total
+    limit
+    page
     object{
       ...Company
     }
   }
   companies(
+    page:$page
     limit:$limit
     ids:$companyIds
   )
@@ -1610,6 +1616,8 @@ mutation updateCompany(
     ...editVersion
   }
 }
+
+
 
 
 

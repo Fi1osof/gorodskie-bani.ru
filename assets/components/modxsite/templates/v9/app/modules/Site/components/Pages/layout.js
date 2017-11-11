@@ -195,14 +195,61 @@ export default class Page extends Component{
     	inited: prevInited,
     } = prevContext || {};
 
-    // console.log("componentDidUpdate", inited, prevInited);
+    // console.log("componentDidUpdate prevProps", prevProps.location);
 
-    if(prevContext !== undefined && !prevInited && inited){
+
+		const page = this.getPage();
+
+		const {
+			location: {
+				query: prevLocationQuery,
+			},
+		} = prevProps;
+
+		const {
+			page: prevPage,
+		} = prevLocationQuery || {};
+
+
+    if(
+    	(prevContext !== undefined && !prevInited && inited)
+    ){
     	
     	this.loadData();
 
     }
 
+    if(
+    	(page || prevPage) && page !== parseInt(prevPage)
+    ){
+    	
+    	this.loadData();
+
+    	// console.log("componentDidUpdate page || prevPage", page, prevPage);
+
+    }
+
+  }
+
+
+  getPage(){
+
+		const {
+			router,
+		} = this.context;
+
+
+		const {
+			location: {
+				query,
+			},
+		} = router;
+
+		const {
+			page,
+		} = query || {};
+	
+		return parseInt(page) || undefined;	
   }
 
 

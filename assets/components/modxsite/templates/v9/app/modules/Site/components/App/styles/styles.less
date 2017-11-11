@@ -3,6 +3,10 @@
 @import "~slick-carousel/slick/slick-theme.css";
 @import '~react-images-uploader/styles.css';
 
+@fontFamily: Arial, "Sans serif";
+@default: #444;
+@primary: #1995dc;
+
 *{
   box-sizing: border-box;
 }
@@ -13,7 +17,7 @@ html{
 	padding: 0;
 
    color: #222;
-   font-family: Arial;
+   font-family: @fontFamily;
    font-size: 13px;
    line-height: 1.5;
 
@@ -41,6 +45,23 @@ a{
          text-decoration: none;
       }
    }
+
+   &.active{
+ 
+      text-decoration: none;
+      
+   }
+}
+
+.text{
+
+   &.default{
+      color: @default;
+   }
+
+   &.primary{
+      color: @primary;
+   }
 }
 
 .react-site--main-menu{
@@ -64,6 +85,14 @@ a{
       height: 100%;
       display: flex;
       flex-direction: column;
+
+      font-family: @fontFamily; 
+
+      h1,h2,h3,h4,h5,h6{
+      
+         font-family: @fontFamily; 
+         color: @primary;
+      }
    }
 
 

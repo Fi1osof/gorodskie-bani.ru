@@ -132,9 +132,10 @@ export default class CompanyMiniCart extends Component{
 
 				</Grid>
 
-				<Stars 
+				{ratings !== null && <Stars 
 					value={parseFloat(rating) || 0}
-				/>
+				/> || null}
+				
 			</div>
 
 			{imageFormats

@@ -18,28 +18,27 @@ import Control from 'google-map-react-control';
 
 import YandexSearch from 'modules/Site/components/YandexMap/Search';
 
-import lodash from 'lodash'; 
+// import lodash from 'lodash'; 
 
 let Prototype = {};
 
-let contextTypes = Prototype.contextTypes && lodash.cloneDeep(Prototype.contextTypes) || {}
+// let contextTypes = Prototype.contextTypes && lodash.cloneDeep(Prototype.contextTypes) || {}
 
-let propTypes = Prototype.propTypes && lodash.cloneDeep(Prototype.propTypes) || {}
-
-Object.assign(contextTypes, {
+let contextTypes = Object.assign({}, Prototype.contextTypes || {}, {
 	connector_url: PropTypes.string.isRequired,
 	user: PropTypes.object.isRequired,
 	userActions: PropTypes.object.isRequired,
-  // styleManager: customPropTypes.muiRequired,
 	classes: PropTypes.object.isRequired,
 	triggerGoal: PropTypes.func.isRequired,
 });
 
-Object.assign(propTypes, {
-	// createPlace: PropTypes.func.isRequired,
+// let propTypes = Prototype.propTypes && lodash.cloneDeep(Prototype.propTypes) || {};
+
+let propTypes = Object.assign({}, Prototype.propTypes || {}, {
 	map: PropTypes.object.isRequired,
 	maps: PropTypes.object.isRequired,
 });
+
  
 export default class SearchBar extends Component{
 

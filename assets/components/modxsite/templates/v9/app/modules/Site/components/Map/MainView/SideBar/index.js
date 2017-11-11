@@ -4,12 +4,8 @@ import React, {Component} from 'react';
 
 import PropTypes from 'prop-types';
 
-// import SearchBar from './SearchBar';  
-
 import Button from 'material-ui/Button';
 import Checkbox, {LabelCheckbox} from 'material-ui/Checkbox';
-
-import lodash from 'lodash';  
  
 export default class SideBar extends Component{
 

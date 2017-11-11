@@ -1470,8 +1470,6 @@ export class AppMain extends Component{
 
         if(data.success === true){
 
-          // var items = lodash.clone(this.state.items);
-
    
 
           Object.assign(newObject, {
@@ -1670,8 +1668,6 @@ export class AppMain extends Component{
         // var errors = {};
 
         // if(data.success === true){
-
-        //   // var items = lodash.clone(this.state.items);
 
    
 

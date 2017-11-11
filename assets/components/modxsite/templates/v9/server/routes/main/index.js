@@ -1388,7 +1388,6 @@ export default class Router {
           <meta name="description" content="${description}"> 
           <meta name="robots" content="${searchable === false || resourceSearchable === false ? "noindex, nofollow" : "index, follow"}" />
           <link rel="shortcut icon" href="/favicon.ico"/>
-          <link rel="alternate" hreflang="ru" href="http://gorodskie-bani.ru/" />
           <base href="/" />
 
           <script>

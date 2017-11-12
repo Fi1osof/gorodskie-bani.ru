@@ -1942,9 +1942,10 @@ export default class MapMainView extends Component{
 							color: "#666",
 					    display: "block",
 					    margin: "10px 0 0 -10px",
-					    padding: "8px",
+					    padding: "0 8px",
 					    borderRadius: 2,
 							boxShadow: "0 0 0 1px #00000014",
+							lineHeight: 29,
 						}}
 					>
 						Показать списком

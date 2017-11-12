@@ -466,6 +466,8 @@ export class AppMain extends Component{
       zoom,
     } = params || {};
 
+    zoom = zoom || 12;
+
     if(city && !lat && !lng){
 
       const {
@@ -499,6 +501,8 @@ export class AppMain extends Component{
       const {
         geo,
       } = document;
+
+      console.log('document geo', geo);
 
       const {
         ll,

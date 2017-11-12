@@ -1080,10 +1080,24 @@ export default class Router {
 
         let state = store.getState();
 
+        // console.log("REG connection.remoteAddress", req.headers['x-real-ip']);
+
+        let ip = req.headers['x-real-ip'];
+        
+        if(!ip || ip === "127.0.0.1"){
+
+          ip = "178.219.186.12";
+          // ip = "109.184.14.163";
+          
+        }
+
+        let geo = geoip.lookup(ip);
+
         Object.assign(state.document, {
           apiData,
           mapData,
           citiesData,
+          geo,
         });
 
         store = configureStore(state);
@@ -1153,130 +1167,6 @@ export default class Router {
     return;
   };
 
-  
-  // checkRedirect = (req, res) => {
-
-  //   return new Promise((resolve, reject) => {
-
-  //     const requestedUri = decodeURI(req.url.replace(/^\/+/, ''));
-
-  //     var q = knex(`${prefix}redirects as redirects`)
-  //       .innerJoin(`${prefix}site_content as content`, 'redirects.resource_id', 'content.id')
-  //       // .select('profile.*')
-  //       .select('content.uri')
-  //       // .limit('3')
-  //       ;
-
-  //       q.where({
-  //         "redirects.uri": requestedUri,
-  //       });
-  //       q.whereNot('content.uri', requestedUri);
-
-
-  //       q.limit(1); 
-  //       // 
-          
-  //       // console.log("knex SQL", q.toString());
-
-  //       q.then((result) => { 
-
-  //         // debug("knex result", result);
-
-  //         const {
-  //           uri,
-  //         } = result && result[0] || {};
-
-  //         if(uri && uri !== requestedUri){
-
-  //           return res.redirect(301, `/${uri}`);
-  //         }
-
-  //         return result;
-  //         return resolve(false);
-
-  //       }).catch(e => {
-
-  //         reject(e);
-  //       });
-
-
-  //     var cookies = [];
-
-  //     let cookies_obj;
-
-
-  //     let options = {
-  //       // method,
-        
-  //       url: "http://gorodskie-bani.local:9000/" + req.url,
-
-  //       // location: req.url,
-  //       headers: {
-  //       },
-  //     };
-
-  //     if(req.headers && req.headers.cookie){
-  //       let cooks = req.headers.cookie.split(";");
-
-  //       cookies_obj = {};
-
-  //       cooks.map(function(item){
-  //         var match = item.match(/ *(.+?)=(.+)/);
-  //         if(match){
-  //           cookies_obj[match[1]] = match[2];
-  //         }
-  //       });
-  //     }
-
-  //     if(cookies_obj){
-
-  //       for(var i in cookies_obj){
-  //         cookies.push(i + '=' + cookies_obj[i]);
-  //       }
-  //     }
-
-  //     if(cookies){
-  //       options.headers.Cookie = cookies;
-  //     }
-
-
-  //     const {
-  //       host,
-  //     } = req.headers;
-
-
-  //     let req2 = httpServ.request(options, (request, a, b) => {
-  //       //
-
-  //       request.on('data', function (chunk) {
-  //         // str += chunk;
-  //       });
-  //       //
-  //       // //the whole response has been recieved, so we just print it out here
-  //       request.on('end', function () {
-
-  //         var response_headers = request.headers;
-   
-  //         if(response_headers['location'] && response_headers['location'] != ''){
-
-  //           // res.redirect(301, 'http://yourotherdomain.com' + req.path)
-  //           res.redirect(301, response_headers['location'])
-            
-  //           return resolve(true);
-  //         }
-
-  //         return resolve(false); 
-
-  //       });
-
-
-  //     });
-
-  //     req2.end();
-
-  //   });
-
-  // };
 
   renderHTML(req, componentHTML, initialState, resource, style, searchable, appExports) {
 
@@ -1350,22 +1240,7 @@ export default class Router {
 
     let jState = "";
 
-
-
-    // console.log("REG connection.remoteAddress", req.headers['x-real-ip']);
-
-    let ip = req.headers['x-real-ip'];
-    
-    if(!ip || ip === "127.0.0.1"){
-
-      ip = "178.219.186.12";
-      // ip = "109.184.14.163";
-      
-    }
-
-    var geo = geoip.lookup(ip);
-
-    console.log(geo);
+    // console.log(geo);
 
     const outputState = initialState.document.outputState;
 
@@ -1375,7 +1250,7 @@ export default class Router {
       inputState: appExports.outputState,
       mapData: appExports.mapData || null,
       // citiesData,
-      geo,
+      // geo,
     });
 
     jState = JSON.stringify(initialState);

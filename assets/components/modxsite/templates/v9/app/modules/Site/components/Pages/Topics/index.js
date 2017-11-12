@@ -252,7 +252,7 @@ export default class TopicsPage extends Page {
 			})
 			.then(r => {
 
-				console.log("Resources r", beforeMount, r);
+				// console.log("Resources r", beforeMount, r);
 
 				const {
 					topics,

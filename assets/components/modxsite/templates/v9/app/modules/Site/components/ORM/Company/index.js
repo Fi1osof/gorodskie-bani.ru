@@ -1272,7 +1272,50 @@ export const addGalleryImage = async (source, args, context, info) => {
 
 
 
+const inCoords = function(center, radius, item){
+
+  const {
+    lat,
+    lng,
+  } = center;
+
+  let {
+    lat: itemLat,
+    lng: itemLng,
+  } = item.coords || {};
+
+  if(!lat || !lng || !itemLat || !itemLng){
+   return false;
+  }
+
+  // let {
+  //  minLat,
+  //  maxLat,
+  //  minLng,
+  //  maxLng,
+  // } = this.getScreenBounds() || {};
+
+  radius = radius || 1;
+
+  const minLat = lat - radius;
+  const maxLat = lat + radius;
+  const minLng = lng - radius;
+  const maxLng = lng + radius;
+
+  if(
+    itemLat < maxLat && itemLat > minLat
+    &&
+    itemLng > minLng && itemLng < maxLng
+  ){
+    return true;
+  }
+
+  return false
+}
+
 export const getList = (source, args, context, info) => {
+
+  console.log("Companies args", args);
 
   const {
     CompaniesStore,
@@ -1281,6 +1324,7 @@ export const getList = (source, args, context, info) => {
   const {
     uri,
     search,
+    coords,
   } = args;
 
   let state = CompaniesStore.getState();
@@ -1294,6 +1338,20 @@ export const getList = (source, args, context, info) => {
     const searchRule = new RegExp(search, 'ui');
 
     state = state.filter(n => searchRule.test(n.name));
+  }
+
+  console.log('state', state);
+
+  // Поиск по координатам (в заданном квадрате)
+  if(coords){
+
+    const {
+      radius,
+      center,
+    } = coords;
+
+    state = state.filter(n => inCoords(center, radius, n));
+
   }
 
   return state;

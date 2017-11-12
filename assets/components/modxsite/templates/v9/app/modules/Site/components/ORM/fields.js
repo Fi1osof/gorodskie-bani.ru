@@ -355,23 +355,26 @@ export const imageType = {
   },
 };
 
+
+export const coordsFields = {
+  lat: {
+    type: GraphQLFloat,
+    description: "Широта",
+  },
+  lng: {
+    type: GraphQLFloat,
+    description: "Долгота",
+  },
+  zoom: {
+    type: GraphQLInt,
+    description: "Зум",
+  },
+};
+
 export const coordsType = new GraphQLObjectType({
   name: 'coordsType',
   description: "Координаты",
-  fields: {
-    lat: {
-      type: GraphQLFloat,
-      description: "Широта",
-    },
-    lng: {
-      type: GraphQLFloat,
-      description: "Долгота",
-    },
-    zoom: {
-      type: GraphQLInt,
-      description: "Зум",
-    },
-  },
+  fields: coordsFields,
 })
 
 

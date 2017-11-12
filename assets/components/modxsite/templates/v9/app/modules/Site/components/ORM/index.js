@@ -18,6 +18,7 @@ import {
   listField,
   listArgs,
   order,
+  coordsFields,
   // ObjectsListType,
 } from './fields';
 
@@ -225,6 +226,30 @@ const editVersionArgs = Object.assign({
   },
 }, listArgs);
 
+
+const companiesArgs = Object.assign({
+  coords: {
+    type: new GraphQLInputObjectType({
+      name: "SearchCoordsType",
+      description: "Поиск объектов в заданном радиусе",
+      fields: () => ({
+        center: {
+          type: new GraphQLInputObjectType({
+            name: "SearchCoordsCenterType",
+            fields: coordsFields,
+          }),
+        },
+        radius: {
+          type: GraphQLFloat,
+          description: "Радиус в километрах",
+        },
+      }),
+    }),
+    description: "Поиск компаний в заданном радиусе",
+  },
+}, resourcesArgs);
+
+
 const RootType = new GraphQLObjectType({
   name: 'RootType',
   description: 'Корневой раздел',
@@ -233,13 +258,13 @@ const RootType = new GraphQLObjectType({
       type: CompanyType,
       name: "companiesList",
       description: "Список компаний с постраничностью",
-      args: resourcesArgs,
+      args: companiesArgs,
     }),
     companies: {
       type: new GraphQLList(CompanyType),
       name: "Companies",
       description: "Список компаний",
-      args: resourcesArgs,
+      args: companiesArgs,
     },
     company: {
       type: CompanyType,

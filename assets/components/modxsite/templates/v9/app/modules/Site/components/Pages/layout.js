@@ -13,6 +13,7 @@ export default class Page extends Component{
 	static contextTypes = {
 		inited: PropTypes.bool.isRequired,
 		document: PropTypes.object.isRequired,
+		coords: PropTypes.object,
 		appExports: PropTypes.object.isRequired,
 		setPageTitle: PropTypes.func.isRequired,
 		user: PropTypes.object.isRequired,

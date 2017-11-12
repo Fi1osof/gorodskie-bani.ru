@@ -3,6 +3,7 @@ const defaultQuery = `
 
 
 
+
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -110,12 +111,16 @@ query Companies (
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $companiesCoords:SearchCoordsType
+  $companiesCenter:InputCoordsType
 ){
   companies(
     limit:$limit
     ids:$companyIds
     uri:$resourceUri
     search:$companiesSearchQuery
+    coords:$companiesCoords
+    center:$companiesCenter
   ) @skip(if:$withPagination)
   {
     ...Company
@@ -125,6 +130,8 @@ query Companies (
     ids:$companyIds
     uri:$resourceUri
     search:$companiesSearchQuery
+    coords:$companiesCoords
+    center:$companiesCenter
   ) @include(if:$withPagination)
   {
     count
@@ -367,18 +374,15 @@ query MapCompanies (
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
-  $searchCoords:SearchCoordsType
-  $sortByCenter:InputCoordsType = {
-    lat: 56
-    lng: 28
-  }
+  $companiesCoords:SearchCoordsType
+  $companiesCenter:InputCoordsType
 ){
   companiesList(
     page:$page
     limit:$limit
     ids:$companyIds
-    coords:$searchCoords
-    center:$sortByCenter
+    coords:$companiesCoords
+    center:$companiesCenter
   )
   @include(if:$withPagination)
   {
@@ -394,7 +398,8 @@ query MapCompanies (
     page:$page
     limit:$limit
     ids:$companyIds
-    coords:$searchCoords
+    coords:$companiesCoords
+    center:$companiesCenter
   )
   @skip(if:$withPagination)
   {
@@ -1640,9 +1645,6 @@ mutation updateCompany(
     ...editVersion
   }
 }
-
-
-
 
 
 

@@ -254,6 +254,7 @@ export class AppMain extends Component{
 
     coords: PropTypes.object,
     setCoords: PropTypes.func,
+    initCoords: PropTypes.func,
     triggerGoal: PropTypes.func,
   };
 
@@ -323,6 +324,7 @@ export class AppMain extends Component{
       remoteQuery: this.remoteQuery,
       coords,
       setCoords: this.setCoords,
+      initCoords: this.initCoords,
       triggerGoal: this.triggerGoal,
     };
 
@@ -442,7 +444,7 @@ export class AppMain extends Component{
     Иначе если указан город, берем из него.
     Иначе берем по ip
   */
-  initCoords(){
+  initCoords = () => {
 
     const {
       localQuery,
@@ -547,9 +549,9 @@ export class AppMain extends Component{
       });
     }
 
-    console.log("initCoords", this.state.coords);
+    // console.log("initCoords", this.state.coords);
 
-    return;
+    return this.state.coords;
   }
 
 

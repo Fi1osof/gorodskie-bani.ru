@@ -140,7 +140,7 @@ export default class MainMenu extends Component{
     localQuery({
       operationName: "MainMenuData",
       variables: {
-        limit: 10,
+        limit: 0,
         resourcesCenter: coords,
       },
     })
@@ -151,7 +151,7 @@ export default class MainMenu extends Component{
         resources: cities,
       } = r.data;
 
-      console.log("MainMenuData resourcesCenter cities", coords, cities);
+      // console.log("MainMenuData resourcesCenter cities", coords, cities);
 
       this.setState({
         ratings,
@@ -249,7 +249,11 @@ export default class MainMenu extends Component{
 
     let citiesList = [];
 
-    cities && cities.map(city => {
+    cities && cities.map((city, index) => {
+
+      if(index === 0){
+        return;
+      }
 
       const {
         id,

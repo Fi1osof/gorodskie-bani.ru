@@ -80,7 +80,7 @@ export default class CompaniesPage extends Page {
 				
 			this.state.inputState = document.inputState;
 
-			console.log('document.inputState', document.inputState);
+			// console.log('document.inputState', document.inputState);
 
 		}
 
@@ -90,10 +90,38 @@ export default class CompaniesPage extends Page {
 	}
 
 	
+
+
+  componentDidUpdate(prevProps, prevState, prevContext){
+
+    // console.log("MainMenu componentDidUpdate", this.context.coords, prevContext.coords);
+
+    const {
+      coords,
+    } = this.context;
+
+    const {
+      coords: prevCoords,
+    } = prevContext;
+
+    if(
+      (coords || prevCoords)
+      && JSON.stringify(coords || "") != JSON.stringify(prevCoords || "")
+    ){
+      // console.log("componentDidUpdate loadDatasss");
+      this.loadData();
+    }
+
+    super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
+
+  }
+
+	
 	loadData(){
 
 		const {
 			localQuery,
+			coords,
 		} = this.context;
 
 		const page = this.getPage();
@@ -103,11 +131,12 @@ export default class CompaniesPage extends Page {
 			variables: {
 				limit: 12,
 				withPagination: true,
+        companiesCenter: coords,
 				page,
 			},
 		})
 		.then(r => {
-			console.log("Companies result", r);
+			// console.log("Companies result", r, coords);
 			// console.log("Companies result 2", companies);
 
 			const {

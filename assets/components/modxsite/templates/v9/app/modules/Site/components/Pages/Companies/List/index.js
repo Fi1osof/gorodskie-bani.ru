@@ -15,6 +15,7 @@ import { Link, browserHistory } from 'react-router';
 import Pagination from 'modules/Site/components/pagination';
 
 import ItemCart from '../Cart';
+import Cities from './Cities';
 
 export default class CompaniesList extends Component{
 
@@ -113,6 +114,16 @@ export default class CompaniesList extends Component{
 
 			}}
 		>
+
+			<Grid
+				item
+				xs={12}
+			>
+
+				<Cities 
+				/>
+
+			</Grid>
 
 			{/*<Grid
 				item

@@ -120,6 +120,7 @@ export default class MapMainView extends Component{
 		getCounters: PropTypes.func.isRequired,
 		coords: PropTypes.object,
 		setCoords: PropTypes.func.isRequired,
+		initCoords: PropTypes.func.isRequired,
 		triggerGoal: PropTypes.func.isRequired,
 	};
 
@@ -690,12 +691,15 @@ export default class MapMainView extends Component{
 	initCoords(){
 
 		const {
-			coords,
+			// coords,
+			initCoords,
 		} = this.context;
 
 		// console.log("initCoords 2", coords);
 
 		// coords && Object.assign(this.state, coords);
+
+		const coords = initCoords();
 
 		if(!coords){
 			return;

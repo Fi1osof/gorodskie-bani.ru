@@ -537,7 +537,7 @@ const inCoords = function(center, radius, item){
 
 export const getList = (source, args, context, info) => {
 
-  console.log("Resoruces getList args", args);
+  // console.log("Resoruces getList args", args);
 
   const {
     CompaniesStore,

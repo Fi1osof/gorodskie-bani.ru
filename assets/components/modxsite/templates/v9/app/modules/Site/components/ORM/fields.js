@@ -142,7 +142,7 @@ export class listField {
       ...other
     } = props;
 
-    args = Object.assign(listArgs, args || {});
+    args = Object.assign({}, listArgs, args || {});
 
     Object.assign(this, {
       description,

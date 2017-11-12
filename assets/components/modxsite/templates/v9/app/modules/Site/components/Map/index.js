@@ -118,6 +118,7 @@ export default class MapMainView extends Component{
 		setPageTitle: PropTypes.func.isRequired,
 		localQuery: PropTypes.func.isRequired,
 		getCounters: PropTypes.func.isRequired,
+		coords: PropTypes.object,
 		setCoords: PropTypes.func.isRequired,
 		triggerGoal: PropTypes.func.isRequired,
 	};
@@ -689,120 +690,114 @@ export default class MapMainView extends Component{
 	initCoords(){
 
 		const {
-			localQuery,
-			router: {
-				params,
-			},
+			coords,
 		} = this.context;
 
+		// console.log("initCoords 2", coords);
+
+		// coords && Object.assign(this.state, coords);
+
+		if(!coords){
+			return;
+		}
+
 		const {
-			city, 
-		} = params || {};
+			lat,
+			lng,
+			zoom,
+		} = coords;
 
+		const center = {
+			lat,
+			lng,
+		};
 
- 		let {
- 			router,
- 		} = this.context;
-
- 		let {
- 			lat,
- 			lng,
- 			zoom,
- 		} = router.params;
-
-
- 		if(city && !lat && !lng){
-
- 			const {
- 				citiesData
- 			} = this.context.document;
- 
-
- 			const {
- 				resources: cities,
- 			} = citiesData || {};
-
- 			// console.log('cities', cities);
-
- 			const currentCity = cities && cities.find(n => n.alias === city);
-
- 			// console.log('currentCity', currentCity);
-
- 				
- 			if(currentCity){
-				
-				// this.setPageTitle(currentCity.name);
-
-				if(currentCity.coords){
-
-	 				lat = currentCity.coords.lat;
-	 				lng = currentCity.coords.lng;
-
-	 				zoom = 12;
-
-				}
-
-
- 			}
-
- 		}
-
- 		// 
- 			
-		// console.log('lat lng', lat, lng, zoom);
-
- 		if(lat && lng && zoom){
- 			// this.setMapPosition(lat, lng);
-      // defaultCenter={this.props.center}
-
-      let center = {
-      	lat: parseFloat(lat),
-      	lng: parseFloat(lng),
-      };
-
-      zoom = parseFloat(zoom);
-
-      // Object.assign(this.state, {
-      // 	center,
-      // 	zoom,
-      // 	mapOptions: {
-	     //  	center,
-		    //   zoom,
-      // 	}
-      // });
-
-      // console.log("map data", {center,
-      // 	zoom,
-      // 	mapOptions: {
-	     //  	center,
-		    //   zoom,
-      // 	}});
-
-      // this.setState({
-      // 	center,
-      // 	zoom,
-      // 	mapOptions: {
-	     //  	center,
-		    //   zoom,
-      // 	}
-      // });
-
-      Object.assign(this.state, {
-      	center,
-      	zoom,
-      	mapOptions: {
-	      	center,
-		      zoom,
-      	}
-      });
- 		}
-
- 		// this.setState({
-   //  	inited: true,
-   //  });
+   	Object.assign(this.state, {
+	   	center,
+	   	zoom,
+	   	mapOptions: {
+	    	center,
+	      zoom,
+	   	}
+   	});
 
 		return;
 	}
+
+	// initCoords(){
+
+	// 	const {
+	// 		localQuery,
+	// 		router: {
+	// 			params,
+	// 		},
+	// 	} = this.context;
+
+	// 	const {
+	// 		city, 
+	// 	} = params || {};
+
+
+ // 		let {
+ // 			router,
+ // 		} = this.context;
+
+ // 		let {
+ // 			lat,
+ // 			lng,
+ // 			zoom,
+ // 		} = router.params;
+
+
+ // 		if(city && !lat && !lng){
+
+ // 			const {
+ // 				citiesData
+ // 			} = this.context.document;
+
+ // 			const {
+ // 				resources: cities,
+ // 			} = citiesData || {};
+
+ // 			const currentCity = cities && cities.find(n => n.alias === city);
+ 				
+ // 			if(currentCity){
+
+	// 			if(currentCity.coords){
+
+	//  				lat = currentCity.coords.lat;
+	//  				lng = currentCity.coords.lng;
+
+	//  				zoom = 12;
+
+	// 			}
+
+
+ // 			}
+
+ // 		}
+
+ // 		if(lat && lng && zoom){
+
+ //      let center = {
+ //      	lat: parseFloat(lat),
+ //      	lng: parseFloat(lng),
+ //      };
+
+ //      zoom = parseFloat(zoom);
+
+ //      Object.assign(this.state, {
+ //      	center,
+ //      	zoom,
+ //      	mapOptions: {
+	//       	center,
+	// 	      zoom,
+ //      	}
+ //      });
+ // 		}
+
+	// 	return;
+	// }
 
 
 	onChildClick(key, props){

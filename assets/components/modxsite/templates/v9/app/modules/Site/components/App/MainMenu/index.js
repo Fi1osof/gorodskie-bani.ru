@@ -29,6 +29,7 @@ export default class MainMenu extends Component{
     localQuery: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
     triggerGoal: PropTypes.func.isRequired,
+    document: PropTypes.object.isRequired,
   };
 
 	constructor(props){
@@ -50,6 +51,7 @@ export default class MainMenu extends Component{
       RatingsStore,
       TopicsStore,
       ResourcesStore,
+      document,
     } = this.context;
 
     this.CommentsStoreListener = CommentsStore.getDispatcher().register(this.onStoreUpdate);
@@ -60,8 +62,58 @@ export default class MainMenu extends Component{
 
     this.ResourcesStoreListener = ResourcesStore.getDispatcher().register(this.onStoreUpdate);
 
+    // let resourcesCenter;
+
+    // const {
+    //   geo,
+    // } = document;
+
+    // const {
+    //   ll,
+    // } = geo || {};
+
+    // const {
+    //   0: lat,
+    //   1: lng,
+    // } = ll || {};
+
+    // if(lat && lng){
+    //   resourcesCenter = {
+    //     lat,
+    //     lng,
+    //   };
+    // }
+
+    // console.log("resourcesCenter", resourcesCenter, lat, lng);
+
     this.loadData();
   }
+
+
+  componentDidUpdate(prevProps, prevState, prevContext){
+
+    // console.log("MainMenu componentDidUpdate", this.context.coords, prevContext.coords);
+
+    const {
+      coords,
+    } = this.context;
+
+    const {
+      coords: prevCoords,
+    } = prevContext;
+
+    if(
+      (coords || prevCoords)
+      && JSON.stringify(coords || "") != JSON.stringify(prevCoords || "")
+    ){
+      // console.log("componentDidUpdate loadDatasss");
+      this.loadData();
+    }
+
+    super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
+
+  }
+
 
   onStoreUpdate = payload => {
 
@@ -82,13 +134,14 @@ export default class MainMenu extends Component{
 
     const {
       localQuery,
+      coords,
     } = this.context;
-
 
     localQuery({
       operationName: "MainMenuData",
       variables: {
-        limit: 0,
+        limit: 10,
+        resourcesCenter: coords,
       },
     })
     .then(r => {
@@ -97,6 +150,8 @@ export default class MainMenu extends Component{
         ratings,
         resources: cities,
       } = r.data;
+
+      console.log("MainMenuData resourcesCenter cities", coords, cities);
 
       this.setState({
         ratings,
@@ -274,6 +329,9 @@ export default class MainMenu extends Component{
 
     });
 
+
+    const mainCity = cities && cities[0];
+
 		return <div 
       // className="navbar navbar-default"
       className="navbar navbar-default navbar-fixed-top"
@@ -303,15 +361,12 @@ export default class MainMenu extends Component{
         <div id="navbar-main" className="collapse navbar-collapse navbar-right">
           <ul className="nav navbar-nav">
 
-              <li>
+              {/*<li>
                 <a 
                   href="/" 
                   title="Все бани на карте" 
                   className="dropdown-toggle" 
                   data-toggle="dropdown"
-                  // onClick={event => this.setState({
-                  //  citiesOpened: !citiesOpened,
-                  // })}
                 >На карте <i className="fa fa-angle-down"></i></a>
                 <ul 
                   className="dropdown-menu"
@@ -325,7 +380,28 @@ export default class MainMenu extends Component{
                   {citiesList}
 
                 </ul>
-              </li>
+              </li>*/}
+
+              {citiesList && citiesList.length && <li>
+                <a 
+                  href="/" 
+                  title="Все бани на карте" 
+                  className="dropdown-toggle" 
+                  data-toggle="dropdown"
+                >{mainCity.name} <i className="fa fa-angle-down"></i></a>
+                <ul 
+                  className="dropdown-menu"
+                  style={{
+                    display: citiesOpened ? 'block' : undefined,
+                    maxHeight: "70vh",
+                    overflow: "auto",
+                  }}
+                >
+
+                  {citiesList}
+
+                </ul>
+              </li> || null}
 
               <li>
                 <Link 

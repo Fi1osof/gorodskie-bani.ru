@@ -436,6 +436,123 @@ export class AppMain extends Component{
   }
 
 
+  /*
+    Инициализируем координаты.
+    Если указаны координаты в адресной строке, то берем их.
+    Иначе если указан город, берем из него.
+    Иначе берем по ip
+  */
+  initCoords(){
+
+    const {
+      localQuery,
+    } = this;
+
+    let {
+      router,
+      router: {
+        params,
+      },
+      document,
+    } = this.props;
+
+
+    let {
+      city, 
+      lat,
+      lng,
+      zoom,
+    } = params || {};
+
+    if(city && !lat && !lng){
+
+      const {
+        citiesData
+      } = document;
+
+      const {
+        resources: cities,
+      } = citiesData || {};
+
+      const currentCity = cities && cities.find(n => n.alias === city);
+        
+      if(currentCity){
+
+        if(currentCity.coords){
+
+          lat = currentCity.coords.lat;
+          lng = currentCity.coords.lng;
+
+          zoom = 12;
+
+        }
+
+      }
+
+    }
+
+
+    if(!lat || !lng){
+
+      const {
+        geo,
+      } = document;
+
+      const {
+        ll,
+      } = geo || {};
+
+      const {
+        0: geoLat,
+        1: geoLng,
+      } = ll || {};
+
+      lat = parseFloat(geoLat);
+      lng = parseFloat(geoLng);
+      zoom = 12;
+      
+      // console.log("geo coords", geoLat, geoLng);
+
+    }
+
+
+
+
+    if(lat && lng && zoom){
+
+      let center = {
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
+      };
+
+      zoom = parseFloat(zoom);
+
+      // Object.assign(this.state, {
+      //   coords: {
+      //     center,
+      //     zoom,
+      //     mapOptions: {
+      //       center,
+      //       zoom,
+      //     }
+      //   },
+      // });
+
+      Object.assign(this.state, {
+        coords: {
+          lat: parseFloat(lat),
+          lng: parseFloat(lng),
+          zoom,
+        },
+      });
+    }
+
+    console.log("initCoords", this.state.coords);
+
+    return;
+  }
+
+
   getSchema(){
 
     // const RootType = new GraphQLObjectType({
@@ -995,6 +1112,10 @@ export class AppMain extends Component{
       CompaniesStore,
       RatingsStore,
     } = this.state;
+
+    
+    this.initCoords();
+
 
     CoordsStore.getDispatcher().register(payload => {
 

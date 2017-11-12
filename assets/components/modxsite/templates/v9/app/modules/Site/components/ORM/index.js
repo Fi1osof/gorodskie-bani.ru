@@ -59,7 +59,7 @@ import {
 
 import {
   RatingType,
-  RatingArgs,
+  // RatingArgs,
   RatingsListField,
   getMany as getRatings,
   getOne as getRating,
@@ -139,6 +139,95 @@ import EditVersionType from './EditVersion';
 // });
 
 
+
+
+// const RatingArgs = {
+//   type: {
+//     type: GraphQLID,
+//   },
+//   groupBy: {
+//     type : RatingGroupbyEnum,
+//   },
+// };
+
+
+const RatingGroupbyEnumList = {
+  name : 'RatingGroupbyEnum',
+  description : 'Способ группировки рейтингов',
+  values : {
+    company: {
+      value: 'company',
+      description : 'Сгруппировать по компаниям (общий рейтинг)'
+    },
+    rating_type: {
+      value: 'rating_type',
+      description : 'Сгруппировать по типам рейтингов (по каким рейтингам сколько голосов всего и по количеству компаний)'
+    },
+    company_and_rating_type: {
+      value: 'company_and_rating_type',
+      description : 'Сгруппировать по компаниям и типам рейтингов (средний балл на каждую компанию по типу рейтинга)'
+    },
+    // rating_type_and_company: {
+    //   value: 'rating_type_and_company',
+    //   description : 'Сгруппировать по компаниям и типам рейтингов в них'
+    // },
+  }
+};
+
+const RatingGroupbyEnum = new GraphQLEnumType(RatingGroupbyEnumList);
+
+const RatingArgs = Object.assign({
+    resource_id: {
+      type: GraphQLInt,
+      description: "ID ресурса, к которому комментарий оставлен",
+    },
+  }, 
+  listArgs, 
+  {
+  type: {
+    type: GraphQLInt,
+  },
+  groupBy: {
+    type : RatingGroupbyEnum,
+  },
+  sort: {
+    type: new GraphQLList(new GraphQLInputObjectType({
+      name: "RatingsSortBy",
+      fields: {
+        by: {
+          type: new GraphQLEnumType({
+            name: 'RatingsSortByValues',
+            values: {
+              id: {
+                value: 'id',
+                description: 'По ID',
+              },
+              rating: {
+                value: 'rating',
+                description: 'По рейтингу',
+              },
+              type: {
+                value: 'type',
+                description: 'По типу рейтинга',
+              },
+              company: {
+                value: 'company',
+                description: 'По компании',
+              },
+              rand: {
+                value: 'rand()',
+                description: 'В случайном порядке',
+              },
+            },
+          }),
+          description: 'Способ сортировки',
+        },
+        dir: order,
+      },
+    })),
+  },
+});
+
 const RatingsList = new RatingsListField({
   type: RatingType,
   name: "RatingsList",
@@ -161,6 +250,12 @@ const commentsArgs = Object.assign({
     description: 'ID автора комментария',
   },
 }, listArgs);
+
+
+const InputCoordsType = new GraphQLInputObjectType({
+  name: "InputCoordsType",
+  fields: coordsFields,
+});
 
 
 const resourcesArgs = Object.assign({
@@ -204,6 +299,26 @@ const resourcesArgs = Object.assign({
     }),
     description: 'Тип ресурса',
   },
+  coords: {
+    type: new GraphQLInputObjectType({
+      name: "SearchCoordsType",
+      description: "Поиск объектов в заданном радиусе",
+      fields: () => ({
+        center: {
+          type: InputCoordsType,
+        },
+        radius: {
+          type: GraphQLFloat,
+          description: "Радиус в километрах",
+        },
+      }),
+    }),
+    description: "Поиск компаний в заданном радиусе",
+  },
+  center: {
+    type: InputCoordsType,
+    description: "Сортировать по расстоянию от заданного центра",
+  },
 }, listArgs);
 
 
@@ -226,29 +341,49 @@ const editVersionArgs = Object.assign({
   },
 }, listArgs);
 
-
 const companiesArgs = Object.assign({
-  coords: {
-    type: new GraphQLInputObjectType({
-      name: "SearchCoordsType",
-      description: "Поиск объектов в заданном радиусе",
-      fields: () => ({
-        center: {
-          type: new GraphQLInputObjectType({
-            name: "SearchCoordsCenterType",
-            fields: coordsFields,
-          }),
-        },
-        radius: {
-          type: GraphQLFloat,
-          description: "Радиус в километрах",
-        },
-      }),
-    }),
-    description: "Поиск компаний в заданном радиусе",
-  },
-}, resourcesArgs);
+}, resourcesArgs, {
+  // sort: {
+  //   type: new GraphQLList(new GraphQLInputObjectType({
+  //     name: "ResourcesSortBy",
+  //     fields: {
+  //       by: {
+  //         type: new GraphQLEnumType({
+  //           name: 'ResourcesSortByValues',
+  //           values: {
+  //             id: {
+  //               value: 'id',
+  //               description: 'По ID',
+  //             },
+  //             rand: {
+  //               value: 'rand()',
+  //               description: 'В случайном порядке',
+  //             },
+  //             // wefewf: {
+  //             //   value: 'wegweg',
+  //             //   description: 'В случайном порядке',
+  //             // },
+  //           },
+  //         }),
+  //         description: 'Способ сортировки',
+  //       },
+  //       dir: order,
+  //     },
+  //   })),
+  // },
+});
 
+
+const UsersArgs = Object.assign({
+  delegatesOnly: {
+    type: GraphQLBoolean,
+    description: "Только представители",
+  },
+  myOnly: {
+    type: GraphQLBoolean,
+    description: "Только мои",
+  },
+}, listArgs);
 
 const RootType = new GraphQLObjectType({
   name: 'RootType',
@@ -321,49 +456,7 @@ const RootType = new GraphQLObjectType({
     ratings: {
       type: new GraphQLList(RatingType),
       description: "Список комментариев",
-      args: Object.assign({
-        resource_id: {
-          type: GraphQLInt,
-          description: "ID ресурса, к которому комментарий оставлен",
-        },
-      }, listArgs, {
-        sort: {
-          type: new GraphQLList(new GraphQLInputObjectType({
-            name: "RatingsSortBy",
-            fields: {
-              by: {
-                type: new GraphQLEnumType({
-                  name: 'RatingsSortByValues',
-                  values: {
-                    id: {
-                      value: 'id',
-                      description: 'По ID',
-                    },
-                    rating: {
-                      value: 'rating',
-                      description: 'По рейтингу',
-                    },
-                    type: {
-                      value: 'type',
-                      description: 'По типу рейтинга',
-                    },
-                    company: {
-                      value: 'company',
-                      description: 'По компании',
-                    },
-                    rand: {
-                      value: 'rand()',
-                      description: 'В случайном порядке',
-                    },
-                  },
-                }),
-                description: 'Способ сортировки',
-              },
-              dir: order,
-            },
-          })),
-        },
-      }),
+      args: RatingArgs,
     },
     vote: {
       type: RatingType,
@@ -391,27 +484,13 @@ const RootType = new GraphQLObjectType({
       type: UserType,
       name: "usersList",
       description: "Список пользователей с постраничностью",
-      args: Object.assign({
-        delegatesOnly: {
-          type: GraphQLBoolean,
-          description: "Только представители",
-        },
-        myOnly: {
-          type: GraphQLBoolean,
-          description: "Только мои",
-        },
-      }, listArgs),
+      args: UsersArgs,
     }),
     users: {
       type: new GraphQLList(UserType),
       name: "Users",
       description: "Список пользователей",
-      args: Object.assign({
-        delegatesOnly: {
-          type: GraphQLBoolean,
-          description: "Только представители",
-        },
-      }, listArgs),
+      args: UsersArgs,
     },
     user: {
       type: UserType,

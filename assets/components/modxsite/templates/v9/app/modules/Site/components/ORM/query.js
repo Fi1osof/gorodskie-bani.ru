@@ -41,6 +41,8 @@ query apiData(
   $editVersionGetCompany:Boolean = false
   $editVersionCompanyId:Int
   $companyGetEditVersions:Boolean = false
+  $resourcesCoords:SearchCoordsType
+  $resourcesCenter:InputCoordsType
 ){
   companies(
     limit:$limit
@@ -242,6 +244,8 @@ query MainMenuData(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $resourcesCoords:SearchCoordsType
+  $resourcesCenter:InputCoordsType
 ){
   ...RatingsList
   
@@ -363,11 +367,18 @@ query MapCompanies (
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $searchCoords:SearchCoordsType
+  $sortByCenter:InputCoordsType = {
+    lat: 56
+    lng: 28
+  }
 ){
   companiesList(
     page:$page
     limit:$limit
     ids:$companyIds
+    coords:$searchCoords
+    center:$sortByCenter
   )
   @include(if:$withPagination)
   {
@@ -383,6 +394,7 @@ query MapCompanies (
     page:$page
     limit:$limit
     ids:$companyIds
+    coords:$searchCoords
   )
   @skip(if:$withPagination)
   {
@@ -629,6 +641,8 @@ query Resources(
   $resourceParent:Int
   $resourceUri:String
   $resourceGetContent:Boolean = true
+  $resourcesCoords:SearchCoordsType
+  $resourcesCenter:InputCoordsType
 ){
   
   ...ResourcesList
@@ -657,6 +671,8 @@ query Cities(
   $resourceParent:Int = 1296
   $resourceUri:String
   $resourceGetContent:Boolean = true
+  $resourcesCoords:SearchCoordsType
+  $resourcesCenter:InputCoordsType
 ){
   
   ...ResourcesList
@@ -678,6 +694,8 @@ query RatingTypes(
   $resourceParent:Int = 1349
   $resourceUri:String
   $resourceGetContent:Boolean = true
+  $resourcesCoords:SearchCoordsType
+  $resourcesCenter:InputCoordsType
 ){
   
   ...ResourcesList
@@ -720,6 +738,8 @@ query RatingsPageData(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $resourcesCoords:SearchCoordsType
+  $resourcesCenter:InputCoordsType
 ){
   
   ...ResourcesList
@@ -846,6 +866,8 @@ fragment ResourcesList on RootType{
     resourceType:$resourceType
     parent:$resourceParent
     uri:$resourceUri
+    coords:$resourcesCoords
+    center:$resourcesCenter
   )@include(if:$withPagination)
   {
     count
@@ -861,6 +883,8 @@ fragment ResourcesList on RootType{
     resourceType:$resourceType
     parent:$resourceParent
     uri:$resourceUri
+    coords:$resourcesCoords
+    center:$resourcesCenter
   )@skip(if:$withPagination)
   {
     ...Resource
@@ -1616,6 +1640,7 @@ mutation updateCompany(
     ...editVersion
   }
 }
+
 
 
 

@@ -23,6 +23,8 @@ import md5 from 'md5';
 
 import fetch from 'node-fetch';
 
+const geoip = require('geoip-lite');
+
 const FormData = require('form-data');
 
 import config, {
@@ -1138,7 +1140,7 @@ export default class Router {
           searchable = false;
         }
 
-        html = this.renderHTML(componentHTML, state, resource, style, searchable, appExports);
+        html = this.renderHTML(req, componentHTML, state, resource, style, searchable, appExports);
       }
       catch(e){
         console.error(e);
@@ -1276,7 +1278,7 @@ export default class Router {
 
   // };
 
-  renderHTML(componentHTML, initialState, resource, style, searchable, appExports) {
+  renderHTML(req, componentHTML, initialState, resource, style, searchable, appExports) {
 
     let assetsUrl;
 
@@ -1291,7 +1293,7 @@ export default class Router {
 
     // console.log('componentHTML', componentHTML);
 
-    console.log('initialState outputState', initialState.document.outputState);
+    // console.log('initialState outputState', initialState.document.outputState);
 
     if(process.env.NODE_ENV === 'production'){
 
@@ -1349,6 +1351,22 @@ export default class Router {
     let jState = "";
 
 
+
+    // console.log("REG connection.remoteAddress", req.headers['x-real-ip']);
+
+    let ip = req.headers['x-real-ip'];
+    
+    if(!ip || ip === "127.0.0.1"){
+
+      // ip = "194.15.117.72";
+      ip = "109.184.14.163";
+      
+    }
+
+    var geo = geoip.lookup(ip);
+
+    console.log(geo);
+
     const outputState = initialState.document.outputState;
 
     Object.assign(initialState.document, {
@@ -1357,6 +1375,7 @@ export default class Router {
       inputState: appExports.outputState,
       mapData: appExports.mapData || null,
       // citiesData,
+      geo,
     });
 
     jState = JSON.stringify(initialState);

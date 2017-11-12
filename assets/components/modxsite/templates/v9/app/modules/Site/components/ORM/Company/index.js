@@ -1315,7 +1315,7 @@ const inCoords = function(center, radius, item){
 
 export const getList = (source, args, context, info) => {
 
-  console.log("Companies args", args);
+  // console.log("Companies args", args);
 
   const {
     CompaniesStore,
@@ -1325,6 +1325,7 @@ export const getList = (source, args, context, info) => {
     uri,
     search,
     coords,
+    center,
   } = args;
 
   let state = CompaniesStore.getState();
@@ -1340,7 +1341,7 @@ export const getList = (source, args, context, info) => {
     state = state.filter(n => searchRule.test(n.name));
   }
 
-  console.log('state', state);
+  // console.log('state', state);
 
   // Поиск по координатам (в заданном квадрате)
   if(coords){
@@ -1351,6 +1352,85 @@ export const getList = (source, args, context, info) => {
     } = coords;
 
     state = state.filter(n => inCoords(center, radius, n));
+
+  }
+
+  // Если указан центр, сортируем по удаленности от центра
+  if(center){
+
+    const {
+      lat,
+      lng,
+    } = center;
+
+    state = state.sort((a,b) => {
+
+      const {
+        coords: aCoords,
+      } = a;
+
+      const {
+        coords: bCoords,
+      } = b;
+
+      // console.log("aCoords", aCoords);
+      // console.log("bCoords", bCoords);
+
+      if(!aCoords || !bCoords){
+        return -1;
+      }
+
+      const {
+        lat: aLat,
+        lng: aLng,
+      } = aCoords;
+      
+
+      const {
+        lat: bLat,
+        lng: bLng,
+      } = bCoords;
+      
+
+
+      const aLatDiff = Math.abs(lat - aLat);
+      const aLngDiff = Math.abs(lng - aLng);
+
+      const bLatDiff = Math.abs(lat - bLat);
+      const bLngDiff = Math.abs(lng - bLng);
+
+      const aDiff = (aLatDiff + aLngDiff) / 2;
+
+      const bDiff = (bLatDiff + bLngDiff) / 2;
+
+
+      // console.log("aDiff", aDiff);
+      // console.log("bDiff", bDiff);
+
+      if(aDiff > bDiff){
+        return 1;
+      }
+      else if(bDiff > aDiff){
+        return -1;
+      }
+
+      // a = a && a.toLocaleUpperCase && a.toLocaleUpperCase() || a;
+      // b = b && b.toLocaleUpperCase && b.toLocaleUpperCase() || b;
+
+      // if(dir == 'asc'){
+      //   if ( a > b ) return 1;
+      //   if (a < b ) return -1;
+      //   return 0;
+      // }
+      // else{
+      //   if ( a < b ) return 1;
+      //   if (a > b ) return -1;
+      //   return 0;
+      // }
+
+      return 0;
+
+    });
 
   }
 

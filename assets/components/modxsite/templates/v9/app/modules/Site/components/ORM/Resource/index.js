@@ -494,7 +494,50 @@ export const add = (source, args, context, info) => {
 };
 
 
+const inCoords = function(center, radius, item){
+
+  const {
+    lat,
+    lng,
+  } = center;
+
+  let {
+    lat: itemLat,
+    lng: itemLng,
+  } = item.coords || {};
+
+  if(!lat || !lng || !itemLat || !itemLng){
+   return false;
+  }
+
+  // let {
+  //  minLat,
+  //  maxLat,
+  //  minLng,
+  //  maxLng,
+  // } = this.getScreenBounds() || {};
+
+  radius = radius || 1;
+
+  const minLat = lat - radius;
+  const maxLat = lat + radius;
+  const minLng = lng - radius;
+  const maxLng = lng + radius;
+
+  if(
+    itemLat < maxLat && itemLat > minLat
+    &&
+    itemLng > minLng && itemLng < maxLng
+  ){
+    return true;
+  }
+
+  return false
+}
+
 export const getList = (source, args, context, info) => {
+
+  console.log("Resoruces getList args", args);
 
   const {
     CompaniesStore,
@@ -507,6 +550,8 @@ export const getList = (source, args, context, info) => {
     template,
     tag,
     resourceType,
+    coords,
+    center,
   } = args;
  
   let state
@@ -547,6 +592,97 @@ export const getList = (source, args, context, info) => {
     const search = new RegExp(tag, 'ui');
 
     state = state.filter(n => n.tags && n.tags.findIndex(i => i.match(search)) !== -1);
+
+  }
+
+  // Поиск по координатам (в заданном квадрате)
+  if(coords){
+
+    const {
+      radius,
+      center,
+    } = coords;
+
+    state = state.filter(n => inCoords(center, radius, n));
+
+  }
+
+  // Если указан центр, сортируем по удаленности от центра
+  if(center){
+
+    const {
+      lat,
+      lng,
+    } = center;
+
+    state = state.sort((a,b) => {
+
+      const {
+        coords: aCoords,
+      } = a;
+
+      const {
+        coords: bCoords,
+      } = b;
+
+      // console.log("aCoords", aCoords);
+      // console.log("bCoords", bCoords);
+
+      if(!aCoords || !bCoords){
+        return -1;
+      }
+
+      const {
+        lat: aLat,
+        lng: aLng,
+      } = aCoords;
+      
+
+      const {
+        lat: bLat,
+        lng: bLng,
+      } = bCoords;
+      
+
+
+      const aLatDiff = Math.abs(lat - aLat);
+      const aLngDiff = Math.abs(lng - aLng);
+
+      const bLatDiff = Math.abs(lat - bLat);
+      const bLngDiff = Math.abs(lng - bLng);
+
+      const aDiff = (aLatDiff + aLngDiff) / 2;
+
+      const bDiff = (bLatDiff + bLngDiff) / 2;
+
+
+      // console.log("aDiff", aDiff);
+      // console.log("bDiff", bDiff);
+
+      if(aDiff > bDiff){
+        return 1;
+      }
+      else if(bDiff > aDiff){
+        return -1;
+      }
+
+      // a = a && a.toLocaleUpperCase && a.toLocaleUpperCase() || a;
+      // b = b && b.toLocaleUpperCase && b.toLocaleUpperCase() || b;
+
+      // if(dir == 'asc'){
+      //   if ( a > b ) return 1;
+      //   if (a < b ) return -1;
+      //   return 0;
+      // }
+      // else{
+      //   if ( a < b ) return 1;
+      //   if (a > b ) return -1;
+      //   return 0;
+      // }
+
+      return 0;
+
+    });
 
   }
 

@@ -1717,7 +1717,7 @@ export default class MapMainView extends Component{
   	// 
 
   	// clusters && clusters.getClusters([50, 35, 60, 60], zoom || 4).map(cluster => {
-  	clusters && clusters.getClusters([minLng, minLat, maxLng, maxLat], zoom).map(cluster => {
+  	clusters && minLng && minLat && clusters.getClusters([minLng, minLat, maxLng, maxLat], zoom).map(cluster => {
   	// clusters && clusters.getClusters([minLng, minLat, maxLng, maxLat], zoom || 4).map(cluster => {
 
   		if(cluster.properties.type == "Contact"){

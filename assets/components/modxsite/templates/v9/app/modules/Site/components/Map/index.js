@@ -1945,7 +1945,7 @@ export default class MapMainView extends Component{
 					    padding: "0 8px",
 					    borderRadius: 2,
 							boxShadow: "0 0 0 1px #00000014",
-							lineHeight: 29,
+							lineHeight: "29px",
 						}}
 					>
 						Показать списком

@@ -1399,9 +1399,9 @@ export const getList = (source, args, context, info) => {
       const bLatDiff = Math.abs(lat - bLat);
       const bLngDiff = Math.abs(lng - bLng);
 
-      const aDiff = (aLatDiff + aLngDiff);
+      const aDiff = Math.sqrt((aLatDiff*aLatDiff + aLngDiff*aLngDiff));
 
-      const bDiff = (bLatDiff + bLngDiff);
+      const bDiff = Math.sqrt(bLatDiff*bLatDiff + bLngDiff*bLngDiff);
 
 
       // console.log("aDiff", aDiff);

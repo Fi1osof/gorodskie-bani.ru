@@ -671,11 +671,11 @@ export default class CompanyPage extends Component{
 
 		let addresses = [];
 
-		if(city){
-			addresses.push(<span
-				key="city"
-			>{city}</span>);
-		}
+		// if(city){
+		// 	addresses.push(<span
+		// 		key="city"
+		// 	>{city}</span>);
+		// }
 
 		if(address){
 			addresses.push(<span
@@ -1408,7 +1408,9 @@ export default class CompanyPage extends Component{
 								/>
 								:
 								phones ? <p>
-									<b>Телефон: </b> {phones}
+									<b>Телефон: </b> {phones.split(/,|;/).map(n => n && n.trim()).filter(n => n).map(phone => {
+										return phone && phone.length > 8 ? <a href={`tel:${phone}`}>{phone}</a> : phone;
+									}).reduce((a,b) => [a,", ",b])}
 								</p> 
 								: ''
 							}

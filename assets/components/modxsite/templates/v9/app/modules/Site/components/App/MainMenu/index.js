@@ -251,15 +251,16 @@ export default class MainMenu extends Component{
 
     cities && cities.map((city, index) => {
 
-      if(index === 0){
-        return;
-      }
+      // if(index === 0){
+      //   return;
+      // }
 
       const {
         id,
         name,
         coords,
         alias: city_alias,
+        uri,
       } = city;
 
       if(!coords){
@@ -271,7 +272,11 @@ export default class MainMenu extends Component{
         lng,
       } = coords;
 
-      const link = `/city/${city_alias}/@` + [lat,lng,12].join(",");
+      // const link = `/city/${city_alias}/@` + [lat,lng,12].join(",");
+
+      const link = `${uri}@` + [lat,lng,12].join(",");
+
+      // const link = uri;
 
       citiesList.push(<li
         key={id}

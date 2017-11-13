@@ -14,13 +14,7 @@ import {
   ContactsPage,
   CRMPage,
   CompaniesEditsPage,
-  // Lesson1,
-  // PageGraphiQL,
 } from "modules/Site";
-
-// console.log('AppB', AppB);
-
-// App.contextTypes = { store: React.PropTypes.object };
 
 let routes = {
   path: "/",
@@ -29,10 +23,6 @@ let routes = {
     component: MainPage 
   },
   childRoutes: [
-    // {
-    //   path: "/react-lessons/",
-    //   component: MainPage
-    // },
     {
       path: "/index",
       component: MainPage
@@ -48,42 +38,6 @@ let routes = {
     {
       path: "/db",
       component: DbPage,
-      // childRoutes: [
-      //   {
-      //     path: "/db/contacts",
-      //     name: "/db/contacts",
-      //     component: Contacts,
-      //     childRoutes: [{
-      //       path: "/db/contacts/:contactId/",
-      //     }]
-      //   },
-      //   {
-      //     path: "/db/places",
-      //     name: "/db/places",
-      //     component: Places,
-      //     childRoutes: [{
-      //       path: "/db/places/:placeId/",
-      //     }]
-      //   },
-      //   {
-      //     path: "/db/services",
-      //     name: "/db/services",
-      //     component: Services,
-      //     childRoutes: [{
-      //       path: "/db/services/:serviceId/",
-      //     }]
-      //   },
-      //   {
-      //     path: "/db/places-services",
-      //     name: "/db/places-services",
-      //     component: Page66
-      //   },
-      //   {
-      //     path: "/db/sources",
-      //     name: "/db/sources",
-      //     component: Page72
-      //   }
-      // ]
     },
     {
       path: "/bani-otzivy",
@@ -91,7 +45,6 @@ let routes = {
       childRoutes: [
         {
           path: "/bani-otzivy/:topicAlias",
-          // component: CompaniesPage,
         },
         {"path":"/moscow/:companyId/solyanyie-peshheryi-v-bannom-komplekse-sokolinaya-gora-1294.html"},
 
@@ -121,46 +74,6 @@ let routes = {
         {"path":"/banya-na-krasnoznamennoj"},
         {"path":"/vodno-razvlekatelnyj-klub-atlantidaspa"},
         {"path":"/city\/moscow\/babushkinskie-bani\/babushkinskie-bani-zhut!-1437.html"},
-
-
-
-        // {"path":"/rabota-dlya-vsex"},
-        // {"path":"/predlozhenie-dlya-vladelcev-saun"},
-        // {"path":"/kuncevskie-bani"},
-        // {"path":"/izmajlovskie-bani"},
-        // {"path":"/rzhevskie-bani"},
-        // {"path":"/pokrovskie-bani"},
-        // {"path":"/usachevskie-bani"},
-        // {"path":"/voroncovskie-bani"},
-        // {"path":"/varshavskie-bani"},
-        // {"path":"/babushkinskie-bani"},
-        // {"path":"/city/moscow/rzhevskie-bani/rzhevskie-bani-zhutkoe-mesto-1387.html"},
-        // {"path":"/bannyj-klub-solovyov"},
-        // {"path":"/koptevskie-bani"},
-        // {"path":"/krasnopresnenskie-bani"},
-        // {"path":"/astraxanskie-bani"},
-        // {"path":"/seleznevskie-bani"},
-        // {"path":"/vostochnye-bani"},
-        // {"path":"/reutovskie-bani"},
-        // {"path":"/shhelkovskie-bani"},
-        // {"path":"/banya-na-ciolkovskogo-banya-2"},
-        // {"path":"/ivanovskaya-banya"},
-        // {"path":"/banya-na-raxmaninova"},
-        // {"path":"/kazachi-bani"},
-        // {"path":"/voroncovskie-bani-staraya-statya"},
-        // {"path":"/rimskie-bani"},
-        // {"path":"/yaponskie-bani"},
-        // {"path":"/tureckaya-banya-xamam"},
-        // {"path":"/finskaya-sauna"},
-        // {"path":"/banya-na-krasnoznamennoj"},
-        // {"path":"/vodno-razvlekatelnyj-klub-atlantidaspa"},
-        // // {"path":"/moscow/bannyij-kompleks-«sokolinaya-gora»/solyanyie-peshheryi-v-bannom-komplekse-sokolinaya-gora-1294.html"},
-        // // {"path":"/moscow/bannyij-kompleks-«sokolinaya-gora»/solyanyie-peshheryi-v-bannom-komplekse-sokolinaya-gora-1294.html"},
-        // // {"path":"/moscow/bannyij-kompleks-«sokolinaya-gora»/solyanyie-peshheryi-v-bannom-komplekse-sokolinaya-gora-1294.html"},
-        // // {"path":"/moscow/bannyij-kompleks-\u00absokolinaya-gora\u00bb/solyanyie-peshheryi-v-bannom-komplekse-sokolinaya-gora-1294.html"},
-        // {"path":"/city/moscow/babushkinskie-bani/babushkinskie-bani-zhut!-1437.html"},
-
-
       ]
     },
     {
@@ -169,7 +82,6 @@ let routes = {
       childRoutes: [
         {
           path: "/topics/:topicAlias",
-          // component: CompaniesPage,
         },
         {"path":"/rabota-dlya-vsex"},
         {"path":"/predlozhenie-dlya-vladelcev-saun"},
@@ -189,7 +101,6 @@ let routes = {
       component: CommentsPage,
       childRoutes: [{
         path: "/comments/comment-:commentId.html",
-        // component: CompaniesPage,
       }]
     },
     {
@@ -197,12 +108,8 @@ let routes = {
       component: UsersPage,
       childRoutes: [{
         path: "/profile/:username",
-        // component: CompaniesPage,
-        // component: UsersPage,
         childRoutes: [{
           path: "/profile/:username/:action",
-          // component: CompaniesPage,
-          // component: UsersPage,
         }],
       }],
     },
@@ -211,16 +118,6 @@ let routes = {
       description: "Изменения в данных заведений",
       component: CompaniesEditsPage,
     },
-    // {
-    //   path: "/office",
-    //   component: UsersPage,
-    //   childRoutes: [{
-    //     path: "/office/:section",
-    //     childRoutes: [{
-    //       path: "/profile/:section/:action",
-    //     }],
-    //   }],
-    // },
     {
       path: "/profile",
     },
@@ -230,10 +127,6 @@ let routes = {
       childRoutes: [{
         path: "/bani/:companyId",
       }],
-      // childRoutes: [{
-      //   path: "/city/:city/:companyId/",
-      //   component: CompaniesPage,
-      // }],
     },
     {
       childRoutes: [{
@@ -243,7 +136,8 @@ let routes = {
     },
     {
       path: "/city/:city/@:lat,:lng,:zoom",
-      component: MainPage
+      component: MainPage,
+      // component: CompaniesPage,
     },
     {
       childRoutes: [{
@@ -253,7 +147,8 @@ let routes = {
     },
     {
       path: "/city/:city",
-      component: MainPage
+      // component: MainPage,
+      component: CompaniesPage,
     },
     {
       path: "/ratings",
@@ -272,24 +167,17 @@ let routes = {
       name: "CRM",
       component: CRMPage,
     },
-
-    // {
-    //   path: "/:city",
-    // },
-    // {
-    //   path: "/:city/@:lat,:lng,:zoom",
-    //   component: MainPage
-    // },
+    {
+      path: "/:city/@:lat,:lng,:zoom",
+      component: MainPage
+    },
     {
       "path":"/moscow",
-      "component":MainPage,
+      // "component":MainPage,
+      component: CompaniesPage,
       childRoutes: [
         {
           path: "/:city",
-        },
-        {
-          path: "/:city/@:lat,:lng,:zoom",
-          component: MainPage
         },
       ]
     },
@@ -321,22 +209,6 @@ let routes = {
       path: "/chelyabinsk/:companyId",
       component: CompaniesPage,
     },
-    // {
-    //   "path":"/moskovskaya-oblast",
-    //   "component":MainPage,
-    // },
-    // {"path":"/penza","component":MainPage},
-    // {"path":"/st-petersburg","component":MainPage},
-    // {"path":"/chelyabinsk","component":MainPage},
-    // {"path":"/cherepovecz","component":MainPage},
- 
-
-
-    // {
-    //   path: "*",
-    //   // name: "notfound",
-    //   component: NotFoundPage,
-    // }
   ]
 };
 

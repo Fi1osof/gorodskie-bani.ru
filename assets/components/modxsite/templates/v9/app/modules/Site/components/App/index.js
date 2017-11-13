@@ -212,6 +212,7 @@ export class AppMain extends Component{
   static childContextTypes = {
     inited: PropTypes.bool,
     classes: PropTypes.object,
+    params: PropTypes.object,
     connector_url: PropTypes.string,
     location: PropTypes.object,
     request: PropTypes.func,
@@ -267,6 +268,7 @@ export class AppMain extends Component{
       document,
       location,
       connector_url,
+      params,
     } = this.props;
 
     let {
@@ -288,6 +290,7 @@ export class AppMain extends Component{
       classes,
       location,
       connector_url,
+      params,
       request: this.request,
       apiRequest: this.apiRequest,
       wsRequest: this.wsRequest,
@@ -1161,23 +1164,62 @@ export class AppMain extends Component{
       user: {
         user,
         // own_data_requested,
-      }
+      },
+      params,
     } = this.props;
 
     let {
       user: {
         user: prevUser,
         // own_data_requested: prev_own_data_requested,
-      }
+      },
+      params: prevParams,
     } = prevProps;
 
     const {
       inited,
     } = this.state;
 
-    // // 
 
-    // // 
+    const {
+      city,
+    } = params;
+
+    const {
+      city: prevCity,
+    } = prevParams;
+
+    // console.log("appMain componentDidUpdate", city, prevCity);
+
+    // Если изменился город, обновляем координаты
+    if(
+      (city || prevCity) && city !== prevCity
+    ){
+
+      const {
+        document,
+      } = this.props;
+
+      const {
+        citiesData,
+      } = document;
+
+      const {
+        resources: cities,
+      } = citiesData || {};
+
+      const newCity = cities && cities.find(n => n.alias === city);
+
+      // console.log("appMain componentDidUpdate newCityss", newCity);
+
+      if(newCity){
+        this.setCoords(Object.assign(newCity.coords || {}, {
+          zoom: 12,
+        }));
+      }
+
+    }
+
     
     // // Если пользователь авторизовался, то перезагружаем данные зависимые
     

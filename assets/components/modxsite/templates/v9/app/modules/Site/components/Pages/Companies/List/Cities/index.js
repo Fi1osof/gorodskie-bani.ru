@@ -110,32 +110,32 @@ export default class CitiesList extends Component{
   }
 
 
-  changeCity(city){
+  // changeCity(city){
 
-  	// console.log("ChangeCity", city);
+  // 	// console.log("ChangeCity", city);
 
-  	const {
-  		setCoords,
-  	} = this.context;
+  // 	const {
+  // 		setCoords,
+  // 	} = this.context;
 
-  	const {
-  		lat,
-  		lng,
-  	} = city.coords || {};
+  // 	const {
+  // 		lat,
+  // 		lng,
+  // 	} = city.coords || {};
 
-  	setCoords({
-  		lat,
-  		lng,
-  		zoom: 12,
-  	});
+  // 	setCoords({
+  // 		lat,
+  // 		lng,
+  // 		zoom: 12,
+  // 	});
 
-  	this.setState({
-  		open: false,
-  	});
+  // 	this.setState({
+  // 		open: false,
+  // 	});
 
-  	this.loadData();
+  // 	this.loadData();
 
-  }
+  // }
 
 
 	render(){
@@ -158,6 +158,8 @@ export default class CitiesList extends Component{
 		let base_url = '/';
 
 
+		let coordsUrl;
+
     if(coords){
 
       const {
@@ -168,7 +170,8 @@ export default class CitiesList extends Component{
 
       if(lat && lng && zoom){
 
-        base_url += "@" + [lat, lng, zoom].join(",");
+        // base_url += "@" + [lat, lng, zoom].join(",");
+        coordsUrl = "@" + [lat, lng, zoom].join(",");
 
       }
 
@@ -184,26 +187,43 @@ export default class CitiesList extends Component{
 			const {
 				id,
 				name,
+				uri,
 			} = city;
 
 			if(index === 0){
 				currentCity = city;
+
+				const {
+					id,
+					uri,
+				} = currentCity;
+
+				base_url = `/${uri}${coordsUrl}`;
+
 			}
 			else{
 
-				citiesList.push(<Chip 
+				citiesList.push(<Link
 					key={id}
-					label={name}
-					style={{
-						// padding: 0,
-						height: 20,
-						marginRight: 5,
-						marginBottom: 5,
-					}}
+					to={uri}
+					href={uri}
 					onClick={() => {
-						this.changeCity(city);
+						// this.changeCity(city);
+				  	this.setState({
+				  		open: false,
+				  	});
 					}}
-				/>);
+				>
+					<Chip 
+						label={name}
+						style={{
+							// padding: 0,
+							height: 20,
+							marginRight: 5,
+							marginBottom: 5,
+						}}
+					/>
+				</Link>);
 
 			}
 

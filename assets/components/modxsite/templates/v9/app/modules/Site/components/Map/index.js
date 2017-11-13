@@ -1123,10 +1123,6 @@ export default class MapMainView extends Component{
 
 	 		location.pathname = pathname;
 
-	 		// 
-
-	 		// 
-
 	 		browserHistory.push(location);
  			
  		}

@@ -108,7 +108,7 @@ export default class CompaniesPage extends Page {
       (coords || prevCoords)
       && JSON.stringify(coords || "") != JSON.stringify(prevCoords || "")
     ){
-      // console.log("componentDidUpdate loadDatasss");
+      console.log("componentDidUpdate loadData coords", coords);
       this.loadData();
     }
 

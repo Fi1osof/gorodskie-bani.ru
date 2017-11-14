@@ -10,12 +10,16 @@ import { useScroll } from "react-router-scroll";
 import rootRoute from "./routes";
 
 
+import locale from 'moment/src/locale/ru';
+import 'moment';
 
-if(typeof window !== "undefined"){
+// console.log('locale', locale);
 
-  require('moment/src/locale/ru');
+// if(typeof window !== "undefined"){
 
-}
+//   require('moment/src/locale/ru');
+
+// }
 
 import configureStore from "./store";
 // Create redux store with history

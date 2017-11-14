@@ -42,6 +42,7 @@ import Schedule from 'modules/Site/components/fields/Schedule';
 
 import RatingField from './fields/Rating';
 
+import locale from 'moment/src/locale/ru';
 import moment from 'moment';
 
 if(typeof window !== "undefined"){

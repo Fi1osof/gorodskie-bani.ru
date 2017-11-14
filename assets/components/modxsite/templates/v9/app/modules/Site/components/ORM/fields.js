@@ -471,3 +471,36 @@ export const GalleryField = {
   //   return object.gallery || [];
   // },
 };
+
+
+
+
+const ScheduleDayRangeType = new GraphQLObjectType({
+  name: "ScheduleDayRangeType",
+  description: "Диапазон С и По",
+  fields: {
+    hour: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: "Час",
+    },
+    minute: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: "Минута",
+    },
+  },
+});
+
+export const ScheduleDayType = new GraphQLObjectType({
+  name: "ScheduleDayType",
+  fields: {
+    start: {
+      type: ScheduleDayRangeType,
+      description: ScheduleDayRangeType.description,
+    },
+    end: {
+      type: ScheduleDayRangeType,
+      description: ScheduleDayRangeType.description,
+    },
+  },
+});
+

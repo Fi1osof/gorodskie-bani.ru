@@ -48,6 +48,7 @@ import {
   SortField,
   TVsField,
   GalleryField,
+  ScheduleDayType,
 } from '../fields';
 
 
@@ -325,6 +326,10 @@ export const CompanyType = new GraphQLObjectType({
       },
       tvs: TVsField,
       gallery: GalleryField,
+      schedule: {
+        type: new GraphQLList(ScheduleDayType),
+        description: "Расписание",
+      },
       // tvs: {
       //   type: new GraphQLObjectType({
       //     name: 'TSvType',

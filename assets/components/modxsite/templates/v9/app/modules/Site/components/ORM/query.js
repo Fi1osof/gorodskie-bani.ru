@@ -3,7 +3,6 @@ const defaultQuery = `
 
 
 
-
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -1144,6 +1143,16 @@ fragment CompanyFields on Company{
     metro
     approved
   }
+  schedule{
+    start{
+      hour
+      minute
+    }
+    end{
+      hour
+      minute
+    }
+  }
   errors
   _isDirty
 }
@@ -1645,6 +1654,8 @@ mutation updateCompany(
     ...editVersion
   }
 }
+
+
 
 
 

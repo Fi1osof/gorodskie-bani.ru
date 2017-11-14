@@ -32,6 +32,7 @@ module.exports = (options) => ({
 							|| /\/google-map-react\//.test(file)
 							|| /\/react-progress-button\//.test(file)
 							|| /\/react-coin-hive\//.test(file)
+							|| /\/react-schedule\//.test(file)
 							// || /\/moment\//.test(file)
 						){
 							return;

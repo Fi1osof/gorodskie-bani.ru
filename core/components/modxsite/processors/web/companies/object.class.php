@@ -66,6 +66,14 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
     	
         // print_r($this->properties);
 
+        $properties = $this->getProperty('properties');
+        
+        if(isset($properties)){
+            $properties = array_merge((array)$object->get("properties"), (array)$properties);
+            $this->setProperty("properties", $properties);
+        }
+
+
 		if($object->isNew()){
 		}
 		else{
@@ -176,6 +184,24 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 		if(isset($object->image) && empty($object->image)){
 			$this->addFieldError("image", "Необходимо загрузить основное фото");
 		}
+
+
+
+        $properties = $object->get('properties');
+        
+        if(!$properties){
+            $properties = array();
+        }
+
+        // Расписание
+        $schedule = $this->getProperty("schedule");
+
+        if(isset($schedule) && is_array($schedule)){
+        	$properties['schedule'] = $schedule;
+        }
+        
+        $object->set('properties', $properties);
+
 
 		// if(!$object->address){
 		// 	$this->addFieldError("address", "Необходимо указать адрес заведения");

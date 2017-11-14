@@ -335,8 +335,23 @@ export const getList = (object, args, context, info) => {
 
         data.object.map(object => {
 
+          let {
+            properties,
+            tvs,
+          } = object;
 
-          if(object.tvs){
+          try{
+            properties = properties && JSON.parse(properties);
+          }
+          catch(e){
+            console.error(e);
+          }
+
+          let {
+            schedule,
+          } = properties || {};
+
+          if(tvs){
     
             let tvs = {};
 
@@ -399,6 +414,12 @@ export const getList = (object, args, context, info) => {
             }
 
           }
+
+
+
+          Object.assign(object, {
+            schedule,
+          });
           
         });
 

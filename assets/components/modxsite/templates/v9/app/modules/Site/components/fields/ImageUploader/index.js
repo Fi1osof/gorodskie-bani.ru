@@ -99,4 +99,16 @@ export default class ImagesUploader extends ImagesUploaderProto{
       }
     }
   }
+
+  render(){
+
+    if(typeof window === "undefined"){
+
+      return null;
+
+    }
+
+    return super.render();
+
+  }
 }

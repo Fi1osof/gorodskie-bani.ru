@@ -560,7 +560,9 @@ export default class CompanyPage extends Component{
 		// } = item;
 		} = itemData;
 
-		const inEditMode = _isDirty ? true : true;
+		let schedules;
+
+		const inEditMode = _isDirty ? true : false;
 
 		let content;
 
@@ -1211,7 +1213,7 @@ export default class CompanyPage extends Component{
 							null
 
 							:
-							work_time ? <div
+							work_time || schedules ? <div
 								style={{
 									overflow: 'hidden',
 								}}
@@ -1220,7 +1222,7 @@ export default class CompanyPage extends Component{
 									style={{
 										float: 'left',
 									}}
-								>Время работы:&nbsp;</b>
+								>Время работы&nbsp;</b>
 
 								<div
 									dangerouslySetInnerHTML={{ __html: work_time }}

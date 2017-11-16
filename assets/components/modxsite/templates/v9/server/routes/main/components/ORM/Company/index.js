@@ -260,6 +260,89 @@ export class SchemaType extends ObjectType{
 
 // }
 
+
+const prepareScheduleData = function(schedule){
+
+  if(schedule && schedule.length){
+
+    schedule = schedule.map(n => {
+
+      if(!n){
+        return null;
+      }
+
+      let {
+        start,
+        end,
+        day: defaultWeekDay,
+      } = n;
+
+      defaultWeekDay = defaultWeekDay || 0;
+
+      if(start){
+
+        let {
+          year,
+          month,
+          day,
+          hour,
+          minute,
+          second,
+          weekDay,
+        } = start;
+
+        start = {
+          year: year || 0,
+          month: month || 0,
+          day: day || 0,
+          hour: hour || 0,
+          minute: minute || 0,
+          second: second || 0,
+          weekDay: weekDay !== undefined ? weekDay : defaultWeekDay,
+        };
+
+      }
+
+      if(end){
+
+        let {
+          year,
+          month,
+          day,
+          hour,
+          minute,
+          second,
+          weekDay,
+        } = end;
+
+        end = {
+          year: year || 0,
+          month: month || 0,
+          day: day || 0,
+          hour: hour || 0,
+          minute: minute || 0,
+          second: second || 0,
+          weekDay: weekDay !== undefined ? weekDay : defaultWeekDay,
+        };
+
+      }
+
+      n = {
+        start,
+        end,
+      };
+      
+      return n;
+
+    });
+
+  }
+
+  return schedule;
+
+}
+
+
 export const getList = (object, args, context, info) => {
 
   const {
@@ -349,6 +432,9 @@ export const getList = (object, args, context, info) => {
 
           let {
             schedule,
+            schedule_men,
+            schedule_women,
+            schedule_family,
           } = properties || {};
 
           if(tvs){
@@ -417,83 +503,86 @@ export const getList = (object, args, context, info) => {
 
 
 
-          if(schedule && schedule.length){
+          // if(schedule && schedule.length){
 
-            schedule = schedule.map(n => {
+          //   schedule = schedule.map(n => {
 
-              if(!n){
-                return null;
-              }
+          //     if(!n){
+          //       return null;
+          //     }
 
-              let {
-                start,
-                end,
-                day: defaultWeekDay,
-              } = n;
+          //     let {
+          //       start,
+          //       end,
+          //       day: defaultWeekDay,
+          //     } = n;
 
-              defaultWeekDay = defaultWeekDay || 0;
+          //     defaultWeekDay = defaultWeekDay || 0;
 
-              if(start){
+          //     if(start){
 
-                let {
-                  year,
-                  month,
-                  day,
-                  hour,
-                  minute,
-                  second,
-                  weekDay,
-                } = start;
+          //       let {
+          //         year,
+          //         month,
+          //         day,
+          //         hour,
+          //         minute,
+          //         second,
+          //         weekDay,
+          //       } = start;
 
-                start = {
-                  year: year || 0,
-                  month: month || 0,
-                  day: day || 0,
-                  hour: hour || 0,
-                  minute: minute || 0,
-                  second: second || 0,
-                  weekDay: weekDay !== undefined ? weekDay : defaultWeekDay,
-                };
+          //       start = {
+          //         year: year || 0,
+          //         month: month || 0,
+          //         day: day || 0,
+          //         hour: hour || 0,
+          //         minute: minute || 0,
+          //         second: second || 0,
+          //         weekDay: weekDay !== undefined ? weekDay : defaultWeekDay,
+          //       };
 
-              }
+          //     }
 
-              if(end){
+          //     if(end){
 
-                let {
-                  year,
-                  month,
-                  day,
-                  hour,
-                  minute,
-                  second,
-                  weekDay,
-                } = end;
+          //       let {
+          //         year,
+          //         month,
+          //         day,
+          //         hour,
+          //         minute,
+          //         second,
+          //         weekDay,
+          //       } = end;
 
-                end = {
-                  year: year || 0,
-                  month: month || 0,
-                  day: day || 0,
-                  hour: hour || 0,
-                  minute: minute || 0,
-                  second: second || 0,
-                  weekDay: weekDay !== undefined ? weekDay : defaultWeekDay,
-                };
+          //       end = {
+          //         year: year || 0,
+          //         month: month || 0,
+          //         day: day || 0,
+          //         hour: hour || 0,
+          //         minute: minute || 0,
+          //         second: second || 0,
+          //         weekDay: weekDay !== undefined ? weekDay : defaultWeekDay,
+          //       };
 
-              }
+          //     }
 
-              n = {
-                start,
-                end,
-              };
+          //     n = {
+          //       start,
+          //       end,
+          //     };
               
-              return n;
+          //     return n;
 
-            });
+          //   });
 
-          }
+          // }
 
           Object.assign(object, {
-            schedule,
+            schedule: prepareScheduleData(schedule),
+            schedule_men: prepareScheduleData(schedule_men),
+            schedule_women: prepareScheduleData(schedule_women),
+            schedule_family: prepareScheduleData(schedule_family),
           });
           
         });

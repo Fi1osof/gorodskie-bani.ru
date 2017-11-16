@@ -46,6 +46,7 @@ export default class ScheduleEditorTypeField extends Component{
 			
 			<Schedule 
 				item={item}
+				field={field}
 			/>
 
 			<ReactSchedule 

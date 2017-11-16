@@ -13,6 +13,11 @@ export default class ScheduleField extends Component{
 
 	static propTypes = {
 		item: PropTypes.object.isRequired,
+		field: PropTypes.string.isRequired,
+	};
+
+	static defaultProps = {
+		field: "schedule",
 	};
 
 	static contextTypes = {
@@ -32,6 +37,7 @@ export default class ScheduleField extends Component{
 
 		const {
 			item,
+			field,
 			...other
 		} = this.props;
 
@@ -39,9 +45,11 @@ export default class ScheduleField extends Component{
 			return null;
 		}
 
-		let {
-			schedule,
-		} = item;
+		// let {
+		// 	schedule,
+		// } = item;
+
+		let schedule = item[field];
 
 		if(!schedule){
 			return null;

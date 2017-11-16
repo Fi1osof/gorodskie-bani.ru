@@ -508,7 +508,7 @@ export class AppMain extends Component{
         geo,
       } = document;
 
-      console.log('document geo', geo);
+      // console.log('document geo', geo);
 
       const {
         ll,
@@ -1105,7 +1105,7 @@ export class AppMain extends Component{
           }
           else{
 
-            console.log("remoteQuery error", data);
+            // console.log("remoteQuery error", data);
 
             return reject(data);
           }
@@ -1833,7 +1833,7 @@ export class AppMain extends Component{
 
     let result = await this.remoteQuery(graphQLParams)
       .then(r => {
-        console.log("saveVersionObject", r); 
+        // console.log("saveVersionObject", r); 
 
         // let newObject = data.object || {};
 
@@ -1936,6 +1936,8 @@ export class AppMain extends Component{
 
         }
 
+        e.errors = Object.assign({}, errors);
+
         errors.error_message = message || "Ошибка выполнения запроса"; 
 
         // newState.errors = this.state.errors || {};
@@ -1964,8 +1966,6 @@ export class AppMain extends Component{
           _errors: errors,
           _sending: false,
         });
-
-
 
         // throw(new Error(e));
         throw(e);
@@ -2042,7 +2042,7 @@ export class AppMain extends Component{
       })
       .then(r => {
 
-        console.log("updateCompany result", r);
+        // console.log("updateCompany result", r);
 
         const {
           updateCompany,
@@ -2069,16 +2069,45 @@ export class AppMain extends Component{
         
       })
       .catch(e => {
-
-        console.log("updateCompany error", r);
-
         console.error(e);
+
+        // let {
+        //   errors,
+        //   data,
+        // } = e || {};
+
+        // if(errors === undefined && data){
+
+        //   errors = {};
+
+        //   data && data.length && data.map(n => {
+
+        //     const {
+        //       id,
+        //       msg,
+        //     } = n;
+
+        //     if(id && msg){
+        //       errors[id] = msg;
+        //     }
+
+        //   });
+
+        //   Object.assign(e, {
+        //     errors,
+        //   });
+
+        // }
+
+        throw(e);
       });
 
     }
     else{
 
       const callback = (data, errors) => { 
+
+        // console.log("app saveContactItem callback", data, errors);
 
         if(data.success && data.object){
 

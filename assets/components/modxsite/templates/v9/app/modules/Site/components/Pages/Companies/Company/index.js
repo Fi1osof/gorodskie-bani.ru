@@ -86,7 +86,7 @@ export default class CompanyPage extends Component{
 			sending: false,
 			galleryExpanded: false,
 			diffs: null,
-			tabIndex: 2,
+			tabIndex: 0,
 		};
 	}
 
@@ -336,7 +336,7 @@ export default class CompanyPage extends Component{
 					errors,
 				} = e;
 
-				// console.log("Save Company item error", errors);
+				// console.log("Save Company item error", e, errors);
 
 				if(errors){
 
@@ -1207,24 +1207,8 @@ export default class CompanyPage extends Component{
 							// 	onChange={this.onChange}
 							// 	onFocus={() => this.onFocus('work_time')}
 							// />
-							<Editor 
-								// value={text || ""}
-								// // readOnly={!inEditMode}
-								// name="text"
-								// label={inEditMode ? "Текст комментария" : undefined}
-								// // error={errors && errors.text ? true : false}
-								// // helperText={errors && errors.text || ""}
-								// onChange={this.onChange}
-								// // onFocus={() => this.onFocus('text')}
-								label="Время работы"
-								error={errors && errors.work_time ? true : false}
-								helperText={errors && errors.work_time || "Распишите график работы заведения"}
-								name="work_time"
-								value={work_time || ""}
-								// multiline
-								onChange={this.onChange}
-								onFocus={() => this.onFocus('work_time')}
-							/>
+							
+							null
 
 							:
 							work_time ? <div
@@ -1358,20 +1342,21 @@ export default class CompanyPage extends Component{
 
       		tabContent = <div>
 
-						<div
-							dangerouslySetInnerHTML={{ __html: work_time }}
+						<Editor
+							label="Уточнение к графику работы"
+							error={errors && errors.work_time ? true : false}
+							helperText={errors && errors.work_time || "Например, время работы кассы"}
+							name="work_time"
+							value={work_time || ""}
+							// multiline
+							onChange={this.onChange}
+							onFocus={() => onFocus && onFocus('work_time')}
 						/>
 
       			<ScheduleEditor
 							item={item}
-							onChange={(days) => {
-								// console.log('onChange days', days);
-
-								this.updateItem(item, {
-									schedule: days,
-								});
-								
-							}}
+							onChange={::this.updateItem}
+							onFocus={::this.onFocus}
 		        />
 
       		</div>

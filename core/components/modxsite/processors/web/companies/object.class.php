@@ -161,9 +161,9 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 			$this->addFieldError("address", "Необходимо указать адрес заведения");
 		}
 
-		if(isset($object->work_time) && empty($object->work_time)){
-			$this->addFieldError("work_time", "Необходимо указать время работы");
-		}
+		// if(isset($object->work_time) && empty($object->work_time)){
+		// 	$this->addFieldError("work_time", "Необходимо указать время работы");
+		// }
 
 		if(isset($object->prices) && empty($object->prices)){
 			$this->addFieldError("prices", "Необходимо указать цены");
@@ -198,6 +198,27 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 
         if(isset($schedule) && is_array($schedule)){
         	$properties['schedule'] = $schedule;
+        }
+        
+        
+        $schedule_men = $this->getProperty("schedule_men");
+
+        if(isset($schedule_men) && is_array($schedule_men)){
+        	$properties['schedule_men'] = $schedule_men;
+        }
+        
+        
+        $schedule_women = $this->getProperty("schedule_women");
+
+        if(isset($schedule_women) && is_array($schedule_women)){
+        	$properties['schedule_women'] = $schedule_women;
+        }
+        
+        
+        $schedule_family = $this->getProperty("schedule_family");
+
+        if(isset($schedule_family) && is_array($schedule_family)){
+        	$properties['schedule_family'] = $schedule_family;
         }
         
         $object->set('properties', $properties);

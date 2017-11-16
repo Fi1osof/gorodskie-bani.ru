@@ -86,7 +86,7 @@ export default class Topic extends Component{
 							company,
 						} = r.data;
 
-						console.log("Topic localQuery", r);
+						// console.log("Topic localQuery", r);
 
 						result = company;
 					});

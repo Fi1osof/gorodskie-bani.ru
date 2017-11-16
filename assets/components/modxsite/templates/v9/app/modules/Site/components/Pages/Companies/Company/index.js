@@ -1390,8 +1390,8 @@ export default class CompanyPage extends Component{
           fullWidth
         >
           <Tab label="Основная информация" />
-          <Tab label="График работы" />
           <Tab label="Галерея" />
+          <Tab label="График работы" />
 
         </Tabs>
 

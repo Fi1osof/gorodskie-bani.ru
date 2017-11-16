@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import Tabs, { Tab } from 'material-ui/Tabs';
 
+import ScheduleType from './Type';
 
 export default class ScheduleEditorField extends Component{
 
@@ -60,7 +61,19 @@ export default class ScheduleEditorField extends Component{
 
     	case 0:
 
-    		tabContent = <div>ewfew</div>;
+    		tabContent = <ScheduleType 
+    			item={item}
+    			field="schedule"
+    		/>;
+
+    		break;
+
+    	case 1:
+
+    		tabContent = <ScheduleType 
+    			item={item}
+    			field="schedule_men"
+    		/>;
 
     		break;
 

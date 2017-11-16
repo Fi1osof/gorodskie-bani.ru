@@ -11,7 +11,8 @@ import Schedule from 'modules/Site/components/fields/Schedule';
 export default class ScheduleEditorTypeField extends Component{
 
 	static propTypes = {
-
+		item: PropTypes.object.isRequired,
+		field: PropTypes.string.isRequired,
 	};
 
 	static contextTypes = {
@@ -31,16 +32,15 @@ export default class ScheduleEditorTypeField extends Component{
 
 		const {
 			item,
+			field,
 			...other
 		} = this.props;
 
-		if(!item){
+		if(!item || !field){
 			return null;
 		}
 
-		const {
-			schedule,
-		} = item;
+		const schedule = item[field];
 
 		return <div>
 			

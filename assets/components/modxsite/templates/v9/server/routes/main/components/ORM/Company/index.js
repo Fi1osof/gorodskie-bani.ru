@@ -265,7 +265,7 @@ const prepareScheduleData = function(schedule){
 
   if(schedule && schedule.length){
 
-    schedule = schedule.map(n => {
+    schedule = schedule.map((n, index) => {
 
       if(!n){
         return null;
@@ -274,10 +274,10 @@ const prepareScheduleData = function(schedule){
       let {
         start,
         end,
-        day: defaultWeekDay,
+        // day: defaultWeekDay,
       } = n;
 
-      defaultWeekDay = defaultWeekDay || 0;
+      const defaultWeekDay = index;
 
       if(start){
 

@@ -330,6 +330,18 @@ export const CompanyType = new GraphQLObjectType({
         type: new GraphQLList(ScheduleDayType),
         description: "Расписание",
       },
+      schedule_men: {
+        type: new GraphQLList(ScheduleDayType),
+        description: "Мужские дни",
+      },
+      schedule_women: {
+        type: new GraphQLList(ScheduleDayType),
+        description: "Женские дни",
+      },
+      schedule_family: {
+        type: new GraphQLList(ScheduleDayType),
+        description: "Семейные дни",
+      },
       // tvs: {
       //   type: new GraphQLObjectType({
       //     name: 'TSvType',

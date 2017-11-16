@@ -202,10 +202,12 @@ export default class Page extends Component{
 		const page = this.getPage();
 
 		const {
-			location: {
-				query: prevLocationQuery,
-			},
+			location,
 		} = prevProps;
+
+		const {
+			query: prevLocationQuery,
+		} = location || {};
 
 		const {
 			page: prevPage,
@@ -241,10 +243,12 @@ export default class Page extends Component{
 
 
 		const {
-			location: {
-				query,
-			},
+			location,
 		} = router;
+
+		const {
+			query,
+		} = location || {};
 
 		const {
 			page,

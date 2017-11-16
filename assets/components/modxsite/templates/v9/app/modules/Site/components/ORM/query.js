@@ -2,7 +2,6 @@
 const defaultQuery = `
 
 
-
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -1144,17 +1143,38 @@ fragment CompanyFields on Company{
     approved
   }
   schedule{
-    start{
-      hour
-      minute
-    }
-    end{
-      hour
-      minute
-    }
+    ...ScheduleDay
+  }
+  schedule_men{
+    ...ScheduleDay
+  }
+  schedule_women{
+    ...ScheduleDay
+  }
+  schedule_family{
+    ...ScheduleDay
   }
   errors
   _isDirty
+}
+
+fragment ScheduleDay on ScheduleDayType{
+  start{
+    ...ScheduleDayRange
+  }
+  end{
+    ...ScheduleDayRange
+  }
+}
+
+fragment ScheduleDayRange on ScheduleDayRangeType{
+  year
+  month
+  day
+  hour
+  minute
+  second
+  weekDay
 }
 
 fragment imageFormats on Company{
@@ -1654,6 +1674,8 @@ mutation updateCompany(
     ...editVersion
   }
 }
+
+
 
 
 

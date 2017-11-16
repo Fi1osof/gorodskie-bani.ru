@@ -22,7 +22,7 @@ module.exports = (options) => ({
 		loaders: [
 			{
 				test: /\.jsx?$/, // Transform all .js files required somewhere with Babel
-          		loader: 'babel-loader',
+    		loader: 'babel-loader',
 				exclude: function(file){
 					if(/\/node_modules\//.test(file)){
 						if(

@@ -38,6 +38,9 @@ import Auth from '../Auth';
 
 // import CoinHive from 'react-coin-hive/src';
 
+import locale from 'moment/src/locale/ru';
+import 'moment';
+
 import RootType, {
   Mutation,
   rootDirectives,

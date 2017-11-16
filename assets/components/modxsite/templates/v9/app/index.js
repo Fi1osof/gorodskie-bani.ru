@@ -10,8 +10,8 @@ import { useScroll } from "react-router-scroll";
 import rootRoute from "./routes";
 
 
-import locale from 'moment/src/locale/ru';
-import 'moment';
+// import locale from 'moment/src/locale/ru';
+// import 'moment';
 
 // console.log('locale', locale);
 

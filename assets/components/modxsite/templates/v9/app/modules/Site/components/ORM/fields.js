@@ -479,6 +479,18 @@ const ScheduleDayRangeType = new GraphQLObjectType({
   name: "ScheduleDayRangeType",
   description: "Диапазон С и По",
   fields: {
+    year: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: "Год",
+    },
+    month: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: "Месяц",
+    },
+    day: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: "День",
+    },
     hour: {
       type: new GraphQLNonNull(GraphQLInt),
       description: "Час",
@@ -486,6 +498,14 @@ const ScheduleDayRangeType = new GraphQLObjectType({
     minute: {
       type: new GraphQLNonNull(GraphQLInt),
       description: "Минута",
+    },
+    second: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: "Секунда",
+    },
+    weekDay: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: "Порядковый день недели",
     },
   },
 });

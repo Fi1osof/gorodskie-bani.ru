@@ -42,7 +42,7 @@ import ScheduleEditor from 'modules/Site/components/fields/Schedule/Editor';
 
 import RatingField from './fields/Rating';
 
-import locale from 'moment/src/locale/ru';
+// import locale from 'moment/src/locale/ru';
 import moment from 'moment';
 
 if(typeof window !== "undefined"){
@@ -86,7 +86,7 @@ export default class CompanyPage extends Component{
 			sending: false,
 			galleryExpanded: false,
 			diffs: null,
-			tabIndex: 0,
+			tabIndex: 2,
 		};
 	}
 
@@ -560,7 +560,7 @@ export default class CompanyPage extends Component{
 		// } = item;
 		} = itemData;
 
-		const inEditMode = _isDirty ? true : false;
+		const inEditMode = _isDirty ? true : true;
 
 		let content;
 
@@ -1343,6 +1343,19 @@ export default class CompanyPage extends Component{
 
       	case 1:
 
+      		tabContent = <GalleryEditor
+		        classes={{}}
+		        item={item}
+		        onSelectContactImage={() => {}}
+		        style={{
+		        	marginBottom: galleryItems && galleryItems.length ? 0 : 250,
+		        }}
+		      />;
+
+      		break;
+
+      	case 2:
+
       		tabContent = <div>
 
 						<div
@@ -1362,19 +1375,6 @@ export default class CompanyPage extends Component{
 		        />
 
       		</div>
-
-      		break;
-
-      	case 2:
-
-      		tabContent = <GalleryEditor
-		        classes={{}}
-		        item={item}
-		        onSelectContactImage={() => {}}
-		        style={{
-		        	marginBottom: galleryItems && galleryItems.length ? 0 : 250,
-		        }}
-		      />;
 
       		break;
 

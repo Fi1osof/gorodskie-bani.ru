@@ -304,12 +304,12 @@ export default class Page extends Component{
 			getCounters,
 		} = this.context;
 
-		return <Grid
-			container
-      gutter={0}
+		return <div
 			style={{
 				maxWidth: 1260,
+				width: "100%",
 				margin: "0 auto",
+				padding: "0 16px",
 			}}
 		>
 			
@@ -323,7 +323,28 @@ export default class Page extends Component{
 				{getCounters()}
 			</div>
 
-		</Grid>;
+		</div>;
+
+		// return <Grid
+		// 	container
+  	//     gutter={0}
+		// 	style={{
+		// 		maxWidth: 1260,
+		// 		margin: "0 auto",
+		// 	}}
+		// >
+			
+		// 	{this.renderContent()}
+
+		// 	<div
+		// 		style={{
+		// 			paddingTop: 30,
+		// 		}}
+		// 	>
+		// 		{getCounters()}
+		// 	</div>
+
+		// </Grid>;
 	}
 }
 

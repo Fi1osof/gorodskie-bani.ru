@@ -36,7 +36,7 @@ import Slider from 'react-slick';
 
 import Editor from 'modules/Site/components/fields/Editor';
 
-import Schedule from 'modules/Site/components/fields/Schedule';
+import ScheduleEditor from 'modules/Site/components/fields/Schedule/Editor';
 
 // import GoogleMapReact from 'google-map-react';
 
@@ -1349,7 +1349,7 @@ export default class CompanyPage extends Component{
 							dangerouslySetInnerHTML={{ __html: work_time }}
 						/>
 
-      			<Schedule
+      			<ScheduleEditor
 							item={item}
 							onChange={(days) => {
 								// console.log('onChange days', days);

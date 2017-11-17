@@ -388,7 +388,7 @@ export default class ScheduleField extends Component{
 
 			}
 
-			title = title && <span><b>{title}</b>:</span> || null;
+			title = title && <span>{title}:</span> || null;
 
 			daysList.push(<div
 				key={daysList.length}
@@ -397,7 +397,7 @@ export default class ScheduleField extends Component{
 					whiteSpace: "nowrap",
 				}}
 			>
-				{title} {from === "00:00" && till === "00:00" ? "Круглосуточно" : `с ${from} до ${till}`}
+				{title} {from === "00:00" && till === "00:00" ? <b>Круглосуточно</b> : <span>с <b>{from}</b> до <b>{till}</b></span>}
 
 			</div>);
 
@@ -416,7 +416,7 @@ export default class ScheduleField extends Component{
 					style={{
 						color: "red",
 					}}
-				>Выходные</span>: {offDates.map(day => (days[day])).join(", ")}
+				>{offDates.length === 1 ? "Выходной" : "Выходные"}</span>: {offDates.map(day => (days[day])).join(", ")}
 			</div>
 
 		}

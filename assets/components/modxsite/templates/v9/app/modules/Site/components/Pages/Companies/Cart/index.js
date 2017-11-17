@@ -135,10 +135,10 @@ export default class CompanyListCart extends Component{
 						<SchedulesList 
 							item={item}
 							className="text default"
-							// scheduleBlockProps={{
-							// 	item: true,
-							// 	xs: 12
-							// }}
+							scheduleBlockProps={{
+								item: true,
+								xs: 12
+							}}
 						/>
 
 					</div>

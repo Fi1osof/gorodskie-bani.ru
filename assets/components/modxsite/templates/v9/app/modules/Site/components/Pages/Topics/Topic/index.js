@@ -23,7 +23,9 @@ import UserLink from 'modules/Site/components/fields/User/link';
 
 import Comments from 'modules/Site/components/Comments';
 
-import Editor from 'modules/Site/components/fields/Editor';
+// import Editor from 'modules/Site/components/fields/Editor';
+
+import Editor from './Editor';
 
 export default class Topic extends Component{
 
@@ -66,6 +68,43 @@ export default class Topic extends Component{
 
 		// this.setPageTitle();
 
+	}
+
+
+	shouldComponentUpdate(nextProps, nextState){
+
+		const {
+			item,
+		} = this.props;
+
+
+		const {
+			open,
+			commentOpen,
+		} = this.state;
+
+		const {
+			open: nextOpen,
+			commentOpen: nextCommentOpen,
+		} = nextState;
+
+		// console.log('topicPage shouldComponentUpdate', JSON.stringify(item || "") === JSON.stringify(nextProps.item));
+
+		// console.log('topicPage shouldComponentUpdate', commentOpen === nextCommentOpen);
+
+		if(
+			(item !== nextProps.item)
+			|| (open !== nextOpen)
+			|| (commentOpen !== nextCommentOpen)
+		){
+			return true;
+		}
+
+		// if(JSON.stringify(item || "") === JSON.stringify(nextProps.item)){
+		// 	return false;
+		// }
+
+		return false;
 	}
 
 
@@ -268,10 +307,10 @@ export default class Topic extends Component{
 			pubdate,
 			tags,
 			_errors: errors,
-			_Dirty,
+			_isDirty,
 		} = item;
 
-		const inEditMode = _Dirty ? true : false;
+		const inEditMode = _isDirty ? true : false;
 
 		const link = `/${uri}`;
 		
@@ -304,55 +343,61 @@ export default class Topic extends Component{
 		let content;
 
 
-		if(inEditMode){
+		// if(inEditMode){
 
-			content =	<Editor 
-				value={topicContent || ""}
-				readOnly={!inEditMode}
-				name="content"
-				label={inEditMode ? "Содержимое публикации" : undefined}
-				error={errors && errors.content ? true : false}
-				helperText={errors && errors.content || ""}
-				onChange={this.onChange}
-				onFocus={() => this.onFocus('content')}
-			/>
+		// 	content =	<Editor 
+		// 		value={topicContent || ""}
+		// 		readOnly={!inEditMode}
+		// 		name="content"
+		// 		label={inEditMode ? "Содержимое публикации" : undefined}
+		// 		error={errors && errors.content ? true : false}
+		// 		helperText={errors && errors.content || ""}
+		// 		onChange={this.onChange}
+		// 		onFocus={() => this.onFocus('content')}
+		// 	/>
 
-		}
-		else if(open){
+		// }
+		// else if(open){
 
-			// content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
-			content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
+		// 	// content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
+		// 	content = <div dangerouslySetInnerHTML={{__html: topicContent}}></div>;
 
-		}
-		else{
+		// }
+		// else{
 
-			content = <div>
+		// 	content = <div>
 
-				<span dangerouslySetInnerHTML={{__html: short_text || summary}} />
+		// 		<span dangerouslySetInnerHTML={{__html: short_text || summary}} />
 
-				{/*<Editor 
-					value={short_text || summary || topicContent || ""}
-				/>*/}
+		// 		{/*<Editor 
+		// 			value={short_text || summary || topicContent || ""}
+		// 		/>*/}
 
-				{short_text != topicContent 
-					? 
-					<IconButton 
-						onClick={() => {
-							this.setState({
-								open: true,
-							});
-						}}
-					>
-						<MoreIcon
-						/>
-					</IconButton>
-					:
-					null
-				}
+		// 		{short_text != topicContent 
+		// 			? 
+		// 			<IconButton 
+		// 				onClick={() => {
+		// 					this.setState({
+		// 						open: true,
+		// 					});
+		// 				}}
+		// 			>
+		// 				<MoreIcon
+		// 				/>
+		// 			</IconButton>
+		// 			:
+		// 			null
+		// 		}
 
-			</div>;
+		// 	</div>;
 
-		}
+		// }
+
+
+		content = <Editor 
+			item={item}
+			onChange={::this.onChange}
+		/>
 
 
 		return <Card
@@ -397,7 +442,7 @@ export default class Topic extends Component{
 							
 						</Grid>
 
-						{_Dirty
+						{_isDirty
 							?
 							<Grid
 	      				item

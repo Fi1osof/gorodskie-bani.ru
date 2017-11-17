@@ -961,7 +961,7 @@ fragment ResourceFields on ResourceType{
     lng
   }
   _errors
-  _Dirty
+  _isDirty
 }
 
 fragment Comment on CommentType{
@@ -1674,11 +1674,6 @@ mutation updateCompany(
     ...editVersion
   }
 }
-
-
-
-
-
 
 
 `;

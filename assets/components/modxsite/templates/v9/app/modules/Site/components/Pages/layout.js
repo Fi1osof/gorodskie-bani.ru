@@ -53,25 +53,25 @@ export default class Page extends Component{
 
 		this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
 
-			this.loadData();
+			this.onStoreUpdated(CommentsStore, payload);
 
 		});
 
 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
 
-			this.loadData();
+			this.onStoreUpdated(RatingsStore, payload);
 
 		});
 
 		this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
 
-			this.loadData();
+			this.onStoreUpdated(TopicsStore, payload);
 
 		});
 
 		this.ResourcesStoreListener = ResourcesStore.getDispatcher().register(payload => {
 
-			this.loadData();
+			this.onStoreUpdated(ResourcesStore, payload);
 
 		});
 
@@ -79,7 +79,7 @@ export default class Page extends Component{
 
 			// console.log('UsersStore payload', payload);
 
-			this.loadData();
+			this.onStoreUpdated(UsersStore, payload);
 
 		});
 
@@ -87,17 +87,18 @@ export default class Page extends Component{
 
 			// console.log('UsersStore payload', payload);
 
-			this.loadData();
+			this.onStoreUpdated(EditVersionsStore, payload);
 
 		});
 
-		this.loadData(true);
+		this.loadData();
 			
 		// super.componentDidMount && super.componentDidMount();
 
 		this.setPageTitle();
 
 	}
+
 
 	componentWillUnmount(){
 
@@ -175,12 +176,12 @@ export default class Page extends Component{
 	}
 
 
-
 	componentDidMount(){
 
 		this.forceUpdate();
 
 	}
+
 
   componentDidUpdate(prevProps, prevState, prevContext){
 
@@ -231,6 +232,13 @@ export default class Page extends Component{
     	// console.log("componentDidUpdate page || prevPage", page, prevPage);
 
     }
+
+  }
+
+
+  onStoreUpdated(store, payload){
+
+  	this.loadData();
 
   }
 

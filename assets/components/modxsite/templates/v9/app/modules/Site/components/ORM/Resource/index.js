@@ -438,15 +438,15 @@ export const ResourceType = new GraphQLObjectType({
         type: GraphQLJSON,
         description: "Ошибки после попытки сохранения",
       },
-      _Dirty: {
+      _isDirty: {
         type: GraphQLJSON,
         description: "Массив измененных данных",
-        resolve: source => {
+        // resolve: source => {
 
-          return source && source._isDirty || null;
-          // return source && source._isDirty ? true : false;
+        //   return source && source._isDirty || null;
+        //   // return source && source._isDirty ? true : false;
 
-        },
+        // },
       },
     }
   }

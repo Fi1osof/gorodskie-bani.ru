@@ -25,7 +25,6 @@ export default class TopicsPage extends Page {
 	}
 
 
-
 	componentWillMount(){
 
 		// const {
@@ -205,8 +204,14 @@ export default class TopicsPage extends Page {
 	}
 	
 
-	loadData(beforeMount){
+	/*
+		Обновление хранилищ на каждый чих - большая нагрузка,
+		поэтому обновляем по логике, заданной в методе onStoreUpdate
+	*/
+	loadData(){
 
+
+		// console.log("TopicsPage loadData");
 
 		// if(typeof window === "undefined"){
 			
@@ -299,6 +304,88 @@ export default class TopicsPage extends Page {
 		// console.log("Resources r", result);
 		
 	}
+
+
+
+	// shouldComponentUpdate(){
+
+	// 	return false;
+	// }
+
+	
+
+  onStoreUpdated(store, payload){
+
+  	// console.log("topics page onStoreUpdated", payload);
+
+  	const {
+  		type,
+  		object,
+  		newObject,
+  	} = payload || {};
+
+
+  	if(
+  		type !== "SET_DATA"
+  		&& type !== "CREATE_OBJECT"
+  	){
+
+			const {
+				// CommentsStore,
+				// RatingsStore,
+				TopicsStore,
+				// ResourcesStore,
+				// UsersStore,
+				// EditVersionsStore,
+			} = this.context;
+
+
+			let {
+				topics,
+			} = this.state;
+
+
+			if(store === TopicsStore){
+
+				// console.log("TopicsStore item", object, newObject, topics && topics.find(n => n.id === object.id));
+
+				const item = object && newObject && topics && topics.find(n => n.id === object.id);
+
+				if(item){
+
+					const newItem = Object.assign({}, item, newObject);
+
+					const index = topics.indexOf(item);
+  			
+  				// this.forceUpdate();
+
+  				if(index !== -1){
+
+  					topics[index] = newItem;
+
+						this.setState({
+							topics,
+						});
+
+  				}
+
+
+				}
+
+				// console.log("TopicsStore update item", newObject, item);
+
+			}
+
+
+
+  		return;
+  	}
+
+  	
+  	return super.onStoreUpdated(store, payload);
+
+  }
+
 
 	getOperationName(){
 		

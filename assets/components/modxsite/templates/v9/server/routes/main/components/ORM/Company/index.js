@@ -334,7 +334,11 @@ const prepareScheduleData = function(schedule){
       
       return n;
 
-    });
+    }).filter(n => n);
+
+    if(!schedule.length){
+      schedule = null;
+    }
 
   }
 

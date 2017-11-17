@@ -14,10 +14,12 @@ export default class ScheduleField extends Component{
 	static propTypes = {
 		item: PropTypes.object.isRequired,
 		field: PropTypes.string.isRequired,
+		showOffDates: PropTypes.bool.isRequired,
 	};
 
 	static defaultProps = {
 		field: "schedule",
+ 		showOffDates: true,				// Показывать выходные дни
 	};
 
 	static contextTypes = {
@@ -38,6 +40,7 @@ export default class ScheduleField extends Component{
 		const {
 			item,
 			field,
+			showOffDates,
 			...other
 		} = this.props;
 
@@ -70,7 +73,7 @@ export default class ScheduleField extends Component{
 
 		schedule = List(schedule || []).filter(n => n);
 
-		[0,1,2,3,4,5,6].map(day => {
+		showOffDates && [0,1,2,3,4,5,6].map(day => {
 
 			if(schedule.findIndex(n => n && n.start && n.start.weekDay === day) === -1){
 				offDates.push(day);
@@ -364,17 +367,19 @@ export default class ScheduleField extends Component{
 			} = end;
 
 			const from = moment(`${startHour}:${startMinute}`, "HH:mm").format("HH:mm");
-			const till = moment(`${endHour}:${endMinute}`, "HH:mm").format("HH:mm");
+			let till = moment(`${endHour}:${endMinute}`, "HH:mm").format("HH:mm");
+
+			till = till === "23:59" ? "00:00" : till;
 
 			let title;
 
 			title = daysArray.join(", ");
 
 			if(title === "Пн-Вс"){
-				title = "";
+				title = "Ежедневно";
 			}
 			else if(title === "Пн-Пт"){
-				title = "Будние";
+				title = "Будни";
 			}
 			else if(title === "Сб, Вс"){
 				title = "Выходные";
@@ -388,7 +393,8 @@ export default class ScheduleField extends Component{
 			daysList.push(<div
 				key={daysList.length}
 				style={{
-					margin: "5px 0",
+					// margin: "5px 0",
+					whiteSpace: "nowrap",
 				}}
 			>
 				{title} {from === "00:00" && till === "00:00" ? "Круглосуточно" : `с ${from} до ${till}`}

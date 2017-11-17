@@ -37,10 +37,13 @@ import Slider from 'react-slick';
 import Editor from 'modules/Site/components/fields/Editor';
 
 import ScheduleEditor from 'modules/Site/components/fields/Schedule/Editor';
+import Schedule from 'modules/Site/components/fields/Schedule';
 
 // import GoogleMapReact from 'google-map-react';
 
 import RatingField from './fields/Rating';
+
+import SchedulesList from 'modules/Site/components/fields/Schedule/List';
 
 // import locale from 'moment/src/locale/ru';
 import moment from 'moment';
@@ -51,6 +54,21 @@ if(typeof window !== "undefined"){
 
 
 import EditVersions from 'modules/Site/components/Pages/EditVersions';
+
+import {
+	WWW as SiteIcon,
+	Mail as EmailIcon,
+	Phone as PhoneIcon,
+	Address as AddressIcon,
+	Metro as MetroIcon,
+	Clock as ClockIcon,
+	Price as PriceIcon,
+	Man as ManIcon,
+	Woman as WomanIcon,
+	Family as FamilyIcon,
+} from 'modules/Site/components/IconPack';
+
+import Site from 'modules/Site/components/fields/Site';
 
 export default class CompanyPage extends Component{
 
@@ -555,12 +573,155 @@ export default class CompanyPage extends Component{
 			comments,
 			editedon,
 			editVersions,
+			schedule,
+			schedule_men,
+			schedule_women,
+			schedule_family,
 			_errors: errors,
 			_isDirty,
 		// } = item;
 		} = itemData;
 
-		let schedules;
+		// let schedules = [];
+
+		const schedulesContent = <SchedulesList
+			item={item}
+		/>;
+
+		// const scheduleBlockProps = {
+		// 	item: true,
+		// 	xs: 12,
+		// 	sm: true,
+		// };
+
+		// schedule && schedules.push(<Grid
+		// 	key="schedule"
+		// 	{...scheduleBlockProps}
+		// >
+
+		// 	<Grid
+		// 		container
+		// 		gutter={0}
+		// 	>
+				
+		// 		<ClockIcon />
+
+		// 		<span
+		// 			style={{
+		// 				paddingLeft: 5,
+		// 				paddingRight: 3,
+		// 			}}
+		// 		>Время работы</span>
+		// 	</Grid>
+
+		// 	<Schedule 
+		// 		item={item}
+		// 		field="schedule"
+		// 		style={{
+		// 			padding: 2,
+		// 		}}
+		// 	/>
+		// </Grid>);
+
+		// schedule_men && schedules.push(<Grid
+		// 	key="schedule_men"
+		// 	{...scheduleBlockProps}
+		// >
+		// 	<Grid
+		// 		container
+		// 		gutter={0}
+		// 	>
+
+		// 		{this.iconSprite(ManIcon, ClockIcon)}
+
+		// 		<span
+		// 			style={{
+		// 				paddingLeft: 5,
+		// 				paddingRight: 3,
+		// 			}}
+		// 		>Мужские дни</span>
+		// 	</Grid>
+
+		// 	<Schedule 
+		// 		item={item}
+		// 		field="schedule_men"
+		// 		showOffDates={false}
+		// 		style={{
+		// 			padding: 2,
+		// 		}}
+		// 	/>
+		// </Grid>);
+
+		// schedule_women && schedules.push(<Grid
+		// 	key="schedule_women"
+		// 	{...scheduleBlockProps}
+		// >
+		// 	<Grid
+		// 		container
+		// 		gutter={0}
+		// 	>
+				
+			
+		// 		{this.iconSprite(WomanIcon, ClockIcon)}
+
+		// 		<span
+		// 			style={{
+		// 				paddingLeft: 5,
+		// 				paddingRight: 3,
+		// 			}}
+		// 		>Женские дни</span>
+		// 	</Grid>
+
+		// 	<Schedule 
+		// 		item={item}
+		// 		field="schedule_women"
+		// 		showOffDates={false}
+		// 		style={{
+		// 			padding: 2,
+		// 		}}
+		// 	/>
+		// </Grid>);
+
+		// schedule_family && schedules.push(<Grid
+		// 	key="schedule_family"
+		// 	{...scheduleBlockProps}
+		// >
+		// 	<Grid
+		// 		container
+		// 		gutter={0}
+		// 	>
+				
+		// 		{this.iconSprite(FamilyIcon, ClockIcon)}
+
+		// 		<span
+		// 			style={{
+		// 				paddingLeft: 5,
+		// 				paddingRight: 3,
+		// 			}}
+		// 		>Семейные дни</span>
+		// 	</Grid>
+
+		// 	<Schedule 
+		// 		item={item}
+		// 		field="schedule_family"
+		// 		showOffDates={false}
+		// 		style={{
+		// 			padding: 2,
+		// 		}}
+		// 	/>
+		// </Grid>);
+
+		// if(schedules && schedules.length){
+
+		// 	schedulesContent = <Grid
+		// 		container
+		// 		gutter={16}
+		// 	>
+		// 		{schedules}
+		// 	</Grid>;
+
+		// }						
+
 
 		const inEditMode = _isDirty ? true : false;
 
@@ -763,8 +924,8 @@ export default class CompanyPage extends Component{
 				// }
 
 				galleryItems.push(<img 
-					// key={index}
-					key={original}
+					key={index}
+					// key={original}
 					src={galleryExpanded ? big : slider_thumb}
 					// src={original}
 					style={{
@@ -1022,6 +1183,7 @@ export default class CompanyPage extends Component{
 									style={{
 										cursor: 'pointer',
 										marginRight: 10,
+										marginBottom: 10,
 									}}
 									// onClick={event => {
 									// 	this.setState({
@@ -1133,9 +1295,21 @@ export default class CompanyPage extends Component{
 									onFocus={() => this.onFocus('address')}
 								/>
 							:
-							addresses.length ? <p>
-								<b>Адрес: </b> {addresses.reduce((prev, curr) => [prev, ', ', curr])}
-							</p> : ''
+							addresses.length ? <Grid
+								container
+								gutter={0}
+								style={{
+									marginBottom: 5,
+								}}
+								align="center"
+							>
+								<AddressIcon /> <span
+									style={{
+										paddingLeft: 5,
+										paddingRight: 3,
+									}}
+								>Адрес:</span> {addresses.reduce((prev, curr) => [prev, ', ', curr])}
+							</Grid> : ''
 						}
 
 						
@@ -1151,9 +1325,21 @@ export default class CompanyPage extends Component{
 								onFocus={() => this.onFocus('metro')}
 							/>
 							:
-							metro ? <p>
-								<b>Метро: </b> {metro}
-							</p> 
+							metro ? <Grid
+								container
+								gutter={0}
+								style={{
+									marginBottom: 5,
+								}}
+								align="center"
+							>
+								<MetroIcon /> <span
+									style={{
+										paddingLeft: 5,
+										paddingRight: 3,
+									}}
+								>Метро:</span> {metro}
+							</Grid>
 							: ''
 						}
 						
@@ -1168,11 +1354,23 @@ export default class CompanyPage extends Component{
 								onFocus={() => this.onFocus('phones')}
 							/>
 							:
-							phones ? <p>
-								<b>Телефон: </b> {phones.split(/,|;/).map(n => n && n.trim()).filter(n => n).map(phone => {
+							phones ? <Grid
+								container
+								gutter={0}
+								style={{
+									marginBottom: 5,
+								}}
+								align="center"
+							>
+								<PhoneIcon /> <span
+									style={{
+										paddingLeft: 5,
+										paddingRight: 3,
+									}}
+								>Телефон:</span> {phones.split(/,|;/).map(n => n && n.trim()).filter(n => n).map(phone => {
 									return phone && phone.length > 8 ? <a href={`tel:${phone}`}>{phone}</a> : phone;
 								}).reduce((a,b) => [a,", ",b])}
-							</p> 
+							</Grid>
 							: ''
 						}
 						
@@ -1187,13 +1385,30 @@ export default class CompanyPage extends Component{
 								onFocus={() => this.onFocus('site')}
 							/>
 							:
-							site ? <p>
-								<b>Сайт: </b> <a 
-									href={/^https?:/.test(site) ? site : `http://${site}`} 
-									target="_blank" 
-									rel={approved ? "follow" : "nofollow"}
-								>{site}</a>
-							</p> 
+							// site ? <p>
+							// 	<b>Сайт: </b> <a 
+							// 		href={/^https?:/.test(site) ? site : `http://${site}`} 
+							// 		target="_blank" 
+							// 		rel={approved ? "follow" : "nofollow"}
+							// 	>{site}</a>
+							// </p> 
+							site ? <Grid
+								container
+								gutter={0}
+								style={{
+									marginBottom: 5,
+								}}
+								align="center"
+							>
+								<SiteIcon /> <span
+									style={{
+										paddingLeft: 5,
+										paddingRight: 3,
+									}}
+								>Сайт:</span> <Site 
+									item={item}
+								/>
+							</Grid>
 							: ''
 						}
 						
@@ -1213,16 +1428,28 @@ export default class CompanyPage extends Component{
 							null
 
 							:
-							work_time || schedules ? <div
+							work_time || (schedules && schedules.length) ? <div
 								style={{
 									overflow: 'hidden',
 								}}
 							>
-								<b
-									style={{
-										float: 'left',
-									}}
-								>Время работы&nbsp;</b>
+
+								{schedulesContent
+									?
+									schedulesContent
+									:
+									<Grid
+										container
+										gutter={0}
+									>
+										<ClockIcon /> <span
+											style={{
+												paddingLeft: 5,
+												paddingRight: 3,
+											}}
+										>Время работы</span>
+									</Grid>
+								}
 
 								<div
 									dangerouslySetInnerHTML={{ __html: work_time }}
@@ -1276,11 +1503,19 @@ export default class CompanyPage extends Component{
 											overflow: 'hidden',
 										}}
 									>
-										<b
-											style={{
-												float: 'left',
-											}}
-										>Цены:&nbsp;</b> 
+										<Grid
+											container
+											gutter={0}
+											align="center"
+										>
+											<PriceIcon /> <span
+												style={{
+													paddingLeft: 5,
+													paddingRight: 3,
+												}}
+											>Цены</span>
+										</Grid>
+
 										<div
 											dangerouslySetInnerHTML={{ __html: prices }}
 										/>
@@ -1342,18 +1577,32 @@ export default class CompanyPage extends Component{
 
       	case 2:
 
-      		tabContent = <div>
+      		tabContent = <div
+      			style={{
+      				paddingTop: 20,
+      			}}
+      		>
 
-						<Editor
-							label="Уточнение к графику работы"
-							error={errors && errors.work_time ? true : false}
-							helperText={errors && errors.work_time || "Например, время работы кассы"}
-							name="work_time"
-							value={work_time || ""}
-							// multiline
-							onChange={this.onChange}
-							onFocus={() => onFocus && onFocus('work_time')}
-						/>
+        		{schedulesContent}
+
+        		<div
+	      			style={{
+	      				paddingTop: 20,
+	      			}}
+      			>
+        			
+							<Editor
+								label="Уточнение к графику работы"
+								error={errors && errors.work_time ? true : false}
+								helperText={errors && errors.work_time || "Например, время работы кассы"}
+								name="work_time"
+								value={work_time || ""}
+								// multiline
+								onChange={this.onChange}
+								onFocus={() => this.onFocus('work_time')}
+							/>
+
+        		</div>
 
       			<ScheduleEditor
 							item={item}

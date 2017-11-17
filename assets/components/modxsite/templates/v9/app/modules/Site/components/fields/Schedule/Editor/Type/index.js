@@ -44,10 +44,10 @@ export default class ScheduleEditorTypeField extends Component{
 
 		return <div>
 			
-			<Schedule 
+			{/*<Schedule 
 				item={item}
 				field={field}
-			/>
+			/>*/}
 
 			<ReactSchedule 
 				days={schedule || []}

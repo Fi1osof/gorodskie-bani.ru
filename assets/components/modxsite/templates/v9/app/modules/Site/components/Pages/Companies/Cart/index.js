@@ -11,7 +11,9 @@ import {Link} from 'react-router';
 
 import Stars from 'modules/Site/components/Pages/Companies/Company/fields/Rating/Stars';
 
-import Schedule from 'modules/Site/components/fields/Schedule';
+// import Schedule from 'modules/Site/components/fields/Schedule';
+
+import SchedulesList from 'modules/Site/components/fields/Schedule/List';
 
 export default class CompanyListCart extends Component{
 
@@ -130,9 +132,13 @@ export default class CompanyListCart extends Component{
 							{address}
 						</p>
 									
-						<Schedule 
+						<SchedulesList 
 							item={item}
 							className="text default"
+							// scheduleBlockProps={{
+							// 	item: true,
+							// 	xs: 12
+							// }}
 						/>
 
 					</div>

@@ -28,9 +28,22 @@ export default class ContactsPage extends Page{
 		>
 			<h4>
 				
-				По всем вопросам обращайтесь на почту <a href="mailto:info@gorodskie-bani.ru">info@gorodskie-bani.ru</a>
+				Представителям организаций
 				
 			</h4>
+
+			<p
+				className="text default"
+			>
+				Уважаемые партнеры, Вы можете самостоятельно и совершенно бесплатно разместить информацию о своей организации на страницах нашего портала.
+			</p>
+
+			<p
+				className="text default"
+			>
+				По всем вопросам обращайтесь на почту <a href="mailto:info@gorodskie-bani.ru">info@gorodskie-bani.ru</a>
+			</p>
+
 		</Paper>
 	}
 }

@@ -1428,7 +1428,7 @@ export default class CompanyPage extends Component{
 							null
 
 							:
-							work_time || (schedules && schedules.length) ? <div
+							work_time || schedulesContent ? <div
 								style={{
 									overflow: 'hidden',
 								}}

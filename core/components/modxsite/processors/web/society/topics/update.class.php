@@ -63,6 +63,12 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
         $this->setDefaultProperties(array(
             "links_follow"  => 0,       // Индексируемые ссылки
         ));
+
+        $content = $this->getProperty("content");
+
+        if(isset($content)){
+            $this->setProperty("content", json_encode($content));
+        }
         
         return parent::initialize();
     }

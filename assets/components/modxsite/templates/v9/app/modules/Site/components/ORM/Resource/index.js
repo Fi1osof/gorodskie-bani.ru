@@ -83,6 +83,14 @@ export const ResourceType = new GraphQLObjectType({
       content: {
         type: GraphQLString
       },
+      editor_content: {
+        type: GraphQLJSON,
+        description: "Содержимое редактора",
+      },
+      plainText: {
+        type: GraphQLString,
+        description: "Чистый текст документа",
+      },
       alias: {
         type: GraphQLString
       },

@@ -1,7 +1,6 @@
 
 const defaultQuery = `
 
-
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -899,6 +898,8 @@ fragment Resource on ResourceType{
   ...ResourceFields
   
   content @include(if:$resourceGetContent)
+  editor_content @include(if:$resourceGetContent)
+  plainText @include(if:$resourceGetContent)
   
   Author @include(if:$resourceGetAuthor)
   {
@@ -1674,6 +1675,11 @@ mutation updateCompany(
     ...editVersion
   }
 }
+
+
+
+
+
 
 
 `;

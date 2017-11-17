@@ -57,7 +57,8 @@ export default class MyComponent extends Component{
 
 		const {
 			id,
-			content:topicContent,
+			// content:topicContent,
+			editor_content,
 			_errors: errors,
 			_Dirty,
 		} = item;
@@ -65,7 +66,7 @@ export default class MyComponent extends Component{
 		return <Editor
 			{...other}
 			name="content"
-			value={topicContent}
+			value={editor_content}
 		/>
 	}
 }

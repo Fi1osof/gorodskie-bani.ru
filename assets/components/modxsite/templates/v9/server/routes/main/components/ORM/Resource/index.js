@@ -208,6 +208,7 @@ export const getList = (object, args, context, info) => {
             hidemenu,
             searchable,
             published,
+            content,
           } = object;
 
           // console.log("Resource server data", {
@@ -279,6 +280,22 @@ export const getList = (object, args, context, info) => {
               searchable: parseInt(searchable) === 1 ? true : false,
               published: parseInt(published) === 1 ? true : false,
             });
+
+          }
+
+          if(content){
+
+            try{
+              const editor_content = JSON.parse(content);
+
+              Object.assign(object, {
+                editor_content,
+              });
+
+            }
+            catch(e){
+              console.error(e);
+            };
 
           }
           

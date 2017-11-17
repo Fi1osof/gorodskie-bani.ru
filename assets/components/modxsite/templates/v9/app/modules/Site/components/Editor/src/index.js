@@ -25,6 +25,7 @@ import {
 	convertFromHTML,
 	ContentState,
   convertToRaw, 
+  convertFromRaw,
 } from 'draft-js';
 
 // import customPropTypes from 'material-ui/utils/customPropTypes';
@@ -58,11 +59,79 @@ export class TextField extends Component {
 		//   blocksFromHTML.entityMap
 		// );
 
+
+    const editorState = this.initEditState(value); 
+
 		this.state = {
   		// editorState: EditorState.createWithContent(state),
+  		editorState,
 		};
 
 	}
+
+  initEditState(content){
+    var editorState;
+ 
+
+    var state = null;
+
+    // if(content && typeof content == "string"){ 
+
+    //   /*
+    //   * Пытаемся распарсить JSON
+    //   * */
+    //   try{
+    //     var json = JSON.parse(content);
+
+    //     if(json){
+    //       content = json;
+    //     }
+    //   }
+    //   catch(e){
+
+    //   }
+
+    //   if(!content.blocks){
+    //     // if(typeof window != "undefined"){
+    //     // }
+
+    //     if(typeof window != "undefined"){
+    //       var blocks = convertFromHTML(content);
+    //       state = ContentState.createFromBlockArray(blocks);
+    //     }
+
+    //     /*
+    //       В роутере server-side прописана функция виртуализации DOM.
+    //       https://github.com/facebook/draft-js/issues/586#issuecomment-300347678
+    //     */
+    //     else if(global.serverDOMBuilder){
+
+    //       const blocks = convertFromHTML(content, global.serverDOMBuilder);
+    //       // const blocks = global.serverDOMBuilder(content, convertFromHTML);
+
+    //       state = ContentState.createFromBlockArray(blocks);
+    //     }
+    //   }
+    // }
+
+    if(!state && content && content.blocks){
+      state = convertFromRaw(content);
+    }
+ 
+    if(state){
+      editorState = EditorState.createWithContent(state);
+    }
+    else{
+      editorState = EditorState.createEmpty();
+    }
+ 
+
+
+    // return EditorState.set(editorState, {decorator: decorator});
+
+
+    return editorState;
+  }
 
 
 	onEditorChange(editorState){
@@ -77,8 +146,13 @@ export class TextField extends Component {
 		// 	value = "";
 		// }
     
+
+    let currentContent = editorState.getCurrentContent();
+    var plainText = currentContent.getPlainText(); 
+
+
     // const value = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-    const value = convertToRaw(editorState.getCurrentContent());
+    const value = convertToRaw(currentContent);
     // const value = "";
 
 		const {
@@ -93,6 +167,13 @@ export class TextField extends Component {
 			target: {
 				name,
 				value,
+			},
+		});
+
+		onChange && onChange({
+			target: {
+				name: "plainText",
+				value: plainText,
 			},
 		});
 

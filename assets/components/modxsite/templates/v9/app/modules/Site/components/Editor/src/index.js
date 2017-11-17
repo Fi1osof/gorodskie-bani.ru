@@ -1,5 +1,7 @@
 // @flow
 
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
 import React, { Component } from 'react';
 import type { Element } from 'react';
 import Input, { InputLabel } from 'material-ui/Input';
@@ -22,6 +24,7 @@ import {
 	EditorState,
 	convertFromHTML,
 	ContentState,
+  convertToRaw, 
 } from 'draft-js';
 
 // import customPropTypes from 'material-ui/utils/customPropTypes';
@@ -74,8 +77,9 @@ export class TextField extends Component {
 		// 	value = "";
 		// }
     
-  //   const value = JSON.stringify(convertToRaw(currentContent));
-    const value = "";
+    // const value = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
+    const value = convertToRaw(editorState.getCurrentContent());
+    // const value = "";
 
 		const {
 			onChange,

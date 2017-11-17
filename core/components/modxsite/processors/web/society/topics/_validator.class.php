@@ -10,12 +10,6 @@ class modWebSocietyTopicsValidator extends modWebValidator{
         $topic = & $this->object;
         $attributes = & $topic->Attributes;
         
-        /*foreach( $this->object->TopicBlogs as $o){
-            print_r($o->Blog->toArray());
-        }
-        
-        exit;*/
-        
         $topic->pagetitle = strip_tags($topic->pagetitle);
         $topic->longtitle = strip_tags($topic->longtitle);
         
@@ -29,8 +23,6 @@ class modWebSocietyTopicsValidator extends modWebValidator{
         foreach($this->object->TopicBlogs as $TopicBlog){
             
             $blog = $TopicBlog->Blog;
-            
-            //print_r($TopicBlog->toArray());
             
             if(!$blog instanceof SocietyBlog){
                 return "Публиковать топики можно только в блоги";
@@ -49,22 +41,16 @@ class modWebSocietyTopicsValidator extends modWebValidator{
         $topic_tags = array();
         if($this->object->Tags){
             foreach($this->object->Tags as $tag){
-                # print_r($tag->toArray());
                 if($tag->active){
                     $topic_tags[] = $tag->tag;
                 }
             }
         }
         if(!$topic_tags){
-            # $error = "Не указан ни один тег";
-            // $error = $this->modx->lexicon('topic_post.error.type_topic_tags');
-            // $this->addFieldError('topic_tags', $error);
-            // return $error;
         }
         else{
             // Иначе сохраняем активные теги в топик
             $attributes->topic_tags = implode(",", $topic_tags);
-            // print $this->object->topic_tags;
         }
         
         
@@ -72,22 +58,6 @@ class modWebSocietyTopicsValidator extends modWebValidator{
         $content = $topic->content;
         
         $attributes->raw_content = $content;
-        
-        # $content = str_replace(array(
-        #     "<?"
-        # ), array(
-        #     "&lt;"
-        # ), $content);
-        # 
-        # $content = strip_tags($content, '<strong><composite><composite><model><object><field><code><pre><cut><p><a><h4><h5><h6><img><b><em><i><s><u><hr><blockquote><table><tr><th><td><ul><li><ol>');
-        # 
-        # 
-        # // Реплейсим переносы
-        # $content = preg_replace("/[\r\n]{3,}/", "<br /><br />", $content);
-        # $content = preg_replace("/\r/", "<br />", $content);
-        # 
-        # $content = preg_replace('/<code>(.+?)<\/code>/sim', "<pre class=\"prettyprint\"><code>$1</code></pre>", $content);
-        
         
         $jevix = $this->modx->getService('modJevix','modJevix', MODX_CORE_PATH . 'components/modjevix/model/modJevix/');
         
@@ -112,30 +82,13 @@ class modWebSocietyTopicsValidator extends modWebValidator{
         }
         
         
-        # $content_cut = explode("<cut>", $content, 2);
-        # $short_text = $content_cut[0];
-        # $attributes->short_text = $short_text;
-        
-        
         /**
 		 * Получаемый и устанавливаем разрезанный текст по тегу <cut>
 		 */
 		list($sTextShort,$sTextNew,$sTextCut) = $this->Cut($content);
-
-        
-		# $oTopic->setCutText($sTextCut);
-		# $oTopic->setText($this->Text_Parser($sTextNew));
-		# $oTopic->setTextShort($this->Text_Parser($sTextShort));
-        
-        
-        # exit;
         
         $topic->content = $sTextNew;
         $attributes->short_text = $sTextShort;
-        
-        # print $sTextNew;
-        # 
-        # exit;
         
         return parent::validate();
     }

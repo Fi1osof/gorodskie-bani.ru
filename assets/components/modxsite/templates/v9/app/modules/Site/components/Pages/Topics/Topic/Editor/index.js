@@ -62,8 +62,9 @@ export default class MyComponent extends Component{
 			_Dirty,
 		} = item;
 
-		return <Editor 
+		return <Editor
 			{...other}
+			name="content"
 			value={topicContent}
 		/>
 	}

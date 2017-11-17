@@ -18,8 +18,7 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
 
         if(!$this->modx->user->id){
             return "Необходимо авторизоваться";
-        }
-        
+        }        
 
         $request_body = file_get_contents('php://input');
 

@@ -244,12 +244,13 @@ export default class Topic extends Component{
 
 		let data = {};
 
-		// console.log("onChange item", item);
 
 		const {
 			name,
 			value,
 		} = event.target;
+
+		console.log("onChange item", name, value);
 
 		this.clearErrors(name);
 

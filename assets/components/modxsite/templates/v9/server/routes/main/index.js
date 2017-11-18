@@ -1083,8 +1083,8 @@ export default class Router {
         // console.log("REG connection.remoteAddress", req.headers['x-real-ip']);
 
         let ip = req.headers['x-real-ip'];
-        
-        if(!ip || ip === "127.0.0.1"){
+
+        if(!ip || /^127./.test(ip)){
 
           ip = "178.219.186.12";
           // ip = "109.184.14.163";
@@ -1092,6 +1092,17 @@ export default class Router {
         }
 
         let geo = geoip.lookup(ip);
+
+        if(!geo){
+          geo = { range: [ 3000743936, 3000744959 ],
+            country: 'RU',
+            region: '48',
+            city: 'Moscow',
+            ll: [ 55.7485, 37.6184 ],
+            metro: 0,
+            zip: 101194,
+          };
+        }
 
         Object.assign(state.document, {
           apiData,

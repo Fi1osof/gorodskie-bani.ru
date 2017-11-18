@@ -220,6 +220,16 @@ export class TextField extends Component {
 			    // superscript: { icon: superscript, className: undefined, title: undefined },
 			    // subscript: { icon: subscript, className: undefined, title: undefined },
 			  },
+			  link: {
+			    // inDropdown: false,
+			    // className: undefined,
+			    // component: undefined,
+			    // popupClassName: undefined,
+			    // dropdownClassName: undefined,
+			    showOpenOptionOnHover: readOnly ? false : true,
+			    defaultTargetOption: '_blank',
+			    // options: ['link', 'unlink'],
+			  },
 			}}
   	/>;
 

@@ -51,7 +51,12 @@ export default class MyComponent extends Component{
 			item,
 			onFocus,
 			onChange,
+			readOnly,
 		} = this.props;
+
+		if(readOnly){
+			return;
+		}
 
 
 		if(!item){

@@ -25,6 +25,22 @@ import jsdom from 'jsdom';
 
 const { JSDOM } = jsdom;
 
+
+const w = (new JSDOM(`<!DOCTYPE html>`)).window;
+
+const {
+    document,
+    HTMLElement,
+    HTMLAnchorElement,
+    HTMLImageElement,
+} = w;
+
+global.document = document;
+global.HTMLElement = HTMLElement;
+global.HTMLAnchorElement = HTMLAnchorElement;
+global.HTMLImageElement = HTMLImageElement;
+
+    
 let {
   connection: {
     prefix,
@@ -132,20 +148,6 @@ export default class Response{
 
 
   serverDOMBuilder(html){
-
-    const w = (new JSDOM(`<!DOCTYPE html>`)).window;
-
-    const {
-        document,
-        HTMLElement,
-        HTMLAnchorElement,
-        HTMLImageElement,
-    } = w;
-
-    global.document = document;
-    global.HTMLElement = HTMLElement;
-    global.HTMLAnchorElement = HTMLAnchorElement;
-    global.HTMLImageElement = HTMLImageElement;
 
     const doc = document.implementation.createHTMLDocument('div');
 

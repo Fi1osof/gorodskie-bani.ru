@@ -28,6 +28,9 @@ const {
 } = Draft;
 
 
+let contentCache = [];
+
+
 import ObjectType, {order} from '../';
 import ModelObject from '../model';
 
@@ -225,11 +228,13 @@ export const getList = (object, args, context, info) => {
         data.object.map(object => {
 
           const {
+            id,
             deleted,
             hidemenu,
             searchable,
             published,
             content,
+            template,
           } = object;
 
           // console.log("Resource server data", {
@@ -304,50 +309,79 @@ export const getList = (object, args, context, info) => {
 
           }
 
-          if(content){
+          if(content && [15, 28].indexOf(parseInt(template)) !== -1){
+
+            // for(var i in contentCache){
+
+            //   console.log('contentCache length i', i);
+
+            // }
+
 
             let editor_content;
 
-            try{
-              
-              editor_content = JSON.parse(content);
+
+            // let contentCache = contentCache[id];
+
+            if(
+              contentCache 
+              && contentCache[id]
+              && contentCache[id].content === content
+            ){
+
+              editor_content = contentCache[id].editor_content;
 
             }
-            catch(e){
-              
-              // console.error(e);
+            else{
 
               try{
-
-                const {
-                  serverDOMBuilder,
-                } = context;
-
-                // console.log('serverDOMBuilder', serverDOMBuilder);
-
-                const blocks = convertFromHTML(content, serverDOMBuilder);
-
-                // console.log('blocks', blocks);
-
-                if(blocks){
-
-                  const state = ContentState.createFromBlockArray(blocks);
-
-                  editor_content = convertToRaw(state);
-
-                  // editor_content = state && state.getCurrentContent();
-
-                }
-
+                
+                editor_content = JSON.parse(content);
 
               }
               catch(e){
+                
+                // console.error(e);
 
-                console.error(e);
+                try{
 
-              }
+                  const {
+                    serverDOMBuilder,
+                  } = context;
 
-            };
+                  // console.log('serverDOMBuilder', serverDOMBuilder);
+
+                  const blocks = convertFromHTML(content, serverDOMBuilder);
+
+                  // console.log('blocks', blocks);
+
+                  if(blocks){
+
+                    const state = ContentState.createFromBlockArray(blocks);
+
+                    editor_content = convertToRaw(state);
+
+                    // editor_content = state && state.getCurrentContent();
+
+                  }
+
+
+                }
+                catch(e){
+
+                  console.error(e);
+
+                }
+
+              };
+
+              contentCache[id] = {
+                content,
+                editor_content,
+              };
+
+            }
+
 
             Object.assign(object, {
               editor_content,

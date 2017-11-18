@@ -191,6 +191,41 @@ class Gallery extends Component{
   }
 
 
+  handleDelete(event, index){
+
+    // console.log("handleDelete", index);
+
+    const {
+      item,
+    } = this.props;
+
+    if(!item){
+      return false;
+    }
+
+    let {
+      gallery,
+    } = item;
+
+    if(!gallery){
+      return;
+    }
+
+    // const index = gallery.indexOf(image);
+
+    // console.log("handleDelete", index, gallery);
+
+    if(index !== -1){
+      gallery.splice(index, 1);
+
+      this.updateItem({
+        gallery,
+      });
+    }
+
+  }
+
+
 	render(){
 
 		let {
@@ -288,6 +323,9 @@ class Gallery extends Component{
             draggableImage: image.src,
           });
         }}
+        handleDelete={event => {
+          this.handleDelete(event, index);
+        }}
         onEndDrag={(image) => {
 
           // console.log('onEndDrag', image, newIndex, gallery.find(n => n === image.src));
@@ -302,30 +340,9 @@ class Gallery extends Component{
             let originalIndex = gallery.indexOf(n => n === draggableImage);
 
             if(newIndex != originalIndex){
-              // let newGalleryState = [];
-
-              // imagesArray.map(item => {
-              //   // console.log('onEndDrag item', item);
-              //   newGalleryState.push(item.src);
-              // });
-
-              // gallery = newGalleryState;
-
-              // // console.log('onEndDrag gallery', itemExtends.gallery, gallery);
-
-              // this.updateItem({
-              //   extended: {
-              //     gallery: newGalleryState,
-              //   },
-              //   editedGallery: newGalleryState,
-              // });
-
-              // // store.getDispatcher().dispatch(store.actions['SET_DATA'], imagesArray);
-
-              // this.forceUpdate();
 
               gallery.splice(newIndex, 0, gallery.splice(index, 1)[0]);
-              
+
               this.updateItem({
                 gallery,
               });

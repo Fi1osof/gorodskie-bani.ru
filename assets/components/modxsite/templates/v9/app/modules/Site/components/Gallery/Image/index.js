@@ -84,6 +84,7 @@ class GalleryImage extends Component{
 			image,
 			checked,
 			onSelectImage,
+			handleDelete,
 		} = this.props;
 
 		let {dragging} = this.state;
@@ -112,10 +113,12 @@ class GalleryImage extends Component{
 					}}
 				/>*/}
 
-				<IconButton>
+				{handleDelete && <IconButton
+					onClick={handleDelete}
+				>
 					<DeleteIcon 
 					/>	
-				</IconButton>
+				</IconButton> || null}
 
 			</div>
 
@@ -142,6 +145,7 @@ GalleryImage.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   onStartDrag: PropTypes.func.isRequired,
   onEndDrag: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired
 }
 

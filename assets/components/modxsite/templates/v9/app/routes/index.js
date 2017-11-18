@@ -172,7 +172,7 @@ let routes = {
       component: MainPage
     },
     {
-      "path":"/moscow",
+      // "path":"/moscow",
       // "component":MainPage,
       component: CompaniesPage,
       childRoutes: [

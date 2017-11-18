@@ -14,9 +14,14 @@ import Uploader from './Component';
 import './styles/styles.less';
 import GalleryImageWrapper from './Image/wrapper';
 
-const defaultProps = {}
-
 class Gallery extends Component{
+
+
+  static propTypes = {
+    onSelectContactImage: PropTypes.func.isRequired,
+    updateItem: PropTypes.func.isRequired,
+    item: PropTypes.object.isRequired,
+  };
 
   static contextTypes = {
     connector_url: PropTypes.string.isRequired,
@@ -45,6 +50,18 @@ class Gallery extends Component{
     if(this.props.debug){
       console.log("Gallery componentDidUpdate", this);
     }
+  }
+
+
+  updateItem(data){
+
+    const {
+      item,
+      updateItem,
+    } = this.props;
+
+    updateItem(item, data);
+
   }
 
  
@@ -115,38 +132,6 @@ class Gallery extends Component{
                   },
                 });
 
-                // let {
-                //   _selectedImages,
-                //   extended,
-                // } = item;
-
-                // extended = extended || {};
-
-                // let {
-                //   gallery,
-                // } = extended;
-
-                // gallery = gallery || [];
-
-                // gallery.unshift(link);
-
-                // Object.assign(extended, {
-                //   gallery,
-                // });
-
-                // item.update({
-                //   // _selectedImages: undefined,
-                //   editedGallery: gallery,
-                //   extended,
-                // });
-
-                // item.update({
-                //   extended: {
-                //     gallery: newGalleryState,
-                //   },
-                //   editedGallery: newGalleryState,
-                // });
-
                 this.setState({
                 	expanded: false,
                 });
@@ -198,7 +183,7 @@ class Gallery extends Component{
 
     // onSelectContactImage(image);
 
-    item.update({
+    this.updateItem({
       _selectedImages,
     }, true);
 
@@ -289,10 +274,10 @@ class Gallery extends Component{
       }
     }
 
-		imagesArray.map(image => {
+		imagesArray.map((image, index) => {
 			images.push(<GalleryImageWrapper 
         // key={image.src || images.length}
-				key={image.src}
+				key={index}
         image={image}
         onSelectImage={this.onSelectImage}
         checked={_selectedImages.find(i => {return i == image.src}) ? true : false}
@@ -317,28 +302,38 @@ class Gallery extends Component{
             let originalIndex = gallery.indexOf(n => n === draggableImage);
 
             if(newIndex != originalIndex){
-              let newGalleryState = [];
+              // let newGalleryState = [];
 
-              imagesArray.map(item => {
-                // console.log('onEndDrag item', item);
-                newGalleryState.push(item.src);
+              // imagesArray.map(item => {
+              //   // console.log('onEndDrag item', item);
+              //   newGalleryState.push(item.src);
+              // });
+
+              // gallery = newGalleryState;
+
+              // // console.log('onEndDrag gallery', itemExtends.gallery, gallery);
+
+              // this.updateItem({
+              //   extended: {
+              //     gallery: newGalleryState,
+              //   },
+              //   editedGallery: newGalleryState,
+              // });
+
+              // // store.getDispatcher().dispatch(store.actions['SET_DATA'], imagesArray);
+
+              // this.forceUpdate();
+
+              gallery.splice(newIndex, 0, gallery.splice(index, 1)[0]);
+              
+              this.updateItem({
+                gallery,
               });
 
-              gallery = newGalleryState;
-
-              // console.log('onEndDrag gallery', itemExtends.gallery, gallery);
-
-              item.update({
-                extended: {
-                  gallery: newGalleryState,
-                },
-                editedGallery: newGalleryState,
-              });
-
-              // store.getDispatcher().dispatch(store.actions['SET_DATA'], imagesArray);
-
-              this.forceUpdate();
             }
+
+
+            // console.log("Gallery onEndDrag", newIndex);
 
           }
 
@@ -452,14 +447,6 @@ class Gallery extends Component{
       </Grid>
 		</div>;
 	}
-}
-
-Gallery.defaultProps = defaultProps;
-
-Gallery.propTypes = {
-  onSelectContactImage: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired,
-	// store: PropTypes.object.isRequired,
 }
 
 

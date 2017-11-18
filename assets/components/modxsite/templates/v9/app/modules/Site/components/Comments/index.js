@@ -14,7 +14,7 @@ export default class Comments extends Component{
 
 	static propTypes = {
 		comments: PropTypes.array.isRequired,
-		resource: PropTypes.object.isRequired,
+		resource: PropTypes.object,
 	};
 
 	static contextTypes = {
@@ -43,6 +43,10 @@ export default class Comments extends Component{
 		const {
 			resource,
 		} = this.props;
+
+		if(!resource){
+			throw("Не был получен объект документа");
+		}
 
 		const {
 			id: commentTargetId,

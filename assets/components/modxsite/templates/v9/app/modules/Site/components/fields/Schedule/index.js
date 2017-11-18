@@ -381,7 +381,7 @@ export default class ScheduleField extends Component{
 			else if(title === "Пн-Пт"){
 				title = "Будни";
 			}
-			else if(title === "Сб, Вс"){
+			else if(title === "Сб, Вс" && !offDates.length && showOffDates){
 				title = "Выходные";
 			}
 			else{

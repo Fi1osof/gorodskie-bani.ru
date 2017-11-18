@@ -30,7 +30,7 @@ const defaultProps = Object.assign({
 
 
 const propTypes = Object.assign({
-	activeOnly: PropTypes.boolean,
+	activeOnly: PropTypes.bool,
 }, Page.propTypes || {});
 
 

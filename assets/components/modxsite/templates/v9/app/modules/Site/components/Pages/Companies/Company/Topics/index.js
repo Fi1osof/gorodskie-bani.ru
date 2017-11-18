@@ -72,6 +72,7 @@ export default class CompanyTopics extends Component{
 					padding: 15,
 				}}
 				item={topic}
+				open={false}
 				// topic={topic}
 			>
 					

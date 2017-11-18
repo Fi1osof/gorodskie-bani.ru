@@ -1299,7 +1299,7 @@ export default class CompanyPage extends Component{
 								container
 								gutter={0}
 								style={{
-									marginBottom: 5,
+									marginBottom: 10,
 								}}
 								align="center"
 							>
@@ -1329,7 +1329,7 @@ export default class CompanyPage extends Component{
 								container
 								gutter={0}
 								style={{
-									marginBottom: 5,
+									marginBottom: 10,
 								}}
 								align="center"
 							>
@@ -1358,7 +1358,7 @@ export default class CompanyPage extends Component{
 								container
 								gutter={0}
 								style={{
-									marginBottom: 5,
+									marginBottom: 10,
 								}}
 								align="center"
 							>
@@ -1396,7 +1396,7 @@ export default class CompanyPage extends Component{
 								container
 								gutter={0}
 								style={{
-									marginBottom: 5,
+									marginBottom: 10,
 								}}
 								align="center"
 							>
@@ -1441,6 +1441,9 @@ export default class CompanyPage extends Component{
 									<Grid
 										container
 										gutter={0}
+										style={{
+											marginBottom: work_time ? 10 : undefined,
+										}}
 									>
 										<ClockIcon /> <span
 											style={{
@@ -1564,19 +1567,6 @@ export default class CompanyPage extends Component{
 
       	case 1:
 
-      		tabContent = <GalleryEditor
-		        classes={{}}
-		        item={item}
-		        onSelectContactImage={() => {}}
-		        style={{
-		        	marginBottom: galleryItems && galleryItems.length ? 0 : 250,
-		        }}
-		      />;
-
-      		break;
-
-      	case 2:
-
       		tabContent = <div
       			style={{
       				paddingTop: 20,
@@ -1614,28 +1604,47 @@ export default class CompanyPage extends Component{
 
       		break;
 
+      	case 2:
+
+      		tabContent = <GalleryEditor
+		        classes={{}}
+		        item={item}
+		        onSelectContactImage={() => {}}
+		        updateItem={::this.updateItem}
+		        style={{
+		        	marginBottom: galleryItems && galleryItems.length ? 0 : 250,
+		        }}
+		      />;
+
+      		break;
+
       }
 
 
-			content = <CardContent>
+			content = <div>
 				
-				<Tabs 
-          index={tabIndex} 
-          onChange={this.handleTabIndexChange} 
-          textColor="accent" 
-          fullWidth
-        >
-          <Tab label="Основная информация" />
-          <Tab label="Галерея" />
-          <Tab label="График работы" />
+				<CardContent >
 
-        </Tabs>
+					<Tabs 
+	          index={tabIndex} 
+	          onChange={this.handleTabIndexChange} 
+	          textColor="accent" 
+	          fullWidth
+	        >
+	        
+	          <Tab label="Основная информация" />
+	          <Tab label="График работы" />
+	          <Tab label="Галерея" />
+
+	        </Tabs>
+
+				</CardContent>
 
         {tabContent}
 
         
 
-			</CardContent>;
+			</div>;
 		}
 		else{
 			content = [];
@@ -1810,6 +1819,7 @@ export default class CompanyPage extends Component{
 
 						<Comments 
 							comments={comments}
+							resource={item}
 						/>
 
 					</Paper>

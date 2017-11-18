@@ -5,8 +5,10 @@ import PropTypes from 'prop-types';
 import { DragSource } from 'react-dnd';
 
 import Button from 'material-ui/Button';
+import IconButton from 'material-ui/IconButton';
 import Grid from 'material-ui/Grid';
 import Checkbox from 'material-ui/Checkbox';
+import DeleteIcon from 'material-ui-icons/Clear';
 
 const defaultProps = {}
 
@@ -103,12 +105,18 @@ class GalleryImage extends Component{
     	style={style}
 		>
 			<div>
-				<Checkbox 
+				{/*<Checkbox 
 					checked={checked}
 					onChange={(event, checked) => {
 						onSelectImage(event, checked, image);
 					}}
-				/>
+				/>*/}
+
+				<IconButton>
+					<DeleteIcon 
+					/>	
+				</IconButton>
+
 			</div>
 
 			{connectDragSource(<img 

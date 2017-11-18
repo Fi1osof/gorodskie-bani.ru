@@ -316,7 +316,7 @@ export default class TopicsPage extends Page {
 
   onStoreUpdated(store, payload){
 
-  	// console.log("topics page onStoreUpdated", payload);
+  	// console.log("topics page onStoreUpdated", store, payload);
 
   	const {
   		type,
@@ -328,6 +328,7 @@ export default class TopicsPage extends Page {
   	if(
   		type !== "SET_DATA"
   		&& type !== "CREATE_OBJECT"
+  		&& type !== "SAVE_OBJECT"
   	){
 
 			const {

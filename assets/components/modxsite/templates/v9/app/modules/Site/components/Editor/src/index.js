@@ -1,5 +1,7 @@
 // @flow
 
+import './styles/styles.less';
+
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import React, { Component } from 'react';
@@ -184,6 +186,7 @@ export class TextField extends Component {
 
 	  const {
 	    onChange,
+			readOnly,
 	    ...other
 	  } = this.props;
 
@@ -195,6 +198,29 @@ export class TextField extends Component {
   		{...other}
   		editorState={editorState} 
   		onEditorStateChange={::this.onEditorChange}
+			readOnly={readOnly}
+			toolbarHidden={readOnly ? true : false}
+			wrapperClassName={["rdw-editor-wrapper", readOnly ? "readonly" : "editable"].join(" ")}
+			toolbar={{
+				options: ['inline', 'list', 'textAlign', 'link', 'emoji', 'remove', 'history'],
+				// fontFamily: {
+				// 	options: [],
+				// },
+				inline: {
+			    // inDropdown: false,
+			    // className: undefined,
+			    // component: undefined,
+			    // dropdownClassName: undefined,
+			    options: ['bold', 'italic', 'underline', 'strikethrough'],
+			    // bold: { icon: bold, className: undefined, title: undefined },
+			    // italic: { icon: italic, className: undefined, title: undefined },
+			    // underline: { icon: underline, className: undefined, title: undefined },
+			    // strikethrough: { icon: strikethrough, className: undefined, title: undefined },
+			    // monospace: { icon: monospace, className: undefined, title: undefined },
+			    // superscript: { icon: superscript, className: undefined, title: undefined },
+			    // subscript: { icon: subscript, className: undefined, title: undefined },
+			  },
+			}}
   	/>;
 
 	}

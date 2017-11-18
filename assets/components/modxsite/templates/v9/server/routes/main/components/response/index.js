@@ -20,6 +20,11 @@ import {
 
 // debug('config host', host);
 
+
+import jsdom from 'jsdom';
+
+const { JSDOM } = jsdom;
+
 let {
   connection: {
     prefix,
@@ -98,6 +103,8 @@ export default class Response{
     this.SendWebSocketMessage = SendWebSocketMessage;
 
     this.SendMODXRequest = SendMODXRequest;
+
+    this.serverDOMBuilder = ::this.serverDOMBuilder
   };
 
   getConfig = (field) => {
@@ -122,6 +129,36 @@ export default class Response{
 
     return prefix;
   };
+
+
+  serverDOMBuilder(html){
+
+    const w = (new JSDOM(`<!DOCTYPE html>`)).window;
+
+    const {
+        document,
+        HTMLElement,
+        HTMLAnchorElement,
+        HTMLImageElement,
+    } = w;
+
+    global.document = document;
+    global.HTMLElement = HTMLElement;
+    global.HTMLAnchorElement = HTMLAnchorElement;
+    global.HTMLImageElement = HTMLImageElement;
+
+    const doc = document.implementation.createHTMLDocument('div');
+
+    // const blocks = convertFromHTML(content, global.serverDOMBuilder);
+
+    // state = ContentState.createFromBlockArray(blocks);
+
+    doc.documentElement.innerHTML = html;
+    
+    const root = doc.getElementsByTagName('body')[0];
+
+    return root;
+  }
 
 
   // prepareSchema(){

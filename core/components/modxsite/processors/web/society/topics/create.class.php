@@ -76,6 +76,12 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
             $notices = array_map('trim', explode(",", $notices));
             $this->setProperty('notices', $notices);
         }
+
+        $editor_content = $this->getProperty("editor_content");
+
+        if(isset($editor_content)){
+            $this->setProperty("content", json_encode($editor_content));
+        }
         
         return parent::initialize();
     }

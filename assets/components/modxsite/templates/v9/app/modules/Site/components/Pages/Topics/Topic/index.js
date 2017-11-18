@@ -250,7 +250,7 @@ export default class Topic extends Component{
 			value,
 		} = event.target;
 
-		console.log("onChange item", name, value);
+		// console.log("onChange item", name, value);
 
 		this.clearErrors(name);
 
@@ -398,6 +398,7 @@ export default class Topic extends Component{
 		content = <Editor 
 			item={item}
 			onChange={::this.onChange}
+			readOnly={!inEditMode}
 		/>
 
 

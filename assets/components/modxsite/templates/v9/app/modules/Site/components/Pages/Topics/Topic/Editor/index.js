@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 
 import Editor from 'modules/Site/components/Editor';
 
+import Typography from 'material-ui/Typography';
+
 export default class MyComponent extends Component{
 
 
@@ -42,11 +44,50 @@ export default class MyComponent extends Component{
 
 	}
 
+
+	onFocus(event, data){
+
+		const {
+			item,
+			onFocus,
+			onChange,
+		} = this.props;
+
+
+		if(!item){
+			return;
+		}
+
+
+		let {
+			_errors,
+		} = item;
+
+
+		_errors = Object.assign(_errors || {}, {
+			content: null,
+			editor_content: null,
+		});
+
+		onChange({
+			target: {
+				_errors,
+			}
+		});
+
+		onFocus && onFocus({
+			name: "editor_content",
+			value: _errors,
+		});
+
+	}
+
 	
 	render(){
 
 		let {
 			item,
+			onFocus,
 			...other
 		} = this.props;
 
@@ -63,10 +104,28 @@ export default class MyComponent extends Component{
 			_Dirty,
 		} = item;
 
-		return <Editor
-			{...other}
-			name="content"
-			value={editor_content}
-		/>
+		const {
+			content: contentError,
+		} = errors || {};
+
+		return <div>
+			
+			{contentError && <Typography 
+				type="subheading"
+				style={{
+					color: "red",
+				}}
+			>
+				{contentError}
+			</Typography> || null}
+
+			<Editor
+				{...other}
+				name="editor_content"
+				value={editor_content}
+				onFocus={::this.onFocus}
+			/>
+
+		</div>
 	}
 }

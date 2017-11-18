@@ -7,6 +7,27 @@ import {
   GraphQLEnumType,
 } from 'graphql';
 
+
+
+import Draft from 'draft-js';
+
+const {
+  // Editor, 
+  // EditorState, 
+  // RichUtils, 
+  // CompositeDecorator, 
+  convertToRaw, 
+  // convertFromRaw, 
+  ContentState,
+  // SelectionState, 
+  // Modifier, 
+  convertFromHTML, 
+  // genKey, 
+  // ContentBlock, 
+  // getDefaultKeyBinding
+} = Draft;
+
+
 import ObjectType, {order} from '../';
 import ModelObject from '../model';
 
@@ -285,17 +306,52 @@ export const getList = (object, args, context, info) => {
 
           if(content){
 
-            try{
-              const editor_content = JSON.parse(content);
+            let editor_content;
 
-              Object.assign(object, {
-                editor_content,
-              });
+            try{
+              
+              editor_content = JSON.parse(content);
 
             }
             catch(e){
-              console.error(e);
+              
+              // console.error(e);
+
+              try{
+
+                const {
+                  serverDOMBuilder,
+                } = context;
+
+                // console.log('serverDOMBuilder', serverDOMBuilder);
+
+                const blocks = convertFromHTML(content, serverDOMBuilder);
+
+                // console.log('blocks', blocks);
+
+                if(blocks){
+
+                  const state = ContentState.createFromBlockArray(blocks);
+
+                  editor_content = convertToRaw(state);
+
+                  // editor_content = state && state.getCurrentContent();
+
+                }
+
+
+              }
+              catch(e){
+
+                console.error(e);
+
+              }
+
             };
+
+            Object.assign(object, {
+              editor_content,
+            });
 
           }
           

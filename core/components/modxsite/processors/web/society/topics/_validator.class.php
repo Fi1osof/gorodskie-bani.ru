@@ -85,7 +85,9 @@ class modWebSocietyTopicsValidator extends modWebValidator{
 
 
 
-        if($plainText = $topic->plainText){
+        $plainText = $topic->plainText;
+
+        if(isset($plainText)){
             $content = $plainText;
 
             # $content = str_replace(array(
@@ -125,7 +127,9 @@ class modWebSocietyTopicsValidator extends modWebValidator{
 //            print $content;
 //            exit;
         }
-        else{
+
+        if(!$attributes->raw_content){
+            $this->addFieldError("content",  "Не заполнено содержимое топика");
             return "Не заполнено содержимое топика";
         }
         

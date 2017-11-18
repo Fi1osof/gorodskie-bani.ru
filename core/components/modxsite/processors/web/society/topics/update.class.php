@@ -64,10 +64,10 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
             "links_follow"  => 0,       // Индексируемые ссылки
         ));
 
-        $content = $this->getProperty("content");
+        $editor_content = $this->getProperty("editor_content");
 
-        if(isset($content)){
-            $this->setProperty("content", json_encode($content));
+        if(isset($editor_content)){
+            $this->setProperty("content", json_encode($editor_content));
         }
         
         return parent::initialize();

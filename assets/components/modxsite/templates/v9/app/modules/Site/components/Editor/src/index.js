@@ -32,7 +32,7 @@ import {
 
 // import customPropTypes from 'material-ui/utils/customPropTypes';
 
-import {stateToHTML} from 'draft-js-export-html';
+// import {stateToHTML} from 'draft-js-export-html';
 
 
 export class TextField extends Component {
@@ -138,10 +138,6 @@ export class TextField extends Component {
 
 	onEditorChange(editorState){
 
-		this.setState({
-			editorState,
-		});
-
 		// let value = editorState && stateToHTML(editorState.getCurrentContent());
 
 		// if(value === "<p><br></p>"){
@@ -165,18 +161,26 @@ export class TextField extends Component {
 			name,
 		} = this.props;
 
-		onChange && onChange({
+		const event = {
 			target: {
 				name,
 				value,
 			},
-		});
+		};
 
-		onChange && onChange({
-			target: {
-				name: "plainText",
-				value: plainText,
-			},
+		onChange && onChange(event);
+
+		// console.log("Editor onChange event", event);
+
+		// onChange && onChange({
+		// 	target: {
+		// 		name: "plainText",
+		// 		value: plainText,
+		// 	},
+		// });
+
+		this.setState({
+			editorState,
 		});
 
 	}

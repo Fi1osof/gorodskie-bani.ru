@@ -280,6 +280,10 @@ export const CompanyType = new GraphQLObjectType({
           return parseInt(source.published) === 1 ? true : false;
         },
       },
+      prices: {
+        type: GraphQLJSON,
+        description: "Цены",
+      },
       uri: {
         type: GraphQLString,
       },

@@ -44,6 +44,15 @@ export default class Rating extends Component{
 		});
 	}
 
+	// shouldComponentUpdate(nextProps, nextState){
+
+	// 	// if(JSON.stringify(this.props || "") === JSON.stringify(nextProps || "")){
+	// 	// 	return false;
+	// 	// }
+
+	// 	return false;
+	// }
+
 	render(){
 
 		const {

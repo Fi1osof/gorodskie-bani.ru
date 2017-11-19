@@ -14,16 +14,19 @@ import moment from 'moment';
 
 import Button from 'material-ui/Button';
 import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
-import {
-	Editor, 
-	EditorState,
-	convertFromHTML,
-	ContentState,
-} from 'draft-js';
+// import {
+// 	Editor, 
+// 	EditorState,
+// 	convertFromHTML,
+// 	ContentState,
+// } from 'draft-js';
+
+
+import Editor from 'modules/Site/components/Editor';
 
 import customPropTypes from 'material-ui/utils/customPropTypes';
 
-import {stateToHTML} from 'draft-js-export-html';
+// import {stateToHTML} from 'draft-js-export-html';
 
 
 // console.log("FormControl", FormControl);
@@ -164,48 +167,48 @@ export class TextField extends Component {
 			value,
 		} = props;
 
-		const blocksFromHTML = convertFromHTML(value);
+		// const blocksFromHTML = convertFromHTML(value);
 
-		const state = ContentState.createFromBlockArray(
-		  blocksFromHTML.contentBlocks,
-		  blocksFromHTML.entityMap
-		);
+		// const state = ContentState.createFromBlockArray(
+		//   blocksFromHTML.contentBlocks,
+		//   blocksFromHTML.entityMap
+		// );
 
 		this.state = {
-  		editorState: EditorState.createWithContent(state),
+  		// editorState: EditorState.createWithContent(state),
 		};
 
 	}
 
 
-	onEditorChange(editorState){
+	// onEditorChange(editorState){
 
-		this.setState({
-			editorState,
-		});
+	// 	this.setState({
+	// 		editorState,
+	// 	});
 
-		let value = editorState && stateToHTML(editorState.getCurrentContent());
+	// 	let value = editorState && stateToHTML(editorState.getCurrentContent());
 
-		if(value === "<p><br></p>"){
-			value = "";
-		}
+	// 	if(value === "<p><br></p>"){
+	// 		value = "";
+	// 	}
 
-		const {
-			onChange,
-		} = this.props;
+	// 	const {
+	// 		onChange,
+	// 	} = this.props;
 
-		const {
-			name,
-		} = this.props;
+	// 	const {
+	// 		name,
+	// 	} = this.props;
 
-		onChange && onChange({
-			target: {
-				name,
-				value,
-			},
-		});
+	// 	onChange && onChange({
+	// 		target: {
+	// 			name,
+	// 			value,
+	// 		},
+	// 	});
 
-	}
+	// }
 
 
 	// componentWillMount(){
@@ -255,7 +258,7 @@ export class TextField extends Component {
 	  } = this.props;
 
 		const {
-			editorState,
+			// editorState,
 		} = this.state;
 
 	  let inputProps = inputPropsProp;
@@ -306,10 +309,17 @@ export class TextField extends Component {
 	        {...InputProps}
 	      />*/}
 				
-      	<Editor 
+      	{/*<Editor 
       		{...other}
       		editorState={editorState} 
       		onChange={::this.onEditorChange}
+      	/>*/}
+				
+      	<Editor 
+      		{...other}
+      		value={value || ""} 
+      		name={name}
+      		onChange={onChange}
       	/>
 
 	      {helperText &&

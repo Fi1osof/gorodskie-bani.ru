@@ -138,12 +138,33 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 
 			$value = $this->getProperty($tv_name);
 
+			switch($tv_name){
+
+				case 'prices':
+
+					// print_r($value);
+
+					$this->modx->log(1, print_r($value, 1));
+
+					if(is_array($value)){
+
+						$value = json_encode($value);
+
+					}
+
+
+					$this->modx->log(1, print_r($value, 1));
+
+					break;
+
+			}
+
 			if($object->isNew()){
 				$value = $value ? $value : "";
 			}
 
 			if(isset($value)){
-				$object->set($tv_name, trim($value));
+				$object->set($tv_name, is_array($value) ? $value : trim($value));
 			}
 
 			// $object->fromArray(array(

@@ -1,6 +1,7 @@
 
 const defaultQuery = `
 
+
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -1155,6 +1156,7 @@ fragment CompanyFields on Company{
   schedule_family{
     ...ScheduleDay
   }
+  prices
   errors
   _isDirty
 }

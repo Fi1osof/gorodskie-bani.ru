@@ -379,6 +379,8 @@ export default class CompanyPage extends Component{
 		this.setState({
 			sending: false,
 		});
+
+		this.loadCompanyFullData();
 		
 	}
 
@@ -437,7 +439,7 @@ export default class CompanyPage extends Component{
 			case 'phones':
 			case 'site':
 			case 'work_time':
-			case 'prices':
+			// case 'prices':
 
 				let tvs = item.tvs || {};
 
@@ -577,6 +579,7 @@ export default class CompanyPage extends Component{
 			schedule_men,
 			schedule_women,
 			schedule_family,
+			prices,
 			_errors: errors,
 			_isDirty,
 		// } = item;
@@ -736,7 +739,7 @@ export default class CompanyPage extends Component{
 			phones,
 			site,
 			work_time,
-			prices,
+			// prices,
 			approved,
 		} = tvs || {};
 
@@ -1494,7 +1497,45 @@ export default class CompanyPage extends Component{
 									helperText={errors && errors.prices || "Распишите цены, включая цены на допуслуги"}
 									name="prices"
 									value={prices || ""}
-									onChange={this.onChange}
+									onChange={event => {
+
+										// console.log("onChange", event);
+
+										let {
+											item,
+										} = this.props;
+
+										const {
+											target,
+										} = event || {};
+
+										if(!target){
+											return;
+										}
+
+										const {
+											name,
+											value,
+										} = target;
+
+										let {
+											_isDirty,
+										} = item;
+
+										_isDirty = _isDirty || {};
+
+										Object.assign(_isDirty, {
+											prices: value,
+										});
+
+										Object.assign(item, {
+											prices,
+											_isDirty,
+										});
+
+										// this.onChange
+
+									}}
 									onFocus={() => this.onFocus('prices')}
 								/>
 							:
@@ -1519,9 +1560,20 @@ export default class CompanyPage extends Component{
 											>Цены</span>
 										</Grid>
 
-										<div
-											dangerouslySetInnerHTML={{ __html: prices }}
+
+										<Editor 
+											// label="Цены"
+											// error={errors && errors.prices ? true : false}
+											// helperText={errors && errors.prices || "Распишите цены, включая цены на допуслуги"}
+											name="prices"
+											value={prices || ""}
+											readOnly
+											// onFocus={() => this.onFocus('prices')}
 										/>
+
+										{/*<div
+																	dangerouslySetInnerHTML={{ __html: prices }}
+																/>*/}
 										{/*approved
 											?
 											<div

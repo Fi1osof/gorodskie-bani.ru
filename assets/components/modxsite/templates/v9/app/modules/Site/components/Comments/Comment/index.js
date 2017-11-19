@@ -200,7 +200,7 @@ export default class Comment extends Component{
 							value={text || ""}
 							// readOnly={!inEditMode}
 							name="text"
-							label={inEditMode ? "Текст комментария" : undefined}
+							// label={inEditMode ? "Текст комментария" : undefined}
 							// error={errors && errors.text ? true : false}
 							// helperText={errors && errors.text || ""}
 							onChange={this.onChange}

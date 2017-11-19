@@ -16,7 +16,7 @@ import {
 	ContentState,
 } from 'draft-js';
 
-import {stateToHTML} from 'draft-js-export-html';
+// import {stateToHTML} from 'draft-js-export-html';
 
 import TextField from 'material-ui/TextField';
 

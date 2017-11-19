@@ -10,6 +10,26 @@ import {
 import ObjectType, {order} from '../';
 import ModelObject from '../model';
 
+import Draft from 'draft-js';
+
+const {
+  // Editor, 
+  // EditorState, 
+  // RichUtils, 
+  // CompositeDecorator, 
+  convertToRaw, 
+  // convertFromRaw, 
+  ContentState,
+  // SelectionState, 
+  // Modifier, 
+  convertFromHTML, 
+  // genKey, 
+  // ContentBlock, 
+  // getDefaultKeyBinding
+} = Draft;
+
+let contentCache = [];
+
 // import {getQuery as getServiceQuery} from '../Service';
 
 // import {db as db_config} from '../../../../../config/config';
@@ -420,6 +440,12 @@ export const getList = (object, args, context, info) => {
 
       if(data.object && Array.isArray(data.object)){
 
+        
+        const {
+          serverDOMBuilder,
+        } = context;
+
+
         data.object.map(object => {
 
           let {
@@ -479,6 +505,88 @@ export const getList = (object, args, context, info) => {
                 }
 
               }
+            }
+
+
+
+            let {
+              prices,
+            } = tvs;
+
+            if(prices !== undefined){
+
+              let prices_content;
+
+
+              // let contentCache = contentCache[id];
+
+
+              if(
+                contentCache 
+                && contentCache[id]
+                && contentCache[id].prices_content === prices
+              ){
+
+                prices_content = contentCache[id].prices_content;
+
+              }
+              else{
+
+                try{
+                  
+                  prices_content = JSON.parse(prices);
+
+                }
+                catch(e){
+                  
+                  // console.error(e);
+
+                  try{
+
+                    // console.log('serverDOMBuilder', serverDOMBuilder);
+
+                    const blocks = convertFromHTML(prices || "", serverDOMBuilder);
+
+                    // console.log('blocks', blocks);
+
+                    if(blocks){
+
+                      const state = ContentState.createFromBlockArray(blocks);
+
+                      prices_content = convertToRaw(state);
+
+                      // editor_content = state && state.getCurrentContent();
+
+                    }
+
+
+                  }
+                  catch(e){
+
+                    console.error(e);
+
+                  }
+
+                };
+
+                // contentCache[id] = {
+                //   prices,
+                //   prices_content,
+                // };
+
+              }
+
+
+              // if(prices_content){
+              //   console.log("prices_content", prices_content);
+              // }
+
+              Object.assign(object, {
+                prices: prices_content,
+              });
+
+              tvs.prices = null;
+
             }
 
             object.tvs = tvs;

@@ -15,6 +15,30 @@ export default class ImagesUploader extends ImagesUploaderProto{
         const imageFormData = new FormData();
 
         for (let i = 0; i < files.length; i++) {
+
+          // console.log('files[i]', files[i]);
+
+          const file = files[i];
+
+          const {
+            size
+          } = file;
+
+          if(size > 5000000){
+
+            const error = "Файл слишком большой. Разрешено максимум 5 мегабайт.";
+
+            alert(error);
+
+            this.setState({
+              loadState: 'error',
+              optimisticPreviews: [],
+            });
+
+            return;
+
+          }
+
           imageFormData.append(this.props.dataName, files[i], files[i].name);
         }
 
@@ -27,11 +51,11 @@ export default class ImagesUploader extends ImagesUploaderProto{
 
         if (response && response.status && response.status === 200) {
 
-          console.log('response', response);
+          // console.log('response', response);
 
           response = await response.json();
 
-          console.log('response 2', response);
+          // console.log('response 2', response);
 
           const multiple = this.props.multiple;
 

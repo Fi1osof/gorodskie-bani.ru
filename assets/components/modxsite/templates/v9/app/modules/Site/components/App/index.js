@@ -1129,10 +1129,10 @@ export class AppMain extends Component{
     this.initCoords();
 
 
-    CoordsStore.getDispatcher().register(payload => {
+    // CoordsStore.getDispatcher().register(payload => {
 
-      this.forceUpdate();
-    });
+    //   this.forceUpdate();
+    // });
 
     CompaniesStore.getDispatcher().register(payload => {
 

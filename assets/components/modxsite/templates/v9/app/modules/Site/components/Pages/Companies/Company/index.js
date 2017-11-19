@@ -227,7 +227,7 @@ export default class CompanyPage extends Component{
 	componentDidUpdate(prevProps, prevState, prevContext){
 
 
-		// console.log('componentDidUpdate', this.props.item.id, prevProps.item.id);
+		// console.log('CompanyPage componentDidUpdate', this.props.item.id, prevProps.item.id);
 		
 		// console.log('Company componentDidUpdate', this.props.item === prevProps.item);
 
@@ -1796,12 +1796,12 @@ export default class CompanyPage extends Component{
 			{Gallery}
 
 
-			<CompanyTopics 
+			{!inEditMode && <CompanyTopics 
 				item={item}
-			/>
+			/> || null}
 			
 				
-			{comments && comments.length
+			{!inEditMode && comments && comments.length
 				?
 				<CardContent>
 					

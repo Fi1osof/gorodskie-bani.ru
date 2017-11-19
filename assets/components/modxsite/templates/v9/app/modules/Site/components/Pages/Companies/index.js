@@ -94,7 +94,7 @@ export default class CompaniesPage extends Page {
 
   componentDidUpdate(prevProps, prevState, prevContext){
 
-    // console.log("MainMenu componentDidUpdate", this.context.coords, prevContext.coords);
+    // console.log("CompaniesPage componentDidUpdate");
 
     const {
       coords,
@@ -108,7 +108,7 @@ export default class CompaniesPage extends Page {
       (coords || prevCoords)
       && JSON.stringify(coords || "") != JSON.stringify(prevCoords || "")
     ){
-      console.log("componentDidUpdate loadData coords", coords);
+      // console.log("componentDidUpdate loadData coords", coords);
       this.loadData();
     }
 

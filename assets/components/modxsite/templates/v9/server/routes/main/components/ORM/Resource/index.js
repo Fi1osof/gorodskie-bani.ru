@@ -384,6 +384,7 @@ export const getList = (object, args, context, info) => {
 
 
             Object.assign(object, {
+              content: null,
               editor_content,
             });
 

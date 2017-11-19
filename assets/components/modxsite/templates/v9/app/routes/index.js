@@ -141,7 +141,8 @@ let routes = {
     },
     {
       childRoutes: [{
-        path: "/city/:city/:companyId",
+        // path: "/city/:city/:companyId",
+        path: "/city/*/:companyId",
         component: CompaniesPage,
       }],
     },

@@ -98,7 +98,7 @@ import {
 } from './EditVersion';
 
 
-const rootResolver = async (source, args, context, info) => {
+const rootResolver = (source, args, context, info) => {
 
 
 
@@ -128,163 +128,174 @@ const rootResolver = async (source, args, context, info) => {
 
     }
 
-    if(!result){
+    if(result === undefined){
 
       // Резолвим по типу объекта
 
-      const {
-        returnType,
-      } = info;
-
-      const {
-        name: returnTypeName,
-      } = returnType;
+      return new Promise( async (resolve, reject) => {
 
 
 
-      if(returnType instanceof ObjectsListType){
-        
         const {
-          _fields: {
-            object: objectField,
-          },
+          returnType,
+        } = info;
+
+        const {
+          name: returnTypeName,
         } = returnType;
 
-        if(objectField && objectField.type){
 
+
+        if(returnType instanceof ObjectsListType){
+          
           const {
-            type: objectType,
-          } = objectField;
+            _fields: {
+              object: objectField,
+            },
+          } = returnType;
+
+          if(objectField && objectField.type){
+
+            const {
+              type: objectType,
+            } = objectField;
+
+            const {
+              ofType,
+            } = objectType || {};
+   
+            await getObjectsList(ofType, source, args, context, info)
+              .then(r => {
+                result = r;
+              })
+              .catch(e => reject(e))
+          }
+
+
+        }
+
+        else if(returnType instanceof GraphQLList){
 
           const {
             ofType,
-          } = objectType || {};
- 
-          await getObjectsList(ofType, source, args, context, info)
+          } = returnType;
+          // const {
+          //   id,
+          // } = args;
+
+          await getObjects(ofType, source, args, context, info)
             .then(r => {
               result = r;
             })
+            .catch(e => reject(e))
+
+        }
+
+        else if(returnType instanceof GraphQLObjectType){
+
+          // console.log('CompanyType.constructor', CompanyType);
+
+         //  const {
+         //    name: returnTypeName,
+         //  } = returnType;
+
+         //  const {
+         //    id,
+         //  } = args;
+
+          await getObject(returnType, source, args, context, info)
+            .then(r => {
+              result = r;
+            })
+            .catch(e => reject(e))
+
+        }
+
+        if(operation && operation.name){
+
+          // console.log("operation.name", operation.name, returnType);
+
+          switch(operation.name.value){
+
+            case "clearCache":
+
+              // console.log("clearCache");
+
+              const {
+                scope,
+              } = context;
+
+              result = await scope.clearCache();
+
+              // if(result && (result instanceof PlaceContact)){
+
+              //   const {
+              //     lat,
+              //     lng,
+              //   } = args;
+
+              //   result.update({
+              //     lat,
+              //     lng,
+              //   });
+
+              // }
+
+              break;
+
+            // case "PlaceContactUpdateCoords":
+
+
+            //   if(result && (result instanceof PlaceContact)){
+
+            //     const {
+            //       lat,
+            //       lng,
+            //     } = args;
+
+            //     result = result.update({
+            //       lat,
+            //       lng,
+            //     });
+
+            //   }
+
+            //   break;
+
+            // Сохранение поискового запроса
+            case "saveSearchStat":
+
+              if(returnType === SearchStatType){
+
+                result = await createSearchStat(null, args, context, info);
+
+              }
+
+              break;
+
+            // Сохранение поискового запроса
+            case "updateCompany":
+
+              if(returnType === EditVersionType){
+
+                // console.log("EditVersionType create args", args);
+
+                result = createEditVersion(null, args, context, info);
+
+              }
+
+              break;
+
+          }
+
         }
 
 
-      }
+        resolve(result);
 
-      else if(returnType instanceof GraphQLList){
-
-        const {
-          ofType,
-        } = returnType;
-        // const {
-        //   id,
-        // } = args;
-
-        await getObjects(ofType, source, args, context, info)
-          .then(r => {
-            result = r;
-          })
-
-      }
-
-      else if(returnType instanceof GraphQLObjectType){
-
-        // console.log('CompanyType.constructor', CompanyType);
-
-       //  const {
-       //    name: returnTypeName,
-       //  } = returnType;
-
-       //  const {
-       //    id,
-       //  } = args;
-
-        await getObject(returnType, source, args, context, info)
-          .then(r => {
-            result = r;
-          })
-
-      }
+      });
 
     }
-
-    if(operation && operation.name){
-
-      // console.log("operation.name", operation.name, returnType);
-
-      switch(operation.name.value){
-
-        case "clearCache":
-
-          // console.log("clearCache");
-
-          const {
-            scope,
-          } = context;
-
-          return scope && scope.clearCache() || null;
-
-          // if(result && (result instanceof PlaceContact)){
-
-          //   const {
-          //     lat,
-          //     lng,
-          //   } = args;
-
-          //   result.update({
-          //     lat,
-          //     lng,
-          //   });
-
-          // }
-
-          break;
-
-        case "PlaceContactUpdateCoords":
-
-
-          if(result && (result instanceof PlaceContact)){
-
-            const {
-              lat,
-              lng,
-            } = args;
-
-            result.update({
-              lat,
-              lng,
-            });
-
-          }
-
-          break;
-
-        // Сохранение поискового запроса
-        case "saveSearchStat":
-
-          if(returnType === SearchStatType){
-
-            return createSearchStat(null, args, context, info);
-
-          }
-
-          break;
-
-        // Сохранение поискового запроса
-        case "updateCompany":
-
-          if(returnType === EditVersionType){
-
-            // console.log("EditVersionType create args", args);
-
-            return createEditVersion(null, args, context, info);
-
-          }
-
-          break;
-
-      }
-
-    }
-
 
     return result;
 

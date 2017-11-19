@@ -87,38 +87,43 @@ class modWebSocietyTopicsCommentsCreateProcessor extends modSocietyWebThreadsCom
         // Режем контент
         $content = $this->getProperty('text');
         
-        $this->setProperty('raw_text', $content);
-        
-        # $content = str_replace(array(
-        #     "<?"
-        # ), array(
-        #     "&lt;"
-        # ), $content);
-        # 
-        # $content = strip_tags($content, '<strong><composite><composite><model><object><field><code><pre><cut><p><a><h4><h5><h6><img><b><em><i><s><u><hr><blockquote><table><tr><th><td><ul><li><ol>');
-        # 
-        # // Реплейсим переносы
-        # $content = preg_replace("/[\r\n]{3,}/", "<br /><br />", $content);
-        # $content = preg_replace("/\r/", "<br />", $content);
-        # 
-        # $content = preg_replace('/<code>(.+?)<\/code>/sim', "<pre class=\"prettyprint\"><code>$1</code></pre>", $content);
-        # 
-        # $this->setProperty('text', $content);
-        
-        $jevix = $this->modx->getService('modJevix','modJevix', MODX_CORE_PATH . 'components/modjevix/model/modJevix/');
-        
-        if($this->modx->hasPermission('modxclub.post_indexed_links')){
-            $rel = "follow";
+        if($content && is_array($content)){
+            $content = json_encode($content);
         }
-        else{
-            $rel = "nofollow";
-        } 
+
+        // $this->setProperty('raw_text', $content);
         
-        $jevix->cfgSetTagParamDefault('a','rel',$rel,true);
+        // # $content = str_replace(array(
+        // #     "<?"
+        // # ), array(
+        // #     "&lt;"
+        // # ), $content);
+        // # 
+        // # $content = strip_tags($content, '<strong><composite><composite><model><object><field><code><pre><cut><p><a><h4><h5><h6><img><b><em><i><s><u><hr><blockquote><table><tr><th><td><ul><li><ol>');
+        // # 
+        // # // Реплейсим переносы
+        // # $content = preg_replace("/[\r\n]{3,}/", "<br /><br />", $content);
+        // # $content = preg_replace("/\r/", "<br />", $content);
+        // # 
+        // # $content = preg_replace('/<code>(.+?)<\/code>/sim', "<pre class=\"prettyprint\"><code>$1</code></pre>", $content);
+        // # 
+        // # $this->setProperty('text', $content);
         
-        $errors = '';
-        $content = $jevix->parse($content, $errors);
+        // $jevix = $this->modx->getService('modJevix','modJevix', MODX_CORE_PATH . 'components/modjevix/model/modJevix/');
         
+        // if($this->modx->hasPermission('modxclub.post_indexed_links')){
+        //     $rel = "follow";
+        // }
+        // else{
+        //     $rel = "nofollow";
+        // } 
+        
+        // $jevix->cfgSetTagParamDefault('a','rel',$rel,true);
+        
+        // $errors = '';
+        // $content = $jevix->parse($content, $errors);
+        
+        $this->setProperty('raw_text', '');
         $this->setProperty('text', $content);
         
         return parent::beforeSet();

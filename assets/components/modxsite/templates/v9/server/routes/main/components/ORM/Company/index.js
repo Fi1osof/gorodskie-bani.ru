@@ -449,6 +449,7 @@ export const getList = (object, args, context, info) => {
         data.object.map(object => {
 
           let {
+            id,
             properties,
             tvs,
           } = object;
@@ -524,13 +525,13 @@ export const getList = (object, args, context, info) => {
               if(
                 contentCache 
                 && contentCache[id]
-                && contentCache[id].prices_content === prices
+                && contentCache[id].prices === prices
               ){
 
                 prices_content = contentCache[id].prices_content;
 
               }
-              else{
+              else if(prices){
 
                 try{
                   
@@ -542,6 +543,9 @@ export const getList = (object, args, context, info) => {
                   // console.error(e);
 
                   try{
+      
+
+                    console.log("Companies serverDOMBuilder", contentCache ? contentCache.length : null);
 
                     // console.log('serverDOMBuilder', serverDOMBuilder);
 
@@ -569,12 +573,13 @@ export const getList = (object, args, context, info) => {
 
                 };
 
-                // contentCache[id] = {
-                //   prices,
-                //   prices_content,
-                // };
+                contentCache[id] = {
+                  prices,
+                  prices_content,
+                };
 
               }
+
 
 
               // if(prices_content){

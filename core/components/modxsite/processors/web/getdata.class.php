@@ -45,6 +45,7 @@ class modWebGetdataProcessor extends modSiteWebGetdataProcessor{
         ));
         
     	
+        // print_r($this->properties);
     	// $this->modx->log(1, print_r($this->properties, 1), "FILE");
 
         return parent::initialize();

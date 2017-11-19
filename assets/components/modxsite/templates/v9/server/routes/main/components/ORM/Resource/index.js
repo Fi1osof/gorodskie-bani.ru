@@ -297,7 +297,7 @@ export const getList = (object, args, context, info) => {
               
             }
 
-            object.tags = object.topic_tags && object.topic_tags.split(",").filter(tag => tag && tag.replace(/ /g, "") !== "");
+            object.tags = object.topic_tags && object.topic_tags.split(",").filter(tag => tag && tag.replace(/ /g, "") !== "") || null;
 
 
             Object.assign(object, {
@@ -309,7 +309,7 @@ export const getList = (object, args, context, info) => {
 
           }
 
-          if(content && [15, 28].indexOf(parseInt(template)) !== -1){
+          if([15, 28].indexOf(parseInt(template)) !== -1){
 
             // for(var i in contentCache){
 
@@ -332,7 +332,9 @@ export const getList = (object, args, context, info) => {
               editor_content = contentCache[id].editor_content;
 
             }
-            else{
+            else if(content){
+
+              console.log("Resources serverDOMBuilder", contentCache ? contentCache.length : 1);
 
               try{
                 

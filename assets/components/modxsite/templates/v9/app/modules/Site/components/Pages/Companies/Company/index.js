@@ -1457,9 +1457,17 @@ export default class CompanyPage extends Component{
 									</Grid>
 								}
 
-								<div
-									dangerouslySetInnerHTML={{ __html: work_time }}
-								/>
+								{/*<div
+																	dangerouslySetInnerHTML={{ __html: work_time }}
+																/>*/}
+
+								{work_time && <div
+									style={{
+										whiteSpace: "pre-wrap",
+									}}
+								>
+									{work_time}
+								</div> || null}
 
 								{/*approved
 									?
@@ -1491,53 +1499,68 @@ export default class CompanyPage extends Component{
 							// 	onChange={this.onChange}
 							// 	onFocus={() => this.onFocus('prices')}
 							// />
-								<Editor 
-									label="Цены"
-									error={errors && errors.prices ? true : false}
-									helperText={errors && errors.prices || "Распишите цены, включая цены на допуслуги"}
-									name="prices"
-									value={prices || ""}
-									onChange={event => {
+								<div>
 
-										// console.log("onChange", event);
+									<span
+										style={{
+											fontWeight: 800,
+											fontSize: 12,
+											color: "rgba(0, 0, 0, 0.54)",
+											display: "inline-block",
+											marginTop: 20,
+										}}
+									>
+										Цены
+									</span>
 
-										let {
-											item,
-										} = this.props;
+									<Editor 
+										// label="Цены"
+										error={errors && errors.prices ? true : false}
+										helperText={errors && errors.prices || "Распишите цены, включая цены на допуслуги"}
+										name="prices"
+										value={prices || ""}
+										onChange={event => {
 
-										const {
-											target,
-										} = event || {};
+											// console.log("onChange", event);
 
-										if(!target){
-											return;
-										}
+											let {
+												item,
+											} = this.props;
 
-										const {
-											name,
-											value,
-										} = target;
+											const {
+												target,
+											} = event || {};
 
-										let {
-											_isDirty,
-										} = item;
+											if(!target){
+												return;
+											}
 
-										_isDirty = _isDirty || {};
+											const {
+												name,
+												value,
+											} = target;
 
-										Object.assign(_isDirty, {
-											prices: value,
-										});
+											let {
+												_isDirty,
+											} = item;
 
-										Object.assign(item, {
-											prices,
-											_isDirty,
-										});
+											_isDirty = _isDirty || {};
 
-										// this.onChange
+											Object.assign(_isDirty, {
+												prices: value,
+											});
 
-									}}
-									onFocus={() => this.onFocus('prices')}
-								/>
+											Object.assign(item, {
+												prices,
+												_isDirty,
+											});
+
+											// this.onChange
+
+										}}
+										onFocus={() => this.onFocus('prices')}
+									/>
+								</div>
 							:
 							
 							prices
@@ -1633,8 +1656,9 @@ export default class CompanyPage extends Component{
 	      			}}
       			>
         			
-							<Editor
+							<TextField
 								label="Уточнение к графику работы"
+								multiline
 								error={errors && errors.work_time ? true : false}
 								helperText={errors && errors.work_time || "Например, время работы кассы"}
 								name="work_time"

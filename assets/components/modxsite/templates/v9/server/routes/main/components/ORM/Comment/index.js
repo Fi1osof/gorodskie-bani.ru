@@ -10,6 +10,27 @@ import {
 import ObjectType, {order} from '../';
 import ModelObject from '../model';
 
+import Draft from 'draft-js';
+
+const {
+  // Editor, 
+  // EditorState, 
+  // RichUtils, 
+  // CompositeDecorator, 
+  convertToRaw, 
+  // convertFromRaw, 
+  ContentState,
+  // SelectionState, 
+  // Modifier, 
+  convertFromHTML, 
+  // genKey, 
+  // ContentBlock, 
+  // getDefaultKeyBinding
+} = Draft;
+
+let contentCache = [];
+
+
 // import {getQuery as getServiceQuery} from '../Service';
 
 // import {db as db_config} from '../../../../../config/config';
@@ -279,6 +300,105 @@ export const getList = (object, args, context, info) => {
         return reject(data.message || "Ошибка выполнения запроса");
       }
  
+
+      let {
+        object,
+      } = data || {};
+
+
+      if(object && object.length){
+        
+        const {
+          serverDOMBuilder,
+        } = context;
+
+        object.map(comment => {
+
+          let {
+            id,
+            text,
+          } = comment;
+
+
+          let text_content;
+
+
+          // let contentCache = contentCache[id];
+
+
+          if(text){
+
+            if(
+              contentCache 
+              && contentCache[id]
+              && contentCache[id].text === text
+            ){
+
+              text_content = contentCache[id].text_content;
+
+            }
+            else{
+
+              try{
+                
+                text_content = JSON.parse(text);
+
+              }
+              catch(e){
+                
+                // console.error(e);
+
+                try{
+      
+
+                  console.log("Comments serverDOMBuilder", contentCache && contentCache.length);
+
+                  const blocks = convertFromHTML(text || "", serverDOMBuilder);
+
+                  // console.log('blocks', blocks);
+
+                  if(blocks){
+
+                    const state = ContentState.createFromBlockArray(blocks);
+
+                    text_content = convertToRaw(state);
+
+                    // editor_content = state && state.getCurrentContent();
+
+                  }
+
+
+                }
+                catch(e){
+
+                  console.error(e);
+
+                }
+
+              };
+
+              contentCache[id] = {
+                text,
+                text_content,
+              };
+
+            }
+
+
+            // if(text_content){
+            //   console.log("text_content", text_content);
+            // }
+
+            Object.assign(comment, {
+              text: text_content,
+            });
+
+          }
+
+
+        });
+
+      }
 
       return resolve(data);
     })

@@ -159,6 +159,8 @@ export default class Response{
     
     const root = doc.getElementsByTagName('body')[0];
 
+    // console.log("serverDOMBuilder");
+
     return root;
   }
 

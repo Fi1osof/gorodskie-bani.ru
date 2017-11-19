@@ -7,7 +7,7 @@ import Editor from 'modules/Site/components/Editor';
 
 import Typography from 'material-ui/Typography';
 
-export default class TopicEditor extends Component{
+export default class CommentEditor extends Component{
 
 
 	static propTypes = {
@@ -93,6 +93,7 @@ export default class TopicEditor extends Component{
 		let {
 			item,
 			onFocus,
+			// name,
 			...other
 		} = this.props;
 
@@ -103,31 +104,29 @@ export default class TopicEditor extends Component{
 
 		const {
 			id,
-			// content:topicContent,
-			editor_content,
 			_errors: errors,
 			_Dirty,
 		} = item;
 
-		const {
-			content: contentError,
-		} = errors || {};
+		// const {
+		// 	content: contentError,
+		// } = errors || {};
 
 		return <div>
 			
-			{contentError && <Typography 
+			{/*contentError && <Typography 
 				type="subheading"
 				style={{
 					color: "red",
 				}}
 			>
 				{contentError}
-			</Typography> || null}
+			</Typography> || null*/}
 
 			<Editor
 				{...other}
-				name="editor_content"
-				value={editor_content}
+				// name="editor_content"
+				// value={editor_content}
 				onFocus={::this.onFocus}
 			/>
 

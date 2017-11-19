@@ -103,7 +103,8 @@ export const CommentType = new GraphQLObjectType({
         description: "Класс целевого объекта",
       },
       text: {
-        type: GraphQLString
+        type: GraphQLJSON,
+        description: "Текст комментария",
       },
       author_username: {
         type: GraphQLString

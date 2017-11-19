@@ -89,10 +89,13 @@ class modWebResourcesGetdataProcessor extends modSiteWebResourcesGetdataProcesso
             'image_url_schema'      => 'base',   
             "format"    => "json",
             "cache"             => true,
+            "count"             => false,
             // 'cache_prefix'      => $this->modx->context->key . '/resources/getdata/' . $this->modx->user->id. "/",   
             'cache_prefix'      => $this->modx->context->key . "/" . get_class($this) . '/getdata/' . $this->modx->user->id. "/",  
         ));
         
+        // print_r($this->properties);
+
         // $this->modx->log(1, print_r($this->properties, 1), "FILE");
 
         return parent::initialize();

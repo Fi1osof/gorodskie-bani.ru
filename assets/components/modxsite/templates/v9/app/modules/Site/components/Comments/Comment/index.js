@@ -14,7 +14,8 @@ import IconButton from 'material-ui/IconButton';
 
 import moment from 'moment';
 
-import Editor from 'modules/Site/components/fields/Editor';
+// import Editor from 'modules/Site/components/fields/Editor';
+import Editor from './Editor';
 
 // window.moment = moment;
 
@@ -192,20 +193,22 @@ export default class Comment extends Component{
       />
 
 			<CardContent>
+						
+				<Editor 
+					value={text || ""}
+					readOnly={!inEditMode}
+					name="text"
+					item={item}
+					// label={inEditMode ? "Текст комментария" : undefined}
+					// error={errors && errors.text ? true : false}
+					// helperText={errors && errors.text || ""}
+					onChange={this.onChange}
+					// onFocus={() => this.onFocus('text')}
+				/>
+
 				{inEditMode
 					?
 					<div>
-						
-						<Editor 
-							value={text || ""}
-							// readOnly={!inEditMode}
-							name="text"
-							// label={inEditMode ? "Текст комментария" : undefined}
-							// error={errors && errors.text ? true : false}
-							// helperText={errors && errors.text || ""}
-							onChange={this.onChange}
-							// onFocus={() => this.onFocus('text')}
-						/>
 
 						<Button
 							raised
@@ -227,9 +230,7 @@ export default class Comment extends Component{
 
 					</div>
 					:
-					<div
-						dangerouslySetInnerHTML={{ __html: text }}
-					/>
+					null
 				}
 			</CardContent>
 

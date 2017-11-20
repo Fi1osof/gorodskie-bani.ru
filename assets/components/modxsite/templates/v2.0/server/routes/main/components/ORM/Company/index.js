@@ -403,6 +403,7 @@ export const getList = (object, args, context, info) => {
       count,
       voted_companies,
       search,
+      ...other,
     } = args || {};
 
     limit = limit || 0;
@@ -420,6 +421,13 @@ export const getList = (object, args, context, info) => {
       companies: voted_companies,
       search,
     };
+
+
+    params = Object.assign({...other}, params);
+
+
+    console.log('Companies getList args', args);
+    console.log('Companies getList params', params);
 
     let request = SendMODXRequest(action, params); 
 

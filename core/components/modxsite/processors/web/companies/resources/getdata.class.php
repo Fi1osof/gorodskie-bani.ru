@@ -98,6 +98,8 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
         //         $this->setProperty("dir",  "ASC");
         //         break;
         // }
+
+        $this->modx->log(1, print_r($this->properties, 1), "FILE");
         
         return parent::initialize();
     }
@@ -150,6 +152,13 @@ class modWebCompaniesResourcesGetdataProcessor extends modWebSocietyBlogsGetdata
             $where['id:in'] = $companies;
         }
         
+
+        if($uri = trim($this->getProperty("uri"))){
+            $uri = preg_replace("/^\/+/", "", $uri);
+
+            $where['uri'] = $uri;
+        }
+
         /*
             Формируем запрос рейтингов
         */

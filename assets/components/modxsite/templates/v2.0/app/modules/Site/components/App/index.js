@@ -1251,13 +1251,13 @@ export class AppMain extends Component{
       } = this.props;
 
       // if(propsUser.hasPermission("viewCoords")){
-      if(user.id === 2){
+      // if(user.id === 2){
 
-        this.traceCoords();
+      //   this.traceCoords();
 
-        setInterval(() => this.traceCoords(), 30000);
+      //   setInterval(() => this.traceCoords(), 30000);
 
-      }
+      // }
 
     }
 

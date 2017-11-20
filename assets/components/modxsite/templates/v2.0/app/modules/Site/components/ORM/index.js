@@ -418,7 +418,12 @@ const RootType = new GraphQLObjectType({
       description: "Компания",
       args: {
         id: {
-          type: new GraphQLNonNull(GraphQLInt),
+          type: GraphQLInt,
+          description: "Поиск компании по ID",
+        },
+        uri: {
+          type: GraphQLString,
+          description: "Поиск компании по УРЛ",
         },
       },
     },

@@ -28,7 +28,7 @@ const {
 } = Draft;
 
 
-let contentCache = [];
+let contentCache = {};
 
 
 import ObjectType, {order} from '../';
@@ -212,6 +212,8 @@ export const getList = (object, args, context, info) => {
 
     let params = {...other};
 
+    // params.limit = 3;
+
     let request = SendMODXRequest(action, params); 
 
 
@@ -334,7 +336,8 @@ export const getList = (object, args, context, info) => {
             }
             else if(content){
 
-              console.log("Resources serverDOMBuilder", contentCache ? contentCache.length : 1);
+              // console.log("Resources serverDOMBuilder", contentCache ? contentCache.length : null);
+              // console.log("Resources serverDOMBuilder", contentCache);
 
               try{
                 

@@ -1,7 +1,6 @@
 
 const defaultQuery = `
 
-
 query apiData(
   $limit:Int = 0
   $apiGetCompenies:Boolean = true
@@ -83,6 +82,58 @@ query apiData(
 mutation clearCache{
   clearCache
 }
+
+query SiteContent(
+  $request:JSON!
+){
+  ...RootSiteContent
+}
+
+query CompanyPageContent(
+  $companyId:String!
+  $pathname:String!
+){
+  siteContent(
+    request:{
+      params: {
+        companyId:$companyId
+      },
+      location:{ 
+        pathname: $pathname,
+        search: "",
+        hash: "",
+        state: undefined,
+        action: undefined,
+        key: undefined,
+        query: {} 
+      }
+    }
+  ){
+    ...SiteContent
+  }
+}
+
+fragment RootSiteContent on RootType{
+  siteContent(
+    request:$request
+  ){
+    ...SiteContent
+  }
+}
+
+fragment SiteContent on SiteContentType{
+  id
+  status
+  title
+  description
+  keywords
+  robots
+  content
+  state
+  _errors
+  _isDirty
+}
+
 
 query Companies (
   $limit:Int!
@@ -1677,12 +1728,6 @@ mutation updateCompany(
     ...editVersion
   }
 }
-
-
-
-
-
-
 
 `;
 

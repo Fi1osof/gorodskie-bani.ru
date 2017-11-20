@@ -24,16 +24,17 @@ let routes = {
   },
   childRoutes: [
     {
-      path: "/index",
-      component: MainPage
-    },
-    {
-      path: "/index/@:lat,:lng,:zoom",
-      component: MainPage
-    },
-    {
-      path: "/@:lat,:lng,:zoom",
-      component: MainPage
+      path: "/",
+      component: MainPage,
+      childRoutes: [{
+        path: "/index",
+      },{
+        path: "/index/@:lat,:lng,:zoom",
+      },{
+        path: "/@:lat,:lng,:zoom",
+      },{
+        path: "/:city/@:lat,:lng,:zoom",
+      },],
     },
     {
       path: "/db",
@@ -167,10 +168,6 @@ let routes = {
       path: "/crm",
       name: "CRM",
       component: CRMPage,
-    },
-    {
-      path: "/:city/@:lat,:lng,:zoom",
-      component: MainPage
     },
     {
       // "path":"/moscow",

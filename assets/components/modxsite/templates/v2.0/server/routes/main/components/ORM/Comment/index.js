@@ -28,7 +28,7 @@ const {
   // getDefaultKeyBinding
 } = Draft;
 
-let contentCache = [];
+let contentCache = {};
 
 
 // import {getQuery as getServiceQuery} from '../Service';
@@ -351,7 +351,7 @@ export const getList = (object, args, context, info) => {
                 try{
       
 
-                  console.log("Comments serverDOMBuilder", contentCache && contentCache.length);
+                  // console.log("Comments serverDOMBuilder", contentCache && contentCache.length);
 
                   const blocks = convertFromHTML(text || "", serverDOMBuilder);
 

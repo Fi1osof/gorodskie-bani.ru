@@ -90,6 +90,13 @@ import {
 } from './SearchStat';
 
 
+import SiteContentType from 'modules/Site/components/ORM/SiteContent';
+
+import {
+  getList as getSiteContentList,
+} from './SiteContent';
+
+
 import EditVersionType from 'modules/Site/components/ORM/EditVersion';
 
 import {
@@ -314,6 +321,9 @@ const getObjectsList = async (ofType, source, args, context, info) => {
     await getCompanyList(source, args, context, info)
       .then(r => {
         object = r;
+      })
+      .catch(e => {
+        throw(e);
       });
 
   }
@@ -325,7 +335,10 @@ const getObjectsList = async (ofType, source, args, context, info) => {
     await getResourcesList(source, args, context, info)
     	.then(r => {
     		object = r;
-    	});
+    	})
+      .catch(e => {
+        throw(e);
+      });
 
   }
 
@@ -338,7 +351,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
         object = r;
       })
       .catch(e => {
-        console.error(e);
+        throw(e);
       });
 
   }
@@ -352,7 +365,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
         object = r;
       })
       .catch(e => {
-        console.error(e);
+        throw(e);
       });
 
   }
@@ -366,7 +379,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
         object = r;
       })
       .catch(e => {
-        console.error(e);
+        throw(e);
       });
 
   }
@@ -383,7 +396,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
       })
       .catch(e => {
-        console.error(e);
+        throw(e);
       });
       
   }
@@ -400,7 +413,24 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
       })
       .catch(e => {
-        console.error(e);
+        throw(e);
+      });
+      
+  }
+
+
+  if(ofType === SiteContentType){
+
+    await getSiteContentList(source, args, context, info)
+      .then(r => {
+
+        object = r;
+
+        // console.log('getWsConnectionsList resolver result', r);
+
+      })
+      .catch(e => {
+        throw(e);
       });
       
   }
@@ -417,7 +447,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
       })
       .catch(e => {
-        console.error(e);
+        throw(e);
       });
       
   }

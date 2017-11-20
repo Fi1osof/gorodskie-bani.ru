@@ -87,6 +87,8 @@ import {
   SearchResultType,
 } from './Search';
 
+import SiteContentType from './SiteContent';
+
 import {
   SearchStatType,
 } from './SearchStat';
@@ -389,6 +391,16 @@ const RootType = new GraphQLObjectType({
   name: 'RootType',
   description: 'Корневой раздел',
   fields: {
+    siteContent: {
+      type: SiteContentType,
+      description: SiteContentType.description,
+      args: {
+        request: {
+          type: new GraphQLNonNull(GraphQLJSON),
+          description: "Параметры запроса",
+        },
+      },
+    },
     companiesList: new listField({
       type: CompanyType,
       name: "companiesList",

@@ -15,8 +15,7 @@ module.exports = (options) => ({
 	entry: options.entry,
 	output: Object.assign({ // Compile into js/build.js
 		path: path.resolve(process.cwd(), 'build'),
-		// publicPath: '/assets/components/modxsite/templates/v9/build/',
-		publicPath: '/assets/components/modxsite/templates/v9/build/',
+		publicPath: '/assets/components/modxsite/templates/v2.0/build/',
 	}, options.output), // Merge with env dependent settings
 	module: {
 		loaders: [

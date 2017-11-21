@@ -926,7 +926,7 @@ export default class Router {
 
     if(process.env.NODE_ENV === 'production'){
 
-      assetsUrl = "/assets/components/modxsite/templates/v9/build/";
+      assetsUrl = "/assets/components/modxsite/templates/v2.0/build/";
 
       var htmlFileName = "index.html";
       // var html = fs.readFileSync(Path.join(assetsUrl, htmlFileName), "utf8");

@@ -407,6 +407,18 @@ const RootType = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLJSON),
           description: "Координаты",
         },
+        pathname: {
+          type: GraphQLString,
+          description: "Запрошенный УРЛ (Для отладки)",
+        },
+        companyId: {
+          type: GraphQLString,
+          description: "Запрошенная компания (Для отладки)",
+        },
+        city: {
+          type: GraphQLString,
+          description: "Город (Для отладки)",
+        },
       },
     },
     companiesList: new listField({

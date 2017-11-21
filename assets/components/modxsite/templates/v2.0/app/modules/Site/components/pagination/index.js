@@ -30,7 +30,7 @@ class Pagination extends PaginationPrototype{
 	getNewLocation = (page) => {
 
 
-		let {
+		const {
 			location,
 			router,
 		} = this.context;
@@ -63,9 +63,12 @@ class Pagination extends PaginationPrototype{
 
 
   // 	location = router.getCurrentLocation();
-  	location.query.page = page > 1 ? page : undefined;
+  	
+  	let newLocation = router.createLocation(location);
 
-  	return router.createPath(location);
+  	newLocation.query.page = page > 1 ? page : undefined;
+
+  	return router.createPath(newLocation);
 
 
 		// if(browserHistory){

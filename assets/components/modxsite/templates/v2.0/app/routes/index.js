@@ -141,16 +141,14 @@ let routes = {
       // component: CompaniesPage,
     },
     {
+      path: "/city/:city",
+      // component: MainPage,
+      component: CompaniesPage,
       childRoutes: [{
         // path: "/city/:city/:companyId",
         path: "/city/*/:companyId",
         component: CompaniesPage,
       }],
-    },
-    {
-      path: "/city/:city",
-      // component: MainPage,
-      component: CompaniesPage,
     },
     {
       path: "/ratings",

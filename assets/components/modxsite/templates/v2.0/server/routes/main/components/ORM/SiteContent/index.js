@@ -38,6 +38,9 @@ export const getList = (object, args, context, info) => {
       request,
       component,
       geo,
+      pathname: debugPathname,
+      companyId: debugCompanyId,
+      city: debugCity,
     } = args;
 
     console.log("SiteContent args", args);
@@ -62,10 +65,12 @@ export const getList = (object, args, context, info) => {
       });
     }
 
-    const {
+    let {
       pathname,
       query,
     } = location;
+
+    pathname = pathname || debugPathname;
 
     if(!pathname){
       reject("Не был получен УРЛ");
@@ -117,66 +122,6 @@ export const getList = (object, args, context, info) => {
       reject("Не были получены координаты");
     }
 
-    // const {
-    //   component: Component,
-    // } = baseRouter || {};
-
-
-    // console.log("Router Component 2", Component);
-
-    // console.log("Router Component Type", typeof Component);
-
-    // console.log("Router Component CompaniesPage Type", typeof CompaniesPage);
-
-    // console.log("Router Component CompaniesPage Type aqual ", Component === CompaniesPage);
-
-
-    // if(Component){
-
-    //   switch(Component){
-
-    //     // Страница компаний
-    //     case CompaniesPage:
-
-    //       const {
-    //         companyId,
-    //       } = params;
-
-    //       console.log("Company page aqual");
-
-    //       console.log("Company page aqual variables", {
-    //         resourceUri: relative_pathname,
-    //       });
-
-    //       /*
-    //         Если указан companyId, то это конечная страница компании
-    //       */
-    //       if(companyId){
-
-    //         const result = await localQuery({
-    //           operationName: "CompanyByUri",
-    //           variables: {
-    //             resourceUri: relative_pathname,
-    //           },
-    //         })
-    //         .then(r => {
-    //           console.log("SiteContent resource result", r);
-    //         })
-    //         .catch(e => {
-    //           reject(e);
-    //         });
-
-    //       }
-
-    //       break;
-
-    //   }
-
-    // }
-    // else{
-    //   throw("Не был получен базовый компонент");
-    // }
-
 
     let cities;
 
@@ -218,9 +163,9 @@ export const getList = (object, args, context, info) => {
       longtitle: cityLongtitle,
     } = city || {};
 
-    console.log("City", typeof city, city);
+    // console.log("City", typeof city, city);
 
-    console.log("City title", cityLongtitle, city && city.longtitle);
+    // console.log("City title", cityLongtitle, city && city.longtitle);
 
     if(component){
 
@@ -229,10 +174,13 @@ export const getList = (object, args, context, info) => {
         // Страница компаний
         case "CompaniesPage":
 
-          const {
+          let {
             companyId,
             city,
           } = params;
+
+          companyId = companyId || debugCompanyId;
+          city = city || debugCity;
 
           // console.log("Company page aqual");
 

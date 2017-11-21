@@ -197,7 +197,7 @@ export default class Page extends Component{
     	inited: prevInited,
     } = prevContext || {};
 
-    // console.log("componentDidUpdate prevProps", prevProps.location);
+    console.log("componentDidUpdate prevProps", prevProps.location);
 
 
 		const page = this.getPage();
@@ -222,14 +222,16 @@ export default class Page extends Component{
     	this.loadData();
 
     }
+    	
+  	console.log("PageLayout componentDidUpdate page, prevPage", page, prevPage);
 
     if(
-    	(page || prevPage) && page !== parseInt(prevPage)
+    	(page || prevPage) && parseInt(page) !== parseInt(prevPage)
     ){
     	
     	this.loadData();
 
-    	// console.log("componentDidUpdate page || prevPage", page, prevPage);
+    	console.log("PageLayout componentDidUpdate page || prevPage", page, prevPage);
 
     }
 

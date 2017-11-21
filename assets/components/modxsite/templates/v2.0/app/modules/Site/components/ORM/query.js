@@ -93,50 +93,55 @@ query SiteContent(
   ...RootSiteContent
 }
 
+# pathname никак не учитывается, надо только, чтобы он был
 query CompanyPageContent(
+  $pathname:String = "moscow/bannyij-kompleks-«sokolinaya-gora»/"
   $component:String = "CompaniesPage"
-  $request:JSON = {
-    params: {
-      companyId:"bannyij-kompleks-«sokolinaya-gora»/"
-    },
-    location:{ 
-      pathname: "moscow/bannyij-kompleks-«sokolinaya-gora»/",
-      search: "",
-      hash: "",
-      state: undefined,
-      action: undefined,
-      key: undefined,
-      query: {} 
-    }
-  }
+  $companyId:String = "Sokolinka"
+  $city:String = "chita"
   $geo:JSON = {
     ll:[55,37]
   }
 ){
-  ...RootSiteContent
+  ...testSiteContent
 }
 
 query CompaniesPageContent(
   $component:String = "CompaniesPage"
-  $request:JSON = {
-    params: {
-      city:"moscow"
-    },
-    location:{ 
-      pathname: "moscow/",
-      search: "",
-      hash: "",
-      state: undefined,
-      action: undefined,
-      key: undefined,
-      query: {} 
-    }
-  }
+  $pathname:String = "moscow"
+  $companyId:String
+  $city:String = ""
   $geo:JSON = {
     ll:[55,37]
   }
 ){
-  ...RootSiteContent
+  ...testSiteContent
+}
+
+fragment testSiteContent on RootType{
+  siteContent(
+    pathname:$pathname
+    companyId:$companyId
+    component:$component
+    city:$city
+    request:{
+      params: {
+        companyId: $companyId
+      },
+      location:{ 
+        pathname: $pathname,
+        search: "",
+        hash: "",
+        state: undefined,
+        action: undefined,
+        key: undefined,
+        query: {} 
+      }
+    }
+    geo:$geo
+  ){
+    ...SiteContent
+  }
 }
 
 fragment RootSiteContent on RootType{

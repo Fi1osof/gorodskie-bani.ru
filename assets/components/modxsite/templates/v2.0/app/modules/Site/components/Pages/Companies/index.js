@@ -145,6 +145,8 @@ export default class CompaniesPage extends Page {
 	
 	loadData(){
 
+		console.log("CompaniesPage loadData");
+
 		return;
 
 		// const {

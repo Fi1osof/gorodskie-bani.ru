@@ -31,14 +31,6 @@ export default class ModelObject{
 
     _app = app;
 
-    // console.log('ModelObject constructor', _app);
-
-    // Object.assign(this, {
-    //   app,
-    // });
-
-    // this.localQuery = app.localQuery;
-
   }
 
   getApp(){
@@ -125,12 +117,6 @@ export default class ModelObject{
     return value;
   }
 
-  // localQuery(params){
-
-  //   console.log('ModelObject localQuery', this);
-
-  // }
-
   getFullData(params, force){
 
     return new Promise((resolve, reject) => {
@@ -152,7 +138,7 @@ export default class ModelObject{
 
   }
 
-  localQuery(params = {}){
+  remoteQuery(params = {}){
 
     let {
       variables,
@@ -166,13 +152,13 @@ export default class ModelObject{
       variables,
     });
 
-    // console.log('localQuery', params);
+    // console.log('remoteQuery', params);
 
     return new Promise((resolve, reject) => {
 
-      _app.localQuery(params)
+      _app.remoteQuery(params)
         .then(result => {
-          // console.log('localQuery result 3', result);
+          // console.log('remoteQuery result 3', result);
 
           if(result && result.data){
 

@@ -91,6 +91,129 @@ injectTapEventPlugin();
 
 // light.text.primary = '#ffffff';
 
+
+export const createStores = function(){
+
+  return {
+    CoordsStore: new DataStore(new Dispatcher()),   // Координаты трейсируемых объектов
+    CompaniesStore: new DataStore(new Dispatcher()),
+    RatingsStore: new DataStore(new Dispatcher()),
+    UsersStore: new DataStore(new Dispatcher()),
+    CommentsStore: new DataStore(new Dispatcher()),
+    ResourcesStore: new DataStore(new Dispatcher()),
+    TopicsStore: new DataStore(new Dispatcher()),
+    EditVersionsStore: new DataStore(new Dispatcher()),
+  };
+
+}
+
+export const initData = function(apiData){
+
+  let {
+    CompaniesStore,
+    RatingsStore,
+    UsersStore,
+    CommentsStore,
+    ResourcesStore,
+    TopicsStore,
+    EditVersionsStore,
+  } = this.state;
+
+  if(apiData){
+    let {
+      companies,
+      // user: currentUser,
+      users,
+      ratings,
+      comments,
+      resources,
+      topics,
+      editVersions,
+    } = apiData || {};
+
+    // let companies = object && object.map(n => new Company(n)) || [];
+
+    users = users && users.map(n => this.createStoreObject(User, n)) || [];
+
+    // companies = companies || [];
+    // users = users || [];
+
+    ratings = ratings || [];
+    comments = comments || [];
+
+    EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], editVersions || []);
+
+    
+
+    let companiesState = CompaniesStore.getState();
+
+    if(companiesState.size){
+
+      companies &&  companies.map(n => {
+
+        let item = companiesState.find(i => i.id === n.id );
+
+        if(item){
+
+          Object.assign(item, n);
+
+        }
+        else{
+          
+          companiesState = companiesState.push(this.createStoreObject(Company, n));
+
+        }
+
+      });
+        
+      CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companiesState.toArray());
+
+    }
+    else{
+
+      companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
+      CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+
+    }
+
+
+
+
+    UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
+    RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
+    CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
+    ResourcesStore.getDispatcher().dispatch(ResourcesStore.actions['SET_DATA'], resources || []);
+    TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
+
+
+    // console.log('editVersions data', editVersions);
+    // EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], [{
+    //   id: 46,
+    // }]);
+
+
+
+
+    // Устанавливаем сразу локальные данные для компаний
+    // companies.map(n => {
+    //   this.prepareCompaniesLocalData(n);
+    // });
+
+    // console.log("MapCompanies CompaniesStore 2", CompaniesStore.getState());
+  }
+
+  // this.forceUpdate();
+
+  this.setState({
+    inited: true,
+  });
+
+}
+
+export const createStoreObject = function(Class, data){
+  return new Class(data, this);
+}
+
 const customStyles = createMuiTheme({
   palette: createPalette({
     // primary: lightBlue,
@@ -358,14 +481,6 @@ export class AppMain extends Component{
 
     this.state = {
       notifications_store: notifications_store,
-      CoordsStore: new DataStore(new Dispatcher()),   // Координаты трейсируемых объектов
-      CompaniesStore: new DataStore(new Dispatcher()),
-      RatingsStore: new DataStore(new Dispatcher()),
-      UsersStore: new DataStore(new Dispatcher()),
-      CommentsStore: new DataStore(new Dispatcher()),
-      ResourcesStore: new DataStore(new Dispatcher()),
-      TopicsStore: new DataStore(new Dispatcher()),
-      EditVersionsStore: new DataStore(new Dispatcher()),
       // orm,
       schema,
       // db,
@@ -374,6 +489,8 @@ export class AppMain extends Component{
       inited: false,
       // appExports: {},
     }
+
+    Object.assign(this.state, createStores());
 
     let {
       user,
@@ -387,6 +504,9 @@ export class AppMain extends Component{
     stores.notifications_store = notifications_store;
 
     this.rootResolver = rootResolver;
+
+    this.initData = initData.bind(this);
+    this.createStoreObject = createStoreObject.bind(this);
 
     // console.log('AppMain location', props.location);
   }
@@ -2421,7 +2541,7 @@ export class AppMain extends Component{
   // }
 
 
-  loadApiData = () => {
+  loadApiData = async () => {
 
     // 
 
@@ -2442,10 +2562,11 @@ export class AppMain extends Component{
       //   },
       // });
 
-      this.remoteQuery({
+      await this.remoteQuery({
         operationName: "apiData",
         variables: {
           limit: 0,
+          apiDataGetCurrentUser: true,
         },
       })
       .then(r => {
@@ -2470,123 +2591,129 @@ export class AppMain extends Component{
 
     }
 
-    return;
-  }
-
-
-  initData(apiData){
-
-    let {
-      CompaniesStore,
-      RatingsStore,
-      UsersStore,
-      CommentsStore,
-      ResourcesStore,
-      TopicsStore,
-      EditVersionsStore,
-    } = this.state;
 
     let user; 
 
-    if(apiData){
-      let {
-        companies,
-        user: currentUser,
-        users,
-        ratings,
-        comments,
-        resources,
-        topics,
-        editVersions,
-      } = apiData || {};
+    let {
+      user: currentUser,
+    } = apiData || {};
+    
 
-      if(currentUser){
-        this.props.userActions.GetOwnDataSuccess(currentUser);
+    if(currentUser){
+      this.props.userActions.GetOwnDataSuccess(currentUser);
 
-        user = currentUser;
-      }
-
-      // let companies = object && object.map(n => new Company(n)) || [];
-
-      users = users && users.map(n => this.createStoreObject(User, n)) || [];
-
-      // companies = companies || [];
-      // users = users || [];
-
-      ratings = ratings || [];
-      comments = comments || [];
-
-      EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], editVersions || []);
-
-      
-
-      let companiesState = CompaniesStore.getState();
-
-      if(companiesState.size){
-
-        companies &&  companies.map(n => {
-
-          let item = companiesState.find(i => i.id === n.id );
-
-          if(item){
-
-            Object.assign(item, n);
-
-          }
-          else{
-            
-            companiesState = companiesState.push(this.createStoreObject(Company, n));
-
-          }
-
-        });
-          
-        CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companiesState.toArray());
-
-      }
-      else{
-
-        companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
-        CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
-
-      }
-
-
-
-
-      UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
-      RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
-      CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
-      ResourcesStore.getDispatcher().dispatch(ResourcesStore.actions['SET_DATA'], resources || []);
-      TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
-
-
-      // console.log('editVersions data', editVersions);
-      // EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], [{
-      //   id: 46,
-      // }]);
-
-
-
-
-      // Устанавливаем сразу локальные данные для компаний
-      // companies.map(n => {
-      //   this.prepareCompaniesLocalData(n);
-      // });
-
-      // console.log("MapCompanies CompaniesStore 2", CompaniesStore.getState());
+      user = currentUser;
     }
 
 
     this.initUser(user);
 
-    // this.forceUpdate();
-
-    this.setState({
-      inited: true,
-    });
-
+    return;
   }
+
+
+  // initData(apiData){
+
+  //   let {
+  //     CompaniesStore,
+  //     RatingsStore,
+  //     UsersStore,
+  //     CommentsStore,
+  //     ResourcesStore,
+  //     TopicsStore,
+  //     EditVersionsStore,
+  //   } = this.state;
+
+  //   if(apiData){
+  //     let {
+  //       companies,
+  //       // user: currentUser,
+  //       users,
+  //       ratings,
+  //       comments,
+  //       resources,
+  //       topics,
+  //       editVersions,
+  //     } = apiData || {};
+
+  //     // let companies = object && object.map(n => new Company(n)) || [];
+
+  //     users = users && users.map(n => this.createStoreObject(User, n)) || [];
+
+  //     // companies = companies || [];
+  //     // users = users || [];
+
+  //     ratings = ratings || [];
+  //     comments = comments || [];
+
+  //     EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], editVersions || []);
+
+      
+
+  //     let companiesState = CompaniesStore.getState();
+
+  //     if(companiesState.size){
+
+  //       companies &&  companies.map(n => {
+
+  //         let item = companiesState.find(i => i.id === n.id );
+
+  //         if(item){
+
+  //           Object.assign(item, n);
+
+  //         }
+  //         else{
+            
+  //           companiesState = companiesState.push(this.createStoreObject(Company, n));
+
+  //         }
+
+  //       });
+          
+  //       CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companiesState.toArray());
+
+  //     }
+  //     else{
+
+  //       companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
+  //       CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+
+  //     }
+
+
+
+
+  //     UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
+  //     RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
+  //     CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
+  //     ResourcesStore.getDispatcher().dispatch(ResourcesStore.actions['SET_DATA'], resources || []);
+  //     TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
+
+
+  //     // console.log('editVersions data', editVersions);
+  //     // EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], [{
+  //     //   id: 46,
+  //     // }]);
+
+
+
+
+  //     // Устанавливаем сразу локальные данные для компаний
+  //     // companies.map(n => {
+  //     //   this.prepareCompaniesLocalData(n);
+  //     // });
+
+  //     // console.log("MapCompanies CompaniesStore 2", CompaniesStore.getState());
+  //   }
+
+  //   // this.forceUpdate();
+
+  //   this.setState({
+  //     inited: true,
+  //   });
+
+  // }
 
 
   // Перезагружаем API-данные со сбросом кеша
@@ -2770,9 +2897,9 @@ export class AppMain extends Component{
     });
   }
 
-  createStoreObject(Class, data){
-    return new Class(data, this);
-  }
+  // createStoreObject(Class, data){
+  //   return new Class(data, this);
+  // }
 
   loadRatings(){
 

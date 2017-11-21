@@ -70,7 +70,7 @@ export default class Router {
     this.response = new Response(this, null, null, knex, config, this.clients, this.SendMessage, ::this.SendMODXRequest);
 
 
-    this.response.localQuery({
+    this.response.remoteQuery({
       operationName: "Redirects",
       variables: {
         redirectsLimit: 0,
@@ -140,7 +140,7 @@ export default class Router {
 
   loadApiData(){
 
-    return this.response.localQuery({
+    return this.response.remoteQuery({
       operationName: "apiData",
       variables: {
         resourceExcludeTemplates: 0,
@@ -154,6 +154,8 @@ export default class Router {
       // console.log('apiData result', r);
 
       apiData = r.data;
+
+      this.response.initData(apiData);
 
     })
     .catch(e => {
@@ -219,6 +221,8 @@ export default class Router {
 
 
   clearCache(){
+
+    console.log("clearCache");
 
     return this.loadData();
   }

@@ -536,198 +536,16 @@ const groupByCompanyAndRatingType = function(result){
     }));
   });
 
-  // result.groupBy(x => x.company_id).map(n => {
-  //   n.map(i => {
-  //     i.quantity = n.size;
-  //     result2 = result2.push(i);
-  //   });
-
-  //   
-
-  // });
 
   return result2;
 }
 
 
 export class RatingsListField extends listField{
-
-
-  // beforeCount(source, args, context, info){
-
-  //   let {
-  //     thread: company_id,
-  //   } = args;
-
-    
-
-  //   if(company_id){
-      
-      
-
-  //     source = source.filter(n => n.company_id === company_id);
-  //   }
-
-    
-  //   // 
-
-  //   const {
-  //     fieldName,
-  //   } = info;
-          
-  //   // let result = source && source[fieldName] || undefined;
-
-  //   if(source){
-  //     // 
-
-  //     let {
-  //       groupBy,
-  //     } = args;
-
-      
-
-  //     // Способ группировки
-  //     switch(groupBy){
-
-  //       case 'company':
-
-  //         source = this.groupByCompany(source);
-
-  //         break;
-
-  //       case 'rating_type':
-
-  //         source = this.groupByRatingType(source);
-
-  //         break;
-
-  //       case 'company_and_rating_type':
-
-  //         source = this.groupByCompanyAndRatingType(source);
-
-  //         break;
-
-  //     }
-
-  //     // source.ratings = result;
-  //   }
-
-  //   return super.beforeCount(source, args, context, info);
-  // }
-
-  // resolve(source, args, context, info){
-    
-  //   // 
-
-  //   
-
-  //   const {
-  //     fieldName,
-  //   } = info;
-          
-  //   let result = source && source[fieldName] || undefined;
-
-  //   if(result){
-  //     // 
-
-  //     let {
-  //       groupBy,
-  //     } = args;
-
-  //     
-
-  //     // Способ группировки
-  //     switch(groupBy){
-
-  //       case 'company':
-
-  //         result = this.groupByCompany(result);
-
-  //         break;
-
-  //       case 'rating_type':
-
-  //         result = this.groupByRatingType(result);
-
-  //         break;
-
-  //       case 'company_and_rating_type':
-
-  //         result = this.groupByCompanyAndRatingType(result);
-
-  //         break;
-
-  //     }
-
-  //     source.ratings = result;
-  //   }
-
-
-  //   return super.resolve(source, args, context, info);
-  // }
+ 
 
 }
 
-
-// export const getMany = function (source, args, context, info){
-//   // 
-//   // 
-  
-//   const {
-//     id,
-//   } = source;
-
-//   const {
-//     fieldName,
-//   } = info;
-
-//   return new Promise((resolve, reject) => {
-//     // resolve([{
-//     //   id: 345,
-//     //   text: "DSFdsf",
-//     // }]);
-
-//     const {
-//       remoteQuery,
-//     } = context;
-
-//     remoteQuery(`query{
-//         ratings(limit: 0) {
-//           rating
-//           max_vote
-//           min_vote
-//           type
-//           company_id
-//           quantity
-//           quantity_voters
-//           voted_companies
-//           voters
-//         }
-//       }`)
-//       .then(result => {
-
-//         // 
-
-//         const {
-//           ratings,
-//         } = result.object;
-
-//         return resolve(List(ratings));
-//       })
-//       .catch(e => reject(e));
-
-//   });
-// }
-
-// export const getOne = function (source, args, context, info){
-//   return new Promise((resolve, reject) => {
-//     getMany(source, args, context, info)
-//       .then(result => {
-        
-//         resolve(result && result.get(0) || null);
-//       })
-//   });
-// }
 
 
 export const getList = (source, args, context, info) => {
@@ -751,10 +569,6 @@ export const getList = (source, args, context, info) => {
     groupBy,
     resource_id,
   } = args;
-
-  // console.log('getList groupBy', groupBy, args);
-
-  // console.log('getList selectionSet total', selectionSet && selectionSet.selections.find(n => n && n.name && n.name.value === "total"));
 
   let state = RatingsStore.getState();
 
@@ -836,74 +650,6 @@ export const getList = (source, args, context, info) => {
     });
 
   }
-
-  // if(groupBy){
-
-  //   switch(groupBy){
-
-  //     // По компании
-  //     case 'company':
-
-  //       var result2 = List();
-
-  //       const result_grouped = state.groupBy(x => x.company_id);
-
-  //       result_grouped.map(n => {
-  //         const first = n.get(0);
-
-  //         const quantity = n.size;
-
-  //         let ratings = [];
-
-  //         let voted_users = [];
-
-  //         n.map(i => {
-
-  //           const {
-  //             rating,
-  //             company_id,
-  //             voter,
-  //           } = i;
-
-  //           ratings.push(rating);
-
-  //           if(voter && voted_users.indexOf(voter) === -1){
-  //             voted_users.push(voter);
-  //           }
-
-  //         });
-
-  //         let max_vote;
-  //         let min_vote;
-
-  //         let rating = ratings.reduce((prev, next) => prev+next) / quantity;
-
-  //         // 
-
-  //         result2 = result2.push(Object.assign({}, first, {
-  //           quantity,
-  //           voted_users,
-  //           quantity_voters: voted_users && voted_users.length || 0,
-  //           max_vote: Math.max.apply(null, ratings),
-  //           min_vote: Math.min.apply(null, ratings),
-  //           rating: parseFloat(rating.toFixed(2)),
-  //         }));
-  //       });
-
-  //       state = result2;
-
-  //       break;
-      
-
-  //     // По типу рейтинга
-  //     case 'rating_type':
- 
-
-  //       break;
-
-  //   }
-
-  // }
 
   return state;
 };

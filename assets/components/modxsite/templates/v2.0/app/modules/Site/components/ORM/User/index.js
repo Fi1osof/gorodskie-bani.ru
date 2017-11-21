@@ -27,87 +27,11 @@ import {
 } from '../fields';
 
 
-
-// import {
-//   CompanyType,
-//   getMany as getCompanies,
-// } from '../Company';
-
-
-
-// export const getList = function (source, args, context, info){
-//   // console.log('Ratings getMany', source, args, info);
-//   // console.log('Ratings getMany context', context);
-  
-//   const {
-//     id,
-//   } = source;
-
-//   const {
-//     fieldName,
-//   } = info;
-
-//   return new Promise((resolve, reject) => {
-//     // resolve([{
-//     //   id: 345,
-//     //   text: "DSFdsf",
-//     // }]);
-
-//     const {
-//       remoteQuery,
-//     } = context;
-
-//     remoteQuery(`query{
-//         ratings(limit: 0) {
-//           rating
-//           max_vote
-//           min_vote
-//           type
-//           company_id
-//           quantity
-//           quantity_voters
-//           voted_companies
-//           voters
-//         }
-//       }`)
-//       .then(result => {
-
-//         // console.log('result.object', result);
-
-//         const {
-//           ratings,
-//         } = result.object;
-
-//         return resolve(List(ratings));
-//       })
-//       .catch(e => reject(e));
-
-//   });
-// }
-
-// export const getOne = function (source, args, context, info){
-//   return new Promise((resolve, reject) => {
-//     getMany(source, args, context, info)
-//       .then(result => {
-//         console.log('result 444', result, result.get(0));
-//         resolve(result && result.get(0) || null);
-//       })
-//   });
-// }
-
-
-
 export const getList = (source, args, context, info) => {
 
   const {
     UsersStore,
   } = context.state;
-
-  const {
-    user: {
-      user:currentUser,
-    },
-  } = context.props;
 
   const {
     username,
@@ -128,6 +52,12 @@ export const getList = (source, args, context, info) => {
   let state = UsersStore.getState();
 
   if(myOnly){
+
+    const {
+      user,
+    } = context.props || {};
+
+    const currentUser = user && user.user;
 
     if(!currentUser){
       return null;

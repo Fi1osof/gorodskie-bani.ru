@@ -77,6 +77,14 @@ import RootType, {
 } from 'modules/Site/components/ORM';
 
 
+import {
+  createStores,
+  initData,
+  createStoreObject,
+} from 'modules/Site/components/App';
+
+import localResolver from 'modules/Site/components/ORM/resolver';
+
 import rootResolver from '../ORM/resolver';
 
 // import Company from 'modules/Site/components/ORM/Company';
@@ -112,7 +120,7 @@ export default class Response{
 
     schema = this.getSchema();
 
-    this.rootResolver = rootResolver;
+    // this.rootResolver = rootResolver;
  
     this.ws_clients = ws_clients;
 
@@ -120,7 +128,15 @@ export default class Response{
 
     this.SendMODXRequest = SendMODXRequest;
 
-    this.serverDOMBuilder = ::this.serverDOMBuilder
+    this.serverDOMBuilder = ::this.serverDOMBuilder;
+
+
+    this.state = createStores();
+
+    this.initData = initData.bind(this);
+    this.createStoreObject = createStoreObject.bind(this);
+
+    this.localResolver = localResolver.bind(this);
   };
 
   getConfig = (field) => {
@@ -145,6 +161,13 @@ export default class Response{
 
     return prefix;
   };
+
+
+  setState = (state) => {
+
+    Object.assign(this.state, state);
+
+  }
 
 
   serverDOMBuilder(html){
@@ -1904,21 +1927,9 @@ export default class Response{
     return schema;
   }
 
-  process = async (req, res, params) => {  
-
-    // let {
-    //   pub_action,
-    //   ...params 
-    // } = this.getRequestParams();
-
-    // let params = this.params || {};
-    // let query = req.query || {};
+  process = async (req, res, params) => {
 
     params = Object.assign({}, req.query || {}, params || {});
-
-    // let {
-    //   ...params 
-    // } = this.getRequestParams();
 
     let {
       pub_action,
@@ -1928,10 +1939,6 @@ export default class Response{
     } = params;
 
     let result;
-
-    // variables = Object.assign(variables || {
-    //   req,
-    // });
 
     await this.localQuery({
       query,
@@ -1959,7 +1966,7 @@ export default class Response{
     .catch(e => {
 
 
-      console.error("Response process e", e);
+      // console.error("Response process e", e);
 
       result = this.failure(e, null, res);
     });
@@ -1967,15 +1974,162 @@ export default class Response{
     return result;
   }
 
-  // getRequestParams(){
-  //   let params = this.params || {};
-  //   let query = this.req.query || {};
+  // process = async (req, res, params) => {  
 
-  //   return Object.assign(query, params);
+  //   // let {
+  //   //   pub_action,
+  //   //   ...params 
+  //   // } = this.getRequestParams();
+
+  //   // let params = this.params || {};
+  //   // let query = req.query || {};
+
+  //   params = Object.assign({}, req.query || {}, params || {});
+
+  //   // let {
+  //   //   ...params 
+  //   // } = this.getRequestParams();
+
+  //   let {
+  //     pub_action,
+  //     query,
+  //     variables,
+  //     operationName,
+  //   } = params;
+
+  //   let result;
+
+  //   // variables = Object.assign(variables || {
+  //   //   req,
+  //   // });
+
+  //   await this.remoteQuery({
+  //     query,
+  //     operationName,
+  //     variables,
+  //     req,
+  //   })
+  //   .then((response) => {
+
+  //     let {
+  //       errors,
+  //     } = response;
+
+  //     if(errors && errors.length){
+  //       let {
+  //         message,
+  //         ...other
+  //       } = errors[0];
+
+  //       result = this.failure(message, {...other}, res);
+  //     }
+  //     // else
+  //     result = this.success("", response && response.data || null, res);
+  //   })
+  //   .catch(e => {
+
+
+  //     console.error("Response process e", e);
+
+  //     result = this.failure(e, null, res);
+  //   });
+
+  //   return result;
   // }
 
 
   localQuery = (graphQLParams) => {
+
+    const {
+      query,
+      operationName,
+      variables,
+      req,
+    } = graphQLParams;
+
+    return new Promise((resolve, reject) => {
+
+      // console.log('req', req);
+
+      graphql({
+        schema,
+        operationName,
+        source: query || defaultQuery,
+        // rootValue: undefined,
+        variableValues: variables || undefined,
+        // contextValue: this.getChildContext(),
+        contextValue: Object.assign({}, this, {
+          SendMODXRequest: async (action, params) => {
+
+            // console.log('SendMODXRequest action, params', action, params);
+
+            return this.SendMODXRequest(action, params, req);
+
+          },
+          rootResolver: this.localResolver,
+          remoteResolver: rootResolver,
+        }),
+        fieldResolver: localResolver,
+        // directives: rootDirectives,
+      })
+        .then((result) => {
+
+          let {
+            errors,
+          } = result;
+
+          if(errors && errors.length){
+            let {
+              message,
+              ...other
+            } = errors[0];
+
+            let responseMessage = message;
+
+            let responseObject = other;
+
+            if(message && typeof message === "string"){
+
+              try{
+
+                let response = JSON.parse(message);
+
+                reject(response);
+
+              }
+              catch(e){
+
+              }
+
+            }
+
+            return reject(responseMessage, {...responseObject});
+
+            // return reject({
+            //   success: false,
+            //   message: "SDfdsf",
+            //   object: {
+            //     dsfdsf: "SDfdsf",
+            //   },
+            // });
+          }
+
+          // console.error("remoteQuery result error", result);
+
+          // console.error("remoteQuery result JSON error", JSON.stringify(result));
+
+          return resolve(result);
+        })
+        .catch(e => {
+          console.error("remoteQuery error", e);
+          console.error("remoteQuery JSON error", JSON.stringify(e));
+          reject(e);
+        });
+    });
+
+  }
+
+  remoteQuery = (graphQLParams) => {
 
     const {
       query,
@@ -2031,33 +2185,12 @@ export default class Response{
 
                 reject(response);
 
-                // const {
-                //   success,
-                //   message: rMessage,
-                //   data,
-                // } = response || {};
-
-                // responseMessage = rMessage;
-                // responseObject = data;
-
-                // console.error("localQuery error response", response);
-
-                // responseObject = {
-                //   dsfgdsf: "FDgfdgfdg 4444",
-                // };
-
               }
               catch(e){
 
               }
 
             }
-
-            // console.error("localQuery result", result);
-
-            // console.error("localQuery result errors", errors);
-
-            // console.error("localQuery result JSON error", JSON.stringify(result));
 
             return reject(responseMessage, {...responseObject});
 
@@ -2070,158 +2203,21 @@ export default class Response{
             // });
           }
 
-          // console.error("localQuery result error", result);
+          // console.error("remoteQuery result error", result);
 
-          // console.error("localQuery result JSON error", JSON.stringify(result));
+          // console.error("remoteQuery result JSON error", JSON.stringify(result));
 
           return resolve(result);
         })
         .catch(e => {
-          console.error("localQuery error", e);
-          console.error("localQuery JSON error", JSON.stringify(e));
+          console.error("remoteQuery error", e);
+          console.error("remoteQuery JSON error", JSON.stringify(e));
           reject(e);
         });
     });
 
   }
 
-
-  // rootResolver = async(source, args, context, info) =>{
-
-
-  //   let result;
-
-  //   // console.log('fieldResolver source', source);
-  //   // console.log('fieldResolver args', args);
-  //   // console.log('fieldResolver context', context);
-  //   // console.log('fieldResolver info', info);
-
-  //   const {
-  //     fieldName,
-  //     operation,
-  //     returnType,
-  //   } = info;
-
-  //   if(source){
-
-  //     if(typeof source.fieldResolver === 'function'){
-        
-  //       // console.log('fieldResolver source', source);
-        
-  //       result = source.fieldResolver(source, args, context, info);
-  //     }
-
-  //     else result = source[fieldName];
-
-  //   }
-    
-  //   if(!result){
-
-  //     // Резолвим по типу объекта
-  //     // PlaceContact
-
-  //     if(returnType instanceof GraphQLObjectType){
-
-  //       const {
-  //         name: returnTypeName,
-  //       } = returnType;
-
-  //       const {
-  //         id,
-  //       } = args;
-
-  //       // console.log("returnTypeName", returnTypeName);
-
-  //       // switch(returnTypeName){
-
-  //       //   case "PlaceContact":
-
-  //       //     const {
-  //       //       PlaceContactsStore,
-  //       //     } = context.state;
-
-  //       //     // console.log("returnTypeName 2", returnTypeName);
-
-  //       //     if(id){
-  //       //       result = PlaceContactsStore.getState().find(n => n.id === id);
-  //       //     }
-
-  //       //     break;
- 
-
-  //       // }
-
-  //     }
-
-  //   }
-
-  //   // console.log("PlaceContactUpdateCoords Object result", result);
-
-  //   switch(operation.name.value){
-
-  //     case "PlaceContactUpdateCoords":
-
-
-  //       if(result && (result instanceof PlaceContact)){
-
-  //         // console.log("PlaceContactUpdateCoords Object result", result);
-
-  //         const {
-  //           lat,
-  //           lng,
-  //         } = args;
-
-  //         // Object.assign(result, {
-  //         //   lat,
-  //         //   lng,
-  //         // });
-
-  //         result.update({
-  //           lat,
-  //           lng,
-  //         });
-
-  //       }
-
-  //       break;
-
-  //   }
-
-
-  //   // switch(fieldName){
-
-  //   //   case 'contact_places': 
-        
-  //   //     console.log('Root fieldResolver', fieldName, source, value, this);
-          
-  //   //     // this.id === 492 && console.log('ModelObject Company fieldResolver', fieldName, source, value, this);
-
-  //   //     // value = value && value.image && value.image.original || null;
-  //   //     // value = value && value.original || null;
-
-  //   //     break;
-
-  //   //   default: ;
-      
-  //   // }
-
-  //   // else{
-
-  //   //   result = {
-  //   //     success: true,
-  //   //     object: [new user({
-  //   //       id: 12,
-  //   //       name: "DSfsdf",
-  //   //     })],
-  //   //   };
-
-  //   // }
-
-  //   // 
-
-  //   return result;
-
-  // }
 
   success(message, object, res){
 

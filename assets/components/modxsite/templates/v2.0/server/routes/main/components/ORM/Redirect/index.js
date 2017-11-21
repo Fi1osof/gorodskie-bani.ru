@@ -24,7 +24,7 @@ export const getList = async (Company, args, context, info) => {
     },
   } = info;
 
-  const totalSelection = selectionSet && selectionSet.selections && selectionSet.selections.find(n => n.name.value === "total");
+  const totalSelection = selectionSet && selectionSet.selections && selectionSet.selections.find(n => n.name && n.name.value === "total");
 
 
   const {

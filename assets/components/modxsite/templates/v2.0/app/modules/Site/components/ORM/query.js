@@ -3,6 +3,7 @@ const defaultQuery = `
 
 query apiData(
   $limit:Int = 0
+  $apiDataGetCurrentUser:Boolean = false
   $apiGetCompenies:Boolean = true
   $getRatingsAvg:Boolean = false
   $getImageFormats:Boolean = false
@@ -64,7 +65,8 @@ query apiData(
   
   user(
     ownProfile: true
-  ){
+  ) @include(if:$apiDataGetCurrentUser)
+  {
     ...User
   }
   
@@ -192,8 +194,7 @@ query Companies (
 }
 
 query Company(
-  $id:Int
-  $resourceUri:String
+  $id:Int!
   $getRatingsAvg:Boolean = true
   $getImageFormats:Boolean = true
   $getCompanyComments:Boolean = true
@@ -216,7 +217,6 @@ query Company(
 ){
   company(
     id: $id
-    uri: $resourceUri
   ) {
     ...Company
     ratingsByType {

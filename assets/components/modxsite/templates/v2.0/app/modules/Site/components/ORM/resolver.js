@@ -58,7 +58,7 @@ import EditVersionType, {
 } from './EditVersion';
 
 
-const rootResolver = (source, args, context, info) => {
+const rootResolver = function(source, args, context, info){
 
   let result;
 
@@ -122,6 +122,79 @@ const rootResolver = (source, args, context, info) => {
         }
 
         break;
+
+      case "clearCache":
+
+        // console.log("clearCache");
+
+        if(typeof window !== "undefined"){
+          throw("Операция не разрешена в окне");
+        }
+
+        const {
+          scope,
+        } = context;
+
+        return new Promise(async (resolve, reject) => {
+
+          try{
+
+            result = await scope.clearCache();
+
+            console.log("rootResolver clearCache");
+
+            resolve(result);
+
+          }
+          catch(e){
+            reject(e);
+          }
+
+        });
+
+
+        break;
+
+      // Сохранение поискового запроса
+      case "updateCompany":
+
+        const {
+          remoteResolver,
+        } = context;
+
+        if(!remoteResolver){
+          throw("remoteResolver undefined");
+        }
+
+
+        return new Promise(async (resolve, reject) => {
+
+          try{
+
+            const result = await remoteResolver(null, args, context, info);
+
+            console.log("rootResolver updateCompany result", result);
+
+            // if(result && result.success){
+
+            //   resolve(result);
+
+            // }
+            // else{
+            //   reject(result);
+            // }
+
+            resolve(result);
+
+          }
+          catch(e){
+            reject(e);
+          }
+
+        });
+
+        break;
+
     }
   }
 
@@ -135,9 +208,9 @@ const rootResolver = (source, args, context, info) => {
 
     // Резолвим по типу объекта
 
-    const {
-      name: returnTypeName,
-    } = returnType;
+    // const {
+    //   name: returnTypeName,
+    // } = returnType;
 
 
     if(returnType instanceof ObjectsListType){

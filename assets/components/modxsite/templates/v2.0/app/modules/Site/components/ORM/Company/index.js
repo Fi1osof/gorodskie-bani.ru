@@ -419,7 +419,6 @@ export default class Company extends ModelObject{
 
     const {
       localQuery,
-      remoteQuery,
     } = this._app.getChildContext();
     
     const {

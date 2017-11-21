@@ -28,6 +28,7 @@ export default class Page extends Component{
 		EditVersionsStore: PropTypes.object.isRequired,
 		getCounters: PropTypes.func.isRequired,
 		localQuery: PropTypes.func.isRequired,
+		remoteQuery: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     triggerGoal: PropTypes.func.isRequired,
@@ -91,7 +92,7 @@ export default class Page extends Component{
 
 		});
 
-		this.loadData();
+		this.onWillMount();
 			
 		// super.componentDidMount && super.componentDidMount();
 
@@ -99,8 +100,16 @@ export default class Page extends Component{
 
 	}
 
+	onWillMount(){
+		
+		this.loadData();
+
+	}
+
 
 	componentWillUnmount(){
+
+		this.mounted = false;
 
 		const {
 			CommentsStore,
@@ -178,6 +187,8 @@ export default class Page extends Component{
 
 	componentDidMount(){
 
+		this.mounted = true;
+
 		this.forceUpdate();
 
 	}
@@ -185,9 +196,9 @@ export default class Page extends Component{
 
   componentDidUpdate(prevProps, prevState, prevContext){
 
-    if(this.props.debug){
-      console.log("Page componentDidUpdate", this);
-    }
+    // if(this.props.debug){
+    //   console.log("Page componentDidUpdate", this);
+    // }
 
     const {
     	inited,
@@ -197,7 +208,7 @@ export default class Page extends Component{
     	inited: prevInited,
     } = prevContext || {};
 
-    console.log("componentDidUpdate prevProps", prevProps.location);
+    // console.log("componentDidUpdate prevProps", prevProps.location);
 
 
 		const page = this.getPage();
@@ -219,22 +230,36 @@ export default class Page extends Component{
     	(prevContext !== undefined && !prevInited && inited)
     ){
     	
-    	this.loadData();
+    	this.onInit();
 
     }
     	
-  	console.log("PageLayout componentDidUpdate page, prevPage", page, prevPage);
+  	// console.log("PageLayout componentDidUpdate page, prevPage", page, prevPage);
 
     if(
     	(page || prevPage) && parseInt(page) !== parseInt(prevPage)
     ){
-    	
-    	this.loadData();
 
-    	console.log("PageLayout componentDidUpdate page || prevPage", page, prevPage);
+    	this.onPageChange();
+
+    	// console.log("PageLayout componentDidUpdate page || prevPage", page, prevPage);
 
     }
 
+  }
+
+
+  onInit(){
+
+  	this.loadData();
+
+  }
+
+
+  onPageChange(){
+
+  	this.loadData();
+    	
   }
 
 

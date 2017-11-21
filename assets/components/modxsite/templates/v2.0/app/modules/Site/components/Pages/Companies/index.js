@@ -13,6 +13,55 @@ import Company from './Company';
 
 import CompaniesList from './List';
 
+
+export const loadData = async function(options = {}){
+
+	const {
+		coords,
+		page,
+		limit = 12,
+		withPagination = true,
+	} = options;
+
+
+	let proxy;
+
+	if(typeof window !== "undefined"){
+
+		const {
+			remoteQuery,
+		} = this.context;
+
+		proxy = remoteQuery;
+
+	}
+
+
+	// Получаем список компаний
+  const result = await proxy({
+    operationName: "MapCompanies",
+    variables: {
+      limit: limit,
+      withPagination: withPagination,
+      companiesCenter: coords,
+      page,
+    },
+  })
+  .then(r => {
+    
+    // console.log("SiteContent resource result", r);
+    return r;
+
+  })
+  .catch(e => {
+    reject(e);
+  });
+
+  return result;
+
+}
+
+
 export default class CompaniesPage extends Page {
 
 
@@ -23,6 +72,8 @@ export default class CompaniesPage extends Page {
 		Object.assign(this.state, {
 			companies: undefined,
 		});
+
+		this.loadRemoteData = loadData.bind(this);
 
 	}
 	
@@ -101,12 +152,11 @@ export default class CompaniesPage extends Page {
 			// Object.assign(this.state, resourceState);
 
 			const {
-				state: item,
+				state: initialState,
 			} = resourceState;
 
-			Object.assign(this.state, {
-				companies: item && item.companiesList,
-			});
+
+			this.initState(initialState, true);
 
 		}
 
@@ -115,7 +165,31 @@ export default class CompaniesPage extends Page {
 
 	}
 
+
+	initState(data, willMount){
+
+		let newState = {
+			companies: data && data.companiesList,
+		};
+
+		if(willMount){
+
+			Object.assign(this.state, newState);
+			
+		}
+		else{
+
+			this.setState(newState);
+
+		}
+
+	}
 	
+	// onWillMount(){
+
+
+
+	// };
 
 
   componentDidUpdate(prevProps, prevState, prevContext){
@@ -143,9 +217,27 @@ export default class CompaniesPage extends Page {
   }
 
 	
-	loadData(){
+	async loadData(){
+
+		if(!this.mounted){
+			return;
+		}
 
 		console.log("CompaniesPage loadData");
+
+		const page = this.getPage();
+
+		let result = await this.loadRemoteData({
+			page,
+		});
+
+		console.log("CompaniesPage loadData result", result);
+
+		if(result){
+
+			this.initState(result.object);
+
+		}
 
 		return;
 

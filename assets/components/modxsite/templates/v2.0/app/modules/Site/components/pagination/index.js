@@ -23,7 +23,7 @@ const paginationItemStyle = {
 class Pagination extends PaginationPrototype{
 
 	static contextTypes = {
-		// location: PropTypes.string.isRequired,
+		location: PropTypes.object.isRequired,
     router: PropTypes.object.isRequired,
 	}
 
@@ -31,6 +31,7 @@ class Pagination extends PaginationPrototype{
 
 
 		let {
+			location,
 			router,
 		} = this.context;
 
@@ -38,9 +39,9 @@ class Pagination extends PaginationPrototype{
 			return null;
 		}
 
-		let {
-			location,
-		} = router;
+		// let {
+		// 	location,
+		// } = router;
 
 		// if(typeof window != "undefined"){
 		// 	location = window.location.href;
@@ -56,44 +57,57 @@ class Pagination extends PaginationPrototype{
 		// }
 
 
-		if(browserHistory){
+		// console.log("Router current location", location);
 
-	  	location = browserHistory.getCurrentLocation();
-	  	location.query.page = page > 1 ? page : undefined;
-
-	  	return browserHistory.createPath(location);
-		}
-		else{
-
-			let url = new URL(location, true);
-
-			if(!url){
-				console.error("Error parse url");
-				return;
-			} 
-
-			// Location = url;
-
-			// let blogs = [];
-
-	  //   console.log("Location 2", Location, blogs, Location && Location.query, Location && Location.query && Location.query.blogs);
-
-			let query = url.query || {};
-
-			if(page == 1 || !parseInt(page)){
-				delete query.page;
-			}
-			else{
-				Object.assign(query, {
-					page,
-				});
-			}
+		// console.log("Router current location 2", router.getCurrentLocation());
 
 
-			url.set("query", query);
+  // 	location = router.getCurrentLocation();
+  	location.query.page = page > 1 ? page : undefined;
 
-			return url.href;
-		}
+  	return router.createPath(location);
+
+
+		// if(browserHistory){
+
+	 //  	location = browserHistory.getCurrentLocation();
+	 //  	location.query.page = page > 1 ? page : undefined;
+
+	 //  	return browserHistory.createPath(location);
+		// }
+		// else{
+
+		// 	return;
+
+		// 	let url = new URL(location, true);
+
+		// 	if(!url){
+		// 		console.error("Error parse url");
+		// 		return;
+		// 	} 
+
+		// 	// Location = url;
+
+		// 	// let blogs = [];
+
+	 //  //   console.log("Location 2", Location, blogs, Location && Location.query, Location && Location.query && Location.query.blogs);
+
+		// 	let query = url.query || {};
+
+		// 	if(page == 1 || !parseInt(page)){
+		// 		delete query.page;
+		// 	}
+		// 	else{
+		// 		Object.assign(query, {
+		// 			page,
+		// 		});
+		// 	}
+
+
+		// 	url.set("query", query);
+
+		// 	return url.href;
+		// }
 
 
 		// if(page == 1){

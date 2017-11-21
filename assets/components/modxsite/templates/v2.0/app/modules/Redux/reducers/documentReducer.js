@@ -10,6 +10,7 @@ const initialState = {
   citiesData: {},
   // outputState: null,
   inputState: null,
+  resourceState: null,  // Состояние запрошенной страницы
 };
 
 /*

@@ -395,9 +395,17 @@ const RootType = new GraphQLObjectType({
       type: SiteContentType,
       description: SiteContentType.description,
       args: {
+        component: {
+          type: new GraphQLNonNull(GraphQLString),
+          description: "Исполняемый компонент",
+        },
         request: {
           type: new GraphQLNonNull(GraphQLJSON),
           description: "Параметры запроса",
+        },
+        geo: {
+          type: new GraphQLNonNull(GraphQLJSON),
+          description: "Координаты",
         },
       },
     },

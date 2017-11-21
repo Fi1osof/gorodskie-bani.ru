@@ -27,6 +27,23 @@ const geoip = require('geoip-lite');
 
 const FormData = require('form-data');
 
+
+import {
+  // MainApp,
+  MainPage,
+  TopicsPage,
+  NotFoundPage,
+  DbPage,
+  CompaniesPage,
+  OtzivyPage,
+  UsersPage,
+  CommentsPage,
+  RatingsPage,
+  ContactsPage,
+  CRMPage,
+  CompaniesEditsPage,
+} from 'modules/Site';
+
 import config, {
   db as db_config,
   host,
@@ -130,9 +147,9 @@ export default class Router {
 
     await this.loadApiData();
 
-    this.loadMapData();
+    // this.loadMapData();
 
-    this.loadCitiesData();
+    // this.loadCitiesData();
 
     return true;
   }
@@ -165,64 +182,64 @@ export default class Router {
   }
 
 
-  loadMapData(){
+  // loadMapData(){
 
-    // Подгружаем данные без рейтингов, так как они все равно не точные
-    // (да и нагрузка на сервер лишняя)
-    this.response.localQuery({
-      operationName: "MapCompanies",
-      variables: {
-        limit: 0,
-        getCompanyGallery: false,
-        // getImageFormats: true,
-        getTVs: false,
-        // getRatingsAvg: false,
-      },
-      req: {},
-    })
-    .then(r => {
+  //   // Подгружаем данные без рейтингов, так как они все равно не точные
+  //   // (да и нагрузка на сервер лишняя)
+  //   this.response.localQuery({
+  //     operationName: "MapCompanies",
+  //     variables: {
+  //       limit: 0,
+  //       getCompanyGallery: false,
+  //       // getImageFormats: true,
+  //       getTVs: false,
+  //       // getRatingsAvg: false,
+  //     },
+  //     req: {},
+  //   })
+  //   .then(r => {
 
-      // console.log('mapData result', r);
+  //     // console.log('mapData result', r);
 
-      mapData = r.data;
+  //     mapData = r.data;
 
-    })
-    .catch(e => {
-      console.error(e);
-    });
+  //   })
+  //   .catch(e => {
+  //     console.error(e);
+  //   });
 
-  }
+  // }
 
 
-  loadCitiesData(){
+  // loadCitiesData(){
 
-    this.response.localQuery({
-      operationName: "Cities",
-      variables: {
-        limit: 0,
-        getCompanyGallery: false,
-        // getImageFormats: true,
-        getTVs: false,
-      },
-      req: {},
-    })
-    .then(r => {
+  //   this.response.localQuery({
+  //     operationName: "Cities",
+  //     variables: {
+  //       limit: 0,
+  //       getCompanyGallery: false,
+  //       // getImageFormats: true,
+  //       getTVs: false,
+  //     },
+  //     req: {},
+  //   })
+  //   .then(r => {
 
-      // console.log('mapData result', r);
+  //     // console.log('mapData result', r);
 
-      citiesData = r.data;
+  //     citiesData = r.data;
 
-    })
-    .catch(e => {
-      console.error(e);
-    });
+  //   })
+  //   .catch(e => {
+  //     console.error(e);
+  //   });
 
-  }
+  // }
 
 
   clearCache(){
 
-    console.log("clearCache");
+    // console.log("clearCache");
 
     return this.loadData();
   }
@@ -806,25 +823,21 @@ export default class Router {
       }
 
 
-      const {
-        params,
-        location,
-      } = renderProps;
 
-      console.log('router params', params);
-      console.log('router location', location);
 
 
       let html;
 
       try{
 
-        // Запрашиваем данные для пользователя
 
-    
-        let store = configureStore();
+        const {
+          params,
+          location,
+          routes,
+        } = renderProps;
 
-        let state = store.getState();
+        
 
         // console.log("REG connection.remoteAddress", req.headers['x-real-ip']);
 
@@ -850,11 +863,111 @@ export default class Router {
           };
         }
 
+        // console.log('router params', params);
+        // console.log('router location', location);
+
+        // console.log("Router Component", Component);
+
+
+        const {
+          1: baseRouter,
+        } = routes || [];
+
+        const {
+          component: Component,
+        } = baseRouter || {};
+
+
+        // console.log("Router Component 2", Component);
+
+        // console.log("Router Component Type", typeof Component);
+
+        // console.log("Router Component CompaniesPage Type", typeof CompaniesPage);
+
+        // console.log("Router Component CompaniesPage Type aqual ", Component === CompaniesPage);
+
+
+        let component = "MainPage";
+
+        if(Component){
+
+          switch(Component){
+
+            // Страница компаний
+            case CompaniesPage:
+
+              // const {
+              //   companyId,
+              // } = params;
+
+              // console.log("Company page aqual");
+
+              // console.log("Company page aqual variables", {
+              //   resourceUri: relative_pathname,
+              // });
+
+              // /*
+              //   Если указан companyId, то это конечная страница компании
+              // */
+              // if(companyId){
+
+              //   const result = await localQuery({
+              //     operationName: "CompanyByUri",
+              //     variables: {
+              //       resourceUri: relative_pathname,
+              //     },
+              //   })
+              //   .then(r => {
+              //     console.log("SiteContent resource result", r);
+              //   })
+              //   .catch(e => {
+              //     reject(e);
+              //   });
+
+              // }
+
+              component = "CompaniesPage";
+
+              break;
+
+          }
+
+        }
+        // else{
+        //   throw("Не был получен базовый компонент");
+        // }
+
+        let resourceState = await this.response.localQuery({
+          operationName: "SiteContent",
+          variables: {
+            request: renderProps,
+            component,
+            geo,
+          },
+        })
+        .then(r => {
+          // console.log("SiteContent router result", r);
+          return r.data;
+        })
+        .catch(e => {
+          console.error(e);
+          throw(e);
+        });
+
+
+        // Запрашиваем данные для пользователя
+
+    
+        let store = configureStore();
+
+        let state = store.getState();
+
         Object.assign(state.document, {
           apiData,
           mapData,
           citiesData,
           geo,
+          resourceState: resourceState && resourceState.siteContent || null,
         });
 
         store = configureStore(state);

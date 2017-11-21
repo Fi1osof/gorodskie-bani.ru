@@ -11,6 +11,9 @@ import {
 
 import GraphQLJSON from 'graphql-type-json';
 
+import { List } from 'immutable';
+
+
 // import {
 //   // SchemaObject,
 //   // order,
@@ -102,5 +105,55 @@ const SiteContentType = new GraphQLObjectType({
     }
   }
 });
+
+
+export const getList = (source, args, context, info) => {
+
+
+  const {
+  } = args;
+
+  // console.log('SiteContentType getList', args, info);
+ 
+
+  const {
+    remoteResolver,
+  } = context;
+
+  if(!remoteResolver){
+    throw("remoteResolver undefined");
+  }
+
+
+  return new Promise(async (resolve, reject) => {
+
+    try{
+
+      const result = await remoteResolver(null, args, context, info);
+
+      // console.log("SiteContentType getList ownProfile result", result);
+
+      // if(result && result.success){
+
+      //   resolve(result);
+
+      // }
+      // else{
+      //   reject(result);
+      // }
+
+      resolve( result && List([result]) || null);
+
+      // resolve(result);
+
+    }
+    catch(e){
+      reject(e);
+    }
+
+  });
+
+};
+
 
 export default SiteContentType;

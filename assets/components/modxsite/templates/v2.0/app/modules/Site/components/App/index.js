@@ -2553,43 +2553,43 @@ export class AppMain extends Component{
       apiData,
     } = document;
 
-    if(typeof window !== "undefined"){
+    // if(typeof window !== "undefined"){
 
-      // const response = await this.remoteQuery({
-      //   operationName: "apiData",
-      //   variables: {
-      //     limit: 0,
-      //   },
-      // });
+    //   // const response = await this.remoteQuery({
+    //   //   operationName: "apiData",
+    //   //   variables: {
+    //   //     limit: 0,
+    //   //   },
+    //   // });
 
-      await this.remoteQuery({
-        operationName: "apiData",
-        variables: {
-          limit: 0,
-          apiDataGetCurrentUser: true,
-        },
-      })
-      .then(r => {
+    //   await this.remoteQuery({
+    //     operationName: "apiData",
+    //     variables: {
+    //       limit: 0,
+    //       apiDataGetCurrentUser: true,
+    //     },
+    //   })
+    //   .then(r => {
 
-        document.apiData = apiData = r && r.object || null;
+    //     document.apiData = apiData = r && r.object || null;
 
-        this.initData(apiData);
+    //     this.initData(apiData);
 
-        // Если работа уже в браузере, надо переподгрузить данные карты,
-        // потому что с рейтингами фигня какая-то на стороне сервере 
-        // Скорее всего просто сравнение неверное по ключу
-        // this.loadMapData();
+    //     // Если работа уже в браузере, надо переподгрузить данные карты,
+    //     // потому что с рейтингами фигня какая-то на стороне сервере 
+    //     // Скорее всего просто сравнение неверное по ключу
+    //     // this.loadMapData();
 
-      });
+    //   });
 
-      // console.log("ApiData response", response);
+    //   // console.log("ApiData response", response);
 
-    }
-    else{
+    // }
+    // else{
 
-      this.initData(apiData);
+    //   this.initData(apiData);
 
-    }
+    // }
 
 
     let user; 

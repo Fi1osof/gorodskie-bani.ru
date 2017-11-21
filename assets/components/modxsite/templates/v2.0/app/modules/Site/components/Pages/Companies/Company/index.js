@@ -73,11 +73,13 @@ import Site from 'modules/Site/components/fields/Site';
 export default class CompanyPage extends Component{
 
 	static propTypes = {
-		item: PropTypes.object.isRequired,
+		// item: PropTypes.object.isRequired,
+		companyId: PropTypes.string.isRequired,
 	};
 
 	static contextTypes = {
 		// loadCompanyFullData: PropTypes.func.isRequired,
+		document: PropTypes.object.isRequired,
 		setPageTitle: PropTypes.func.isRequired,
 		updateContactItem: PropTypes.func.isRequired,
 		saveContactItem: PropTypes.func.isRequired,
@@ -96,11 +98,11 @@ export default class CompanyPage extends Component{
 		super(props);
 
 		const {
-			item,
+			// item,
 		} = props;
 
 		this.state = {
-			item,
+			// item,
 			sending: false,
 			galleryExpanded: false,
 			diffs: null,
@@ -108,54 +110,96 @@ export default class CompanyPage extends Component{
 		};
 	}
 
+	// componentWillMount(){
+
+	// 	const {
+	// 		item,
+	// 	} = this.state;
+
+	// 	const {
+	// 		name,
+	// 	} = item || {};
+
+
+	// 	let {
+	// 		CompaniesStore,
+	// 		RatingsStore,
+	// 		TopicsStore,
+	// 		CommentsStore,
+	// 		ResourcesStore,
+	// 	} = this.context;
+
+ // 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
+
+ // 			// console.log("CompaniesStoreListener payload", payload);
+
+ // 			this.loadCompanyFullData();
+ // 		});
+
+ // 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
+
+ // 			this.loadCompanyFullData();
+ // 		});
+
+ // 		this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
+
+ // 			this.loadCompanyFullData();
+ // 		});
+
+ // 		this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
+
+ // 			this.loadCompanyFullData();
+ // 		});
+
+ // 		this.ResourcesStoreListener = ResourcesStore.getDispatcher().register(payload => {
+
+ // 			this.loadCompanyFullData();
+ // 		});
+
+
+	// 	this.loadCompanyFullData();
+
+	// 	super.componentWillMount && super.componentWillMount();
+	// }
+
+
 	componentWillMount(){
 
-		const {
-			item,
-		} = this.state;
+		// const {
+		// 	item,
+		// } = this.state;
+
+		// const {
+		// 	name,
+		// } = item || {};
+
 
 		const {
-			name,
-		} = item || {};
-
-
-		let {
-			CompaniesStore,
-			RatingsStore,
-			TopicsStore,
-			CommentsStore,
-			ResourcesStore,
+			document,
 		} = this.context;
 
- 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
-
- 			// console.log("CompaniesStoreListener payload", payload);
-
- 			this.loadCompanyFullData();
- 		});
-
- 		this.RatingsStoreListener = RatingsStore.getDispatcher().register(payload => {
-
- 			this.loadCompanyFullData();
- 		});
-
- 		this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
-
- 			this.loadCompanyFullData();
- 		});
-
- 		this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
-
- 			this.loadCompanyFullData();
- 		});
-
- 		this.ResourcesStoreListener = ResourcesStore.getDispatcher().register(payload => {
-
- 			this.loadCompanyFullData();
- 		});
+		const {
+			resourceState,
+		} = document;
 
 
-		this.loadCompanyFullData();
+		// console.log('CompanyPage resourceState', resourceState);
+
+		if(resourceState){
+
+			// Object.assign(this.state, resourceState);
+
+			const {
+				state: item,
+			} = resourceState;
+
+			Object.assign(this.state, {
+				item: item && item.company,
+			});
+
+		}
+
+
 
 		super.componentWillMount && super.componentWillMount();
 	}
@@ -535,11 +579,18 @@ export default class CompanyPage extends Component{
 
 		let {
 			item,
-			item: {
-				...itemData,
-			},
+			// item: {
+			// 	...itemData,
+			// },
 			tabIndex,
 		} = this.state;
+
+
+		if(!item){
+			return null;
+		}
+
+		let itemData = {...item};
 
 		// console.log("Company render item", item);
 

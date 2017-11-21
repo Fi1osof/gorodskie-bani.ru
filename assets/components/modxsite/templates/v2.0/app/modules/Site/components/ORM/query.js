@@ -86,38 +86,64 @@ mutation clearCache{
 }
 
 query SiteContent(
+  $component:String!
   $request:JSON!
+  $geo:JSON!
 ){
   ...RootSiteContent
 }
 
 query CompanyPageContent(
-  $companyId:String!
-  $pathname:String!
-){
-  siteContent(
-    request:{
-      params: {
-        companyId:$companyId
-      },
-      location:{ 
-        pathname: $pathname,
-        search: "",
-        hash: "",
-        state: undefined,
-        action: undefined,
-        key: undefined,
-        query: {} 
-      }
+  $component:String = "CompaniesPage"
+  $request:JSON = {
+    params: {
+      companyId:"bannyij-kompleks-«sokolinaya-gora»/"
+    },
+    location:{ 
+      pathname: "moscow/bannyij-kompleks-«sokolinaya-gora»/",
+      search: "",
+      hash: "",
+      state: undefined,
+      action: undefined,
+      key: undefined,
+      query: {} 
     }
-  ){
-    ...SiteContent
   }
+  $geo:JSON = {
+    ll:[55,37]
+  }
+){
+  ...RootSiteContent
+}
+
+query CompaniesPageContent(
+  $component:String = "CompaniesPage"
+  $request:JSON = {
+    params: {
+      city:"moscow"
+    },
+    location:{ 
+      pathname: "moscow/",
+      search: "",
+      hash: "",
+      state: undefined,
+      action: undefined,
+      key: undefined,
+      query: {} 
+    }
+  }
+  $geo:JSON = {
+    ll:[55,37]
+  }
+){
+  ...RootSiteContent
 }
 
 fragment RootSiteContent on RootType{
   siteContent(
+    component:$component
     request:$request
+    geo:$geo
   ){
     ...SiteContent
   }
@@ -194,7 +220,7 @@ query Companies (
 }
 
 query Company(
-  $id:Int
+  $id:Int!
   $resourceUri:String
   $getRatingsAvg:Boolean = true
   $getImageFormats:Boolean = true
@@ -216,6 +242,62 @@ query Company(
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
 ){
+  ...RootCompany
+}
+
+query CompanyById(
+  $id:Int!
+  $resourceUri:String
+  $getRatingsAvg:Boolean = true
+  $getImageFormats:Boolean = true
+  $getCompanyComments:Boolean = true
+  $getCommentCompany:Boolean = false
+  $getCompanyFullData:Boolean = true
+  $getCompanyGallery:Boolean = true
+  $getTVs:Boolean = true
+  $companyCommentsSort:[SortBy] = {by: id, dir:asc}
+  $getCommentAuthor:Boolean = true
+  $getCompanyTopics:Boolean = true
+  $getRatingVoters:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
+){
+  ...RootCompany
+}
+
+query CompanyByUri(
+  $id:Int
+  $resourceUri:String!
+  $getRatingsAvg:Boolean = true
+  $getImageFormats:Boolean = true
+  $getCompanyComments:Boolean = true
+  $getCommentCompany:Boolean = false
+  $getCompanyFullData:Boolean = true
+  $getCompanyGallery:Boolean = true
+  $getTVs:Boolean = true
+  $companyCommentsSort:[SortBy] = {by: id, dir:asc}
+  $getCommentAuthor:Boolean = true
+  $getCompanyTopics:Boolean = true
+  $getRatingVoters:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
+){
+  ...RootCompany
+}
+
+fragment RootCompany on RootType{
   company(
     id: $id
     uri: $resourceUri

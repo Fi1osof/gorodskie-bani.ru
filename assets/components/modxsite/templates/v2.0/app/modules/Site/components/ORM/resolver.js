@@ -53,6 +53,11 @@ import {
 } from './Search';
 
 
+import SiteContentType, {
+  getList as getSiteContentTypeList,
+} from './SiteContent';
+
+
 import EditVersionType, {
   getList as getEditVersionsList,
 } from './EditVersion';
@@ -690,6 +695,12 @@ const getResolverByType = function(ofType){
   else if(ofType === EditVersionType){
 
     resolver = getEditVersionsList;
+      
+  }
+
+  else if(ofType === SiteContentType){
+
+    resolver = getSiteContentTypeList;
       
   }
 

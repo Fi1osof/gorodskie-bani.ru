@@ -45,42 +45,68 @@ export default class CompaniesPage extends Page {
 
 	componentWillMount(){
 
-		let {
-			CompaniesStore,
+		// let {
+		// 	CompaniesStore,
+		// 	document,
+		// 	appExports,
+		// 	router,
+		// } = this.context;
+
+		// let pathname = router.location && router.location.pathname;
+
+
+		// const companyId = this.getCompanyId();
+
+		// if(typeof window === "undefined"){
+
+		// 	let outputState = CompaniesStore.getState();
+
+		// 	// console.log('outputState', outputState.toArray());
+			
+		// 	if(companyId && pathname && outputState){
+
+		// 		pathname = decodeURI(pathname);
+
+		// 		pathname = pathname.replace(/^\//, '');
+				
+		// 		outputState = outputState.filter(n => n.uri === pathname || n.uri === `${pathname}/`);
+
+		// 		appExports.outputState = outputState && outputState.toArray();
+
+		// 	}
+
+		// }
+		// else{
+				
+		// 	this.state.inputState = document.inputState;
+
+		// 	// console.log('document.inputState', document.inputState);
+
+		// }
+
+		
+		const {
 			document,
-			appExports,
-			router,
 		} = this.context;
 
-		let pathname = router.location && router.location.pathname;
+		const {
+			resourceState,
+		} = document;
 
 
-		const companyId = this.getCompanyId();
+		// console.log('CompanyPage resourceState', resourceState);
 
-		if(typeof window === "undefined"){
+		if(resourceState){
 
-			let outputState = CompaniesStore.getState();
+			// Object.assign(this.state, resourceState);
 
-			// console.log('outputState', outputState.toArray());
-			
-			if(companyId && pathname && outputState){
+			const {
+				state: item,
+			} = resourceState;
 
-				pathname = decodeURI(pathname);
-
-				pathname = pathname.replace(/^\//, '');
-				
-				outputState = outputState.filter(n => n.uri === pathname || n.uri === `${pathname}/`);
-
-				appExports.outputState = outputState && outputState.toArray();
-
-			}
-
-		}
-		else{
-				
-			this.state.inputState = document.inputState;
-
-			// console.log('document.inputState', document.inputState);
+			Object.assign(this.state, {
+				companies: item && item.companiesList,
+			});
 
 		}
 
@@ -119,37 +145,39 @@ export default class CompaniesPage extends Page {
 	
 	loadData(){
 
-		const {
-			localQuery,
-			coords,
-		} = this.context;
+		return;
 
-		const page = this.getPage();
+		// const {
+		// 	localQuery,
+		// 	coords,
+		// } = this.context;
 
-		localQuery({
-			operationName: "MapCompanies",
-			variables: {
-				limit: 12,
-				withPagination: true,
-        companiesCenter: coords,
-				page,
-			},
-		})
-		.then(r => {
-			// console.log("Companies result", r, coords);
-			// console.log("Companies result 2", companies);
+		// const page = this.getPage();
 
-			const {
-				companiesList: companies,
-			} = r.data;
+		// localQuery({
+		// 	operationName: "MapCompanies",
+		// 	variables: {
+		// 		limit: 12,
+		// 		withPagination: true,
+  //       companiesCenter: coords,
+		// 		page,
+		// 	},
+		// })
+		// .then(r => {
+		// 	// console.log("Companies result", r, coords);
+		// 	// console.log("Companies result 2", companies);
 
-			this.setState({
-				companies,
-			});
-		})
-		.catch(e => {
-			console.error(e);
-		});
+		// 	const {
+		// 		companiesList: companies,
+		// 	} = r.data;
+
+		// 	this.setState({
+		// 		companies,
+		// 	});
+		// })
+		// .catch(e => {
+		// 	console.error(e);
+		// });
 
 	}
 
@@ -209,83 +237,87 @@ export default class CompaniesPage extends Page {
 
 			// let location = browserHistory && browserHistory.getCurrentLocation();
 
-			let pathname = router.location.pathname;
+			// let pathname = router.location.pathname;
 
-			pathname = decodeURI(pathname);
+			// pathname = decodeURI(pathname);
 
-			pathname = pathname.replace(/^\//, '');
+			// pathname = pathname.replace(/^\//, '');
 
-			// console.log('location pathname', pathname);
+			// // console.log('location pathname', pathname);
 
-			// console.log('location companyId', companyId);
+			// // console.log('location companyId', companyId);
 
-			// item = CompaniesStore.getState().find(n => n.uri === pathname || n.id == companyId || n.alias == companyId);
+			// // item = CompaniesStore.getState().find(n => n.uri === pathname || n.id == companyId || n.alias == companyId);
 
 
 
-			item = CompaniesStore.getState().find(n => n.uri === pathname || n.uri === `${pathname}/`);
+			// item = CompaniesStore.getState().find(n => n.uri === pathname || n.uri === `${pathname}/`);
 
-			// Если не был найден документ в общем хранилище, ищем во входящем стейте
-			if(!item){
+			// // Если не был найден документ в общем хранилище, ищем во входящем стейте
+			// if(!item){
 				
-				item = inputState && inputState.find(n => n.uri === pathname || n.uri === `${pathname}/`);
+			// 	item = inputState && inputState.find(n => n.uri === pathname || n.uri === `${pathname}/`);
 
-			}
+			// }
 
-			if(item){
+			// if(item){
 
-			}
-			else{
+			// }
+			// else{
 
-				let id = parseInt(companyId);
-
-
-				if(id){
-
-					item = CompaniesStore.getState().find(n => n.id  === id);
+			// 	let id = parseInt(companyId);
 
 
-					// Если это временный объект, то выводим сообщение об ошибке
-					if(!item && id < 0){
+			// 	if(id){
+
+			// 		item = CompaniesStore.getState().find(n => n.id  === id);
+
+
+			// 		// Если это временный объект, то выводим сообщение об ошибке
+			// 		if(!item && id < 0){
 						
-						content = <Paper
-							style={{
-								padding: 15,
-							}}
-						>
+			// 			content = <Paper
+			// 				style={{
+			// 					padding: 15,
+			// 				}}
+			// 			>
 
-							Ссылка на редактируемый документ устарела.
-							Если вы обновляли страницу и не сохранили документ, он удалился и необходимо <a href="javascript:;" onClick={e => {
+			// 				Ссылка на редактируемый документ устарела.
+			// 				Если вы обновляли страницу и не сохранили документ, он удалился и необходимо <a href="javascript:;" onClick={e => {
 
-	    					const {
-	    						localQuery,
-	    					} = this.context;
+	  //   					const {
+	  //   						localQuery,
+	  //   					} = this.context;
 
-	    					localQuery({
-	    						operationName: "addCompany",
-	    					});
+	  //   					localQuery({
+	  //   						operationName: "addCompany",
+	  //   					});
 
-	    					this.triggerGoal('addCompanyClick');
+	  //   					this.triggerGoal('addCompanyClick');
 
-	    				}}>создать новый</a>.
+	  //   				}}>создать новый</a>.
 							
-						</Paper>
+			// 			</Paper>
 
-					}
+			// 		}
 
-				}
+			// 	}
 
-				// console.log("id", id, item);
+			// 	// console.log("id", id, item);
 
-			}
+			// }
 
-			if(item){
+			// if(item){
 
-				content = <Company
-					item={item}
-				/>
+			// 	content = <Company
+			// 		item={item}
+			// 	/>
 
-			}
+			// }
+
+			content = <Company
+				companyId={companyId}
+			/>
 		}
 		else{
 

@@ -194,7 +194,8 @@ query Companies (
 }
 
 query Company(
-  $id:Int!
+  $id:Int
+  $resourceUri:String
   $getRatingsAvg:Boolean = true
   $getImageFormats:Boolean = true
   $getCompanyComments:Boolean = true
@@ -217,6 +218,7 @@ query Company(
 ){
   company(
     id: $id
+    uri: $resourceUri
   ) {
     ...Company
     ratingsByType {

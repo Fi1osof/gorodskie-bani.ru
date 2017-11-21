@@ -37,9 +37,55 @@ export const getList = (source, args, context, info) => {
     username,
     delegatesOnly,
     myOnly,
+    ownProfile,
   } = args;
 
   // console.log('user getList', args, info);
+
+
+  if(ownProfile){
+
+    const {
+      remoteResolver,
+    } = context;
+
+    if(!remoteResolver){
+      throw("remoteResolver undefined");
+    }
+
+
+    return new Promise(async (resolve, reject) => {
+
+      try{
+
+        const result = await remoteResolver(null, args, context, info);
+
+        console.log("users getList ownProfile result", result);
+
+        // if(result && result.success){
+
+        //   resolve(result);
+
+        // }
+        // else{
+        //   reject(result);
+        // }
+
+        resolve( result && List([result]) || null);
+
+        // resolve(result);
+
+      }
+      catch(e){
+        reject(e);
+      }
+
+    });
+    
+  }
+
+
+
 
   // const {
   //   fieldNodes: {

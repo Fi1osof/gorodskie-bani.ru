@@ -1346,11 +1346,11 @@ export class AppMain extends Component{
     
     // // Если пользователь авторизовался, то перезагружаем данные зависимые
     
-    if(
-      inited && user && (!prevUser || user.id != prevUser.id)
-    ){
-      this.loadApiData();
-    }
+    // if(
+    //   inited && user && (!prevUser || user.id != prevUser.id)
+    // ){
+    //   this.loadApiData();
+    // }
   }
 
 

@@ -173,7 +173,7 @@ const rootResolver = function(source, args, context, info){
 
             const result = await remoteResolver(null, args, context, info);
 
-            console.log("rootResolver updateCompany result", result);
+            // console.log("rootResolver updateCompany result", result);
 
             // if(result && result.success){
 
@@ -287,12 +287,12 @@ const objectResolver = (returnType, source, args, context, info) => {
 
   let result = getObject(returnType, source, args, context, info);
 
-  if(operation && operation.name){
+  // if(operation && operation.name){
 
-    switch(operation.name.value){
-    }
+  //   switch(operation.name.value){
+  //   }
 
-  }
+  // }
 
   return result;
 
@@ -508,30 +508,112 @@ const getObjectsList = (ofType, source, args, context, info) => {
 
 }
 
+// const getObjects = (ofType, source, args, context, info) => {
+
+//   let result;
+
+//   result = getObjectsList(ofType, source, args, context, info);
+    
+//   result = result && result.object;
+
+//   return result;
+
+// }
+
 const getObjects = (ofType, source, args, context, info) => {
 
   let result;
 
-  result = getObjectsList(ofType, source, args, context, info);
+  // console.log('getObjects', ofType);
+
+  result = getObjectsList(ofType, source, args, context, info)
+    // .then(r => {
+    //   result = r;
+    // });
+  
+
+  if(result){
+
     
-  result = result && result.object;
+    if(result instanceof Promise){
+
+      return new Promise((resolve, reject) => {
+
+        result
+        .then(r => {
+
+          resolve(r && r.object);
+
+        })
+        .catch(e => {
+          reject(e);
+        });
+
+      });
+
+    }
+
+    result = result && result.object;
+    
+  }
+
 
   return result;
-
 }
 
 const getObject = (ofType, source, args, context, info) => {
 
   let state;
 
-  const {
-    id,
-    parent,
-  } = args;
+  // const {
+  //   id,
+  //   parent,
+  // } = args;
 
   state = getObjects(ofType, source, args, context, info)
 
   if(state){
+
+
+
+    
+    if(state instanceof Promise){
+
+      return new Promise((resolve, reject) => {
+
+        state
+        .then(r => {
+
+          console.log('getObject state result', args, r);
+
+          resolve(processObjectState(r, args));
+
+        })
+        .catch(e => {
+          reject(e);
+        });
+
+      });
+
+    }
+
+
+
+    state = processObjectState(state, args);
+    
+  }
+
+  return state;
+}
+
+const processObjectState = function (state, args){
+
+  if(state){
+
+    const {
+      id,
+      parent,
+    } = args;
 
     if(id !== undefined){
     
@@ -546,7 +628,7 @@ const getObject = (ofType, source, args, context, info) => {
     }
     
     state = state && state.get(0);
-    
+
   }
 
   return state;

@@ -6,8 +6,8 @@ const initialState = {
   informerMessage: '',
   stores: {},
   apiData: {},
-  mapData: {},
-  citiesData: {},
+  // mapData: {},
+  // citiesData: null,
   // outputState: null,
   inputState: null,
   resourceState: null,  // Состояние запрошенной страницы

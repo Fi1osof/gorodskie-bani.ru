@@ -133,6 +133,7 @@ export default class MapMainView extends Component{
 	};
 
 	static propTypes = {
+		mapData: PropTypes.object.isRequired,
 	};
 
 	constructor(props){
@@ -140,7 +141,8 @@ export default class MapMainView extends Component{
 		super(props);
 
 		let {
-			zoom
+			zoom,
+			mapData,
 		} = props;
 
 		zoom = parseInt(zoom);
@@ -159,6 +161,7 @@ export default class MapMainView extends Component{
 			cluster: null,
 			inited: true,
 			mounted: false,
+			mapData,
 		}
 	}
 
@@ -178,35 +181,35 @@ export default class MapMainView extends Component{
 
 		this.initCoords();
 
-	  const {
-			// CompaniesStore,
-			document,
-			appExports,
-		} = this.context;
+	 //  const {
+		// 	// CompaniesStore,
+		// 	document,
+		// 	// appExports,
+		// } = this.context;
 
-		/*
-			Если отрисовка на клиенте, то запрашиваем обновленные данные
-		*/
+		// /*
+		// 	Если отрисовка на клиенте, то запрашиваем обновленные данные
+		// */
 
 
-		if(typeof window === "undefined"){
+		// if(typeof window === "undefined"){
 
-			let mapData = document.mapData;
+		// 	let mapData = document.mapData;
 		
-			this.state.mapData = mapData;
+		// 	this.state.mapData = mapData;
 
-			appExports.mapData = mapData;
+		// 	// appExports.mapData = mapData;
 
-		}
-		else{
+		// }
+		// else{
 
-			const {
-				mapData,
-			} = document;
+		// 	const {
+		// 		mapData,
+		// 	} = document;
 
-			this.state.mapData = mapData;
+		// 	this.state.mapData = mapData;
 
-		}
+		// }
 
 		this.createClusters();
 
@@ -408,6 +411,22 @@ export default class MapMainView extends Component{
       });
  		}
 
+ 		const {
+ 			mapData,
+ 		} = this.props;
+
+ 		
+ 		const {
+ 			mapData: prevMapData,
+ 		} = prevProps;
+
+ 		
+ 		if(mapData && mapData.companies && (!prevMapData || !prevMapData.companies)){
+
+ 			this.createClusters();
+
+ 		}
+
 		// /*
 		// 	Если поменяли отображаемость типов объектов, перебираем кластеры по новой
 		// */
@@ -435,6 +454,8 @@ export default class MapMainView extends Component{
 
   loadMapData(){
     
+
+  	return;
 
    // 
 
@@ -1217,7 +1238,8 @@ export default class MapMainView extends Component{
 
 		const {
 			mapData,
-		} = this.state;
+		} = this.props;
+		// } = this.state;
 
 		const {
 			companies,
@@ -1776,88 +1798,6 @@ export default class MapMainView extends Component{
   		}}
   		gutter={0}
   	>
-	  	
-	  	{/*sidebarOpen 
-	  		? 
-	  		<Grid
-		  		item
-		  		xs={12}
-		  		md={3}
-		  	>
-
-		  		<Paper 
-		  			style={{
-		  				height: '100%',
-		  				overflowX: 'hidden',
-		  				overflowY: 'auto',
-		  			}}
-		  		>
-
-		  			<List
-		  				subheader={<div>
-		  					<IconButton
-			  					onClick={::this.closeSidebar}
-			  				>
-			  					<CloseIcon />
-			  				</IconButton>
-
-			  				<div>
-
-			  					<LabelCheckbox 
-			  						label="Компании"
-			  						checked={mapShowContacts}
-			  						onChange={event => {
-			  							this.setState({
-			  								mapShowContacts: !mapShowContacts,
-			  							});
-			  						}}
-			  					/>
-
-			  					<LabelCheckbox 
-			  						label="ГеоОбъекты"
-			  						checked={mapShowGeoObjects}
-			  						onChange={event => {
-			  							this.setState({
-			  								mapShowGeoObjects: !mapShowGeoObjects,
-			  							});
-			  						}}
-			  					/>
-
-			  				</div>
-		  				</div>}
-		  			>
-			  			{sidebar_items_list && sidebar_items_list.length
-			  				?
-			  					sidebar_items_list
-			  				:
-			  				<div>
-			  					Нет одиночных элементов для отображения
-			  				</div>
-			  			}
-			  		</List>
-		  		</Paper>
-
-		  	</Grid>
-		  	:
-		  	null
-	  	<Grid
-	  		item
-	  		xs={12}
-	  		// md={sidebarOpen ? 9 : 12}
-	  	>
-	  		{map && maps 
-	  			?
-	  			<SideBar
-		  			map={map}
-		  			maps={maps}
-		  		/>
-		  		:
-		  		null
-		  	}
-
-		  	mapOptions
-		  */}
-	  	
 
   		<GoogleMapReact
 	      bootstrapURLKeys={{

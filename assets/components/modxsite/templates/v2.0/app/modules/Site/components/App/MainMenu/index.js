@@ -43,6 +43,23 @@ export default class MainMenu extends Component{
 	}
 
 
+  componentWillMount(){
+
+    const {
+      ResourcesStore,
+    } = this.context;
+
+    const cities = ResourcesStore.getState().toArray();
+
+    // console.log("componentWillMount", cities);
+
+    Object.assign(this.state, {
+      cities,
+    });
+
+  }
+
+
   componentDidMount(){
 
 
@@ -86,7 +103,7 @@ export default class MainMenu extends Component{
 
     // console.log("resourcesCenter", resourcesCenter, lat, lng);
 
-    this.loadData();
+    // this.loadData();
   }
 
 
@@ -391,7 +408,7 @@ export default class MainMenu extends Component{
                 </ul>
               </li>*/}
 
-              {citiesList && citiesList.length && <li>
+              {mainCity && citiesList && citiesList.length && <li>
                 <a 
                   href="/" 
                   title="Все бани на карте" 
@@ -412,7 +429,7 @@ export default class MainMenu extends Component{
                 </ul>
               </li> || null}
 
-              <li>
+              {ratingsList && ratingsList.length && <li>
                 <Link 
                   to="/ratings/" 
                 	href="/ratings/" 
@@ -433,7 +450,7 @@ export default class MainMenu extends Component{
                 >
                   {ratingsList}
                 </ul>
-              </li>
+              </li> || null}
 
               {importantPage
                 ?

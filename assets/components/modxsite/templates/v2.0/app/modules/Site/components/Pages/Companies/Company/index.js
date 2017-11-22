@@ -374,7 +374,7 @@ export default class CompanyPage extends Page{
 		} = location || {};
 
 		return uri && super.loadData({
-			uri: uri.replace(/^\/+/, ''),
+			pathname: uri.replace(/^\/+/, ''),
 		});
 
 	}
@@ -382,7 +382,12 @@ export default class CompanyPage extends Page{
 	
 	async loadServerData(provider, options = {}){
 
-		console.log("CompanyPage loadServerData");
+		const {
+			cities: citiesNull,
+			...debugOptions,
+		} = options;
+
+		console.log("CompanyPage loadServerData options", debugOptions);
 
 		const {
 			coords,
@@ -390,14 +395,21 @@ export default class CompanyPage extends Page{
 			limit = 12,
 			withPagination = true,
 			cities,
-			uri,
+			pathname,
 		} = options;
+
+		if(!pathname){
+
+			// return null;
+			
+			throw("Не указан УРЛ объекта");
+		}
 
 		// Получаем список компаний
 	  const result = await provider({
 			operationName: "CompanyByUri",
 			variables: {
-				resourceUri: uri,
+				resourceUri: pathname,
 				companyGetEditVersions: true,
 				editVersionGetCreator: true,
 				editVersionGetEditor: true,
@@ -410,7 +422,7 @@ export default class CompanyPage extends Page{
 
 	  })
 	  .catch(e => {
-	    reject(e);
+	    throw(e);
 	  });
 
 

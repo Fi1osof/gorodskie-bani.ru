@@ -214,26 +214,26 @@ export default class Router {
 
   loadCitiesData(){
 
-    this.response.localQuery({
-      operationName: "Cities",
-      variables: {
-        limit: 0,
-        getCompanyGallery: false,
-        // getImageFormats: true,
-        getTVs: false,
-      },
-      req: {},
-    })
-    .then(r => {
+    // this.response.localQuery({
+    //   operationName: "Cities",
+    //   variables: {
+    //     limit: 0,
+    //     getCompanyGallery: false,
+    //     // getImageFormats: true,
+    //     getTVs: false,
+    //   },
+    //   req: {},
+    // })
+    // .then(r => {
 
-      // console.log('mapData result', r);
+    //   // console.log('mapData result', r);
 
-      citiesData = r.data;
+    //   citiesData = r.data;
 
-    })
-    .catch(e => {
-      console.error(e);
-    });
+    // })
+    // .catch(e => {
+    //   console.error(e);
+    // });
 
   }
 
@@ -899,7 +899,7 @@ export default class Router {
         //   throw("Не был получен базовый компонент");
         // }
 
-        let resourceState = await this.response.localQuery({
+        let resourceData = await this.response.localQuery({
           operationName: "SiteContent",
           variables: {
             request: renderProps,
@@ -917,12 +917,32 @@ export default class Router {
         });
 
 
+        // let {
+        //   // state: __state,
+        //   siteContent,
+        //   ... debugState
+        // } = resourceData || {};
+
         let {
-          state: __state,
-          ... debugState
+          siteContent,
+        } = resourceData || {};
+
+        const {
+          status,
+          state: resourceState,
+        } = siteContent || {};
+
+        let {
+          coords,
         } = resourceState || {};
 
-        console.log("debugState", debugState);
+
+        // Перетираем координаты, если есть/
+        if(coords){
+          geo.ll = [coords.lat, coords.lng];
+        }
+
+        // console.log("debugState coords", coords, geo.ll);
 
         // Запрашиваем данные для пользователя
 
@@ -934,9 +954,9 @@ export default class Router {
         Object.assign(state.document, {
           // apiData,
           // mapData,
-          citiesData,
+          // citiesData,
           geo,
-          resourceState: resourceState && resourceState.siteContent || null,
+          resourceState: siteContent || null,
         });
 
         store = configureStore(state);
@@ -976,6 +996,13 @@ export default class Router {
         }
 
         html = this.renderHTML(req, componentHTML, state, resource, style, searchable, appExports);
+
+        if(status && status !== 200){
+          res.status(status);
+        }
+
+        // console.log("status", status);
+
       }
       catch(e){
         console.error(e);
@@ -1100,6 +1127,7 @@ export default class Router {
       description,
       // searchable: resourceSearchable,
       robots,
+      status,
     } = resourceState || {};
 
 
@@ -1224,7 +1252,7 @@ export default class Router {
   async SendMODXRequest(action, params, req){
 
     // console.log('SendMODXRequest', req, params);
-    console.log('SendMODXRequest', params);
+    // console.log('SendMODXRequest', params);
 
     // return {};
 

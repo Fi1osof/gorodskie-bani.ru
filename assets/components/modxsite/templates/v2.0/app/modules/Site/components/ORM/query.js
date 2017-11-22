@@ -369,6 +369,7 @@ query Ratings(
 
 query MainMenuData(
   $limit:Int!
+  $menuGetRatings:Boolean = false
   $ratingsGroupBy:RatingGroupbyEnum = rating_type
   $getRatingCompanies:Boolean = false
   $getRatingCompany:Boolean = false
@@ -406,7 +407,7 @@ query MainMenuData(
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
 ){
-  ...RatingsList
+  ...RatingsList @include(if: $menuGetRatings)
   
   ...ResourcesList
 }

@@ -12,7 +12,7 @@ import {Link} from 'react-router';
 export default class CitiesList extends Component{
 
 	static propTypes = {
-
+		cities: PropTypes.array.isRequired,
 	};
 
 	static contextTypes = {
@@ -26,8 +26,13 @@ export default class CitiesList extends Component{
 
 		super(props);
 
+		const {
+			cities,
+		} = props;
+
 		this.state = {
 			open: false,
+			cities,
 		};
 	}
 
@@ -44,9 +49,29 @@ export default class CitiesList extends Component{
     });
 
 
-		this.loadData();
+		// this.loadData();
 
 		super.componentDidMount && super.componentDidMount();
+
+	}
+
+
+	componentWillUnmount(){
+
+    const {
+      ResourcesStore,
+    } = this.context;
+
+
+    if(this.ResourcesStoreListener){
+
+      let dispatch = ResourcesStore.getDispatcher();
+
+      dispatch._callbacks[this.ResourcesStoreListener] && dispatch.unregister(this.ResourcesStoreListener);
+
+      this.ResourcesStoreListener = undefined;
+    }
+
 
 	}
 

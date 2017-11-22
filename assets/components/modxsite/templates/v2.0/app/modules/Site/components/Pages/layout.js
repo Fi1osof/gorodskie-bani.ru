@@ -361,7 +361,7 @@ export default class Page extends Component{
 
 		}
 
-		console.log("Page loadData options", options);
+		// console.log("Page loadData options", options);
 
 		const {
 			remoteQuery,
@@ -369,7 +369,7 @@ export default class Page extends Component{
 
 		let result = await this.loadServerData(remoteQuery, options);
 
-		console.log("Page loadData result", result);
+		// console.log("Page loadData result", result);
 
 		if(result){
 
@@ -384,7 +384,10 @@ export default class Page extends Component{
 
 	async loadServerData(provider, options = {}){
 
-	  return null;
+		// Для всех страниц по умолчанию
+	  return {
+	  	data: {},
+	  };
 
 	}
 

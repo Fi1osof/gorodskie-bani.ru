@@ -129,7 +129,25 @@ export const initData = function(apiData){
       resources,
       topics,
       editVersions,
+      cities,
     } = apiData || {};
+
+    resources = resources || [];
+
+
+    // console.log("citiesData apiData cities", cities);
+    // console.log("citiesData apiData", apiData);
+
+
+    // const {
+    //   resources: cities,
+    // } = citiesData || {};
+
+    cities && cities.map(n => {
+      resources.push(n);
+    });
+
+    // console.log("citiesData", citiesData);
 
     // let companies = object && object.map(n => new Company(n)) || [];
 
@@ -1319,17 +1337,23 @@ export class AppMain extends Component{
       (city || prevCity) && city !== prevCity
     ){
 
-      const {
-        document,
-      } = this.props;
+      // const {
+      //   document,
+      // } = this.props;
+
+      // const {
+      //   citiesData,
+      // } = document;
+
+      // const {
+      //   resources: cities,
+      // } = citiesData || {};
 
       const {
-        citiesData,
-      } = document;
+        ResourcesStore,
+      } = this.state;
 
-      const {
-        resources: cities,
-      } = citiesData || {};
+      const cities = ResourcesStore.getState();
 
       const newCity = cities && cities.find(n => n.alias === city);
 
@@ -2551,45 +2575,87 @@ export class AppMain extends Component{
 
     let {
       apiData,
+      // citiesData,
+      resourceState,
     } = document;
 
-    // if(typeof window !== "undefined"){
+    const {
+      state: initialState,
+    } = resourceState || {};
 
-    //   // const response = await this.remoteQuery({
-    //   //   operationName: "apiData",
-    //   //   variables: {
-    //   //     limit: 0,
-    //   //   },
-    //   // });
+    const {
+      cities,
+    } = initialState || {};
 
-    //   await this.remoteQuery({
-    //     operationName: "apiData",
-    //     variables: {
-    //       limit: 0,
-    //       apiDataGetCurrentUser: true,
-    //     },
-    //   })
-    //   .then(r => {
+    // console.log("loadApiData");
 
-    //     document.apiData = apiData = r && r.object || null;
+    if(typeof window !== "undefined"){
 
-    //     this.initData(apiData);
+      // const response = await this.remoteQuery({
+      //   operationName: "apiData",
+      //   variables: {
+      //     limit: 0,
+      //   },
+      // });
 
-    //     // Если работа уже в браузере, надо переподгрузить данные карты,
-    //     // потому что с рейтингами фигня какая-то на стороне сервере 
-    //     // Скорее всего просто сравнение неверное по ключу
-    //     // this.loadMapData();
+      // await this.remoteQuery({
+      //   operationName: "apiData",
+      //   variables: {
+      //     limit: 0,
+      //     apiDataGetCurrentUser: true,
+      //   },
+      // })
+      // .then(r => {
 
-    //   });
+      //   document.apiData = apiData = r && r.object || null;
 
-    //   // console.log("ApiData response", response);
+      //   this.initData(apiData);
 
-    // }
-    // else{
+      //   // Если работа уже в браузере, надо переподгрузить данные карты,
+      //   // потому что с рейтингами фигня какая-то на стороне сервере 
+      //   // Скорее всего просто сравнение неверное по ключу
+      //   // this.loadMapData();
 
-    //   this.initData(apiData);
+      // });
 
-    // }
+      // console.log("ApiData response", response);
+
+      // apiData = apiData || {};
+
+      // Object.assign(apiData, {
+      //   citiesData,
+      // });
+
+      // // console.log("loadApiData", apiData);
+
+      // this.initData(apiData);
+
+    }
+    else{
+
+      // apiData = apiData || {};
+
+      // Object.assign(apiData, {
+      //   citiesData,
+      // });
+
+      // console.log("loadApiData", apiData);
+
+      // this.initData(apiData);
+
+    }
+
+
+
+    apiData = apiData || {};
+
+    Object.assign(apiData, {
+      cities,
+    });
+
+    // console.log("loadApiData", apiData);
+
+    this.initData(apiData);
 
 
     let user; 

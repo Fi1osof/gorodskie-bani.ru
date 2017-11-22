@@ -59,7 +59,7 @@ module.exports = require('./webpack.base.babel')({
 	devtool: 'cheap-module-eval-source-map',
 });
 
-console.log('module.exports', module.exports);
+// console.log('module.exports', module.exports);
 
 /**
  * We dynamically generate the HTML content in development.

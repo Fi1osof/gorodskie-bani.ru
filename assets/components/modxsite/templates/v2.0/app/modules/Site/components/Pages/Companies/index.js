@@ -174,7 +174,7 @@ export default class CompaniesPage extends Page {
 
   componentDidUpdate(prevProps, prevState, prevContext){
 
-    console.log("CompaniesPage componentDidUpdate");
+    // console.log("CompaniesPage componentDidUpdate");
 
     const {
       coords,
@@ -188,7 +188,7 @@ export default class CompaniesPage extends Page {
       (coords || prevCoords)
       && JSON.stringify(coords || "") != JSON.stringify(prevCoords || "")
     ){
-      console.log("componentDidUpdate loadData coords", coords);
+      // console.log("componentDidUpdate loadData coords", coords);
       this.loadData();
     }
 
@@ -205,17 +205,58 @@ export default class CompaniesPage extends Page {
 
 		const page = this.getPage();
 
-		return super.loadData({
+		super.loadData({
 			page,
 			coords,
 		});
+
+		this.loadCities();
+
+	}
+
+	loadCities(){
+
+
+    const {
+      localQuery,
+      coords,
+    } = this.context;
+
+    localQuery({
+      operationName: "MainMenuData",
+      variables: {
+        limit: 0,
+        resourcesCenter: coords,
+      },
+    })
+    .then(r => {
+
+      const {
+        resources: cities,
+      } = r.data;
+
+      // console.log("MainMenuData resourcesCenter cities", coords, cities);
+
+      this.setState({
+        cities,
+      });
+
+    })
+    .catch(e => {
+      console.error(e);
+    });
 
 	}
 
 	
 	async loadServerData(provider, options = {}){
 
-		// console.log("CompaniesPage loadServerData");
+		let {
+			cities: citiesNull,
+			...debugOptions
+		} = options;
+
+		// console.log("CompaniesPage loadServerData options", debugOptions);
 
 		const {
 			coords,
@@ -244,7 +285,7 @@ export default class CompaniesPage extends Page {
 
 	  })
 	  .catch(e => {
-	    reject(e);
+	    throw(e);
 	  });
 
 
@@ -346,12 +387,16 @@ export default class CompaniesPage extends Page {
 		const {
 			router,
 			CompaniesStore,
+			// ResourcesStore,
 		} = this.context;
 
 		const {
 			inputState,
 			companiesList: companies,
+			cities,
 		} = this.state;
+
+		// const cities = ResourcesStore.getState().toArray();
 
 
 		// const {
@@ -377,6 +422,7 @@ export default class CompaniesPage extends Page {
 
 			content = <CompaniesList 
 				data={companies}
+				cities={cities}
 			/>
 
 		}

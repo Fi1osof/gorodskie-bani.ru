@@ -840,7 +840,7 @@ export default class User extends Component {
           })
           .then( (data) => { ;
 
-            if(data.success){ 
+            if(data.success){
 
               if(data.object && data.object.url){
 
@@ -863,13 +863,16 @@ export default class User extends Component {
                   image: link,
                 });
               }
-            } 
+            }
+            else{
+              reject("Ошибка загрузки фото");
+            }
           })
           .catch( (error) => {
-              console.error('Request failed', error);
-              // alert("Ошибка выполнения запроса");
-            }
-          );
+            console.error('Request failed', error);
+            // alert("Ошибка выполнения запроса");
+            reject("Ошибка выполнения запроса");
+          });
       }
     );
   }

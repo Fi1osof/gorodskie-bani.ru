@@ -73,6 +73,8 @@ export default class CompaniesList extends Component{
 
 		const {
 			data,
+			cities,
+			...other
 		} = this.props;
 
 		const {
@@ -115,15 +117,16 @@ export default class CompaniesList extends Component{
 			}}
 		>
 
-			<Grid
+			{cities && <Grid
 				item
 				xs={12}
 			>
 
-				<Cities 
+				<Cities
+					cities={cities}
 				/>
 
-			</Grid>
+			</Grid> || null}
 
 			{/*<Grid
 				item

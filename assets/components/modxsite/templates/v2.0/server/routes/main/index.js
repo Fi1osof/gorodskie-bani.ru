@@ -150,7 +150,7 @@ export default class Router {
 
     // this.loadMapData();
 
-    // this.loadCitiesData();
+    this.loadCitiesData();
 
     return true;
   }
@@ -212,30 +212,30 @@ export default class Router {
   // }
 
 
-  // loadCitiesData(){
+  loadCitiesData(){
 
-  //   this.response.localQuery({
-  //     operationName: "Cities",
-  //     variables: {
-  //       limit: 0,
-  //       getCompanyGallery: false,
-  //       // getImageFormats: true,
-  //       getTVs: false,
-  //     },
-  //     req: {},
-  //   })
-  //   .then(r => {
+    this.response.localQuery({
+      operationName: "Cities",
+      variables: {
+        limit: 0,
+        getCompanyGallery: false,
+        // getImageFormats: true,
+        getTVs: false,
+      },
+      req: {},
+    })
+    .then(r => {
 
-  //     // console.log('mapData result', r);
+      // console.log('mapData result', r);
 
-  //     citiesData = r.data;
+      citiesData = r.data;
 
-  //   })
-  //   .catch(e => {
-  //     console.error(e);
-  //   });
+    })
+    .catch(e => {
+      console.error(e);
+    });
 
-  // }
+  }
 
 
   clearCache(){
@@ -932,8 +932,8 @@ export default class Router {
         let state = store.getState();
 
         Object.assign(state.document, {
-          apiData,
-          mapData,
+          // apiData,
+          // mapData,
           citiesData,
           geo,
           resourceState: resourceState && resourceState.siteContent || null,
@@ -1075,7 +1075,8 @@ export default class Router {
       apiData: null,
       outputState: null,
       inputState: appExports.outputState,
-      mapData: appExports.mapData || null,
+      // mapData: appExports.mapData || null,
+      mapData: null,
       // citiesData,
       // geo,
     });

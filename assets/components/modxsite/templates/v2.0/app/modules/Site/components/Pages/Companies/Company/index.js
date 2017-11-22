@@ -165,46 +165,46 @@ export default class CompanyPage extends Page{
 	// }
 
 
-	componentWillMount(){
+	// componentWillMount(){
 
-		// const {
-		// 	item,
-		// } = this.state;
+	// 	// const {
+	// 	// 	item,
+	// 	// } = this.state;
 
-		// const {
-		// 	name,
-		// } = item || {};
-
-
-		const {
-			document,
-		} = this.context;
-
-		const {
-			resourceState,
-		} = document;
+	// 	// const {
+	// 	// 	name,
+	// 	// } = item || {};
 
 
-		// console.log('CompanyPage resourceState', resourceState);
+	// 	const {
+	// 		document,
+	// 	} = this.context;
 
-		if(resourceState){
-
-			// Object.assign(this.state, resourceState);
-
-			const {
-				state: item,
-			} = resourceState;
-
-			Object.assign(this.state, {
-				item: item && item.company,
-			});
-
-		}
+	// 	const {
+	// 		resourceState,
+	// 	} = document;
 
 
+	// 	// console.log('CompanyPage resourceState', resourceState);
 
-		super.componentWillMount && super.componentWillMount();
-	}
+	// 	if(resourceState){
+
+	// 		// Object.assign(this.state, resourceState);
+
+	// 		const {
+	// 			state: item,
+	// 		} = resourceState;
+
+	// 		Object.assign(this.state, {
+	// 			item: item && item.company,
+	// 		});
+
+	// 	}
+
+
+
+	// 	super.componentWillMount && super.componentWillMount();
+	// }
 
 	componentWillUnmount(){
 
@@ -270,24 +270,24 @@ export default class CompanyPage extends Page{
 	}
 
 
-	componentDidUpdate(prevProps, prevState, prevContext){
+	// componentDidUpdate(prevProps, prevState, prevContext){
 
 
-		// console.log('CompanyPage componentDidUpdate', this.props.item.id, prevProps.item.id);
+	// 	// console.log('CompanyPage componentDidUpdate', this.props.item.id, prevProps.item.id);
 		
-		// console.log('Company componentDidUpdate', this.props.item === prevProps.item);
+	// 	// console.log('Company componentDidUpdate', this.props.item === prevProps.item);
 
 
-		// if(this.props.item.id !== prevProps.item.id){
-		// 	this.loadCompanyFullData();
-		// }
+	// 	// if(this.props.item.id !== prevProps.item.id){
+	// 	// 	this.loadCompanyFullData();
+	// 	// }
 
-		if(this.state.item !== prevState.item){
-			this.loadCompanyFullData();
-		}
+	// 	if(this.state.item !== prevState.item){
+	// 		this.loadCompanyFullData();
+	// 	}
 
-		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
-	}
+	// 	super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
+	// }
 
 
 	setPageTitle(title){
@@ -302,64 +302,161 @@ export default class CompanyPage extends Page{
 	}
 
 
-	loadCompanyFullData(){
+	// loadCompanyFullData(){
+
+	// 	const {
+	// 		item,
+	// 	} = this.state;
+
+	// 	const {
+	// 		id,
+	// 		name,
+	// 	} = item;
+
+	// 	if(!id){
+	// 		return;
+	// 	}
+
+	// 	// const {
+	// 	// 	loadCompanyFullData,
+	// 	// } = this.context;
+
+	// 	// // 
+
+	// 	// loadCompanyFullData(item);
+
+	// 	const {
+	// 		localQuery,
+	// 		CompaniesStore,
+	// 	} = this.context;
+
+	// 	localQuery({
+	// 		operationName: "Company",
+	// 		variables: {
+	// 			id,
+	// 			companyGetEditVersions: true,
+	// 			editVersionGetCreator: true,
+	// 			editVersionGetEditor: true,
+	// 		},
+	// 	})
+	// 		.then(result => {
+
+	// 			const StoreItem = CompaniesStore.getState().find(n => n.id === id);
+
+	// 			const {
+	// 				company,
+	// 			} = result.data;
+
+	// 			company && Object.assign(item, company);
+
+	// 			// console.log('Company loadCompanyFullData item isEqual', StoreItem === item, StoreItem, item);
+
+	// 			// console.log('Company loadCompanyFullData result', result);
+
+	// 			this.setPageTitle(company && company.name || name);
+
+	// 			this.forceUpdate();
+
+	// 		});
+
+	// 	return;
+	// }
+
+
+	loadData(){
 
 		const {
-			item,
-		} = this.state;
-
-		const {
-			id,
-			name,
-		} = item;
-
-		if(!id){
-			return;
-		}
-
-		// const {
-		// 	loadCompanyFullData,
-		// } = this.context;
-
-		// // 
-
-		// loadCompanyFullData(item);
-
-		const {
-			localQuery,
-			CompaniesStore,
+			location,
 		} = this.context;
 
-		localQuery({
-			operationName: "Company",
+		const {
+			pathname: uri,
+		} = location || {};
+
+		return uri && super.loadData({
+			uri: uri.replace(/^\/+/, ''),
+		});
+
+	}
+
+	
+	async loadServerData(provider, options = {}){
+
+		console.log("CompanyPage loadServerData");
+
+		const {
+			coords,
+			page,
+			limit = 12,
+			withPagination = true,
+			cities,
+			uri,
+		} = options;
+
+		// Получаем список компаний
+	  const result = await provider({
+			operationName: "CompanyByUri",
 			variables: {
-				id,
+				resourceUri: uri,
 				companyGetEditVersions: true,
 				editVersionGetCreator: true,
 				editVersionGetEditor: true,
 			},
-		})
-			.then(result => {
+	  })
+	  .then(r => {
+	    
+	    console.log("SiteContent resource result", r);
+	    return r;
 
-				const StoreItem = CompaniesStore.getState().find(n => n.id === id);
+	  })
+	  .catch(e => {
+	    reject(e);
+	  });
 
-				const {
-					company,
-				} = result.data;
 
-				company && Object.assign(item, company);
+	  if(result && result.data){
 
-				// console.log('Company loadCompanyFullData item isEqual', StoreItem === item, StoreItem, item);
+	  	let title;
 
-				// console.log('Company loadCompanyFullData result', result);
+	  	
+			const {
+				company,
+			} = result.data;
 
-				this.setPageTitle(company && company.name || name);
+			// company && Object.assign(item, company);
 
-				this.forceUpdate();
+			// console.log('Company loadCompanyFullData item isEqual', StoreItem === item, StoreItem, item);
 
-			});
+			// console.log('Company loadCompanyFullData result', result);
 
-		return;
+			// this.setPageTitle(company && company.name || name);
+
+
+	  	const city = cities && cities[0];
+
+	  	if(city){
+
+	  		title = city.longtitle;
+
+	  	}
+
+	  	title = company && company.name;
+
+	  	if(page > 1){
+
+	  		title = `${title}, страница ${page}`;
+
+	  	}
+
+  		Object.assign(result.data, {
+  			title,
+  		});
+
+	  }
+
+
+	  return result;
+
 	}
 
 	updateItem = (item, data) => {
@@ -426,7 +523,8 @@ export default class CompanyPage extends Page{
 			sending: false,
 		});
 
-		this.loadCompanyFullData();
+		// this.loadCompanyFullData();
+		this.loadData();
 		
 	}
 
@@ -580,7 +678,7 @@ export default class CompanyPage extends Page{
     } = user || {};
 
 		let {
-			item,
+			company: item,
 			// item: {
 			// 	...itemData,
 			// },

@@ -106,14 +106,27 @@ export default class Page extends Component{
 			document,
 		} = this.context;
 
-		// Если это первичная загрузка и есть стейт-данные, то ничего не подгружаем
-		if(document && document.resourceState){
+		const {
+			resourceState,
+		} = document;
 
-			return;
+		if(resourceState){
+
+			// Object.assign(this.state, resourceState);
+
+			const {
+				state: initialState,
+			} = resourceState;
+
+
+			this.initState(initialState, true);
 
 		}
-		
-		this.loadData();
+		else {
+
+			this.loadData();
+
+		}
 
 	}
 
@@ -336,23 +349,25 @@ export default class Page extends Component{
   }
 
 	
-	async loadData(){
+	async loadData(options = {}){
 
 		// if(!this.mounted){
 		// 	return;
 		// }
 
+		if(typeof window === "undefined"){
+			
+			return;
+
+		}
+
+		console.log("Page loadData options", options);
+
 		const {
 			remoteQuery,
 		} = this.context;
 
-		console.log("Page loadData 2");
-
-		const page = this.getPage();
-
-		let result = await this.loadServerData(remoteQuery, {
-			page,
-		});
+		let result = await this.loadServerData(remoteQuery, options);
 
 		console.log("Page loadData result", result);
 
@@ -374,11 +389,27 @@ export default class Page extends Component{
 	}
 
 
+	initState(newState, willMount){
+
+		if(willMount){
+
+			Object.assign(this.state, newState);
+			
+		}
+		else{
+
+			this.setState(newState);
+
+		}
+
+	}
+
 
   getContent(){
 
   	return null;
   }
+
 
   findResource(resources, pathname){
   	let resource;

@@ -94,96 +94,76 @@ export default class CompaniesPage extends Page {
 	}
 
 
-	componentWillMount(){
+	// componentWillMount(){
 
-		// let {
-		// 	CompaniesStore,
-		// 	document,
-		// 	appExports,
-		// 	router,
-		// } = this.context;
+	// 	// let {
+	// 	// 	CompaniesStore,
+	// 	// 	document,
+	// 	// 	appExports,
+	// 	// 	router,
+	// 	// } = this.context;
 
-		// let pathname = router.location && router.location.pathname;
+	// 	// let pathname = router.location && router.location.pathname;
 
 
-		// const companyId = this.getCompanyId();
+	// 	// const companyId = this.getCompanyId();
 
-		// if(typeof window === "undefined"){
+	// 	// if(typeof window === "undefined"){
 
-		// 	let outputState = CompaniesStore.getState();
+	// 	// 	let outputState = CompaniesStore.getState();
 
-		// 	// console.log('outputState', outputState.toArray());
+	// 	// 	// console.log('outputState', outputState.toArray());
 			
-		// 	if(companyId && pathname && outputState){
+	// 	// 	if(companyId && pathname && outputState){
 
-		// 		pathname = decodeURI(pathname);
+	// 	// 		pathname = decodeURI(pathname);
 
-		// 		pathname = pathname.replace(/^\//, '');
+	// 	// 		pathname = pathname.replace(/^\//, '');
 				
-		// 		outputState = outputState.filter(n => n.uri === pathname || n.uri === `${pathname}/`);
+	// 	// 		outputState = outputState.filter(n => n.uri === pathname || n.uri === `${pathname}/`);
 
-		// 		appExports.outputState = outputState && outputState.toArray();
+	// 	// 		appExports.outputState = outputState && outputState.toArray();
 
-		// 	}
+	// 	// 	}
 
-		// }
-		// else{
+	// 	// }
+	// 	// else{
 				
-		// 	this.state.inputState = document.inputState;
+	// 	// 	this.state.inputState = document.inputState;
 
-		// 	// console.log('document.inputState', document.inputState);
+	// 	// 	// console.log('document.inputState', document.inputState);
 
-		// }
+	// 	// }
 
 		
-		const {
-			document,
-		} = this.context;
+	// 	const {
+	// 		document,
+	// 	} = this.context;
 
-		const {
-			resourceState,
-		} = document;
-
-
-		// console.log('CompanyPage resourceState', resourceState);
-
-		if(resourceState){
-
-			// Object.assign(this.state, resourceState);
-
-			const {
-				state: initialState,
-			} = resourceState;
+	// 	const {
+	// 		resourceState,
+	// 	} = document;
 
 
-			this.initState(initialState, true);
+	// 	// console.log('CompanyPage resourceState', resourceState);
 
-		}
+	// 	if(resourceState){
+
+	// 		// Object.assign(this.state, resourceState);
+
+	// 		const {
+	// 			state: initialState,
+	// 		} = resourceState;
 
 
-		super.componentWillMount && super.componentWillMount();
+	// 		this.initState(initialState, true);
 
-	}
+	// 	}
 
 
-	initState(data, willMount){
+	// 	super.componentWillMount && super.componentWillMount();
 
-		let newState = {
-			companies: data && data.companiesList,
-		};
-
-		if(willMount){
-
-			Object.assign(this.state, newState);
-			
-		}
-		else{
-
-			this.setState(newState);
-
-		}
-
-	}
+	// }
 	
 	// onWillMount(){
 
@@ -216,10 +196,26 @@ export default class CompaniesPage extends Page {
 
   }
 
+
+	loadData(){
+
+    const {
+      coords,
+    } = this.context;
+
+		const page = this.getPage();
+
+		return super.loadData({
+			page,
+			coords,
+		});
+
+	}
+
 	
 	async loadServerData(provider, options = {}){
 
-		console.log("CompaniesPage loadServerData");
+		// console.log("CompaniesPage loadServerData");
 
 		const {
 			coords,
@@ -242,7 +238,8 @@ export default class CompaniesPage extends Page {
 	  })
 	  .then(r => {
 	    
-	    console.log("SiteContent resource result", r);
+	    // console.log("SiteContent resource result", r);
+
 	    return r;
 
 	  })
@@ -325,26 +322,26 @@ export default class CompaniesPage extends Page {
 	}
 
 
-	getCompanyId(){
+	// getCompanyId(){
 
-		const {
-			router,
-		} = this.context;
+	// 	const {
+	// 		router,
+	// 	} = this.context;
 
-		const {
-			params,
-		} = this.props;
+	// 	const {
+	// 		params,
+	// 	} = this.props;
 
-		const {
-			companyId,
-		} = params || {};
+	// 	const {
+	// 		companyId,
+	// 	} = params || {};
 
-		return companyId;
+	// 	return companyId;
 
-	}
+	// }
 
 
-	renderContent(){
+	render(){
 
 		const {
 			router,
@@ -353,131 +350,40 @@ export default class CompaniesPage extends Page {
 
 		const {
 			inputState,
-			companies,		// Для списка компаний именно это свойство используется
+			companiesList: companies,
 		} = this.state;
+
+
+		// const {
+		// 	object: companies,		// Для списка компаний именно это свойство используется
+		// } = companiesList || {};
 
 		let item;
 		let content;
 
-		const companyId = this.getCompanyId();
 
-		/*
-			Если указан ID компании, то выводим компанию.
-			Иначе выводим список компаний
-		*/
-		if(companyId){
-
-			// let location = browserHistory && browserHistory.getCurrentLocation();
-
-			// let pathname = router.location.pathname;
-
-			// pathname = decodeURI(pathname);
-
-			// pathname = pathname.replace(/^\//, '');
-
-			// // console.log('location pathname', pathname);
-
-			// // console.log('location companyId', companyId);
-
-			// // item = CompaniesStore.getState().find(n => n.uri === pathname || n.id == companyId || n.alias == companyId);
-
-
-
-			// item = CompaniesStore.getState().find(n => n.uri === pathname || n.uri === `${pathname}/`);
-
-			// // Если не был найден документ в общем хранилище, ищем во входящем стейте
-			// if(!item){
-				
-			// 	item = inputState && inputState.find(n => n.uri === pathname || n.uri === `${pathname}/`);
-
-			// }
-
-			// if(item){
-
-			// }
-			// else{
-
-			// 	let id = parseInt(companyId);
-
-
-			// 	if(id){
-
-			// 		item = CompaniesStore.getState().find(n => n.id  === id);
-
-
-			// 		// Если это временный объект, то выводим сообщение об ошибке
-			// 		if(!item && id < 0){
-						
-			// 			content = <Paper
-			// 				style={{
-			// 					padding: 15,
-			// 				}}
-			// 			>
-
-			// 				Ссылка на редактируемый документ устарела.
-			// 				Если вы обновляли страницу и не сохранили документ, он удалился и необходимо <a href="javascript:;" onClick={e => {
-
-	  //   					const {
-	  //   						localQuery,
-	  //   					} = this.context;
-
-	  //   					localQuery({
-	  //   						operationName: "addCompany",
-	  //   					});
-
-	  //   					this.triggerGoal('addCompanyClick');
-
-	  //   				}}>создать новый</a>.
-							
-			// 			</Paper>
-
-			// 		}
-
-			// 	}
-
-			// 	// console.log("id", id, item);
-
-			// }
-
-			// if(item){
-
-			// 	content = <Company
-			// 		item={item}
-			// 	/>
-
-			// }
-
-			content = <Company
-				companyId={companyId}
-			/>
+		if(companies === undefined){
+			content = <div
+				style={{
+					height: "100vh",
+				}}
+			>
+				<div 
+          className="preloader"
+        />
+       </div>
 		}
 		else{
 
-			if(companies === undefined){
-				content = <div
-					style={{
-						height: "100vh",
-					}}
-				>
-					<div 
-            className="preloader"
-          />
-         </div>
-			}
-			else{
-
-				content = <CompaniesList 
-					data={companies}
-				/>
-
-			}
-
+			content = <CompaniesList 
+				data={companies}
+			/>
 
 		}
 
 		// console.log('CompaniesPage 2 item', item, companyId);
 
-		return <div
+		return super.render(<div
 			style={{
 				width: "100%",
 				marginTop: 20,
@@ -487,7 +393,7 @@ export default class CompaniesPage extends Page {
 
 			{content}
 
-		</div>
+		</div>);
 	}
 }
 

@@ -101,6 +101,17 @@ export default class Page extends Component{
 	}
 
 	onWillMount(){
+
+		const {
+			document,
+		} = this.context;
+
+		// Если это первичная загрузка и есть стейт-данные, то ничего не подгружаем
+		if(document && document.resourceState){
+
+			return;
+
+		}
 		
 		this.loadData();
 
@@ -189,7 +200,27 @@ export default class Page extends Component{
 
 		this.mounted = true;
 
-		this.forceUpdate();
+		this.clearInitialState();
+
+		// this.forceUpdate();
+
+	}
+
+
+	// Удаляем инит-данные, чтобы при смене страницы и компонента было понятно, что данные надо подгрузить
+	clearInitialState(){
+
+		// console.log("clearInitialState this", this);
+
+		let {
+			document,
+		} = this.context;
+
+		if(document){
+
+			document.resourceState = null;
+
+		}
 
 	}
 
@@ -304,12 +335,45 @@ export default class Page extends Component{
 
   }
 
+	
+	async loadData(){
 
-  loadData(beforeMount){
+		// if(!this.mounted){
+		// 	return;
+		// }
 
-		// console.log("Page loadData");
+		const {
+			remoteQuery,
+		} = this.context;
 
-  }
+		console.log("Page loadData 2");
+
+		const page = this.getPage();
+
+		let result = await this.loadServerData(remoteQuery, {
+			page,
+		});
+
+		console.log("Page loadData result", result);
+
+		if(result){
+
+			this.initState(result.object);
+
+		}
+
+		return;
+
+	}
+
+
+	async loadServerData(provider, options = {}){
+
+	  return null;
+
+	}
+
+
 
   getContent(){
 

@@ -135,10 +135,8 @@ let routes = {
       // }],
     },
     {
-      childRoutes: [{
-        path: "/st-petersburg/:companyId",
-        component: CompaniesPage,
-      }],
+      path: "/st-petersburg/:companyId",
+      component: CompanyPage,
     },
     {
       path: "/city/:city/@:lat,:lng,:zoom",
@@ -149,11 +147,13 @@ let routes = {
       path: "/city/:city",
       // component: MainPage,
       component: CompaniesPage,
-      childRoutes: [{
-        // path: "/city/:city/:companyId",
-        path: "/city/*/:companyId",
-        component: CompaniesPage,
-      }],
+      // childRoutes: [{
+      //   // path: "/city/:city/:companyId",
+      // }],
+    },
+    {
+      path: "/city/*/:companyId",
+      component: CompanyPage,
     },
     {
       path: "/ratings",
@@ -184,31 +184,31 @@ let routes = {
     },
     {
       path: "/moscow/:companyId",
-      component: CompaniesPage,
+      component: CompanyPage,
     },
     {
       path: "/moskovskaya-oblast/:companyId",
-      component: CompaniesPage,
+      component: CompanyPage,
     },
     {
       path: "/chelyabinsk/:companyId",
-      component: CompaniesPage,
+      component: CompanyPage,
     },
     {
       path: "/cherepovecz/:companyId",
-      component: CompaniesPage,
+      component: CompanyPage,
     },
     {
       path: "/penza/:companyId",
-      component: CompaniesPage,
+      component: CompanyPage,
     },
     {
       path: "/st-petersburg/:companyId",
-      component: CompaniesPage,
+      component: CompanyPage,
     },
     {
       path: "/chelyabinsk/:companyId",
-      component: CompaniesPage,
+      component: CompanyPage,
     },
   ]
 };

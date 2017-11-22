@@ -156,9 +156,9 @@ class Pagination extends PaginationPrototype{
     	
     	var href = this.getNewLocation(1);
 
-      rows.push(<li key='page-1' className="control">
-      	<Link style={paginationItemStyle} to={href} href={href}>Первая</Link>
-    	</li>);
+     //  rows.push(<li key='page-1' className="control">
+     //  	<Link style={paginationItemStyle} to={href} href={href}>Первая</Link>
+    	// </li>);
 
       // rows.push(<li key='page-1-0' className="control"><span style={paginationItemStyle} onClick={this.setPage.bind(this,page-1)}>«</span></li>);
 
@@ -214,11 +214,11 @@ class Pagination extends PaginationPrototype{
 
       // rows.push(<li key={'page-'+ pages} className="control"><span style={paginationItemStyle} onClick={this.setPage.bind(this,pages)}>Последняя</span></li>);
 
-      var href = this.getNewLocation(pages);
+      // var href = this.getNewLocation(pages);
 
-      rows.push(<li key={'page-'+ pages} className="control">
-      	<Link style={paginationItemStyle} to={href} href={href}>Последняя</Link>
-    	</li>);
+     //  rows.push(<li key={'page-'+ pages} className="control">
+     //  	<Link style={paginationItemStyle} to={href} href={href}>Последняя</Link>
+    	// </li>);
     }
 
     return (

@@ -14,52 +14,52 @@ import Company from './Company';
 import CompaniesList from './List';
 
 
-export const loadData = async function(options = {}){
+// export const loadData = async function(options = {}){
 
-	const {
-		coords,
-		page,
-		limit = 12,
-		withPagination = true,
-	} = options;
-
-
-	let proxy;
-
-	if(typeof window !== "undefined"){
-
-		const {
-			remoteQuery,
-		} = this.context;
-
-		proxy = remoteQuery;
-
-	}
+// 	const {
+// 		coords,
+// 		page,
+// 		limit = 12,
+// 		withPagination = true,
+// 	} = options;
 
 
-	// Получаем список компаний
-  const result = await proxy({
-    operationName: "MapCompanies",
-    variables: {
-      limit: limit,
-      withPagination: withPagination,
-      companiesCenter: coords,
-      page,
-    },
-  })
-  .then(r => {
+// 	let proxy;
+
+// 	if(typeof window !== "undefined"){
+
+// 		const {
+// 			remoteQuery,
+// 		} = this.context;
+
+// 		proxy = remoteQuery;
+
+// 	}
+
+
+// 	// Получаем список компаний
+//   const result = await proxy({
+//     operationName: "MapCompanies",
+//     variables: {
+//       limit: limit,
+//       withPagination: withPagination,
+//       companiesCenter: coords,
+//       page,
+//     },
+//   })
+//   .then(r => {
     
-    // console.log("SiteContent resource result", r);
-    return r;
+//     // console.log("SiteContent resource result", r);
+//     return r;
 
-  })
-  .catch(e => {
-    reject(e);
-  });
+//   })
+//   .catch(e => {
+//     reject(e);
+//   });
 
-  return result;
+//   return result;
 
-}
+// }
 
 
 export default class CompaniesPage extends Page {
@@ -73,7 +73,7 @@ export default class CompaniesPage extends Page {
 			companies: undefined,
 		});
 
-		this.loadRemoteData = loadData.bind(this);
+		// this.loadRemoteData = loadData.bind(this);
 
 	}
 	
@@ -194,7 +194,7 @@ export default class CompaniesPage extends Page {
 
   componentDidUpdate(prevProps, prevState, prevContext){
 
-    // console.log("CompaniesPage componentDidUpdate");
+    console.log("CompaniesPage componentDidUpdate");
 
     const {
       coords,
@@ -208,7 +208,7 @@ export default class CompaniesPage extends Page {
       (coords || prevCoords)
       && JSON.stringify(coords || "") != JSON.stringify(prevCoords || "")
     ){
-      // console.log("componentDidUpdate loadData coords", coords);
+      console.log("componentDidUpdate loadData coords", coords);
       this.loadData();
     }
 
@@ -219,7 +219,7 @@ export default class CompaniesPage extends Page {
 	
 	async loadServerData(provider, options = {}){
 
-		console.log("CompaniesPage loadData");
+		console.log("CompaniesPage loadServerData");
 
 		const {
 			coords,
@@ -283,63 +283,35 @@ export default class CompaniesPage extends Page {
 	}
 
 	
-	async loadData(){
+	// async loadData(){
 
-		if(!this.mounted){
-			return;
-		}
+	// 	// if(!this.mounted){
+	// 	// 	return;
+	// 	// }
 
-		console.log("CompaniesPage loadData");
+	// 	const {
+	// 		remoteQuery,
+	// 	} = this.context;
 
-		const page = this.getPage();
+	// 	console.log("CompaniesPage loadData 2");
 
-		let result = await this.loadRemoteData({
-			page,
-		});
+	// 	const page = this.getPage();
 
-		console.log("CompaniesPage loadData result", result);
+	// 	let result = await this.loadServerData(remoteQuery, {
+	// 		page,
+	// 	});
 
-		if(result){
+	// 	console.log("CompaniesPage loadData result", result);
 
-			this.initState(result.object);
+	// 	if(result){
 
-		}
+	// 		this.initState(result.object);
 
-		return;
+	// 	}
 
-		// const {
-		// 	localQuery,
-		// 	coords,
-		// } = this.context;
+	// 	return;
 
-		// const page = this.getPage();
-
-		// localQuery({
-		// 	operationName: "MapCompanies",
-		// 	variables: {
-		// 		limit: 12,
-		// 		withPagination: true,
-  //       companiesCenter: coords,
-		// 		page,
-		// 	},
-		// })
-		// .then(r => {
-		// 	// console.log("Companies result", r, coords);
-		// 	// console.log("Companies result 2", companies);
-
-		// 	const {
-		// 		companiesList: companies,
-		// 	} = r.data;
-
-		// 	this.setState({
-		// 		companies,
-		// 	});
-		// })
-		// .catch(e => {
-		// 	console.error(e);
-		// });
-
-	}
+	// }
 
 
 	triggerGoal(goal){

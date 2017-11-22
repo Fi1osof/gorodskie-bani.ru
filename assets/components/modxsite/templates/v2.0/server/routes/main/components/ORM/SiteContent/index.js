@@ -1,20 +1,21 @@
 
 
-// import {
-//   MainApp,
-//   MainPage,
-//   TopicsPage,
-//   NotFoundPage,
-//   DbPage,
-//   CompaniesPage,
-//   OtzivyPage,
-//   UsersPage,
-//   CommentsPage,
-//   RatingsPage,
-//   ContactsPage,
-//   CRMPage,
-//   CompaniesEditsPage,
-// } from 'modules/Site';
+import {
+  MainApp,
+  MainPage,
+  TopicsPage,
+  NotFoundPage,
+  DbPage,
+  CompaniesPage,
+  CompanyPage,
+  OtzivyPage,
+  UsersPage,
+  CommentsPage,
+  RatingsPage,
+  ContactsPage,
+  CRMPage,
+  CompaniesEditsPage,
+} from 'modules/Site';
 
 
 export const getList = (object, args, context, info) => {
@@ -36,7 +37,7 @@ export const getList = (object, args, context, info) => {
 
     const {
       request,
-      component,
+      // component,
       geo,
       pathname: debugPathname,
       companyId: debugCompanyId,
@@ -97,6 +98,33 @@ export const getList = (object, args, context, info) => {
     const {
       1: baseRouter,
     } = routes || [];
+
+
+    const {
+      component: Component,
+    } = baseRouter || {};
+
+
+    // let component = "MainPage";
+
+    if(Component){
+
+      // switch(Component){
+
+      //   // Страница компаний
+      //   case CompaniesPage:
+
+      //     component = "CompaniesPage";
+
+      //     break;
+
+      // }
+
+    }
+    else{
+      throw("Не был получен базовый компонент");
+    }
+
 
 
     if(!geo){
@@ -167,140 +195,195 @@ export const getList = (object, args, context, info) => {
 
     // console.log("City title", cityLongtitle, city && city.longtitle);
 
-    if(component){
 
-      switch(component){
+    // console.log("Component", Component);
 
-        // Страница компаний
-        case "CompaniesPage":
+    // console.log("CompaniesPage", CompaniesPage);
 
-          let {
-            companyId,
-            city,
-          } = params;
+    // console.log("Component", Component.__proto__ === CompaniesPage.prototype);
 
-          companyId = companyId || debugCompanyId;
-          city = city || debugCity;
+    // console.log("Component 2", Component.prototype === CompaniesPage.__proto__);
 
-          // console.log("Company page aqual");
+    // console.log("Component 3", Component === CompaniesPage);
 
-          // console.log("Company page aqual variables", {
-          //   resourceUri: relative_pathname,
-          // });
 
-          /*
-            Если указан companyId, то это конечная страница компании
-          */
-          if(companyId){
+    // if(component){
 
-            const result = await localQuery({
-              operationName: "CompanyByUri",
-              variables: {
-                resourceUri: relative_pathname,
-              },
-            })
-            .then(r => {
-              
-              // console.log("SiteContent resource result", r);
-              return r;
+    switch(Component){
 
-            })
-            .catch(e => {
-              reject(e);
-            });
+      // Страница компаний
+      case CompaniesPage:
 
-            // resolve(result && result.data);
+        let {
+          companyId,
+          city,
+        } = params;
+
+        companyId = companyId || debugCompanyId;
+        city = city || debugCity;
+
+        // console.log("Company page aqual");
+
+        // console.log("Company page aqual variables", {
+        //   resourceUri: relative_pathname,
+        // });
+
+        /*
+          Если указан companyId, то это конечная страница компании
+        */
+        if(companyId){
+
+          const result = await localQuery({
+            operationName: "CompanyByUri",
+            variables: {
+              resourceUri: relative_pathname,
+            },
+          })
+          .then(r => {
+            
+            // console.log("SiteContent resource result", r);
+            return r;
+
+          })
+          .catch(e => {
+            reject(e);
+          });
+
+          // resolve(result && result.data);
+
+          const {
+            company,
+          } = result && result.data || {};
+
+          if(company){
 
             const {
-              company,
-            } = result && result.data || {};
-
-            if(company){
-
-              const {
-                id,
-                name,
-              } = company;
-
-              object = {
-                id,
-                status: 200,
-                title: name,
-                state: Object.assign(result.data, {cities}),
-              };
-
-            }
-
-          }
-          else{
-
-            // if(!city){
-            //   reject("Не был получен город");
-            // }
-
-
-            // Получаем список компаний
-            const result = await localQuery({
-              operationName: "MapCompanies",
-              variables: {
-                limit: 12,
-                withPagination: true,
-                companiesCenter: coords,
-                page,
-              },
-            })
-            .then(r => {
-              
-              // console.log("SiteContent resource result", r);
-              return r;
-
-            })
-            .catch(e => {
-              reject(e);
-            });
-
-            // resolve(result && result.data);
-
-            // const {
-            //   company,
-            // } = result && result.data || {};
-
-            // if(company){
-
-            //   const {
-            //     id,
-            //     name,
-            //   } = company;
-
-            //   object = {
-            //     id,
-            //     status: 200,
-            //     title: name,
-            //     state: result.data,
-            //   };
-
-            // }
-
-
-            // console.log("City cityLongtitle", cityLongtitle);
+              id,
+              name,
+            } = company;
 
             object = {
-              // id,
+              id,
               status: 200,
-              title: cityLongtitle || "Городские бани",
+              title: name,
               state: Object.assign(result.data, {cities}),
             };
 
           }
 
-          break;
+        }
+        else{
 
-      }
+          // if(!city){
+          //   reject("Не был получен город");
+          // }
+
+
+          // Получаем список компаний
+          // const result = await localQuery({
+          //   operationName: "MapCompanies",
+          //   variables: {
+          //     limit: 12,
+          //     withPagination: true,
+          //     companiesCenter: coords,
+          //     page,
+          //   },
+          // })
+          // .then(r => {
+            
+          //   // console.log("SiteContent resource result", r);
+          //   return r;
+
+          // })
+          // .catch(e => {
+          //   reject(e);
+          // });
+
+          let result;
+
+          const {
+            loadServerData,
+          } = Component.prototype;
+
+          if(loadServerData){
+
+            result = await loadServerData.call(this, localQuery, {
+              page,
+              cities,
+            })
+            .then(r => {
+              
+              console.log("Server loadServerData resource result", r);
+              return r;
+
+            })
+            .catch(e => {
+              reject(e);
+            });
+
+          }
+
+          // resolve(result && result.data);
+
+          // const {
+          //   company,
+          // } = result && result.data || {};
+
+          // if(company){
+
+          //   const {
+          //     id,
+          //     name,
+          //   } = company;
+
+          //   object = {
+          //     id,
+          //     status: 200,
+          //     title: name,
+          //     state: result.data,
+          //   };
+
+          // }
+
+
+          // console.log("City cityLongtitle", cityLongtitle);
+
+          if(result && result.data){
+
+            let {
+              title,
+            } = result.data || {};
+
+            object = {
+              // id,
+              status: 200,
+              title: title || "Городские бани",
+              state: Object.assign(result.data, {cities}),
+            };
+
+          }
+          else{
+
+            object = {
+              // id,
+              status: 404,
+              title: "Страница не найдена",
+              robots: "noindex,nofollow",
+            };
+
+          }
+
+
+        }
+
+        break;
 
     }
-    else{
-      throw("Не был получен базовый компонент");
-    }
+
+    // }
+    // else{
+    //   throw("Не был получен базовый компонент");
+    // }
 
     // let {
     //   // sort,

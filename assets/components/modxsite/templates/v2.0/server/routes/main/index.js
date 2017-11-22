@@ -35,6 +35,7 @@ import {
   NotFoundPage,
   DbPage,
   CompaniesPage,
+  CompanyPage,
   OtzivyPage,
   UsersPage,
   CommentsPage,
@@ -869,70 +870,31 @@ export default class Router {
         // console.log("Router Component", Component);
 
 
-        const {
-          1: baseRouter,
-        } = routes || [];
+        // const {
+        //   1: baseRouter,
+        // } = routes || [];
 
-        const {
-          component: Component,
-        } = baseRouter || {};
-
-
-        // console.log("Router Component 2", Component);
-
-        // console.log("Router Component Type", typeof Component);
-
-        // console.log("Router Component CompaniesPage Type", typeof CompaniesPage);
-
-        // console.log("Router Component CompaniesPage Type aqual ", Component === CompaniesPage);
+        // const {
+        //   component: Component,
+        // } = baseRouter || {};
 
 
-        let component = "MainPage";
+        // let component = "MainPage";
 
-        if(Component){
+        // if(Component){
 
-          switch(Component){
+        //   switch(Component){
 
-            // Страница компаний
-            case CompaniesPage:
+        //     // Страница компаний
+        //     case CompaniesPage:
 
-              // const {
-              //   companyId,
-              // } = params;
+        //       component = "CompaniesPage";
 
-              // console.log("Company page aqual");
+        //       break;
 
-              // console.log("Company page aqual variables", {
-              //   resourceUri: relative_pathname,
-              // });
+        //   }
 
-              // /*
-              //   Если указан companyId, то это конечная страница компании
-              // */
-              // if(companyId){
-
-              //   const result = await localQuery({
-              //     operationName: "CompanyByUri",
-              //     variables: {
-              //       resourceUri: relative_pathname,
-              //     },
-              //   })
-              //   .then(r => {
-              //     console.log("SiteContent resource result", r);
-              //   })
-              //   .catch(e => {
-              //     reject(e);
-              //   });
-
-              // }
-
-              component = "CompaniesPage";
-
-              break;
-
-          }
-
-        }
+        // }
         // else{
         //   throw("Не был получен базовый компонент");
         // }
@@ -941,7 +903,7 @@ export default class Router {
           operationName: "SiteContent",
           variables: {
             request: renderProps,
-            component,
+            // component,
             geo,
           },
         })
@@ -954,6 +916,13 @@ export default class Router {
           throw(e);
         });
 
+
+        let {
+          state: __state,
+          ... debugState
+        } = resourceState || {};
+
+        console.log("debugState", debugState);
 
         // Запрашиваем данные для пользователя
 
@@ -1096,6 +1065,12 @@ export default class Router {
 
     const outputState = initialState.document.outputState;
 
+    
+    const {
+      resourceState,
+    } = initialState.document || {};
+
+
     Object.assign(initialState.document, {
       apiData: null,
       outputState: null,
@@ -1109,18 +1084,30 @@ export default class Router {
 
     jState = jState.replace(/<script.*?>.*?<\/script>/g, '');
 
+    // let {
+    //   name,
+    //   longtitle,
+    //   description,
+    //   searchable: resourceSearchable,
+    // } = resource || {};
+
+
     let {
-      name,
+      // name,
+      title: pagetitle,
       longtitle,
       description,
-      searchable: resourceSearchable,
-    } = resource || {};
+      // searchable: resourceSearchable,
+      robots,
+    } = resourceState || {};
 
-    let title = longtitle || name || "";
 
-    title = title && `${title} | ` || "";
 
-    title += 'Городские и общественные бани';
+    let title = longtitle || pagetitle || "";
+
+    // title = title && `${title} | ` || "";
+
+    title += !/Городские бани|Городские и общественные бани/ui.test(title) ? (title ? " | " : "") + 'Городские и общественные бани' : "";
 
     description = description && description.replace('"', '\"') || '';
 
@@ -1132,7 +1119,7 @@ export default class Router {
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>${title}</title>
           <meta name="description" content="${description}"> 
-          <meta name="robots" content="${searchable === false || resourceSearchable === false ? "noindex, nofollow" : "index, follow"}" />
+          <meta name="robots" content="${robots ? robots : "index, follow"}" />
           <link rel="shortcut icon" href="/favicon.ico"/>
           <base href="/" />
 

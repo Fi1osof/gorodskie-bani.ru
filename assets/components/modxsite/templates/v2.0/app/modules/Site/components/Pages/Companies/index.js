@@ -217,6 +217,72 @@ export default class CompaniesPage extends Page {
   }
 
 	
+	async loadServerData(provider, options = {}){
+
+		console.log("CompaniesPage loadData");
+
+		const {
+			coords,
+			page,
+			limit = 12,
+			withPagination = true,
+			cities,
+		} = options;
+
+
+		// Получаем список компаний
+	  const result = await provider({
+	    operationName: "MapCompanies",
+	    variables: {
+	      limit: limit,
+	      withPagination: withPagination,
+	      companiesCenter: coords,
+	      page,
+	    },
+	  })
+	  .then(r => {
+	    
+	    console.log("SiteContent resource result", r);
+	    return r;
+
+	  })
+	  .catch(e => {
+	    reject(e);
+	  });
+
+
+	  if(result && result.data){
+
+	  	let title;
+
+	  	const city = cities && cities[0];
+
+	  	if(city){
+
+	  		title = city.longtitle;
+
+	  	}
+
+	  	title = title || "Городские бани";
+
+	  	if(page > 1){
+
+	  		title = `${title}, страница ${page}`;
+
+	  	}
+
+  		Object.assign(result.data, {
+  			title,
+  		});
+
+	  }
+
+
+	  return result;
+
+	}
+
+	
 	async loadData(){
 
 		if(!this.mounted){

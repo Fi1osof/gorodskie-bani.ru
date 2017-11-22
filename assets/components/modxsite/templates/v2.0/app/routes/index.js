@@ -7,6 +7,7 @@ import {
   NotFoundPage,
   DbPage,
   CompaniesPage,
+  CompanyPage,
   OtzivyPage,
   UsersPage,
   CommentsPage,
@@ -123,11 +124,15 @@ let routes = {
       path: "/profile",
     },
     {
+      path: "/bani/:companyId",
+      component: CompanyPage,
+    },
+    {
       path: "/bani",
       component: CompaniesPage,
-      childRoutes: [{
-        path: "/bani/:companyId",
-      }],
+      // childRoutes: [{
+      //   path: "/bani/:companyId",
+      // }],
     },
     {
       childRoutes: [{

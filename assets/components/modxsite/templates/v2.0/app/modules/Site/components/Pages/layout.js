@@ -337,7 +337,7 @@ export default class Page extends Component{
   	return resource;
   }
 
-	render(){
+	render(childContent){
 
 		const {
 			getCounters,
@@ -352,7 +352,7 @@ export default class Page extends Component{
 			}}
 		>
 			
-			{this.renderContent()}
+			{childContent || this.renderContent() || null}
 
 			<div
 				style={{

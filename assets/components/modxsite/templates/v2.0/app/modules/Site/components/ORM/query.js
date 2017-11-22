@@ -86,14 +86,13 @@ mutation clearCache{
 }
 
 query SiteContent(
-  $component:String!
+  $component:String
   $request:JSON!
   $geo:JSON!
 ){
   ...RootSiteContent
 }
 
-# pathname никак не учитывается, надо только, чтобы он был
 query CompanyPageContent(
   $pathname:String = "moscow/bannyij-kompleks-«sokolinaya-gora»/"
   $component:String = "CompaniesPage"
@@ -103,22 +102,6 @@ query CompanyPageContent(
     ll:[55,37]
   }
 ){
-  ...testSiteContent
-}
-
-query CompaniesPageContent(
-  $component:String = "CompaniesPage"
-  $pathname:String = "moscow"
-  $companyId:String
-  $city:String = ""
-  $geo:JSON = {
-    ll:[55,37]
-  }
-){
-  ...testSiteContent
-}
-
-fragment testSiteContent on RootType{
   siteContent(
     pathname:$pathname
     companyId:$companyId
@@ -126,7 +109,36 @@ fragment testSiteContent on RootType{
     city:$city
     request:{
       params: {
-        companyId: $companyId
+        companyId: "moscow"
+      },
+      location:{ 
+        pathname: $pathname,
+        search: "",
+        hash: "",
+        state: undefined,
+        action: undefined,
+        key: undefined,
+        query: {} 
+      }
+    }
+    geo:$geo
+  ){
+    ...SiteContent
+  }
+}
+
+query CompaniesPageContent(
+  $component:String = "CompaniesPage"
+  $pathname:String = "moscow/"
+  $geo:JSON = {
+    ll:[55,37]
+  }
+){
+  siteContent(
+    component:$component
+    request:{
+      params: {
+        city:"moscow"
       },
       location:{ 
         pathname: $pathname,

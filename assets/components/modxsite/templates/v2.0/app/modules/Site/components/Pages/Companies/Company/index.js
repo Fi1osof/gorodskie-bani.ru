@@ -70,28 +70,30 @@ import {
 
 import Site from 'modules/Site/components/fields/Site';
 
-export default class CompanyPage extends Component{
+import Page from '../../layout'; 
 
-	static propTypes = {
-		// item: PropTypes.object.isRequired,
-		companyId: PropTypes.string.isRequired,
-	};
+export default class CompanyPage extends Page{
 
-	static contextTypes = {
-		// loadCompanyFullData: PropTypes.func.isRequired,
-		document: PropTypes.object.isRequired,
-		setPageTitle: PropTypes.func.isRequired,
-		updateContactItem: PropTypes.func.isRequired,
-		saveContactItem: PropTypes.func.isRequired,
-		localQuery: PropTypes.func.isRequired,
-		CompaniesStore: PropTypes.object.isRequired,
-		RatingsStore: PropTypes.object.isRequired,
-		TopicsStore: PropTypes.object.isRequired,
-		CommentsStore: PropTypes.object.isRequired,
-		ResourcesStore: PropTypes.object.isRequired,
-		documentActions: PropTypes.object.isRequired,
-		user: PropTypes.object.isRequired,
-	};
+	// static propTypes = {
+	// 	// item: PropTypes.object.isRequired,
+	// 	// companyId: PropTypes.string.isRequired,
+	// };
+
+	// static contextTypes = {
+	// 	// loadCompanyFullData: PropTypes.func.isRequired,
+	// 	document: PropTypes.object.isRequired,
+	// 	setPageTitle: PropTypes.func.isRequired,
+	// 	updateContactItem: PropTypes.func.isRequired,
+	// 	saveContactItem: PropTypes.func.isRequired,
+	// 	localQuery: PropTypes.func.isRequired,
+	// 	CompaniesStore: PropTypes.object.isRequired,
+	// 	RatingsStore: PropTypes.object.isRequired,
+	// 	TopicsStore: PropTypes.object.isRequired,
+	// 	CommentsStore: PropTypes.object.isRequired,
+	// 	ResourcesStore: PropTypes.object.isRequired,
+	// 	documentActions: PropTypes.object.isRequired,
+	// 	user: PropTypes.object.isRequired,
+	// };
 
 	constructor(props){
 
@@ -1780,7 +1782,7 @@ export default class CompanyPage extends Component{
 		}
 
 
-		return <Card
+		return super.render(<Card
 			style={{
 				boxShadow: "none",
 			}}
@@ -1957,7 +1959,7 @@ export default class CompanyPage extends Component{
 			}
 
 
-		</Card>
+		</Card>)
 	}
 }
 

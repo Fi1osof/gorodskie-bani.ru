@@ -396,7 +396,8 @@ const RootType = new GraphQLObjectType({
       description: SiteContentType.description,
       args: {
         component: {
-          type: new GraphQLNonNull(GraphQLString),
+          // type: new GraphQLNonNull(GraphQLString),
+          type: GraphQLString,
           description: "Исполняемый компонент",
         },
         request: {

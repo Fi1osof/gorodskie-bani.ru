@@ -12,11 +12,11 @@ import TopicsPage from '../../Topics';
 export default class OtzivyPage extends TopicsPage {
 
 
-	getOperationName(){
+	// getOperationName(){
 		
-		return "ObzoryZavedeniy";
+	// 	return "ObzoryZavedeniy";
 
-	}
+	// }
 
 
 	getLocalData(){
@@ -33,6 +33,31 @@ export default class OtzivyPage extends TopicsPage {
 		super.setPageTitle(title || "Обзоры и отзывы");
 
   }
+
+
+	
+	loadServerData(provider, options = {}){
+
+		let {
+			operationName = "ObzoryZavedeniy",
+			title = "Обзоры и отзывы",
+			...debugOptions
+		} = options;
+
+		Object.assign(options, {
+			operationName,
+			title,
+		});
+
+
+
+		// console.log("OtzivyPage loadServerData options", debugOptions);
+
+
+	  return super.loadServerData(provider, options);
+
+	}
+
 
 	// constructor(props){
 

@@ -11,6 +11,9 @@ import {Link, browserHistory} from 'react-router';
 
 import Topic from './Topic';
 
+
+
+
 export default class TopicsPage extends Page {
 
 
@@ -25,91 +28,91 @@ export default class TopicsPage extends Page {
 	}
 
 
-	componentWillMount(){
+	// componentWillMount(){
 
-		// const {
-		// 	item,
-		// } = this.props;
+	// 	// const {
+	// 	// 	item,
+	// 	// } = this.props;
 
-		// const {
-		// 	name,
-		// } = item || {};
-
-
-		// let {
-		// 	TopicsStore,
-		// } = this.context;
-
- 	// 	this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
-
- 	// 		this.loadCompanyFullData();
- 	// 	});
-
-		let {
-			document,
-			appExports,
-		} = this.context;
-
-		// let pathname = router.location && router.location.pathname;
+	// 	// const {
+	// 	// 	name,
+	// 	// } = item || {};
 
 
-		// if(typeof window === "undefined"){
+	// 	// let {
+	// 	// 	TopicsStore,
+	// 	// } = this.context;
+
+ // 	// 	this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
+
+ // 	// 		this.loadCompanyFullData();
+ // 	// 	});
+
+	// 	let {
+	// 		document,
+	// 		appExports,
+	// 	} = this.context;
+
+	// 	// let pathname = router.location && router.location.pathname;
 
 
-		// 	let outputState = CompaniesStore.getState();
+	// 	// if(typeof window === "undefined"){
+
+
+	// 	// 	let outputState = CompaniesStore.getState();
 			
-		// 	if(pathname && outputState){
+	// 	// 	if(pathname && outputState){
 
-		// 		pathname = decodeURI(pathname);
+	// 	// 		pathname = decodeURI(pathname);
 
-		// 		pathname = pathname.replace(/^\//, '');
+	// 	// 		pathname = pathname.replace(/^\//, '');
 				
-		// 		outputState = outputState.filter(n => n.uri === pathname || n.uri === `${pathname}/`);
+	// 	// 		outputState = outputState.filter(n => n.uri === pathname || n.uri === `${pathname}/`);
 
-		// 	}
+	// 	// 	}
 
-		// 	appExports.outputState = outputState && outputState.toArray();
+	// 	// 	appExports.outputState = outputState && outputState.toArray();
 
 
-		// }
-		// else{
+	// 	// }
+	// 	// else{
 				
-		// 	this.state.inputState = document.inputState;
+	// 	// 	this.state.inputState = document.inputState;
 
-		// }
+	// 	// }
 
 
 
-		if(typeof window === "undefined"){
+	// 	if(typeof window === "undefined"){
 
-		  const topics = this.getLocalData();
+	// 	  const topics = this.getLocalData();
 
-		  this.state.topics = topics;
+	// 	  this.state.topics = topics;
 
-			appExports.outputState = topics;
+	// 		appExports.outputState = topics;
 
-		}
-		else{
+	// 	}
+	// 	else{
 				
-			this.state.topics = document.inputState;
+	// 		this.state.topics = document.inputState;
 
-		}
+	// 	}
 
-		super.componentWillMount && super.componentWillMount();
-	}
+	// 	super.componentWillMount && super.componentWillMount();
+	// }
 
 
-	getLocalData(){
+	// getLocalData(){
 
-	  const {
-	    TopicsStore,
-	  } = this.context;
+	//   const {
+	//     TopicsStore,
+	//   } = this.context;
 
-	  const topics = TopicsStore.getState();
+	//   const topics = TopicsStore.getState();
 		
-		return topics;
+	// 	return topics;
 		
-	}
+	// }
 
 	// componentWillUnmount(){
 
@@ -208,101 +211,179 @@ export default class TopicsPage extends Page {
 		Обновление хранилищ на каждый чих - большая нагрузка,
 		поэтому обновляем по логике, заданной в методе onStoreUpdate
 	*/
-	loadData(){
+	// loadData__(){
 
 
-		// console.log("TopicsPage loadData");
+	// 	// console.log("TopicsPage loadData");
 
-		// if(typeof window === "undefined"){
+	// 	// if(typeof window === "undefined"){
 			
-		//   // const {
-		//   //   TopicsStore,
-		//   // } = this.context;
+	// 	//   // const {
+	// 	//   //   TopicsStore,
+	// 	//   // } = this.context;
 
-		//   // this.state.topics = TopicsStore.getState();
+	// 	//   // this.state.topics = TopicsStore.getState();
 
-		// }
-		// else{
+	// 	// }
+	// 	// else{
 
-			const {
-				inited,
-			} = this.context;
+	// 		const {
+	// 			inited,
+	// 		} = this.context;
 
-			if(!inited){
-				return;
-			}
+	// 		if(!inited){
+	// 			return;
+	// 		}
 
-			const {
-				params,
-			} = this.props;
+	// 		const {
+	// 			params,
+	// 		} = this.props;
 
-			const {
-				tag,
-			} = params || {};
+	// 		const {
+	// 			tag,
+	// 		} = params || {};
 
 
-			const {
-				localQuery,
-			} = this.context;
+	// 		const {
+	// 			localQuery,
+	// 		} = this.context;
 
-			return localQuery({
-				operationName: this.getOperationName(),
-				variables: {
-					// resourcesLimit: 10,
-					resourceGetAuthor: true,
-					resourceGetComments: true,
-					getCommentAuthor: true,
-					resourceTag: tag,
-				},
-			})
-			.then(r => {
+	// 		return localQuery({
+	// 			operationName: this.getOperationName(),
+	// 			variables: {
+	// 				// resourcesLimit: 10,
+	// 				resourceGetAuthor: true,
+	// 				resourceGetComments: true,
+	// 				getCommentAuthor: true,
+	// 				resourceTag: tag,
+	// 			},
+	// 		})
+	// 		.then(r => {
 
-				// console.log("Resources r", beforeMount, r);
+	// 			// console.log("Resources r", beforeMount, r);
 
-				const {
-					topics,
-				} = r.data;
+	// 			const {
+	// 				topics,
+	// 			} = r.data;
 
-				// this.setState({
-				// 	topics,
-				// });
+	// 			// this.setState({
+	// 			// 	topics,
+	// 			// });
 
-				// if(beforeMount){
+	// 			// if(beforeMount){
 
-				// 	this.state.topics = topics;
+	// 			// 	this.state.topics = topics;
 
-				// }
-				// else{
+	// 			// }
+	// 			// else{
 					
-				// 	this.setState({
-				// 		topics,
-				// 	});
+	// 			// 	this.setState({
+	// 			// 		topics,
+	// 			// 	});
 
-				// }
+	// 			// }
 
-				if(typeof window === "undefined"){
+	// 			if(typeof window === "undefined"){
 
-					this.state.topics = topics;
+	// 				this.state.topics = topics;
 
-				}
-				else{
+	// 			}
+	// 			else{
 					
-					this.setState({
-						topics,
-					});
+	// 				this.setState({
+	// 					topics,
+	// 				});
 
-				}
+	// 			}
 
-				// this.setState({
-				// 	topics,
-				// });
+	// 			// this.setState({
+	// 			// 	topics,
+	// 			// });
 
-			}); 
+	// 		}); 
 
-		// }
+	// 	// }
 
-		// console.log("Resources r", result);
+	// 	// console.log("Resources r", result);
 		
+	// }
+
+
+
+	
+	async loadServerData(provider, options = {}){
+
+		let {
+			cities: citiesNull,
+			operationName = "Topics",
+			...debugOptions
+		} = options;
+
+		// console.log("TopicsPage loadServerData options", debugOptions);
+
+		const {
+			coords,
+			page,
+			limit = 12,
+			withPagination = true,
+			cities,
+			tag,
+			title = "Новости",
+		} = options;
+
+
+		// Получаем список компаний
+	  const result = await provider({
+			operationName,
+			variables: {
+				// resourcesLimit: 10,
+				resourceGetAuthor: true,
+				resourceGetComments: true,
+				getCommentAuthor: true,
+				resourceTag: tag,
+			},
+	  })
+	  .then(r => {
+	    
+	    // console.log("SiteContent resource result", r);
+
+	    return r;
+
+	  })
+	  .catch(e => {
+	    throw(e);
+	  });
+
+
+	  if(result && result.data){
+
+	  	// let title;
+
+	  	// const city = cities && cities[0];
+
+	  	// if(city){
+
+	  	// 	title = city.longtitle;
+
+	  	// }
+
+	  	// title = title || "Городские бани";
+
+	  	// if(page > 1){
+
+	  	// 	title = `${title}, страница ${page}`;
+
+	  	// }
+
+  		Object.assign(result.data, {
+  			title,
+  		});
+
+	  }
+
+
+	  return result;
+
 	}
 
 
@@ -386,13 +467,6 @@ export default class TopicsPage extends Page {
   	return super.onStoreUpdated(store, payload);
 
   }
-
-
-	getOperationName(){
-		
-		return "Topics";
-
-	}
 
 
 

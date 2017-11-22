@@ -68,7 +68,7 @@ export default class MainPage extends Page{
 			...debugOptions
 		} = options;
 
-		console.log("MainPage loadServerData options", debugOptions);
+		// console.log("MainPage loadServerData options", debugOptions);
 
 		const {
 			coords,
@@ -91,15 +91,19 @@ export default class MainPage extends Page{
 	  })
 	  .then(r => {
 	    
-	    console.log("MainPage loadServerData result", r);
+	  	if(typeof this === "object"){
 
-	    let {
-				document,
-			} = this.context;
+		    // console.log("MainPage loadServerData result", r);
 
-			if(r && r.object){
-				document.mapData = r.object;
-			}
+		    let {
+					document,
+				} = this.context || {};
+
+				if(r && r.object && document){
+					document.mapData = r.object;
+				}
+	  		
+	  	}
 
 	    return r;
 

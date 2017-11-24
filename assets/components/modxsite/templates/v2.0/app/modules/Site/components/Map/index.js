@@ -369,7 +369,7 @@ export default class MapMainView extends Component{
 
  		// 
 
- 		// console.log("componentDidUpdate city", city, currentCity);
+
 
  		if((currentCity || city) && (currentCity !== city)){
 
@@ -497,9 +497,9 @@ export default class MapMainView extends Component{
     })
     .then(r => {
 
-      // console.log("MapCompanies", r);
 
-      // console.log("MapCompanies CompaniesStore", CompaniesStore.getState());
+
+
 
       const {
         companies,
@@ -576,11 +576,11 @@ export default class MapMainView extends Component{
  				resources: cities,
  			} = response.data;
 
- 			// console.log('cities', cities);
+
 
  			const currentCity = cities && cities.find(n => n.alias === city);
 
- 			// console.log('currentCity', currentCity);
+
 
  				
  			if(currentCity){
@@ -590,7 +590,7 @@ export default class MapMainView extends Component{
 
  			}
 
-			// console.log("setPageTitle", title, city, currentCity);
+
 
  		}
  		
@@ -635,11 +635,11 @@ export default class MapMainView extends Component{
  // 				resources: cities,
  // 			} = response.data;
 
- // 			// console.log('cities', cities);
+
 
  // 			const currentCity = cities && cities.find(n => n.alias === city);
 
- // 			// console.log('currentCity', currentCity);
+
 
  				
  // 			if(currentCity){
@@ -662,7 +662,7 @@ export default class MapMainView extends Component{
 
  // 		// 
  			
-	// 	// console.log('lat lng', lat, lng, zoom);
+
 
  // 		if(lat && lng && zoom){
  // 			// this.setMapPosition(lat, lng);
@@ -716,7 +716,7 @@ export default class MapMainView extends Component{
 			initCoords,
 		} = this.context;
 
-		// console.log("initCoords 2", coords);
+
 
 		// coords && Object.assign(this.state, coords);
 
@@ -827,7 +827,7 @@ export default class MapMainView extends Component{
 
 	onChildClick(key, props){
 
-		// console.log('onChildClick', key, props, a,b);
+
 
 		// 
 
@@ -838,7 +838,7 @@ export default class MapMainView extends Component{
 			maps,
 		} = this.state;
 
-		// console.log("onChildClick", key, props, zoom);
+
 
 		// setCenter
 
@@ -886,7 +886,7 @@ export default class MapMainView extends Component{
 
 	 		this.forceUpdate();
 
-	 		// console.log('item', item);
+
 
 	 		// item.update({
 	 		// 	_expandedOnMap: !_expandedOnMap,
@@ -948,7 +948,7 @@ export default class MapMainView extends Component{
 			maps,
 		} = options;
 
-		// console.log('maps.event', maps.event);
+
 
 		map.setClickableIcons(false);
 
@@ -966,9 +966,9 @@ export default class MapMainView extends Component{
 		// 	va.cancelBubble = true;
 		// 	// va.bubbles = false;
 
-		// 	console.log("marker getClickableIcons", map.getClickableIcons());
 
-		// 	console.log("marker clicked", props, va);
+
+
 
 		// 	return false;
 
@@ -1218,7 +1218,7 @@ export default class MapMainView extends Component{
  //  	})
  //  		.then(r => {
 
- //  			// console.log("Map companies", r);
+
 
  //  			const {
  //  				companies: result,
@@ -1259,7 +1259,7 @@ export default class MapMainView extends Component{
 
   	let markersData = [];
 
-		// console.log("Map companies 2 companies", companies);
+
 
 		companies && companies.map(item => {
 
@@ -1281,7 +1281,7 @@ export default class MapMainView extends Component{
   			return;
   		}
 
-  		// console.log('Map item', item);
+
 
 
   		markersData.push({
@@ -1499,7 +1499,7 @@ export default class MapMainView extends Component{
 			lng,
 		} = center;
 
-		// console.log('center', center);
+
 
 		if(
 			lat < maxLat && lat > minLat
@@ -1565,8 +1565,8 @@ export default class MapMainView extends Component{
 		const latDiff = Math.round(maxLat - minLat) / index;
 		const lngDiff = Math.round(maxLng - minLng) / index;
 
-		// console.log("latDiff", latDiff);
-		// console.log("lngDiff", lngDiff);
+
+
 
 
 		if(zoom > 6 && !real){
@@ -1637,7 +1637,7 @@ export default class MapMainView extends Component{
 		} = this.getScreenBounds(true) || {};
 
 
-		// console.log('advBounds', advBounds);
+
 
 		let advItems = [];
 
@@ -1664,7 +1664,7 @@ export default class MapMainView extends Component{
 			</div>);
 		}
 
-		// console.log('advItems', advItems);
+
 
 
 
@@ -1682,7 +1682,7 @@ export default class MapMainView extends Component{
   	}
 
 		
-		// console.log("Map render clusters", clusters);
+
 
 
 		if(!inited){
@@ -1693,7 +1693,7 @@ export default class MapMainView extends Component{
 
 		CoordsStore.getState().map(connection => {
 
-			// console.log("Map connection", connection);
+
 
 			const {
 				id,
@@ -1778,7 +1778,7 @@ export default class MapMainView extends Component{
 			return;
   	});
 
-  	// console.log('items', items);
+
 
   	// 
 

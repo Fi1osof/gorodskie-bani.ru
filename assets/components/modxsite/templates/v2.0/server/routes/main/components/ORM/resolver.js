@@ -126,7 +126,7 @@ const rootResolver = (source, args, context, info) => {
 
       if(typeof source.fieldResolver === 'function'){
         
-        // console.log('fieldResolver source', source);
+
         
         result = source.fieldResolver(source, args, context, info);
       }
@@ -200,7 +200,7 @@ const rootResolver = (source, args, context, info) => {
 
         else if(returnType instanceof GraphQLObjectType){
 
-          // console.log('CompanyType.constructor', CompanyType);
+
 
          //  const {
          //    name: returnTypeName,
@@ -220,13 +220,13 @@ const rootResolver = (source, args, context, info) => {
 
         if(operation && operation.name){
 
-          // console.log("operation.name", operation.name, returnType);
+
 
           switch(operation.name.value){
 
             case "clearCache":
 
-              // console.log("clearCache");
+
 
               const {
                 scope,
@@ -285,7 +285,7 @@ const rootResolver = (source, args, context, info) => {
 
               if(returnType === EditVersionType){
 
-                // console.log("EditVersionType create args", args);
+
 
                 result = createEditVersion(null, args, context, info);
 
@@ -312,11 +312,11 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
 	let object;
 
-  // console.log("ofType", ofType);
+
 
   if(ofType === CompanyType){
   
-    // console.log("ofType Company", ofType);
+
 
     await getCompanyList(source, args, context, info)
       .then(r => {
@@ -330,7 +330,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
   if(ofType === ResourceType){
   
-    // console.log("ofType Company", ofType);
+
 
     await getResourcesList(source, args, context, info)
     	.then(r => {
@@ -344,7 +344,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
   else if(ofType === RatingType){
 
-    // console.log("ofType 2", ofType);
+
 
     await getRatingsList(source, args, context, info)
       .then(r => {
@@ -358,7 +358,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
   else if(ofType === UserType){
 
-    // console.log("ofType 2", ofType);
+
 
     await getUsersList(source, args, context, info)
       .then(r => {
@@ -372,7 +372,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
   else if(ofType === CommentType){
 
-    // console.log("ofType 2", ofType);
+
 
     await getCommentsList(source, args, context, info)
       .then(r => {
@@ -392,7 +392,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
         object = r;
 
-        // console.log('getWsConnectionsList resolver result', r);
+
 
       })
       .catch(e => {
@@ -409,7 +409,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
         object = r;
 
-        // console.log('getWsConnectionsList resolver result', r);
+
 
       })
       .catch(e => {
@@ -426,7 +426,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
         object = r;
 
-        // console.log('getWsConnectionsList resolver result', r);
+
 
       })
       .catch(e => {
@@ -443,7 +443,7 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 
         object = r;
 
-        // console.log('getWsConnectionsList resolver result', r);
+
 
       })
       .catch(e => {
@@ -489,8 +489,8 @@ const getObjectsList = async (ofType, source, args, context, info) => {
 //   await getObjects(ofType, source, args, context, info)
 //     .then(r => {
       
-//       // console.log("ofType Company result", r);
-//       // console.log("ofType Company result", id, r.find(n => n.id == id));
+
+
 
 //       result = r;
 //     });
@@ -506,7 +506,7 @@ const getObjects = async (ofType, source, args, context, info) => {
 
   let result;
 
-  // console.log('getObjects', ofType);
+
 
   await getObjectsList(ofType, source, args, context, info)
     .then(r => {
@@ -528,13 +528,13 @@ const getObject = async (ofType, source, args, context, info) => {
     parent,
   } = args;
 
-  // // console.log('getObject', ofType);
+
 
   await getObjects(ofType, source, args, context, info)
     .then(r => {
       
-      // // console.log("ofType Company result", r);
-      // // console.log("ofType Company result", id, r.find(n => n.id == id));
+
+
 
       state = r;
     });

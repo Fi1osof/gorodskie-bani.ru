@@ -88,7 +88,7 @@ let contentCache = {};
 
 // export const updateQuery = function(knex, args, context){
 
-//   console.log('updateQuery(knex, args, context)', knex, args, context);
+
 
 //   const {
 //     db,
@@ -119,7 +119,7 @@ let contentCache = {};
 //     });    
 //   }
 
-//   console.log('updateQuery toSQL', q.toString());
+
 
 //   return q;
 // }
@@ -152,8 +152,8 @@ let contentCache = {};
 //   // getCollection(object, args, context){
 
     
-//   //   console.log('CompanyType getCollection', object, args, context);
-//   //   console.log('CompanyType getCollection this', this);
+
+
 
 //   //   return [{
 //   //     id: 234,
@@ -239,7 +239,7 @@ let contentCache = {};
 //   //       q.limit(limit);
 //   //     }
 
-//   //   // console.log("Contacts query toString()", q.toString());
+
       
 
 //   //   return q; 
@@ -293,7 +293,7 @@ export const getList = (object, args, context, info) => {
     request
     .then((data) => {
     
-      // console.log("Company result", data);
+
 
       if(!data.success){
 
@@ -351,11 +351,11 @@ export const getList = (object, args, context, info) => {
                 try{
       
 
-                  // console.log("Comments serverDOMBuilder", contentCache && contentCache.length);
+
 
                   const blocks = convertFromHTML(text || "", serverDOMBuilder);
 
-                  // console.log('blocks', blocks);
+
 
                   if(blocks){
 
@@ -386,7 +386,7 @@ export const getList = (object, args, context, info) => {
 
 
             // if(text_content){
-            //   console.log("text_content", text_content);
+
             // }
 
             Object.assign(comment, {

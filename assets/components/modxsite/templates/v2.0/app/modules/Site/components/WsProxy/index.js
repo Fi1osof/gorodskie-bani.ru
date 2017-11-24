@@ -18,7 +18,7 @@ import {bindActionCreators} from 'redux';
 
 // import config from '../../../../../config/config.js';
 
-// console.log(config);
+
 
 const defaultProps = {
   host: typeof window !== "undefined" && 'ws://' + window.location.host + '/api/' || '',
@@ -72,7 +72,7 @@ class WsProxy extends Component {
     // return;
 
     var incomingMessage = event.data;
-    console.log('Message: %s', incomingMessage);
+
 
     var response;
 
@@ -152,7 +152,7 @@ class WsProxy extends Component {
 
           response.readed = true;
 
-          // console.log("Document_loaded", response);
+
           this.props.documentActions.DocumentLoaded(response.resource);
           break;
 
@@ -160,13 +160,13 @@ class WsProxy extends Component {
 
           response.readed = true;
           //
-          // console.log("Active users list", response);
+
 
           this.props.userActions.UpdateUsersList(response.users);
           break;
 
         case 'message':
-          // console.log("Новое сообщение: " + response.text);
+
 
         //   var cls = '';
         //
@@ -178,8 +178,8 @@ class WsProxy extends Component {
         //   var my_message = response.sender.id == id;
         //
         //
-        //   // console.log(response.sender.id);
-        //   // console.log(id);
+
+
         //
         //   // var div = $('<div class="message '+ cls +'">'+ response.text +'</div>');
         //
@@ -211,7 +211,7 @@ class WsProxy extends Component {
           break;
 
         case 'introdution_confirm':
-          // // console.log('introdution_confirm');
+
           // // 
           // var id = response.id;
           //
@@ -344,10 +344,6 @@ class WsProxy extends Component {
 
       this.ConnectionsInProgress = true;
 
-      // alert('ConnectionsInProgress');
-
-      console.log('%s  ConnectionsInProgress', 'font-weight: bold;');
-
       this.ConnectionsAttempts++;
 
       if(this.ConnectionsBlocked){
@@ -356,7 +352,7 @@ class WsProxy extends Component {
 
       if(this.ConnectionsAttempts > 5){
 
-        console.log("Слишком много попыток соединения");
+
 
         this.ConnectionsBlocked = true;
         return;
@@ -437,7 +433,7 @@ class WsProxy extends Component {
 
     // this.props.proxy.
 
-    // console.log("load_document", url);
+
     // // alert(url);
     //
     // this.props.proxyActions.SendMessage({
@@ -479,7 +475,7 @@ class WsProxy extends Component {
         }
       }.bind(this))
       .catch(function (error) {
-          console.log('Request failed', error);
+
           alert("Ошибка выполнения запроса");
         }
       );
@@ -487,11 +483,11 @@ class WsProxy extends Component {
 
 
   componentWillReceiveProps(nextProps){
-    // console.log('WsProxy componentWillReceiveProps(nextProps)', nextProps.user.logoutRequested);
-    // console.log('WsProxy componentWillReceiveProps(this.props)', this.props.user.logoutRequested);
-    // console.log(nextProps);
-    // console.log(this.props);
-    // console.log("WsProxy Render");
+
+
+
+
+
     // 
 
     if (
@@ -529,7 +525,7 @@ class WsProxy extends Component {
         request(null, null, "logout", {}, {
           callback: (data, errors) => {
 
-            // console.log("LogoutRequested result", data);
+
             
             this.props.userActions.logoutComplete();
             this.props.userActions.GetOwnData();
@@ -590,7 +586,7 @@ class WsProxy extends Component {
       //     }
       //   }.bind(this))
       //   // .catch(function (error) {
-      //   //     console.log('Request failed', error);
+
       //   //     alert("Ошибка выполнения запроса");
       //   //   }
       //   // );
@@ -620,7 +616,7 @@ class WsProxy extends Component {
       })
       .then(r => {
 
-        // console.log("CurrentUser", r);
+
 
         const {
           user,
@@ -645,9 +641,9 @@ class WsProxy extends Component {
       && nextProps.user.id > 0
     ){
 
-        // console.log('nextProps.user.get_own_data_success');
-        // console.log(this.props);
-        // console.log(nextProps);
+
+
+
 
       this.props.proxyActions.SendMessage({
         type: "joined",
@@ -699,11 +695,11 @@ class WsProxy extends Component {
 
   // shouldComponentUpdate(nextProps, nextState){
   //
-  //   console.log('shouldComponentUpdate(nextProps)');
-  //   // console.log(this.props);
-  //   // console.log(nextProps);
-  //   // console.log(this.state);
-  //   // console.log(nextState);
+
+
+
+
+
   //
   //   // super(nextProps, nextState);
   //
@@ -798,7 +794,7 @@ WsProxy.propTypes = {
 };
 
 function mapStateToProps(state) { 
-  // console.log(state);
+
 
   var st = {};
 
@@ -813,8 +809,8 @@ function mapStateToProps(state) {
 
 
 function mapDispatchToProps(dispatch) {
-  // console.log('mapDispatchToProps');
-  // console.log(dispatch);
+
+
 
   return {
     proxyActions: bindActionCreators(proxyActions, dispatch),

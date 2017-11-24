@@ -50,7 +50,7 @@ export const getList = (object, args, context, info) => {
       city: debugCity,
     } = args;
 
-    // console.log("SiteContent args", args);
+
 
     if(!request){
       reject({
@@ -145,7 +145,7 @@ export const getList = (object, args, context, info) => {
         })
         .then(r => {
           
-          // console.log("SiteContent company by companyId result", r);
+
           return r;
 
         })
@@ -210,7 +210,7 @@ export const getList = (object, args, context, info) => {
             // resources,
           } = r.data;
 
-          // console.log("MainMenuData resourcesCenter cities", resources);
+
 
 
           requestedCity = resources && resources[0];
@@ -228,7 +228,7 @@ export const getList = (object, args, context, info) => {
 
       // let requestedCity = paramsCity && cities && cities.find(n => n.alias === paramsCity);
 
-      // console.log('requestedCity', paramsCity, requestedCity);
+
 
       if(requestedCity && requestedCity.coords){
 
@@ -272,8 +272,8 @@ export const getList = (object, args, context, info) => {
     //   routes,
     // } = renderProps;
 
-    // console.log('router params', params);
-    // console.log('router location', location);
+
+
 
     const {
       1: baseRouter,
@@ -334,7 +334,7 @@ export const getList = (object, args, context, info) => {
         // resources,
       } = r.data;
 
-      // console.log("MainMenuData resourcesCenter cities", coords, cities);
+
 
       // this.setState({
       //   ratings,
@@ -359,7 +359,7 @@ export const getList = (object, args, context, info) => {
     // получаем данные города
     let requestedCity = paramsCity && cities && cities.find(n => n.alias === paramsCity);
 
-    // console.log('requestedCity', paramsCity, requestedCity);
+
 
     if(requestedCity && requestedCity.coords){
 
@@ -389,7 +389,7 @@ export const getList = (object, args, context, info) => {
           // resources,
         } = r.data;
 
-        // console.log("MainMenuData resourcesCenter cities", coords, cities);
+
 
         // this.setState({
         //   ratings,
@@ -418,20 +418,20 @@ export const getList = (object, args, context, info) => {
     //   longtitle: cityLongtitle,
     // } = nearedCity || {};
 
-    // console.log("City", typeof city, city);
-
-    // console.log("City title", cityLongtitle, city && city.longtitle);
 
 
-    // console.log("Component", Component);
 
-    // console.log("CompaniesPage", CompaniesPage);
 
-    // console.log("Component", Component.__proto__ === CompaniesPage.prototype);
 
-    // console.log("Component 2", Component.prototype === CompaniesPage.__proto__);
 
-    // console.log("Component 3", Component === CompaniesPage);
+
+
+
+
+
+
+
+
 
 
     // if(component){
@@ -444,7 +444,7 @@ export const getList = (object, args, context, info) => {
     //     companyId = companyId || debugCompanyId;
     //     // city = city || debugCity;
 
-    //     // console.log("Company page aqual");
+
 
     //     // console.log("Company page aqual variables", {
     //     //   resourceUri: relativePathname,
@@ -463,7 +463,7 @@ export const getList = (object, args, context, info) => {
     //       // })
     //       // .then(r => {
             
-    //       //   // console.log("SiteContent resource result", r);
+
     //       //   return r;
 
     //       // })
@@ -513,7 +513,7 @@ export const getList = (object, args, context, info) => {
     //       // })
     //       // .then(r => {
             
-    //       //   // console.log("SiteContent resource result", r);
+
     //       //   return r;
 
     //       // })
@@ -560,12 +560,12 @@ export const getList = (object, args, context, info) => {
         pathname: relativePathname,
       };
         
-      // console.log("Server loadServerData options", options);
+
 
       result = await loadServerData.call(this, localQuery, options)
       .then(r => {
         
-        // console.log("Server loadServerData resource result", r);
+
         return r;
 
       })
@@ -598,7 +598,7 @@ export const getList = (object, args, context, info) => {
     // }
 
 
-    // console.log("City cityLongtitle", cityLongtitle);
+
 
     if(result && result.data){
 

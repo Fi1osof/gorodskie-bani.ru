@@ -267,7 +267,7 @@ export default class PageGraphiQL extends Page{
     //   // body.append(i, value);
     // };
 
-    // console.log('graphQLParams', graphQLParams);
+
 
     const {
       query,
@@ -289,7 +289,7 @@ export default class PageGraphiQL extends Page{
       response => response.json()
     ).
     then(r => {
-      // console.log("graphQLFetcher", r);
+
 
       const {
         operationName,
@@ -417,10 +417,10 @@ export default class PageGraphiQL extends Page{
   //       variableValues: variables || undefined,
   //       contextValue: this.context,
   //       fieldResolver: (source, args, context, info) => {
-  //         console.log('fieldResolver source', source);
-  //         console.log('fieldResolver args', args);
-  //         console.log('fieldResolver context', context);
-  //         console.log('fieldResolver info', info);
+
+
+
+
 
   //         let result;
 
@@ -445,14 +445,14 @@ export default class PageGraphiQL extends Page{
 
   //         // }
 
-  //         console.log('fieldResolver result', result);
+
 
   //         return result;
           
   //       }
   //     }).then((response) => {
 
-  //       // console.log('response graphiql', response);
+
 
   //       resolve(this.success('', response));
   //     })

@@ -68,7 +68,7 @@ export default class MainPage extends Page{
 			...debugOptions
 		} = options;
 
-		// console.log("MainPage loadServerData options", debugOptions);
+
 
 		const {
 			coords,
@@ -93,7 +93,7 @@ export default class MainPage extends Page{
 	    
 	  	if(typeof this === "object"){
 
-		    // console.log("MainPage loadServerData result", r);
+
 
 		    let {
 					document,
@@ -173,7 +173,7 @@ export default class MainPage extends Page{
 
 	clearInitialState(){
 
-		// console.log("clearInitialState this", this);
+
 
 		let {
 			document,

@@ -133,7 +133,7 @@ export default class CompanyPage extends Page{
 
  // 		this.CompaniesStoreListener = CompaniesStore.getDispatcher().register(payload => {
 
- // 			// console.log("CompaniesStoreListener payload", payload);
+
 
  // 			this.loadCompanyFullData();
  // 		});
@@ -185,7 +185,7 @@ export default class CompanyPage extends Page{
 	// 	} = document;
 
 
-	// 	// console.log('CompanyPage resourceState', resourceState);
+
 
 	// 	if(resourceState){
 
@@ -273,9 +273,9 @@ export default class CompanyPage extends Page{
 	// componentDidUpdate(prevProps, prevState, prevContext){
 
 
-	// 	// console.log('CompanyPage componentDidUpdate', this.props.item.id, prevProps.item.id);
+
 		
-	// 	// console.log('Company componentDidUpdate', this.props.item === prevProps.item);
+
 
 
 	// 	// if(this.props.item.id !== prevProps.item.id){
@@ -292,7 +292,7 @@ export default class CompanyPage extends Page{
 
 	setPageTitle(title){
 
-		// console.log("setPageTitle 2", title);
+
 
 		const {
 			setPageTitle,
@@ -349,9 +349,9 @@ export default class CompanyPage extends Page{
 
 	// 			company && Object.assign(item, company);
 
-	// 			// console.log('Company loadCompanyFullData item isEqual', StoreItem === item, StoreItem, item);
 
-	// 			// console.log('Company loadCompanyFullData result', result);
+
+
 
 	// 			this.setPageTitle(company && company.name || name);
 
@@ -387,7 +387,7 @@ export default class CompanyPage extends Page{
 			...debugOptions,
 		} = options;
 
-		console.log("CompanyPage loadServerData options", debugOptions);
+
 
 		const {
 			coords,
@@ -417,7 +417,7 @@ export default class CompanyPage extends Page{
 	  })
 	  .then(r => {
 	    
-	    console.log("SiteContent resource result", r);
+
 	    return r;
 
 	  })
@@ -437,9 +437,9 @@ export default class CompanyPage extends Page{
 
 			// company && Object.assign(item, company);
 
-			// console.log('Company loadCompanyFullData item isEqual', StoreItem === item, StoreItem, item);
 
-			// console.log('Company loadCompanyFullData result', result);
+
+
 
 			// this.setPageTitle(company && company.name || name);
 
@@ -479,7 +479,7 @@ export default class CompanyPage extends Page{
 
 		updateContactItem(item, data);
 
-		// console.log("updateItem", result);
+
 	}
 
 	saveItem = async () => {
@@ -499,7 +499,7 @@ export default class CompanyPage extends Page{
 
 		await saveContactItem(item)
 			.then(r => {
-				// console.log("Save Company item result", r);
+
 			})
 			.catch(e => {
 
@@ -509,7 +509,7 @@ export default class CompanyPage extends Page{
 					errors,
 				} = e;
 
-				// console.log("Save Company item error", e, errors);
+
 
 				if(errors){
 
@@ -561,7 +561,7 @@ export default class CompanyPage extends Page{
 	// Почему-то не приходит объект события
 	onFocus = (name) => {
 
-		// console.log('onFocus', event, a,b);
+
 
 		this.clearErrors(name);
 
@@ -577,7 +577,7 @@ export default class CompanyPage extends Page{
 
 		let data = {};
 
-		// console.log("onChange item", item);
+
 
 		const {
 			name,
@@ -607,7 +607,7 @@ export default class CompanyPage extends Page{
 
 		}
 
-		// console.log("onChange name, value", name, value);
+
 
 		this.updateItem(item, data);
 
@@ -616,7 +616,7 @@ export default class CompanyPage extends Page{
 
 	previewDiffs(diffs){
 
-		// console.log("previewDiffs", diffs);
+
 
 		const {
 			diffs: currentDiffs,
@@ -635,9 +635,9 @@ export default class CompanyPage extends Page{
 			item,
 		} = this.state;
 
-		// console.log("acceptDiffs", diffs);
 
-		// console.log("acceptDiffs item", item);
+
+
 
 		if(!item || !diffs || !diffs.data ){
 			return;
@@ -704,7 +704,7 @@ export default class CompanyPage extends Page{
 
 		let itemData = {...item};
 
-		// console.log("Company render item", item);
+
 
 		const {
 			galleryItem,
@@ -1008,7 +1008,7 @@ export default class CompanyPage extends Page{
     </Helper>;
 
 
-		// console.log("Company page item", item);
+
 
 
 		let addresses = [];
@@ -1160,7 +1160,7 @@ export default class CompanyPage extends Page{
 					      customPaging: function(i) {
 					        // return <a><img src={`${baseUrl}/abstract0${i+1}.jpg`}/></a>
 
-					        // console.log('galleryThumbs');
+
 
 					        const thumb = galleryThumbs[i];
 					        return <a><img src={thumb}/></a>
@@ -1202,7 +1202,7 @@ export default class CompanyPage extends Page{
 	        	onFocus={() => this.onFocus('coords')}
 	        	onChange={(item, data) => {
 
-	        		// console.log("onChange data", data);
+
 
 	        		this.clearErrors('coords');
 	        	}}
@@ -1373,7 +1373,7 @@ export default class CompanyPage extends Page{
 	                  url="/assets/components/modxsite/connectors/connector.php?pub_action=images/upload"
 	                  optimisticPreviews
 	                  onLoadEnd={(err, response) => {
-	                    // console.log('onLoadEnd', err, response);
+
 
 	                    if (err && err.message) {
 	                      // console.error(err);
@@ -1392,15 +1392,15 @@ export default class CompanyPage extends Page{
 	                    }
 	                    else{
 
-	                      // console.log('response', response);
-	                      // console.log('item', item);
+
+
 
 
 	                      let {
 	                        0: image,
 	                      } = response.object || {};
 
-	                      // console.log('response image', image);
+
 
 	                      if(image && image.url){
 		                      
@@ -1684,7 +1684,7 @@ export default class CompanyPage extends Page{
 										value={prices || ""}
 										onChange={event => {
 
-											// console.log("onChange", event);
+
 
 											let {
 												item,

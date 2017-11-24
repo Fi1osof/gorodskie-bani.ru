@@ -12,7 +12,7 @@ export const create = async (source, args, context, info) => {
 
   const prefix = getPrefix();
 
-  // console.log('createSearchStat args', args);
+
   
   let {
     query,
@@ -31,9 +31,9 @@ export const create = async (source, args, context, info) => {
 
   // const insertResult = insert;
 
-  // console.log('createSearchStat toSQL', q.toString());
-  // console.log('createSearchStat result toSQL', select.toString());
-  // console.log('createSearchStat result insertResult', insertResult.toString());
+
+
+
 
   let result;
 
@@ -41,7 +41,7 @@ export const create = async (source, args, context, info) => {
   .returning('*')
   .then(async r => {
     
-    // console.log('createSearchStat result', r);
+
 
     // r && r.map(n => result.push({
     //   id: n,
@@ -52,7 +52,7 @@ export const create = async (source, args, context, info) => {
     .select(knex.raw('unix_timestamp(date) as `date`'))
     .whereIn("id", r)
     .then(r => {
-      // console.log('createSearchStat result', r);
+
 
       result = r && r[0] || null;
 
@@ -61,7 +61,7 @@ export const create = async (source, args, context, info) => {
       throw(new Error(e));
     });
 
-    // console.log('createSearchStat result 2 toSQL', result.toString());
+
 
 
   })
@@ -109,7 +109,7 @@ export const create = async (source, args, context, info) => {
 //       q.where('redirects.uri', uri);
 //     }
 
-// 		// console.log('q2 toSQL2', q2.toString());
+
 
 //     if(totalSelection){
 
@@ -119,11 +119,11 @@ export const create = async (source, args, context, info) => {
 
 //           rowsCount = r && r[0].total || 0;
 
-//           // console.log('q2 result', r);
+
 //         });
 
-//         // console.log('q2 toSQL', q2.toSQL());
-//         // console.log('q2 toSQL2', q2.toString());
+
+
 // 		}
 
 

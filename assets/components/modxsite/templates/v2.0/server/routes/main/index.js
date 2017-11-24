@@ -97,7 +97,7 @@ export default class Router {
     // })
     // .then(r => {
 
-    //   // console.log('resources result', r);
+
 
     //   const {
     //     resources,
@@ -123,7 +123,7 @@ export default class Router {
 
   loadData = async () => {
 
-    // console.log("LoadData");
+
 
     await this.loadApiData();
 
@@ -150,7 +150,7 @@ export default class Router {
     })
     .then(r => {
 
-      // console.log('apiData result', r);
+
 
       apiData = r.data;
 
@@ -178,7 +178,7 @@ export default class Router {
     // })
     // .then(r => {
 
-    //   // console.log('mapData result', r);
+
 
     //   citiesData = r.data;
 
@@ -201,7 +201,7 @@ export default class Router {
     })
     .then(r => {
 
-      // console.log('Redirects result', r);
+
 
       const {
         redirects,
@@ -219,7 +219,7 @@ export default class Router {
 
   clearCache(){
 
-    // console.log("clearCache");
+
 
     return this.loadData();
   }
@@ -419,8 +419,8 @@ export default class Router {
 
       let clients = this.clients;
 
-      // console.log("SendMessageToUsers", message, users_ids);
-      // console.log("SendMessageToUsers", users_ids);
+
+
 
       if(!users_ids || users_ids == ""){
         return;
@@ -440,13 +440,13 @@ export default class Router {
         //   continue;
         // }
 
-        // console.log("Проверяем клиента", users_ids);
+
         // break;
 
-        // console.log(typeof client);
+
 
         if(users_ids.indexOf(client.user_id) != -1){
-          // console.log('users_ids: ', client.user_id);
+
 
           this.SendMessage(client, message);
         }
@@ -458,8 +458,8 @@ export default class Router {
 
     function SendMessageToUsers(message, users_ids){
 
-      // console.log("SendMessageToUsers", message, users_ids);
-      // console.log("SendMessageToUsers", users_ids);
+
+
 
       let clients = this.clients;
 
@@ -614,7 +614,7 @@ export default class Router {
                 ,user_id: ws.user_id
                 ,channel_id: ws.channel_id
               }).then(function (record) {
-                // console.log(record);
+
               });
             }
             break;
@@ -633,7 +633,7 @@ export default class Router {
               coords,
             } = message;
 
-            // console.log("Coords", coords);
+
 
             ws.coords = coords;
 
@@ -641,7 +641,7 @@ export default class Router {
 
           default:
 
-            // console.log(ws);
+
 
             this.SendMessage(ws, {
               type: "error"
@@ -730,8 +730,8 @@ export default class Router {
         redirects,
       } = this;
 
-      // console.log('match redirectLocation', redirectLocation);
-      // console.log('match renderProps', renderProps);
+
+
 
       const redurectUri = decodedURI.replace(/^\/+/, '');
 
@@ -820,7 +820,7 @@ export default class Router {
 
         
 
-        // console.log("REG connection.remoteAddress", req.headers['x-real-ip']);
+
 
         let ip = req.headers['x-real-ip'];
 
@@ -844,10 +844,10 @@ export default class Router {
           };
         }
 
-        // console.log('router params', params);
-        // console.log('router location', location);
 
-        // console.log("Router Component", Component);
+
+
+
 
 
         // const {
@@ -888,7 +888,7 @@ export default class Router {
           },
         })
         .then(r => {
-          // console.log("SiteContent router result", r);
+
           return r.data;
         })
         .catch(e => {
@@ -946,7 +946,7 @@ export default class Router {
           geo.ll = [coords.lat, coords.lng];
         }
 
-        // console.log("debugState coords", coords, geo.ll);
+
 
         // Запрашиваем данные для пользователя
 
@@ -967,7 +967,7 @@ export default class Router {
 
         let appExports = {};
 
-        // console.log('{...renderProps} ', {...renderProps} );
+
 
         const componentHTML = ReactDom.renderToString(
           <MainApp
@@ -983,8 +983,8 @@ export default class Router {
 
         const stylesGenerated = appExports.theme && appExports.theme.sheetsToString();
 
-        // console.log('stylesGenerated', stylesGenerated);
-        // console.log('appExports.outputState', appExports.outputState);
+
+
 
 
         // let style = '<style>';
@@ -1009,7 +1009,7 @@ export default class Router {
           res.status(status);
         }
 
-        // console.log("status", status);
+
 
       }
       catch(e){
@@ -1038,9 +1038,9 @@ export default class Router {
 
     let buildPath = basePath + "build/";
 
-    // console.log('componentHTML', componentHTML);
 
-    // console.log('initialState outputState', initialState.document.outputState);
+
+
 
     if(process.env.NODE_ENV === 'production'){
 
@@ -1066,7 +1066,7 @@ export default class Router {
         //   ${style}
         // `;
 
-        // console.log('css_src', css_src);
+
 
         // const css_array = css_src.split("/");
 
@@ -1088,13 +1088,13 @@ export default class Router {
       css_src = `${assetsUrl}css/main.css`;
     }
 
-    // console.log('process.env.NODE_ENV CWD', process.cwd());
-    // console.log('process.env.NODE_ENV', process);
-    // console.log('process.env.NODE_ENV webpack', webpack);
+
+
+
 
     let jState = "";
 
-    // console.log(geo);
+
 
     const outputState = initialState.document.outputState;
 
@@ -1225,8 +1225,8 @@ export default class Router {
 
     if(client && client.readyState === client.OPEN){
 
-      // console.log(client);
-      // console.log('SendMessage', message);
+
+
 
       if(typeof message !== "object"){
         message = {
@@ -1257,8 +1257,8 @@ export default class Router {
 
   async SendMODXRequest(action, params, req){
 
-    // console.log('SendMODXRequest', req, params);
-    // console.log('SendMODXRequest', params);
+
+
 
     // return {};
 

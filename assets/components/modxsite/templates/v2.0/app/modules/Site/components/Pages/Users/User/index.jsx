@@ -269,7 +269,7 @@ export default class User extends Component {
       username,
     } = this.props;
 
-    // console.log('username', username);
+
 
     if(!username){
       return;
@@ -291,7 +291,7 @@ export default class User extends Component {
     })
     .then(r => {
 
-      // console.log("User r", r);
+
 
       const {
         user,
@@ -308,7 +308,7 @@ export default class User extends Component {
       });
     }); 
 
-    // console.log("Resources r", result);
+
     
     
   }
@@ -370,7 +370,7 @@ export default class User extends Component {
 
       callback: (data, errors) => {
 
-        console.log("activation result", data, errors);
+
 
         const {
           success,
@@ -487,7 +487,7 @@ export default class User extends Component {
   //       }
   //     }.bind(this))
   //     .catch(function (error) {
-  //         console.log('Request failed', error);
+
   //       }
   //     );
   // }
@@ -500,7 +500,7 @@ export default class User extends Component {
   //     user,
   //   } = nextProps;
 
-  //   // console.log('nextProps.user', user, nextProps);
+
 
   //   if(
   //     (user && user !== this.props.user)
@@ -721,7 +721,7 @@ export default class User extends Component {
   //       }
   //     }.bind(this))
   //     .catch(function (error) {
-  //         console.log('Request failed', error);
+
   //       }
   //     );
   // }
@@ -738,7 +738,7 @@ export default class User extends Component {
 
     await saveCurrentUser(user)
     .then(r => {
-      // console.log('saveCurrentUser result', r);
+
 
       this.setState({
         inEditMode: false,
@@ -853,7 +853,7 @@ export default class User extends Component {
                 }); 
  
 
-                // console.log('uploadImageCallBack item', link);
+
 
                 // this.setState({
                 //   expanded: false,
@@ -904,7 +904,7 @@ export default class User extends Component {
       notices,
     } = user || {}
 
-    // console.log('notices', notices, notice_id, checked);    
+    
 
     let notice = notices && notices.find(n => n.id === notice_id);
 
@@ -1023,7 +1023,7 @@ export default class User extends Component {
       return null;
     }
 
-    // console.log('user', user, this.props);
+
 
     let{
       id: user_id,
@@ -1045,14 +1045,14 @@ export default class User extends Component {
       total: works_total,
     } = works_response || {}
 
-    // console.log('Profile', user);
 
-    // console.log('companies', companies, this.state, this.props);
 
-    // console.log('Profile', user);
-    // console.log('current_user', current_user);
 
-    // console.log('user_notices', user_notices);
+
+
+
+
+
 
     var card, addition_info;
 

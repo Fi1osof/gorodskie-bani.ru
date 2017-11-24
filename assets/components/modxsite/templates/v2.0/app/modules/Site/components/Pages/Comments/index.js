@@ -45,7 +45,7 @@ export default class CommentsPage extends Page {
 
 	componentDidUpdate(prevProps, prevState, prevContext){
 
-		// console.log('Comments componentDidUpdate', prevProps, prevState, prevContext);
+
 
 		const {
 			router,
@@ -137,7 +137,7 @@ export default class CommentsPage extends Page {
 		})
 		.then(r => {
 
-			// console.log("Resources r", r);
+
 
 			const {
 				commentsList,
@@ -155,7 +155,7 @@ export default class CommentsPage extends Page {
 			});
 		}); 
 
-		// console.log("Resources r", result);
+
 		
 		
 	}

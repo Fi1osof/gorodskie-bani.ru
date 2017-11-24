@@ -136,7 +136,7 @@ export default class UserPage extends Component {
 
 			callback: (data, errors) => {
 
-				console.log("activation result", data, errors);
+
 
 				const {
 					success,
@@ -196,7 +196,7 @@ export default class UserPage extends Component {
 		})
 		.then(r => {
 
-			// console.log("Resources r", r);
+
 
 			const {
 				user,
@@ -213,7 +213,7 @@ export default class UserPage extends Component {
 			});
 		}); 
 
-		// console.log("Resources r", result);
+
 		
 		
 	}

@@ -40,7 +40,7 @@ export const getList = (source, args, context, info) => {
     ownProfile,
   } = args;
 
-  // console.log('user getList', args, info);
+
 
 
   if(ownProfile){
@@ -60,7 +60,7 @@ export const getList = (source, args, context, info) => {
 
         const result = await remoteResolver(null, args, context, info);
 
-        console.log("users getList ownProfile result", result);
+
 
         // if(result && result.success){
 
@@ -155,7 +155,7 @@ export const UserType = new GraphQLObjectType({
       //     },
       //   }),
       //       resolve: (data) => {
-      //         console.log('UserType photo', data);
+
       //         return "DSfds";
       //       },
       // },

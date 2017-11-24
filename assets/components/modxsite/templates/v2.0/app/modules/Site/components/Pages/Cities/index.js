@@ -93,7 +93,7 @@ export default class CitiesPage extends Page {
 			...debugOptions
 		} = options;
 
-		// console.log("CompaniesPage loadServerData options", debugOptions);
+
 
 		const {
 			coords,
@@ -115,7 +115,7 @@ export default class CitiesPage extends Page {
 	  })
 	  .then(r => {
 	    
-	    // console.log("Cities resource result", r);
+
 
 	    return r;
 
@@ -194,7 +194,7 @@ export default class CitiesPage extends Page {
 			resources: cities,
 		} = this.state;
 
-		// console.log('CitiesPage cities', cities);
+
 
 		let citiesList = cities && cities.map(city => {
 

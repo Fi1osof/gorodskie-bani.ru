@@ -47,7 +47,7 @@ export default class Comment extends Component{
 
 		let data = {};
 
-		// console.log("onChange item", item);
+
 
 		const {
 			name,
@@ -59,7 +59,7 @@ export default class Comment extends Component{
 		data[name] = value;
 
 
-		// console.log("onChange name, value", name, value);
+
 
 		this.updateItem(item, data);
 
@@ -90,7 +90,7 @@ export default class Comment extends Component{
 			sending: true,
 		});
 
-		// console.log("sending");
+
 
 		await saveCommentItem(item)
 			.then(r => {
@@ -106,7 +106,7 @@ export default class Comment extends Component{
 				console.error(e);
 			});
 
-		// console.log("sending 2");
+
 
 		this.setState({
 			sending: false,
@@ -117,7 +117,7 @@ export default class Comment extends Component{
 	// Почему-то не приходит объект события
 	onFocus = (name) => {
 
-		// console.log('onFocus', event, a,b);
+
 
 		this.clearErrors(name);
 
@@ -159,7 +159,7 @@ export default class Comment extends Component{
 		} = Author || {};
 
 
-		// console.log("Comment", item);
+
 
 		return <Card
 			style={{

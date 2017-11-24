@@ -152,7 +152,7 @@ export default class UsersPage extends Page {
 		})
 		.then(r => {
 
-			// console.log("Users r", r);
+
 
 			const {
 				usersList,
@@ -173,7 +173,7 @@ export default class UsersPage extends Page {
 			console.error(e);
 		}); 
 
-		// console.log("Resources r", result);
+
 		
 		
 	}
@@ -186,7 +186,7 @@ export default class UsersPage extends Page {
 	// 		limit,
 	// 	} = this.state;
 
-	// 	console.log("Users", users);
+
 
 	// 	let topicsList = [];
 
@@ -249,7 +249,7 @@ export default class UsersPage extends Page {
 
 	onDelegatedChange = (event, checked) => {
 
-		// console.log('onDelegatedChange', event, checked);
+
 
 		this.setState({
 			delegatesOnly: checked,
@@ -261,7 +261,7 @@ export default class UsersPage extends Page {
 
 	onMyOnlyChange = (event, checked) => {
 
-		// console.log('onDelegatedChange', event, checked);
+
 
 		this.setState({
 			myOnly: checked,
@@ -322,7 +322,7 @@ export default class UsersPage extends Page {
 
 	saveItem(user){
 
-		// console.log('saveItem', user);
+
 
 		const {
 			saveItem,
@@ -357,7 +357,7 @@ export default class UsersPage extends Page {
 
 		let data = {};
 
-		// console.log('value', value);
+
 
 		data[name] = value;
 
@@ -373,7 +373,7 @@ export default class UsersPage extends Page {
 		}
 
 
-		// console.log('data', data);
+
 
 		this.updateUser(user, data); 
 
@@ -426,7 +426,7 @@ export default class UsersPage extends Page {
 				_Dirty,
 			} = user;
 
-			// console.log("user", user);
+
 
 			let columns = [
 

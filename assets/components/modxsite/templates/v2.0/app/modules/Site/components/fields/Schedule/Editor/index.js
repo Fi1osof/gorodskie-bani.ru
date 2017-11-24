@@ -52,7 +52,7 @@ export default class ScheduleEditorField extends Component{
 
 	onChange(event){
 		
-		// console.log('onChange days', days);
+
 
 		const {
 			target: {

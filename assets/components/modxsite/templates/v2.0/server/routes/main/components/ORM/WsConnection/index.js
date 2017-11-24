@@ -18,7 +18,7 @@ export const getList = async (object, args, context, info) => {
 
   let result;
 
-  // console.log('wsClients getList args', args);
+
 
   if(clients){
 
@@ -30,7 +30,7 @@ export const getList = async (object, args, context, info) => {
     //   description: 'Находится онлайн',
     //   resolve: (object, args) => {
 
-    //     console.log("WsConnectionType object", object);
+
 
     //     return object.readyState == 1 ? 'Он-лайн' : null;
     //   },
@@ -46,8 +46,8 @@ export const getList = async (object, args, context, info) => {
     //   }),
     //   resolve: (object, args) => {
     //     // IncomingMessage
-    //     // console.log('User resolver query', object && object.query, object.upgradeReq);
-    //     // console.log('User resolver', object && object.upgradeReq, object);
+
+
 
     //     return object.upgradeReq && object.upgradeReq.query || null;
     //   },
@@ -96,7 +96,7 @@ export const getList = async (object, args, context, info) => {
   	
   }
 
-  // console.log('wsClients state', state);
+
 
 
   return result;

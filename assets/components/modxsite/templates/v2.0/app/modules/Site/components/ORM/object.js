@@ -56,7 +56,7 @@ export default class ModelObject{
 
     //   case 'image': 
           
-    //     console.log('Company imageType image', source, value, this);
+
 
     //     // value = value && value.image && value.image.original || null;
     //     value = value && value.original || null;
@@ -69,7 +69,7 @@ export default class ModelObject{
 
   // localQuery(params){
 
-  //   console.log('ModelObject localQuery', this);
+
 
   // }
 
@@ -86,7 +86,7 @@ export default class ModelObject{
 
           this._loaded = true;
 
-          // console.log('getFullData', result);
+
           resolve(result);
         });
 
@@ -109,7 +109,7 @@ export default class ModelObject{
       variables,
     });
 
-    // console.log('localQuery params', params);
+
 
     return new Promise((resolve, reject) => {
 
@@ -118,7 +118,7 @@ export default class ModelObject{
 
           if(result && result.data && _alias){
 
-            // console.log('localQuery result 3', result);
+
 
             // const {
             //   item,
@@ -126,7 +126,7 @@ export default class ModelObject{
 
             const item = result.data[_alias];
 
-            // console.log('localQuery result item', item);
+
 
             Object.assign(this, item);
             // this.forceUpdate();
@@ -173,7 +173,7 @@ export default class ModelObject{
 
 //     //   case 'image': 
           
-//     //     console.log('Company imageType image', source, value, this);
+
 
 //     //     // value = value && value.image && value.image.original || null;
 //     //     value = value && value.original || null;

@@ -166,7 +166,7 @@ export default class TopicsPage extends Page {
 		} = this.state;
 
 
-		// console.log("componentDidUpdate", currentCity, topicAlias);
+
 
 		if((currentTopicAlias || topicAlias) && currentTopicAlias !== topicAlias){
 		
@@ -216,7 +216,7 @@ export default class TopicsPage extends Page {
 	// loadData__(){
 
 
-	// 	// console.log("TopicsPage loadData");
+
 
 	// 	// if(typeof window === "undefined"){
 			
@@ -262,7 +262,7 @@ export default class TopicsPage extends Page {
 	// 		})
 	// 		.then(r => {
 
-	// 			// console.log("Resources r", beforeMount, r);
+
 
 	// 			const {
 	// 				topics,
@@ -306,7 +306,7 @@ export default class TopicsPage extends Page {
 
 	// 	// }
 
-	// 	// console.log("Resources r", result);
+
 		
 	// }
 
@@ -337,7 +337,7 @@ export default class TopicsPage extends Page {
 			...debugOptions
 		} = options;
 
-		// console.log("TopicsPage loadServerData options", debugOptions);
+
 
 		const {
 			coords,
@@ -365,7 +365,7 @@ export default class TopicsPage extends Page {
 	  })
 	  .then(r => {
 	    
-	    // console.log("SiteContent resource result", r);
+
 
 	    return r;
 
@@ -410,7 +410,7 @@ export default class TopicsPage extends Page {
 
   onPageChange(){
 
-  	console.log("onPageChange", this.getPage());
+
 
   	this.reloadData();
     	
@@ -427,7 +427,7 @@ export default class TopicsPage extends Page {
 
   onStoreUpdated(store, payload){
 
-  	// console.log("topics page onStoreUpdated", store, payload);
+
 
   	const {
   		type,
@@ -459,7 +459,7 @@ export default class TopicsPage extends Page {
 
 			if(store === TopicsStore){
 
-				// console.log("TopicsStore item", object, newObject, topics && topics.find(n => n.id === object.id));
+
 
 				const item = object && newObject && topics && topics.find(n => n.id === object.id);
 
@@ -484,7 +484,7 @@ export default class TopicsPage extends Page {
 
 				}
 
-				// console.log("TopicsStore update item", newObject, item);
+
 
 			}
 
@@ -502,7 +502,7 @@ export default class TopicsPage extends Page {
 
   setPageTitle(title){
 
-  	// console.log("setPageTitle", title);
+
 
 		// const {
 		// 	params,
@@ -525,7 +525,7 @@ export default class TopicsPage extends Page {
 			limitPerPage,
 		} = this.state;
 
-		// console.log("Topic", topics);
+
 
 		if(!result){
 			return null;
@@ -634,8 +634,8 @@ export default class TopicsPage extends Page {
 		// const pathname = router.getCurrentLocation().pathname.replace(/^\//, '');
 		const pathname = decodeURI(location && location.pathname && location.pathname.replace(/^\//, '') || "");
 
-		// console.log("Topics pathname", pathname, router.getCurrentLocation());
-		// console.log("Topics pathname", pathname, location);
+
+
 
 		const {
 			topics,
@@ -688,7 +688,7 @@ export default class TopicsPage extends Page {
 			content = this.renderTopics();
 		}
 
-		// console.log('CompaniesPage 2 item', item, companyId);
+
 
 		return super.render(<div
 			style={{

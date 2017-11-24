@@ -148,7 +148,7 @@ export const RatingType = new GraphQLObjectType({
 
                 // 
 
-                // console.log("Voters", args, result);
+
 
                 const {
                   users: voters,
@@ -219,7 +219,7 @@ export const RatingType = new GraphQLObjectType({
           //     variables: args,
           //   })
           //   .then(r => {
-          //     // console.log('Ratings Companies args', args, r);
+
 
           //     const {
           //       company,
@@ -276,7 +276,7 @@ export const RatingType = new GraphQLObjectType({
               limit: 10,
             });
    
-            // console.log('Ratings Companies args', args);
+
 
             if(ids && ids.length){
               await localQuery({
@@ -287,7 +287,7 @@ export const RatingType = new GraphQLObjectType({
 
                 // 
 
-                // console.log("CompanyType ratings result", r);
+
 
                 const {
                   companies,
@@ -554,7 +554,7 @@ export const getList = (source, args, context, info) => {
     RatingsStore,
   } = context.state;
 
-  // console.log('getList rating', args, info);
+
 
   const {
     fieldNodes: {

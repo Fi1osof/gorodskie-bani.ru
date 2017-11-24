@@ -62,8 +62,8 @@ import ModelObject from '../model';
 //   getCollection(object, args, context){
 
     
-//     // console.log('CompanyType getCollection', object, args, context);
-//     // console.log('CompanyType getCollection this', this);
+
+
 
 //     return [{
 //       id: 234,
@@ -142,7 +142,7 @@ import ModelObject from '../model';
 //         q.limit(limit);
 //       }
 
-//     // console.log("Contacts query toString()", q.toString());
+
       
 
 //     return q; 
@@ -161,7 +161,7 @@ export const getList = (object, args, context, info) => {
   } = args;
 
 
-  // console.log("Resources args", args);
+
 
 
   return new Promise((resolve, reject) => {
@@ -201,7 +201,7 @@ export const getList = (object, args, context, info) => {
       default: action = 'resources/getdata';
     }
 
-    // console.log('action', action, args);
+
 
     // throw(new Error( action)); 
 
@@ -279,7 +279,7 @@ export const getList = (object, args, context, info) => {
 
             object.tvs = tvs;
 
-            // console.log("object.tvs", object.tvs);
+
 
             let {
               coords,
@@ -315,7 +315,7 @@ export const getList = (object, args, context, info) => {
 
             // for(var i in contentCache){
 
-            //   console.log('contentCache length i', i);
+
 
             // }
 
@@ -336,8 +336,8 @@ export const getList = (object, args, context, info) => {
             }
             else if(content){
 
-              // console.log("Resources serverDOMBuilder", contentCache ? contentCache.length : null);
-              // console.log("Resources serverDOMBuilder", contentCache);
+
+
 
               try{
                 
@@ -354,11 +354,11 @@ export const getList = (object, args, context, info) => {
                     serverDOMBuilder,
                   } = context;
 
-                  // console.log('serverDOMBuilder', serverDOMBuilder);
+
 
                   const blocks = convertFromHTML(content, serverDOMBuilder);
 
-                  // console.log('blocks', blocks);
+
 
                   if(blocks){
 

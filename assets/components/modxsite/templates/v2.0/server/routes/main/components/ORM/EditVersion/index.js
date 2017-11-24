@@ -22,7 +22,7 @@ export const create = async (source, args, context, info) => {
   //   }],
   // }));
 
-  console.log("EditVersion create", args);
+
 
   // throw(JSON.stringify({
   //   message: "DSfsdfd",
@@ -65,7 +65,7 @@ export const create = async (source, args, context, info) => {
   const saveResult = await request
   .then((data) => {
   
-    // console.log("Company update result", data);
+
 
     if(!data.success){
 
@@ -217,7 +217,7 @@ export const create = async (source, args, context, info) => {
   .returning('*')
   .then(async r => {
 
-    // console.log('createSearchStat toSQL', insert.toString());
+
 
     await q
     .select("*")
@@ -227,7 +227,7 @@ export const create = async (source, args, context, info) => {
     .whereIn("id", r)
     .then(r => {
       
-      // console.log('createSearchStat result', r);
+
 
       result = r && r[0] || null;
 
@@ -284,7 +284,7 @@ export const getList = async (Company, args, context, info) => {
 
 
 
-  // console.log('edit_versions getList args', args);
+
 
   const {
     fieldNodes: {
@@ -336,7 +336,7 @@ export const getList = async (Company, args, context, info) => {
   //   q.where('redirects.uri', uri);
   // }
 
-  // console.log('edit_versions getList toSQL', q.toString());
+
 
   if(totalSelection){
 
@@ -346,11 +346,11 @@ export const getList = async (Company, args, context, info) => {
 
         rowsCount = r && r[0].total || 0;
 
-        // console.log('q2 result', r);
+
       });
 
-      // console.log('q2 toSQL', q2.toSQL());
-      // console.log('q2 toSQL2', q2.toString());
+
+
   }
 
 

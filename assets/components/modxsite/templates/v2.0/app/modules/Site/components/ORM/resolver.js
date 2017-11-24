@@ -67,9 +67,9 @@ const rootResolver = function(source, args, context, info){
 
   let result;
 
-  // console.log('fieldResolver source', source);
-  // console.log('fieldResolver args', args);
-  // console.log('fieldResolver info', info);
+
+
+
 
 
   let {
@@ -130,7 +130,7 @@ const rootResolver = function(source, args, context, info){
 
       case "clearCache":
 
-        // console.log("clearCache");
+
 
         if(typeof window !== "undefined"){
           throw("Операция не разрешена в окне");
@@ -146,7 +146,7 @@ const rootResolver = function(source, args, context, info){
 
             result = await scope.clearCache();
 
-            console.log("rootResolver clearCache");
+
 
             resolve(result);
 
@@ -178,7 +178,7 @@ const rootResolver = function(source, args, context, info){
 
             const result = await remoteResolver(null, args, context, info);
 
-            // console.log("rootResolver updateCompany result", result);
+
 
             // if(result && result.success){
 
@@ -529,7 +529,7 @@ const getObjects = (ofType, source, args, context, info) => {
 
   let result;
 
-  // console.log('getObjects', ofType);
+
 
   result = getObjectsList(ofType, source, args, context, info)
     // .then(r => {
@@ -589,7 +589,7 @@ const getObject = (ofType, source, args, context, info) => {
         state
         .then(r => {
 
-          // console.log('getObject state result', args, r);
+
 
           resolve(processObjectState(r, args));
 

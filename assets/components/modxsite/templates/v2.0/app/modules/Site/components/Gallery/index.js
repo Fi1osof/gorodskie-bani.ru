@@ -48,7 +48,7 @@ class Gallery extends Component{
   componentDidUpdate(){
 
     if(this.props.debug){
-      console.log("Gallery componentDidUpdate", this);
+
     }
   }
 
@@ -122,7 +122,7 @@ class Gallery extends Component{
                 //   item,
                 // } = this.props;
 
-                console.log('uploadImageCallBack item', item, link);
+
 
                 localQuery({
                   operationName: "addCompanyGalleryImage",
@@ -150,7 +150,7 @@ class Gallery extends Component{
 
   onSelectImage = (event, checked, image) => {
 
-    // console.log('onSelectImage', event, checked, image);
+
 
     let {
       onSelectContactImage,
@@ -163,7 +163,7 @@ class Gallery extends Component{
 
     _selectedImages = _selectedImages || [];
 
-    // console.log('_selectedImages', _selectedImages);
+
 
     if(checked){
       _selectedImages.push(image.src);
@@ -172,14 +172,14 @@ class Gallery extends Component{
       // let selectedImage = _selectedImages.indexOf(i => {return i === image});
       let selectedImage = _selectedImages.indexOf(image);
 
-      // console.log('selectedImage', selectedImage);
+
 
       if(selectedImage != -1){
         _selectedImages.splice(selectedImage, 1);
       }
     }
 
-    // console.log('_selectedImages', _selectedImages);
+
 
     // onSelectContactImage(image);
 
@@ -193,7 +193,7 @@ class Gallery extends Component{
 
   handleDelete(event, index){
 
-    // console.log("handleDelete", index);
+
 
     const {
       item,
@@ -213,7 +213,7 @@ class Gallery extends Component{
 
     // const index = gallery.indexOf(image);
 
-    // console.log("handleDelete", index, gallery);
+
 
     if(index !== -1){
       gallery.splice(index, 1);
@@ -300,7 +300,7 @@ class Gallery extends Component{
       let oldIndex = imagesArray.findIndex(n => n.src == draggableImage);
       // let newIndex = imagesArray.indexOf(hoveredImage);
 
-      // console.log('Draggable img oldIndex', oldIndex, newIndex, imagesArray, draggableImage);
+
 
       if(oldIndex != -1){
         let movedItem = imagesArray.splice(oldIndex, 1)[0];
@@ -318,7 +318,7 @@ class Gallery extends Component{
         checked={_selectedImages.find(i => {return i == image.src}) ? true : false}
         draggableImage={draggableImage}
         onStartDrag={(image) => {
-          // console.log('onStartDrag', image);
+
           this.setState({
             draggableImage: image.src,
           });
@@ -328,7 +328,7 @@ class Gallery extends Component{
         }}
         onEndDrag={(image) => {
 
-          // console.log('onEndDrag', image, newIndex, gallery.find(n => n === image.src));
+
 
           /*
             Если новый индекс отличается от реального, сохраняем состояние
@@ -350,7 +350,7 @@ class Gallery extends Component{
             }
 
 
-            // console.log("Gallery onEndDrag", newIndex);
+
 
           }
 
@@ -364,12 +364,12 @@ class Gallery extends Component{
 
           if(draggableImage != image.src){
 
-            // console.log('onDdHover', image);
+
 
             // let positionIndex = store.getState().indexOf(image);
             let positionIndex = imagesArray.indexOf(image);
 
-            // console.log('positionIndex', positionIndex);
+
 
             this.setState({
               // hoveredImage: image,
@@ -413,7 +413,7 @@ class Gallery extends Component{
         	uploadCallback: this.uploadImageCallBack,
       	}}
       	onExpandEvent={() => {
-      		console.log('onExpandEvent', this);
+
       	}}
       	doCollapse={() => {
       		this.setState({

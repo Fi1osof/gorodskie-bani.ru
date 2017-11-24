@@ -59,7 +59,7 @@ class AuthPrototype extends Prototype{
  
         if(data.success){
 
-          // console.log("findUser", data);
+
 
           if(data.object && data.object.id){
             Object.assign(newStata, {
@@ -131,8 +131,8 @@ class Auth extends Component{
       ...other,
     } = this.props;
 
-    // console.log('Auth props', this.props);
-    // console.log('Auth props', {...other});
+
+
 
     return <AuthPrototype
       loginCanceled={userActions.loginCanceled}
@@ -158,8 +158,8 @@ function mapStateToProps(state) {
 
 
 function mapDispatchToProps(dispatch) {
-  // console.log('mapDispatchToProps');
-  // console.log(dispatch);
+
+
 
   return {
     // proxyActions: bindActionCreators(proxyActions, dispatch),

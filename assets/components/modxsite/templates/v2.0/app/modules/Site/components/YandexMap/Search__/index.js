@@ -12,7 +12,7 @@ class YandexAutoComplete extends YandexAutoCompletePrototype{
 
 	loadData(){
 
-		// console.log('YandexAutoComplete loadData');
+
 
 		super.loadData && super.loadData(); 
  		return;
@@ -31,7 +31,7 @@ class YandexAutoComplete extends YandexAutoCompletePrototype{
 
 	componentWillUpdate(nextProps, nextState){
 
-		// console.log('YandexAutoComplete componentWillUpdate', nextProps, nextState);
+
 
 		return super.componentWillUpdate ? super.componentWillUpdate(nextProps, nextState) : true;
 	}
@@ -64,7 +64,7 @@ export default class YandexSearch extends Component{
  //  componentDidUpdate(){
 
  //    if(this.props.debug){
- //      console.log("YandexSearch componentDidUpdate", this);
+
  //    }
  //  }
 

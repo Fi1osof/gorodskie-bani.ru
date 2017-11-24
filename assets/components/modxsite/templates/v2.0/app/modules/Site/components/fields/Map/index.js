@@ -75,7 +75,7 @@ export default class ItemMap extends Component{
 
 
  	onChildMouseUp(){
- 		// console.log('onChildMouseUp');
+
 
  		if(!this.inEditMode()){
  			return;

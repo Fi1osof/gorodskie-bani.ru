@@ -201,7 +201,7 @@ const sampleMarkup = `
 		})
 		.then(r => {
 
-			// console.log("OfferForm result", r);
+
 
 			r.success && onSuccess && onSuccess(r);
 
@@ -222,11 +222,11 @@ const sampleMarkup = `
 			subject,
 		} = this.state;
 
-		// console.log('editorState', editorState);
+
 
 		const html = editorState && stateToHTML(editorState.getCurrentContent());
 
-		// console.log('html', html);
+
 
 		return <Card>
 			

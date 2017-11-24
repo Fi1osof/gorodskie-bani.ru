@@ -16,7 +16,7 @@ export default class ImagesUploader extends ImagesUploaderProto{
 
         for (let i = 0; i < files.length; i++) {
 
-          // console.log('files[i]', files[i]);
+
 
           const file = files[i];
 
@@ -51,11 +51,11 @@ export default class ImagesUploader extends ImagesUploaderProto{
 
         if (response && response.status && response.status === 200) {
 
-          // console.log('response', response);
+
 
           response = await response.json();
 
-          // console.log('response 2', response);
+
 
           const multiple = this.props.multiple;
 

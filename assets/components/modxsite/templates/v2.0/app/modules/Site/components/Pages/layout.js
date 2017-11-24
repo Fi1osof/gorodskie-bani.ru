@@ -78,7 +78,7 @@ export default class Page extends Component{
 
 		this.UsersStoreListener = UsersStore.getDispatcher().register(payload => {
 
-			// console.log('UsersStore payload', payload);
+
 
 			this.onStoreUpdated(UsersStore, payload);
 
@@ -86,7 +86,7 @@ export default class Page extends Component{
 
 		this.EditVersionsListener = EditVersionsStore.getDispatcher().register(payload => {
 
-			// console.log('UsersStore payload', payload);
+
 
 			this.onStoreUpdated(EditVersionsStore, payload);
 
@@ -223,7 +223,7 @@ export default class Page extends Component{
 	// Удаляем инит-данные, чтобы при смене страницы и компонента было понятно, что данные надо подгрузить
 	clearInitialState(){
 
-		// console.log("clearInitialState this", this);
+
 
 		let {
 			document,
@@ -241,7 +241,7 @@ export default class Page extends Component{
   componentDidUpdate(prevProps, prevState, prevContext){
 
     // if(this.props.debug){
-    //   console.log("Page componentDidUpdate", this);
+
     // }
 
     const {
@@ -252,7 +252,7 @@ export default class Page extends Component{
     	inited: prevInited,
     } = prevContext || {};
 
-    // console.log("componentDidUpdate prevProps", prevProps.location);
+
 
 
 		const page = this.getPage();
@@ -278,7 +278,7 @@ export default class Page extends Component{
 
     }
     	
-  	// console.log("PageLayout componentDidUpdate page, prevPage", page, prevPage);
+
 
     if(
     	(page || prevPage) && parseInt(page) !== parseInt(prevPage)
@@ -286,7 +286,7 @@ export default class Page extends Component{
 
     	this.onPageChange();
 
-    	// console.log("PageLayout componentDidUpdate page || prevPage", page, prevPage);
+
 
     }
 
@@ -361,7 +361,7 @@ export default class Page extends Component{
 
 		}
 
-		// console.log("Page loadData options", options);
+
 
 		const {
 			remoteQuery,
@@ -375,7 +375,7 @@ export default class Page extends Component{
 
 		let result = await this.loadServerData(provider, options);
 
-		// console.log("Page loadData result", result);
+
 
 		if(result){
 

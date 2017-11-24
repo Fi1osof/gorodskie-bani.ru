@@ -261,7 +261,7 @@ export class TextField extends Component {
 
 		onChange && onChange(event);
 
-		// console.log("Editor onChange event", event);
+
 
 		// onChange && onChange({
 		// 	target: {

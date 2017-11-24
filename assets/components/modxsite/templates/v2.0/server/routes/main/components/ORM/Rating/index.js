@@ -17,7 +17,7 @@ export const getList = async (Company, args, context, info) => {
   company = company !== undefined ? company : resource_id;
 
 
-  // console.log('getList rating', args, info);
+
 
   const {
     fieldNodes: {
@@ -27,9 +27,9 @@ export const getList = async (Company, args, context, info) => {
     },
   } = info;
 
-  // console.log('getList selectionSet', selectionSet);
 
-  // console.log('getList selectionSet total', selectionSet && selectionSet.selections.find(n => n.name.value === "total"));
+
+
 
   const totalSelection = selectionSet && selectionSet.selections && selectionSet.selections.find(n => n.name && n.name.value === "total");
 
@@ -43,7 +43,7 @@ export const getList = async (Company, args, context, info) => {
 
   let rowsCount = 0;
 
-  // console.log('select ratins args', args);
+
 
   var q = knex(`${prefix}society_votes as votes`)
     
@@ -133,11 +133,11 @@ export const getList = async (Company, args, context, info) => {
 
 					rowsCount = r && r[0].total || 0;
 
-					// console.log('q2 result', r);
+
 				});
 
-				// console.log('q2 toSQL', q2.toSQL());
-				// console.log('q2 toSQL2', q2.toString());
+
+
 		}
 
 
@@ -149,14 +149,14 @@ export const getList = async (Company, args, context, info) => {
 
   let result;
 	 	
-  // console.log("q toSQL", q.toString());
+
 
   await q
   .then((r) => {
 
     
 
- 		// console.log("Result", r);
+
 
   	result = {
   		total: rowsCount,

@@ -12,7 +12,7 @@ import { Link, browserHistory } from "react-router";
 
 // window.browserHistory = browserHistory;
 
-// console.log('browserHistory', browserHistory);
+
 
 
 // let strSize = 5;
@@ -57,9 +57,9 @@ class Pagination extends PaginationPrototype{
 		// }
 
 
-		// console.log("Router current location", location);
 
-		// console.log("Router current location 2", router.getCurrentLocation());
+
+
 
 
   // 	location = router.getCurrentLocation();
@@ -93,7 +93,7 @@ class Pagination extends PaginationPrototype{
 
 		// 	// let blogs = [];
 
-	 //  //   console.log("Location 2", Location, blogs, Location && Location.query, Location && Location.query && Location.query.blogs);
+
 
 		// 	let query = url.query || {};
 

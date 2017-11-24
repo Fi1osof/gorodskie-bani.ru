@@ -145,7 +145,7 @@ export default class EditVersionsPage extends Page{
 
 		// try{
 
-		// 	console.log('EditVersionsStore.getState()', EditVersionsStore.getState());
+
 
 		// }
 		// catch(e){
@@ -191,22 +191,22 @@ export default class EditVersionsPage extends Page{
 
 		const sudo = hasPermission("sudo");
 
-		// console.log("hasPermission", sudo);
+
 
 		const companyView = companyId ? true : false;
 
 		// try{
 
-		// 	// console.log('EditVersionsStore.getState()', EditVersionsStore.getState());
+
 
 		// 	EditVersionsStore.getState().map(n => {
-		// 		console.log("EditVersionsStore.getState() item", n);
+
 		// 	});
 
-		// 	// console.log('RatingsStore.getState()', RatingsStore.getState());
+
 
 		// 	// RatingsStore.getState().map(n => {
-		// 	// 	console.log("RatingsStore.getState() item", n);
+
 		// 	// });
 
 		// }
@@ -269,7 +269,7 @@ export default class EditVersionsPage extends Page{
 
 		let tbody = [];
 
-		// console.log('items', items);
+
 
 
 		items && items.map(item => {

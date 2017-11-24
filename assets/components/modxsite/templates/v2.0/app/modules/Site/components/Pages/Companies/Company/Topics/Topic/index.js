@@ -86,7 +86,7 @@ export default class Topic extends Component{
 							company,
 						} = r.data;
 
-						// console.log("Topic localQuery", r);
+
 
 						result = company;
 					});
@@ -143,7 +143,7 @@ export default class Topic extends Component{
 
 		const CompanyLink = `/${CompanyUri}`;
 
-		// console.log('Parent', Parent);
+
 
 		return <Card
 		>

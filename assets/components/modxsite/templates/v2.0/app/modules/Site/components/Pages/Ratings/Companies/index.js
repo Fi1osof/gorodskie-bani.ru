@@ -46,7 +46,7 @@ export default class RatingCompanies extends Component{
 		
 		let companies = [];
 
-		// console.log('RatingCompanies ratings', ratings);
+
 
 		ratings && ratings.map(rating => {
 

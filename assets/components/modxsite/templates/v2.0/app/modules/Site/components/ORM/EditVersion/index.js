@@ -160,7 +160,7 @@ export default EditVersionType;
 
 export const getList = (source, args, context, info) => {
 
-  // console.log('Comments args', args);
+
 
   const {
     EditVersionsStore,
@@ -201,7 +201,7 @@ export const getList = (source, args, context, info) => {
   // // Фильтр по родителю
   if(status && status.length){
 
-  	// console.log("status", status);
+
 
     state = state.filter(n => status.indexOf(n.status) !== -1);
 

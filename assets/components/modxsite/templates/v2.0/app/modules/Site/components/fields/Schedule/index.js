@@ -81,7 +81,7 @@ export default class ScheduleField extends Component{
 
 		});
 
-		// console.log('offDates', offDates, schedule);
+
 
 		// schedule = List([
 		// 	{
@@ -101,7 +101,7 @@ export default class ScheduleField extends Component{
 		// 	},
 		// ]);
 
-		// console.log('schedule List', schedule.toArray());
+
 
 		const scheduleGrouped = schedule.groupBy(n => {
 
@@ -120,7 +120,7 @@ export default class ScheduleField extends Component{
 				minute: endMinute,
 			} = end;
 
-			// console.log('schedule grouped n JSON.stringify({start, end})', n, JSON.stringify({start, end}));
+
 
 			// return JSON.stringify({start, end});
 
@@ -130,8 +130,8 @@ export default class ScheduleField extends Component{
 
 		// schedule = schedule.groupBy(n => n.id);
 
-		// console.log('schedule grouped', schedule.toArray());
-		// console.log('schedule grouped', schedule);
+
+
 
 		let days = [
 			'Пн',
@@ -147,7 +147,7 @@ export default class ScheduleField extends Component{
 
 		scheduleGrouped.map((n, index) => {
 		
-			// console.log(`schedule grouped n ${index}`, n.toArray());
+
 
 			// let array = [];
 
@@ -182,7 +182,7 @@ export default class ScheduleField extends Component{
 
 			const days2 = n && n.map(i => i && i.start && i.start.weekDay);
 
-			// console.log("daysArray2 reduce days2", days2, n);
+
 
 			// Проходим по каждому дню, и если дни соседние, то объединяем их через тире
 			let daysArray2 = days2 && days2.reduce((prev, next) => {
@@ -192,7 +192,7 @@ export default class ScheduleField extends Component{
 					возвращаем массив
 				*/
 
-				// console.log("daysArray2 reduce prev, next", prev, next);
+
 
 				let result;
 
@@ -271,7 +271,7 @@ export default class ScheduleField extends Component{
 				}
 
 
-				// console.log("daysArray2 reduce result", result);
+
 
 
 				// die();
@@ -280,7 +280,7 @@ export default class ScheduleField extends Component{
 
 			});
 
-			// console.log("daysArray2", daysArray2);
+
 
 
 
@@ -305,7 +305,7 @@ export default class ScheduleField extends Component{
 
 						// }
 
-						// console.log('daysArray 3', i);
+
 
 						if(Array.isArray(i)){
 
@@ -343,7 +343,7 @@ export default class ScheduleField extends Component{
 						daysArray.push(n);
 					});
 
-					// console.log('daysArray222', daysArray2, daysArray);
+
 
 				}
 				else{

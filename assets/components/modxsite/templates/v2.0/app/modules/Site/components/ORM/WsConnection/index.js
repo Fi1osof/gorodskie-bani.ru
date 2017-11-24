@@ -29,7 +29,7 @@ const WsConnectionType = new GraphQLObjectType({
       id: {
         type: GraphQLID,
         // resolve: source=> {
-        //   console.log("WsConnectionType ID", source.id);
+
         // }
       },
       status: {
@@ -37,7 +37,7 @@ const WsConnectionType = new GraphQLObjectType({
         description: 'Находится онлайн',
         // resolve: (object, args) => {
 
-        //   console.log("WsConnectionType object", object);
+
 
         //   return object.readyState == 1 ? 'Он-лайн' : null;
         // },
@@ -53,8 +53,8 @@ const WsConnectionType = new GraphQLObjectType({
         }),
         // resolve: (object, args) => {
         //   // IncomingMessage
-        //   // console.log('User resolver query', object && object.query, object.upgradeReq);
-        //   // console.log('User resolver', object && object.upgradeReq, object);
+
+
 
         //   return object.upgradeReq && object.upgradeReq.query || null;
         // },
@@ -174,9 +174,9 @@ const WsConnectionType = new GraphQLObjectType({
             variableValues
           } = info;
 
-          // console.log("SendWebSocketMessage source", source);
-          // console.log("SendWebSocketMessage args", args);
-          // console.log("SendWebSocketMessage variableValues", variableValues);
+
+
+
 
           // return;
 

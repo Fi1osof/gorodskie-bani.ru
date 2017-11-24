@@ -30,7 +30,7 @@ import {
   UserType,
 } from '../User';
 
-// console.log('CompanyType', CompanyType);
+
  
 
 // export class SchemaType extends SchemaObject{
@@ -209,7 +209,7 @@ export const CommentType = new GraphQLObjectType({
           //     variables: args,
           //   })
           //   .then(r => {
-          //     // console.log('Comments Author', args, r);
+
 
           //     const {
           //       user,
@@ -262,7 +262,7 @@ export const CommentType = new GraphQLObjectType({
               variables: args,
             })
             .then(r => {
-              // console.log('Ratings Companies args', args, r);
+
 
               const {
                 company,
@@ -304,7 +304,7 @@ export const CommentType = new GraphQLObjectType({
       //       limit: 0,
       //     };
 
-      //     console.log('RatingsResolver args', args, rating_type);
+
 
       //     return this.RatingsResolver(null, args);
       //   },
@@ -316,7 +316,7 @@ export const CommentType = new GraphQLObjectType({
 export default class Comment extends ModelObject{
 
   fieldResolver(source, args, context, info){
-    console.log('Comment fieldResolver', source, args, context, info);
+
     
 
     const {
@@ -347,7 +347,7 @@ export default class Comment extends ModelObject{
 // Добавляем новый топик
 export const add = (source, args, context, info) => {
 
-  // console.log("Comment add args", args);
+
 
   let {
     CommentsStore,
@@ -396,7 +396,7 @@ export const add = (source, args, context, info) => {
 
 export const getList = (source, args, context, info) => {
 
-  // console.log('Comments args', args);
+
 
   const {
     CommentsStore,

@@ -51,7 +51,7 @@ export default class OtzivyPage extends TopicsPage {
 
 
 
-		// console.log("OtzivyPage loadServerData options", debugOptions);
+
 
 
 	  return super.loadServerData(provider, options);
@@ -98,7 +98,7 @@ export default class OtzivyPage extends TopicsPage {
 	// 	})
 	// 	.then(r => {
 
-	// 		console.log("Resources r", r);
+
 
 	// 		const {
 	// 			topics,
@@ -109,7 +109,7 @@ export default class OtzivyPage extends TopicsPage {
 	// 		});
 	// 	}); 
 
-	// 	// console.log("Resources r", result);
+
 		
 		
 	// }
@@ -121,7 +121,7 @@ export default class OtzivyPage extends TopicsPage {
 	// 		topics,
 	// 	} = this.state;
 
-	// 	console.log("Topic", topics);
+
 
 	// 	let topicsList = [];
 
@@ -198,7 +198,7 @@ export default class OtzivyPage extends TopicsPage {
 	// 		content = this.renderTopics();
 	// 	}
 
-	// 	// console.log('CompaniesPage 2 item', item, companyId);
+
 
 	// 	return <div>
  			

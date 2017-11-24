@@ -51,7 +51,7 @@ export default class MainMenu extends Component{
 
     const cities = ResourcesStore.getState().toArray();
 
-    // console.log("componentWillMount", cities);
+
 
     Object.assign(this.state, {
       cities,
@@ -101,7 +101,7 @@ export default class MainMenu extends Component{
     //   };
     // }
 
-    // console.log("resourcesCenter", resourcesCenter, lat, lng);
+
 
     // this.loadData();
   }
@@ -109,7 +109,7 @@ export default class MainMenu extends Component{
 
   componentDidUpdate(prevProps, prevState, prevContext){
 
-    // console.log("MainMenu componentDidUpdate", this.context.coords, prevContext.coords);
+
 
     const {
       coords,
@@ -123,7 +123,7 @@ export default class MainMenu extends Component{
       (coords || prevCoords)
       && JSON.stringify(coords || "") != JSON.stringify(prevCoords || "")
     ){
-      // console.log("componentDidUpdate loadDatasss");
+
       this.loadData();
     }
 
@@ -168,7 +168,7 @@ export default class MainMenu extends Component{
         resources: cities,
       } = r.data;
 
-      // console.log("MainMenuData resourcesCenter cities", coords, cities);
+
 
       this.setState({
         ratings,

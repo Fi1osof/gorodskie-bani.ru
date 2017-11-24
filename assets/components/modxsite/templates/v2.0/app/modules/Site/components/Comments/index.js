@@ -59,7 +59,7 @@ export default class Comments extends Component{
 			},
 		})
 		.then(r => {
-			// console.log('AddComment', r);
+
 
 			const {
 				addComment,

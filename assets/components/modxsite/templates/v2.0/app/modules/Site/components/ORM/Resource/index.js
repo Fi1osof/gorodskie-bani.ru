@@ -221,7 +221,7 @@ export const ResourceType = new GraphQLObjectType({
                 ratings,
               } = r.data;
 
-              // console.log("ResourceRatings", args, r);
+
 
               result = ratings;
 
@@ -264,7 +264,7 @@ export const ResourceType = new GraphQLObjectType({
                 ratingsByType,
               } = r.data;
 
-              // console.log("ResourceRatings", args, r);
+
 
               result = ratingsByType;
 
@@ -338,7 +338,7 @@ export const ResourceType = new GraphQLObjectType({
         //     commentsSort,
         //   });
 
-        //   console.log('ResourceComments', args);
+
 
         //   await localQuery({
         //     // query: q,
@@ -464,7 +464,7 @@ export const ResourceType = new GraphQLObjectType({
 // Добавляем новый топик
 export const add = (source, args, context, info) => {
 
-  // console.log("Resource add");
+
 
   let {
     TopicsStore,
@@ -545,7 +545,7 @@ const inCoords = function(center, radius, item){
 
 export const getList = (source, args, context, info) => {
 
-  // console.log("Resoruces getList args", args);
+
 
   const {
     CompaniesStore,
@@ -640,8 +640,8 @@ export const getList = (source, args, context, info) => {
         coords: bCoords,
       } = b;
 
-      // console.log("aCoords", aCoords);
-      // console.log("bCoords", bCoords);
+
+
 
       if(!aCoords || !bCoords){
         return -1;
@@ -671,8 +671,8 @@ export const getList = (source, args, context, info) => {
       const bDiff = Math.sqrt(bLatDiff*bLatDiff + bLngDiff*bLngDiff);
 
 
-      // console.log("aDiff", aDiff);
-      // console.log("bDiff", bDiff);
+
+
 
       if(aDiff > bDiff){
         return 1;

@@ -28,8 +28,8 @@ import {
 //   GraphQLField,
 // } from 'graphql/type/';
 
-// console.log('GraphQLField', GraphQLField);
-// console.log('GraphQLField type', type);
+
+
 
 // export class ModelObject{
 
@@ -96,7 +96,7 @@ import {
 import EditVersionType from './EditVersion';
 
 
-// console.log('UserType', UserType, CompanyType);
+
 
 
 // export class SchemaObject extends GraphQLObjectType{

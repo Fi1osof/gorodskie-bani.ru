@@ -68,7 +68,7 @@ export default class RatingsPage extends Page {
 		} = prevProps;
 
 
-		// console.log("componentDidUpdate", ratingType, prevRatingType);
+
 
 		if((ratingType || prevRatingType) && ratingType !== prevRatingType){
 
@@ -90,7 +90,7 @@ export default class RatingsPage extends Page {
 
   setPageTitle(title){
 
-  	// console.log("setPageTitle", title);
+
 
 		// const {
 		// 	params,
@@ -155,7 +155,7 @@ export default class RatingsPage extends Page {
 		})
 		.then(r => {
 
-			// console.log("Resources r", r);
+
 
 			const {
 				ratings,
@@ -174,7 +174,7 @@ export default class RatingsPage extends Page {
 			});
 		}); 
 
-		// console.log("Resources r", result);
+
 		
 		
 	}

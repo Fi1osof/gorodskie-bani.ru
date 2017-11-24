@@ -50,7 +50,7 @@ export const getList = (object, args, context, info) => {
     request
     .then((data) => {
 
-      // console.log("Users server getlist data", data);
+
 
       if(!data.success){
 

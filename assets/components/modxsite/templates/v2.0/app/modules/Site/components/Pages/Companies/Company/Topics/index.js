@@ -60,7 +60,7 @@ export default class CompanyTopics extends Component{
 
 		topics.map(topic => {
 
-			// console.log("Topic", topic);
+
 
 			const {
 				id,

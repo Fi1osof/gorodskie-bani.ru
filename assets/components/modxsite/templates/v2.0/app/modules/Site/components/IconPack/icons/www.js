@@ -9,7 +9,7 @@ import SvgIcon from 'material-ui/SvgIcon';
 
 // const Technology = require('./icons/005-technology.svg');
 
-// console.log("SvgLoader", Technology);
+
 
 export default class WwwIcon extends Component{
 

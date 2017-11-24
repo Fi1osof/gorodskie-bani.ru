@@ -14,7 +14,7 @@ export const getList = async (Company, args, context, info) => {
 
 
 
-  // console.log('getList rating', args, info);
+
 
   const {
     fieldNodes: {
@@ -49,7 +49,7 @@ export const getList = async (Company, args, context, info) => {
       q.where('redirects.uri', uri);
     }
 
-		// console.log('q2 toSQL2', q2.toString());
+
 
     if(totalSelection){
 
@@ -59,11 +59,11 @@ export const getList = async (Company, args, context, info) => {
 
           rowsCount = r && r[0].total || 0;
 
-          // console.log('q2 result', r);
+
         });
 
-        // console.log('q2 toSQL', q2.toSQL());
-        // console.log('q2 toSQL2', q2.toString());
+
+
 		}
 
 

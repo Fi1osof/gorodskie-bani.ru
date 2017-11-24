@@ -182,7 +182,7 @@ export default class Response{
     
     const root = doc.getElementsByTagName('body')[0];
 
-    // console.log("serverDOMBuilder");
+
 
     return root;
   }
@@ -820,7 +820,7 @@ export default class Response{
       request
       .then((data) => {
 
-        // console.log('users data', data);
+
 
         if(!data.success){
 
@@ -2049,7 +2049,7 @@ export default class Response{
 
     return new Promise((resolve, reject) => {
 
-      // console.log('req', req);
+
 
       graphql({
         schema,
@@ -2061,7 +2061,7 @@ export default class Response{
         contextValue: Object.assign({}, this, {
           SendMODXRequest: async (action, params) => {
 
-            // console.log('SendMODXRequest action, params', action, params);
+
 
             return this.SendMODXRequest(action, params, req);
 
@@ -2140,7 +2140,7 @@ export default class Response{
 
     return new Promise((resolve, reject) => {
 
-      // console.log('req', req);
+
 
       graphql({
         schema,
@@ -2152,7 +2152,7 @@ export default class Response{
         contextValue: Object.assign({}, this, {
           SendMODXRequest: async (action, params) => {
 
-            // console.log('SendMODXRequest action, params', action, params);
+
 
             return this.SendMODXRequest(action, params, req);
 

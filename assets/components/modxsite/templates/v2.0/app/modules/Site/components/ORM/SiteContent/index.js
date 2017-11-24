@@ -113,7 +113,7 @@ export const getList = (source, args, context, info) => {
   const {
   } = args;
 
-  // console.log('SiteContentType getList', args, info);
+
  
 
   const {
@@ -131,7 +131,7 @@ export const getList = (source, args, context, info) => {
 
       const result = await remoteResolver(null, args, context, info);
 
-      // console.log("SiteContentType getList ownProfile result", result);
+
 
       // if(result && result.success){
 

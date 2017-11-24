@@ -32,8 +32,8 @@ class LayoutComponent extends Component {
 
     super(props);
 
-    // console.log('constructor props', props);
-    // console.log('constructor state', this.state);
+
+
   }
 
   componentWillReceiveProps(props: Object): void {

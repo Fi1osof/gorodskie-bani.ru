@@ -20,7 +20,7 @@ import Company,
   getList as getCompaniesList,
 } from '../Company';
 
-// console.log('CompanyType', CompanyType);
+
 
 const resolveType = (data) => {
   // if (data.username) {
@@ -33,8 +33,8 @@ const resolveType = (data) => {
   //   return BookType;
   // }
 
-  console.log("resolveType", data);
-  // console.log("resolveType", data, data.getFullData);
+
+
 
   // if(data instanceof Place){
   //   return PlaceType;
@@ -75,7 +75,7 @@ export const getList = (source, args, context, info) => {
     return null;
   }
 
-  console.log("SearchResultType getList");
+
 
   return getCompaniesList(null, args, context, info);
 
@@ -95,7 +95,7 @@ export const getList = (source, args, context, info) => {
   //   })
   //   .then(r => {
 
-  //     console.log("SearchResultType result", r);
+
 
   //     let {
   //       companies,
@@ -132,8 +132,8 @@ export const getList = (source, args, context, info) => {
 
   // let result; 
 
-  // // console.log('contactsState args', args);
-  // // console.log('contactsState searchRule', searchRule);
+
+
 
   // let state;
 
@@ -148,13 +148,13 @@ export const getList = (source, args, context, info) => {
   //   placesState = placesState.take(limit);
   // }
 
-  // // console.log('contactsState', contactsState);
 
-  // // console.log('placesState', placesState);
+
+
 
   // state = contactsState.concat(placesState);
 
-  // // console.log('search state', state);
+
 
   // // return [{
   // //   id: "DSfdsf",

@@ -23,7 +23,7 @@ export default class Marker extends Component{
 
 	render(){
 
-		// console.log('AnyReactComponent props', this.props);
+
 
 		let {
 			// item,
@@ -79,12 +79,12 @@ export default class Marker extends Component{
 	  //     // quantity_voters,
 			// } = ratingAvg || {};
 
-			// console.log('item', item);
 
-			// ratingAvg && console.log('ratingAvg', ratingAvg);
+
+
 
 			// if(_isDirty){
-			// 	console.log('_isDirty', item, _isDirty);
+
 			// }
 
 

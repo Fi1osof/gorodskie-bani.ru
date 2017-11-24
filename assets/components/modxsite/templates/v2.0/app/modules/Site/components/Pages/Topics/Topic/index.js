@@ -88,9 +88,9 @@ export default class Topic extends Component{
 			commentOpen: nextCommentOpen,
 		} = nextState;
 
-		// console.log('topicPage shouldComponentUpdate', JSON.stringify(item || "") === JSON.stringify(nextProps.item));
 
-		// console.log('topicPage shouldComponentUpdate', commentOpen === nextCommentOpen);
+
+
 
 		if(
 			(item !== nextProps.item)
@@ -161,7 +161,7 @@ export default class Topic extends Component{
 	// 						company,
 	// 					} = r.data;
 
-	// 					console.log("Topic localQuery", r);
+
 
 	// 					result = company;
 	// 				});
@@ -210,7 +210,7 @@ export default class Topic extends Component{
 	// Почему-то не приходит объект события
 	onFocus = (name) => {
 
-		// console.log('onFocus', event, a,b);
+
 
 		this.clearErrors(name);
 
@@ -250,7 +250,7 @@ export default class Topic extends Component{
 			value,
 		} = event.target;
 
-		// console.log("onChange item", name, value);
+
 
 		this.clearErrors(name);
 
@@ -275,7 +275,7 @@ export default class Topic extends Component{
 
 		// }
 
-		// console.log("onChange name, value", name, value);
+
 
 		this.updateItem(item, data);
 
@@ -288,7 +288,7 @@ export default class Topic extends Component{
 			item,
 		} = this.props;
 
-		// console.log('Topic item', item);
+
 
 		if(!item){
 			return null;
@@ -333,7 +333,7 @@ export default class Topic extends Component{
 
 		const CompanyLink = `${CompanyUri}`;
 
-		// console.log('Parent', Parent);
+
 
 		const {
 			id: author_id,
@@ -472,7 +472,7 @@ export default class Topic extends Component{
 	        				onClick={event => {
 	        					// item.update({});
 
-	        					// console.log("item", item);
+
 
 	        					this.updateItem(item, {
 	        					});

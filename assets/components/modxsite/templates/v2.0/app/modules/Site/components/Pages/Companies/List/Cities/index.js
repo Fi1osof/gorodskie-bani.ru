@@ -78,7 +78,7 @@ export default class CitiesList extends Component{
 
   componentDidUpdate(prevProps, prevState, prevContext){
 
-    // console.log("MainMenu componentDidUpdate", this.context.coords, prevContext.coords);
+
 
     const {
       coords,
@@ -92,7 +92,7 @@ export default class CitiesList extends Component{
       (coords || prevCoords)
       && JSON.stringify(coords || "") != JSON.stringify(prevCoords || "")
     ){
-      // console.log("componentDidUpdate loadDatasss");
+
       this.loadData();
     }
 
@@ -121,7 +121,7 @@ export default class CitiesList extends Component{
         resources: cities,
       } = r.data;
 
-      // console.log("Cities loadData cities", coords, r.data);
+
 
       this.setState({
         cities,
@@ -137,7 +137,7 @@ export default class CitiesList extends Component{
 
   // changeCity(city){
 
-  // 	// console.log("ChangeCity", city);
+
 
   // 	const {
   // 		setCoords,

@@ -624,7 +624,7 @@ export default class Auth extends Component {
 
       }.bind(this))
       .catch((error) => {
-        console.log('Request failed', error);
+
 
           this.props.addInformerMessage({
             text: "Ошибка выполнения запроса",
@@ -779,7 +779,7 @@ export default class Auth extends Component {
 
       }.bind(this))
       .catch(function (error) {
-          console.log('Request failed', error);
+
         }
       );
   }

@@ -54,7 +54,7 @@ export default class RatingTypesType extends Component{
 			limit: prevLimit,
 		} = prevProps;
 
-		// console.log("componentDidUpdate", limit, prevLimit);
+
 
 		if((limit || prevLimit) && limit !== prevLimit){
 			this.setState({
@@ -90,7 +90,7 @@ export default class RatingTypesType extends Component{
 
 		let ratingsByType = ratings && ratings.filter(n => n.type === id);
 
-		// console.log("ratingsByType", ratingsByType);
+
 
 		let ratingsByTypeList;
 
@@ -99,17 +99,17 @@ export default class RatingTypesType extends Component{
 
 			ratingsByType = List(ratingsByType);
 
-			// console.log('ratingsByType', ratingsByType);
+
 
 			ratingsByType = sortBy(ratingsByType, n => n.rating, "desc");
 
-			// console.log('ratingsByType 2', ratingsByType);
+
 
 			ratingsByType = ratingsByType.toArray();
 
 			ratingsByTypeList = renderRatings(ratingsByType, limit);
 
-			// console.log("ratingsByTypeList", ratingsByTypeList);
+
 
 		}
 		else{

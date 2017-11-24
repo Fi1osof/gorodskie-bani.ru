@@ -171,12 +171,12 @@ export default class SearchBar extends Component{
 						<YandexSearch
 							includeSiteData={true}
 			    		// onNewRequest={(event, value, item) => {
-			    		// 	console.log('GooglePlaceAutocomplete onNewRequest 2', event, value, item);
+
 
 			    		// 	// onNewRequest && onNewRequest(event, value, item);
 			    		// }}
 			    		// onChange={(value) => {
-			    		// 	console.log('onChange', value);
+
 			    		// }}
 			    		map={map}
 			    		maps={maps}

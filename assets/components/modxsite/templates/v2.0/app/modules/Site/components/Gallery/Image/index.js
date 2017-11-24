@@ -16,7 +16,7 @@ const defaultProps = {}
 const knightSource = {
   beginDrag(props) {
 
-		// console.log('GalleryImage beginDrag', props, this);
+
 
 		let {onStartDrag, image} = props;
 
@@ -30,7 +30,7 @@ const knightSource = {
 
   endDrag(props) {
 
-		// console.log('GalleryImage endDrag', props, this);
+
 
 		let {onEndDrag, image} = props;
 
@@ -45,7 +45,7 @@ const knightSource = {
 
 function collect(connect, monitor) {
 
-	// console.log('GalleryImage collect', connect, monitor);
+
 
   return {
     connectDragSource: connect.dragSource(),
@@ -74,7 +74,7 @@ class GalleryImage extends Component{
   componentDidUpdate(){
 
     if(this.props.debug){
-      console.log("GalleryImage componentDidUpdate", this);
+
     }
   }
 

@@ -49,7 +49,7 @@ import CompaniesList from './List';
 //   })
 //   .then(r => {
     
-//     // console.log("SiteContent resource result", r);
+
 //     return r;
 
 //   })
@@ -80,7 +80,7 @@ export default class CompaniesPage extends Page {
 
 	setPageTitle(title){
 
-		// console.log("setPageTitle", title);
+
 
 		const {
 			params,
@@ -112,7 +112,7 @@ export default class CompaniesPage extends Page {
 
 	// 	// 	let outputState = CompaniesStore.getState();
 
-	// 	// 	// console.log('outputState', outputState.toArray());
+
 			
 	// 	// 	if(companyId && pathname && outputState){
 
@@ -131,7 +131,7 @@ export default class CompaniesPage extends Page {
 				
 	// 	// 	this.state.inputState = document.inputState;
 
-	// 	// 	// console.log('document.inputState', document.inputState);
+
 
 	// 	// }
 
@@ -145,7 +145,7 @@ export default class CompaniesPage extends Page {
 	// 	} = document;
 
 
-	// 	// console.log('CompanyPage resourceState', resourceState);
+
 
 	// 	if(resourceState){
 
@@ -174,7 +174,7 @@ export default class CompaniesPage extends Page {
 
   componentDidUpdate(prevProps, prevState, prevContext){
 
-    // console.log("CompaniesPage componentDidUpdate");
+
 
     const {
       coords,
@@ -188,7 +188,7 @@ export default class CompaniesPage extends Page {
       (coords || prevCoords)
       && JSON.stringify(coords || "") != JSON.stringify(prevCoords || "")
     ){
-      // console.log("componentDidUpdate loadData coords", coords);
+
       this.loadData();
     }
 
@@ -235,7 +235,7 @@ export default class CompaniesPage extends Page {
         resources: cities,
       } = r.data;
 
-      // console.log("MainMenuData resourcesCenter cities", coords, cities);
+
 
       this.setState({
         cities,
@@ -256,7 +256,7 @@ export default class CompaniesPage extends Page {
 			...debugOptions
 		} = options;
 
-		// console.log("CompaniesPage loadServerData options", debugOptions);
+
 
 		const {
 			coords,
@@ -279,7 +279,7 @@ export default class CompaniesPage extends Page {
 	  })
 	  .then(r => {
 	    
-	    // console.log("SiteContent resource result", r);
+
 
 	    return r;
 
@@ -331,7 +331,7 @@ export default class CompaniesPage extends Page {
 	// 		remoteQuery,
 	// 	} = this.context;
 
-	// 	console.log("CompaniesPage loadData 2");
+
 
 	// 	const page = this.getPage();
 
@@ -339,7 +339,7 @@ export default class CompaniesPage extends Page {
 	// 		page,
 	// 	});
 
-	// 	console.log("CompaniesPage loadData result", result);
+
 
 	// 	if(result){
 
@@ -427,7 +427,7 @@ export default class CompaniesPage extends Page {
 
 		}
 
-		// console.log('CompaniesPage 2 item', item, companyId);
+
 
 		return super.render(<div
 			style={{

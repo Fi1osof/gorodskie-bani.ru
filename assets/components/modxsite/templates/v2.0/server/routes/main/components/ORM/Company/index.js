@@ -87,7 +87,7 @@ let contentCache = {};
 
 // export const updateQuery = function(knex, args, context){
 
-//   console.log('updateQuery(knex, args, context)', knex, args, context);
+
 
 //   const {
 //     db,
@@ -118,7 +118,7 @@ let contentCache = {};
 //     });    
 //   }
 
-//   console.log('updateQuery toSQL', q.toString());
+
 
 //   return q;
 // }
@@ -151,8 +151,8 @@ export class SchemaType extends ObjectType{
   getCollection(object, args, context){
 
     
-    // console.log('CompanyType getCollection', object, args, context);
-    // console.log('CompanyType getCollection this', this);
+
+
 
     return [{
       id: 234,
@@ -238,7 +238,7 @@ export class SchemaType extends ObjectType{
         q.limit(limit);
       }
 
-    // console.log("Contacts query toString()", q.toString());
+
       
 
     return q; 
@@ -248,7 +248,7 @@ export class SchemaType extends ObjectType{
 // export default class Company extends ModelObject{
 
 //   fieldResolver(source, args, context, info){
-//     console.log('Company fieldResolver', source, args, context, info);
+
     
 
 //     const {
@@ -373,16 +373,16 @@ export const getList = (object, args, context, info) => {
     SendMODXRequest,
   } = context;
 
-  // console.log("Companies getList args", args);
-  // console.log("Companies getList req", req);
-  // console.log("Companies getList context", context);
+
+
+
 
 
   let {
     variableValues
   } = info;
 
-  // console.log("Companies getList variableValues", variableValues);
+
 
   return new Promise((resolve, reject) => {
     // Эта функция будет вызвана автоматически
@@ -426,8 +426,8 @@ export const getList = (object, args, context, info) => {
     params = Object.assign({...other}, params);
 
 
-    console.log('Companies getList args', args);
-    console.log('Companies getList params', params);
+
+
 
     let request = SendMODXRequest(action, params); 
 
@@ -435,7 +435,7 @@ export const getList = (object, args, context, info) => {
     request
     .then((data) => {
     
-      // console.log("Company result", data);
+
 
       if(!data.success){
 
@@ -553,13 +553,13 @@ export const getList = (object, args, context, info) => {
                   try{
       
 
-                    // console.log("Companies serverDOMBuilder", contentCache ? contentCache.length : null);
 
-                    // console.log('serverDOMBuilder', serverDOMBuilder);
+
+
 
                     const blocks = convertFromHTML(prices || "", serverDOMBuilder);
 
-                    // console.log('blocks', blocks);
+
 
                     if(blocks){
 
@@ -591,7 +591,7 @@ export const getList = (object, args, context, info) => {
 
 
               // if(prices_content){
-              //   console.log("prices_content", prices_content);
+
               // }
 
               Object.assign(object, {
@@ -604,7 +604,7 @@ export const getList = (object, args, context, info) => {
 
             object.tvs = tvs;
 
-            // console.log("object.tvs", object.tvs);
+
 
             let {
               coords,

@@ -66,7 +66,7 @@ export default class ModelObject{
 
   reloadStores(stores){
 
-    // console.log('this.getApp()', this,  this.getApp()); 
+ 
 
     stores && stores.map(store => {
 
@@ -106,7 +106,7 @@ export default class ModelObject{
 
     //   case 'image': 
           
-    //     console.log('Company imageType image', source, value, this);
+
 
     //     // value = value && value.image && value.image.original || null;
     //     value = value && value.original || null;
@@ -130,7 +130,7 @@ export default class ModelObject{
 
           this._loaded = true;
 
-          // console.log('getFullData', result);
+
           resolve(result);
         });
 
@@ -152,13 +152,13 @@ export default class ModelObject{
       variables,
     });
 
-    // console.log('remoteQuery', params);
+
 
     return new Promise((resolve, reject) => {
 
       _app.remoteQuery(params)
         .then(result => {
-          // console.log('remoteQuery result 3', result);
+
 
           if(result && result.data){
 

@@ -17,7 +17,7 @@ const imageTarget = {
 	*/
   canDrop(props) {
 
-  	// console.log('imageTarget canDrop', props);
+
 
   	let {image} = props;
 
@@ -29,7 +29,7 @@ const imageTarget = {
   },
 
   hover(props, monitor, component){
-  	// console.log('imageTarget hover', props, monitor, component);
+
 
   	let {image, onDdHover} = props;
 
@@ -38,14 +38,14 @@ const imageTarget = {
 
   drop(props) {
 
-  	// console.log('imageTarget drop', props);
+
     // moveKnight(props.x, props.y);
   }
 };
 
 function collect(connect, monitor) {
   
-  // console.log('imageTarget collect', connect, monitor);
+
 
   return {
     connectDropTarget: connect.dropTarget(),
@@ -74,7 +74,7 @@ class ImageWrapper extends Component{
   componentDidUpdate(){
 
     if(this.props.debug){
-      console.log("ImageWrapper componentDidUpdate", this);
+
     }
   }
 

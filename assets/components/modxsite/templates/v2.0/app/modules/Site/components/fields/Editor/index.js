@@ -29,7 +29,7 @@ import customPropTypes from 'material-ui/utils/customPropTypes';
 // import {stateToHTML} from 'draft-js-export-html';
 
 
-// console.log("FormControl", FormControl);
+
 
 export type Props = {
   /**
@@ -220,8 +220,8 @@ export class TextField extends Component {
 
 	render(){
 
-		// console.log('FormControl', styleSheet);
-		// console.log('FormControl classes', classes);
+
+
 
 	  const {
 	    autoComplete,
@@ -355,7 +355,7 @@ export default TextField;
 
 // import TextField from 'material-ui/TextField';
 
-// console.log("TextField", TextField, Editor);
+
 
 // const date = moment(new Date().getTime() + (24*60*60*7*1000)).format("DD-MM-YYYY");
 
@@ -408,11 +408,11 @@ export default TextField;
 // 			editorState,
 // 		} = this.state;
 
-// 		// console.log('editorState', editorState);
+
 
 // 		const html = editorState && stateToHTML(editorState.getCurrentContent());
 
-// 		// console.log('html', html);
+
 
 // 		return <Card>
 			

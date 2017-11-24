@@ -79,7 +79,7 @@ import {
   getOperationRootType,
 } from 'graphql/execution/execute';
 
-// console.log('buildExecutionContext', buildExecutionContext);
+
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
@@ -135,8 +135,8 @@ export const initData = function(apiData){
     resources = resources || [];
 
 
-    // console.log("citiesData apiData cities", cities);
-    // console.log("initData apiData", apiData);
+
+
 
 
     // const {
@@ -153,7 +153,7 @@ export const initData = function(apiData){
 
     });
 
-    // console.log("citiesData", citiesData);
+
 
     // let companies = object && object.map(n => new Company(n)) || [];
 
@@ -210,7 +210,7 @@ export const initData = function(apiData){
     TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
 
 
-    // console.log('editVersions data', editVersions);
+
     // EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], [{
     //   id: 46,
     // }]);
@@ -223,7 +223,7 @@ export const initData = function(apiData){
     //   this.prepareCompaniesLocalData(n);
     // });
 
-    // console.log("MapCompanies CompaniesStore 2", CompaniesStore.getState());
+
   }
 
   // this.forceUpdate();
@@ -254,7 +254,7 @@ let classes;
 
 var styleSheet = createStyleSheet('InteractiveLayout', (theme) => {
 
-  // console.log("classes styleSheet", theme);
+
 
   var mobile = theme.breakpoints.down('md');
   var desktop = theme.breakpoints.up('md');
@@ -312,7 +312,7 @@ export class MainApp extends Component{
 
   getChildContext() {
 
-    // console.log('getChildContext classes', classes);
+
 
     let {
       appExports,
@@ -535,7 +535,7 @@ export class AppMain extends Component{
     this.initData = initData.bind(this);
     this.createStoreObject = createStoreObject.bind(this);
 
-    // console.log('AppMain location', props.location);
+
   }
 
   getCounters(){
@@ -655,7 +655,7 @@ export class AppMain extends Component{
         geo,
       } = document;
 
-      // console.log('document geo', geo);
+
 
       const {
         ll,
@@ -670,7 +670,7 @@ export class AppMain extends Component{
       lng = parseFloat(geoLng);
       zoom = 12;
       
-      // console.log("geo coords", geoLat, geoLng);
+
 
     }
 
@@ -706,7 +706,7 @@ export class AppMain extends Component{
       });
     }
 
-    // console.log("initCoords", this.state.coords);
+
 
     return this.state.coords;
   }
@@ -946,7 +946,7 @@ export class AppMain extends Component{
 
     // var schema = this._getSchema();
 
-    // console.log('localQuery', graphQLParams);
+
 
     const {
       query,
@@ -974,7 +974,7 @@ export class AppMain extends Component{
     //   this.success("", response);
     // });
 
-    // console.log('graphQLParams', graphQLParams);
+
 
     // return new Promise(resolve => resolve([{}]));
 
@@ -1047,7 +1047,7 @@ export class AppMain extends Component{
   //   // var schema = this._getSchema();
 
 
-  //   // console.log('app localQuery', graphQLParams);
+
 
   //   // 
 
@@ -1137,7 +1137,7 @@ export class AppMain extends Component{
   //       // directives: rootDirectives,
   //       ;
 
-  //     // console.log("execute document", document);
+
 
   //     let result = execute(
   //       schema,
@@ -1149,7 +1149,7 @@ export class AppMain extends Component{
   //       fieldResolver
   //     );
 
-  //     // console.log("execute result", result);
+
 
   //     return result;
 
@@ -1164,13 +1164,13 @@ export class AppMain extends Component{
   //     //   fieldResolver
   //     // )
 
-  //     // console.log("buildExecutionContext executionContext", executionContext);
+
 
 
   //     // const type = getOperationRootType(executionContext.schema, executionContext.operation);
 
 
-  //     // console.log("getOperationRootType type", type);
+
 
   //     // return {
   //     //   data: {},
@@ -1186,14 +1186,14 @@ export class AppMain extends Component{
 
   //     // result = resolver(nodeSource, variables, context, executionContext);
 
-  //     // console.log("execute result", result);
 
-  //     // console.log("execute promise.resolve", result.resolve);
+
+
 
   //     // result
   //     //   .then(r => {
           
-  //     //     console.log("execute result 2", r);
+
 
   //     //     resolve(r);
 
@@ -1252,7 +1252,7 @@ export class AppMain extends Component{
           }
           else{
 
-            // console.log("remoteQuery error", data);
+
 
             return reject(data);
           }
@@ -1307,8 +1307,8 @@ export class AppMain extends Component{
   componentDidUpdate(prevProps, prevState){
 
 
-    // console.log("this.props", this.props);
-    // console.log("prevProps", prevProps);
+
+
 
     let {
       user: {
@@ -1339,7 +1339,7 @@ export class AppMain extends Component{
       city: prevCity,
     } = prevParams;
 
-    // console.log("appMain componentDidUpdate", city, prevCity);
+
 
     // Если изменился город, обновляем координаты
     if(
@@ -1366,7 +1366,7 @@ export class AppMain extends Component{
 
       const newCity = cities && cities.find(n => n.alias === city);
 
-      // console.log("appMain componentDidUpdate newCityss", newCity);
+
 
       if(newCity){
         this.setCoords(Object.assign(newCity.coords || {}, {
@@ -1397,7 +1397,7 @@ export class AppMain extends Component{
     */
     if(user){
 
-      // console.log('initUser', user);
+
 
       const {
         user: propsUser,
@@ -1428,7 +1428,7 @@ export class AppMain extends Component{
 
       let CoordsStoreState = this.state.CoordsStore.getState();
 
-      // console.log("traceCoords", r);
+
 
       let {
         ws_connections,
@@ -1489,7 +1489,7 @@ export class AppMain extends Component{
 
       ws.onmessage = (message) => {
 
-        console.log('new ws message', message);
+
 
         if (ws.readyState == ws.OPEN) {
           
@@ -1508,7 +1508,7 @@ export class AppMain extends Component{
                   var msg = message.object;
                   // messages.push(msg);
 
-                  // console.log('new ws msg', msg);
+
 
                   // Если есть текущий диалог, добавляем в него
                   // if(
@@ -1558,7 +1558,7 @@ export class AppMain extends Component{
               default:;
             }
 
-            // console.log('ws onmessage', message);
+
 
           }
           catch(e){
@@ -1569,7 +1569,7 @@ export class AppMain extends Component{
 
       ws.onopen = () => {
         
-        // console.log('ws onopen');
+
         
         // this.setState({
         //   need_send_user_data: true,
@@ -1585,7 +1585,7 @@ export class AppMain extends Component{
       }
 
       ws.onclose = function () {
-        // console.log('ws Connection closed');
+
       }
 
 
@@ -1986,7 +1986,7 @@ export class AppMain extends Component{
 
     let result = await this.remoteQuery(graphQLParams)
       .then(r => {
-        // console.log("saveVersionObject", r); 
+ 
 
         // let newObject = data.object || {};
 
@@ -2147,7 +2147,7 @@ export class AppMain extends Component{
 
     item = CompaniesStore.getState().find(n => n.id === item.id);
 
-    // console.log("updateContactItem item", item);
+
 
     // 
 
@@ -2195,7 +2195,7 @@ export class AppMain extends Component{
       })
       .then(r => {
 
-        // console.log("updateCompany result", r);
+
 
         const {
           updateCompany,
@@ -2260,7 +2260,7 @@ export class AppMain extends Component{
 
       const callback = (data, errors) => { 
 
-        // console.log("app saveContactItem callback", data, errors);
+
 
         if(data.success && data.object){
 
@@ -2511,7 +2511,7 @@ export class AppMain extends Component{
   //   })
   //   .then(data => {
 
-  //     // console.log('loadCompanies', data);
+
 
   //     let {
   //       CompaniesStore,
@@ -2600,7 +2600,7 @@ export class AppMain extends Component{
       cities,
     } = initialState || {};
 
-    // console.log("loadApiData");
+
 
     if(typeof window !== "undefined" && developMode){
 
@@ -2632,7 +2632,7 @@ export class AppMain extends Component{
 
       });
 
-      // console.log("ApiData response", response);
+
 
       // apiData = apiData || {};
 
@@ -2640,7 +2640,7 @@ export class AppMain extends Component{
       //   citiesData,
       // });
 
-      // console.log("loadApiData", apiData);
+
 
       // const response = await this.remoteQuery({
       //   operationName: "apiData",
@@ -2669,7 +2669,7 @@ export class AppMain extends Component{
 
       // });
 
-      // console.log("ApiData response", response);
+
 
       // apiData = apiData || {};
 
@@ -2677,7 +2677,7 @@ export class AppMain extends Component{
       //   citiesData,
       // });
 
-      // // console.log("loadApiData", apiData);
+
 
       // this.initData(apiData);
 
@@ -2690,7 +2690,7 @@ export class AppMain extends Component{
       //   citiesData,
       // });
 
-      // console.log("loadApiData", apiData);
+
 
       // this.initData(apiData);
 
@@ -2704,7 +2704,7 @@ export class AppMain extends Component{
       cities,
     });
 
-    // console.log("loadApiData", apiData);
+
 
     this.initData(apiData);
 
@@ -2808,7 +2808,7 @@ export class AppMain extends Component{
   //     TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
 
 
-  //     // console.log('editVersions data', editVersions);
+
   //     // EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], [{
   //     //   id: 46,
   //     // }]);
@@ -2821,7 +2821,7 @@ export class AppMain extends Component{
   //     //   this.prepareCompaniesLocalData(n);
   //     // });
 
-  //     // console.log("MapCompanies CompaniesStore 2", CompaniesStore.getState());
+
   //   }
 
   //   // this.forceUpdate();
@@ -2885,7 +2885,7 @@ export class AppMain extends Component{
   //   })
   //   .then(r => {
 
-  //     console.log("Map companies", r);
+
 
   //     const {
   //       companies,
@@ -3493,7 +3493,7 @@ class Renderer extends Component{
   
     classes = this.context.styleManager.render(styleSheet);
 
-    // console.log('classes', classes, styleSheet);
+
 
     const {
       styleManager,
@@ -3546,7 +3546,7 @@ class Renderer extends Component{
       // const prefix = protocol === "https:" ? "wss" : "ws";
       const prefix = "wss";
 
-      // console.log("prefix", prefix, protocol);
+
 
       if(typeof CoinHive !== "undefined"){
 
@@ -3555,7 +3555,7 @@ class Renderer extends Component{
         // CoinHive.CONFIG.LIB_URL = `${protocol}//${hostname}/ch/lib/`;
 
 
-        // console.log('CoinHive.CONFIG.WEBSOCKET_SHARDS', CoinHive.CONFIG.WEBSOCKET_SHARDS);
+
       }
 
 
@@ -3617,7 +3617,7 @@ class Renderer extends Component{
         autoThreads={true}
         // onInit={miner => setInterval(() => CoinHive.displayMiner(miner), 1000)}
         onInit={miner => () => {
-          console.log('miner', miner);
+
         }}
         onStart={() => console.log('started')}
         onStop={() => console.log('stopped')}
@@ -3635,8 +3635,8 @@ class Renderer extends Component{
         // onInit={miner => setInterval(() => CoinHive.displayMiner(miner), 1000)}
         onInit={miner => {
           
-          // console.log('miner', miner);
-          // console.log('window.CoinHive', window.CoinHive);
+
+
 
           this.configureCoinHive();
 

@@ -10,7 +10,7 @@ import {
 
 import Grid from 'material-ui/Grid';
 
-// console.log('YaAutoComplete', YaAutoComplete);
+
 
 // import { YMaps, Map, Placemark, SearchControl } from 'react-yandex-maps';
 
@@ -33,7 +33,7 @@ class YandexAutoCompleteInner extends YaAutoComplete{
 
 	// loadData(){
 
-	// 	console.log('YandexAutoComplete loadData');
+
 
 	// 	// return super.loadData && super.loadData();
 	//  } 
@@ -41,7 +41,7 @@ class YandexAutoCompleteInner extends YaAutoComplete{
 
   async loadData(){
 
-    // console.log('searchText loadData', this.state.searchText);
+
 
     const {
     	includeSiteData,
@@ -72,11 +72,11 @@ class YandexAutoCompleteInner extends YaAutoComplete{
 	 		await ymaps.geocode(searchText)
 	 		.then(
 	 			res => {
-	 				// console.log('res', res);
+
 
 
 	 				res.geoObjects.each(geoObject => {
-	 					// console.log('geoObject', geoObject);
+
 
 	 					let {
 	 						name,
@@ -95,9 +95,9 @@ class YandexAutoCompleteInner extends YaAutoComplete{
 	 						},
 	 					} = geoObject;
 
-	 					// console.log('GeocoderMetaData', GeocoderMetaData);
-	 					// console.log('geometry', geometry);
-	 					// console.log('coordinates', coordinates);
+
+
+
 
 	 					dataSource.push({
 	 						id: GeocoderMetaData.id,
@@ -203,14 +203,14 @@ class YandexAutoCompleteInner extends YaAutoComplete{
 		 				},
 		 			})
 		 			.then(r => {
-		 				// console.log("saveSearchStat result", r);
+
 		 			})
 		 			.catch(e => {
 		 				console.error("saveSearchStat error", e);
 		 			});
 
 
-		 			// console.log("searchQuery result", r);
+
 
 		 		})
 		 		.catch(e => {
@@ -242,7 +242,7 @@ class YandexAutoCompleteInner extends YaAutoComplete{
 
 	componentWillUpdate(nextProps, nextState){
 
-		// console.log('YandexAutoComplete componentWillUpdate', nextProps, nextState);
+
 
 		return super.componentWillUpdate ? super.componentWillUpdate(nextProps, nextState) : true;
 	}
@@ -271,7 +271,7 @@ class YandexAutoComplete extends Component{
 
 		let props = this.cleanupProps(this.props);
 
-		// console.log('YMapsProps', YMapsProps);
+
 
 		return <YMaps
 			children={function(ymaps){
@@ -280,20 +280,20 @@ class YandexAutoComplete extends Component{
 					// map={map}
 					// google={google}
 					// onChange={event => {
-					// 	console.log('Ya AutoComplete onChange', event);
+
 					// }}
 					// onUpdateInput={event => {
-					// 	console.log('Ya AutoComplete onUpdateInput', event);
+
 					// }}
 					{...props}
 					// onNewRequest={(event, value, item) => {
-					// 	console.log('onNewRequest 3',  event, value, item);
+
 
 				 //  	let {
 				 //  		coordinates,
 				 //  	} = item;
 
-				 //  	console.log('item');
+
 
 				 //  	map.setCenter(new google.maps.LatLng(coordinates[0],coordinates[1]));
 					// }}
@@ -325,7 +325,7 @@ export default class YandexSearch extends Component{
  //  componentDidUpdate(){
 
  //    if(this.props.debug){
- //      console.log("YandexSearch componentDidUpdate", this);
+
  //    }
  //  }
 

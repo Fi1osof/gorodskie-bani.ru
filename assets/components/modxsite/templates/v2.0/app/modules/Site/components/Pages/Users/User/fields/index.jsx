@@ -56,7 +56,7 @@ export default class Field extends Component{
   }
 
   componentWillReceiveProps(nextProps){
-    // console.log('Field componentWillReceiveProps', nextProps, this.state);
+
 
     if(
       (nextProps.item_id != this.state.item_id)
@@ -76,7 +76,7 @@ export default class Field extends Component{
   }
 
   getValue(){
-    // console.log(getValue, this.editorState);
+
   }
 
   render(){

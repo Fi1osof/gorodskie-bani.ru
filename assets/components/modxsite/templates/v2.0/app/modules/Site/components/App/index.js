@@ -144,7 +144,13 @@ export const initData = function(apiData){
     // } = citiesData || {};
 
     cities && cities.map(n => {
-      resources.push(n);
+
+      if(resources.findIndex(i => i.id === n.id) === -1){
+
+        resources.push(n);
+
+      }
+
     });
 
     // console.log("citiesData", citiesData);

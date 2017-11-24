@@ -140,9 +140,9 @@ export default class PageGraphiQL extends Page{
 
     // remoteQuery();
 
-    this.graphQLFetcher({
-      operationName: "apiData",
-    });
+    // this.graphQLFetcher({
+    //   operationName: "apiData",
+    // });
 
     super.componentDidMount && super.componentDidMount();
   }
@@ -192,6 +192,11 @@ export default class PageGraphiQL extends Page{
   //     schema: Query,
   //   });
   // }
+
+
+  reloadData(){
+    
+  }
 
   
   apiRequest(path, params, options){

@@ -243,7 +243,7 @@ export default class CitiesList extends Component{
 						label={name}
 						style={{
 							// padding: 0,
-							height: 20,
+							height: 24,
 							marginRight: 5,
 							marginBottom: 5,
 						}}
@@ -267,12 +267,19 @@ export default class CitiesList extends Component{
 				{!open 
 					?
 					<span>
-						Данные показаны относительно города {currentCity.name}. <a 
-							href="javascript:;" 
-							onClick={() => this.setState({open: !open})}
+						Данные показаны относительно города {currentCity.name}. <Link
+							to={`/city/${coordsUrl}`} 
+							href={`/city/${coordsUrl}`} 
+							onClick={(event) => {
+
+								event.preventDefault();
+								event.stopPropagation();
+
+								this.setState({open: !open});
+							}}
 						>
 							Изменить
-						</a> или <Link
+						</Link> или <Link
 							to={base_url}
 							href={base_url}
 						>Смотреть на карте</Link>

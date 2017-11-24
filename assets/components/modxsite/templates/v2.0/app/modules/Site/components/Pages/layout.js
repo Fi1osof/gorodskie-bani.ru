@@ -295,21 +295,21 @@ export default class Page extends Component{
 
   onInit(){
 
-  	this.loadData();
+  	this.reloadData();
 
   }
 
 
   onPageChange(){
 
-  	this.loadData();
+  	this.reloadData();
     	
   }
 
 
   onStoreUpdated(store, payload){
 
-  	this.loadData();
+  	this.reloadData();
 
   }
 
@@ -388,6 +388,13 @@ export default class Page extends Component{
 	}
 
 
+	reloadData(options = {}){
+
+		return this.loadData(options);
+
+	}
+
+
 	async loadServerData(provider, options = {}){
 
 		// Для всех страниц по умолчанию
@@ -399,6 +406,8 @@ export default class Page extends Component{
 
 
 	initState(newState, willMount){
+
+		newState = newState || {};
 
 		if(willMount){
 

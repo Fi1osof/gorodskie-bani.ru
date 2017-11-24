@@ -26,6 +26,13 @@ let routes = {
   },
   childRoutes: [
     {
+      path: "/city",
+      component: CitiesPage,
+      childRoutes: [{
+        path: "/city/@:lat,:lng,:zoom",
+      },],
+    },
+    {
       path: "/",
       component: MainPage,
       childRoutes: [{
@@ -41,10 +48,6 @@ let routes = {
     {
       path: "/db",
       component: DbPage,
-    },
-    {
-      path: "/city",
-      component: CitiesPage,
     },
     {
       path: "/bani-otzivy",

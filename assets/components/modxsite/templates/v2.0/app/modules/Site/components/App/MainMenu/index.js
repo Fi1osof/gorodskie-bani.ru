@@ -242,6 +242,8 @@ export default class MainMenu extends Component{
 
     let base_url = "/";
 
+    let coordsUrl = '';
+
     let importantPage;
 
     // const importantArticleReaded = cookies.get("importantArticleReaded", "1");
@@ -258,7 +260,8 @@ export default class MainMenu extends Component{
 
       if(lat && lng && zoom){
 
-        base_url += "@" + [lat, lng, zoom].join(",");
+        coordsUrl += "@" + [lat, lng, zoom].join(",");
+        base_url += coordsUrl;
 
       }
 
@@ -410,8 +413,8 @@ export default class MainMenu extends Component{
 
               {mainCity && citiesList && citiesList.length && <li>
                 <a 
-                  href="/" 
-                  title="Все бани на карте" 
+                  href={`/city/${coordsUrl}`}
+                  title="Бани в городах" 
                   className="dropdown-toggle" 
                   data-toggle="dropdown"
                 >{mainCity.name} <i className="fa fa-angle-down"></i></a>

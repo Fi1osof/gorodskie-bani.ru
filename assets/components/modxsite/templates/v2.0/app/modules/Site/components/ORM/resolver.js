@@ -589,7 +589,7 @@ const getObject = (ofType, source, args, context, info) => {
         state
         .then(r => {
 
-          console.log('getObject state result', args, r);
+          // console.log('getObject state result', args, r);
 
           resolve(processObjectState(r, args));
 

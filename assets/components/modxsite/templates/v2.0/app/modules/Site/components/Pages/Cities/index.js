@@ -56,19 +56,35 @@ export default class CitiesPage extends Page {
 
 	// }
 
-	loadData(options = {}){
+	// loadData(options = {}){
 
-		const {
-			localQuery,
-		} = this.context;
+	// 	const {
+	// 		localQuery,
+	// 	} = this.context;
 
-		Object.assign(options, {
-			provider: localQuery,
+	// 	Object.assign(options, {
+	// 		provider: localQuery,
+	// 	});
+
+
+
+	loadData(){
+
+    const {
+      coords,
+    } = this.context;
+
+		const page = this.getPage();
+
+		super.loadData({
+			// page,
+			coords,
 		});
 
-
-		return super.loadData(options);
 	}
+
+	// 	return super.loadData(options);
+	// }
 	
 	async loadServerData(provider, options = {}){
 
@@ -94,12 +110,12 @@ export default class CitiesPage extends Page {
 	    variables: {
 	      limit: 0,
 	      withPagination: withPagination,
-	      companiesCenter: coords,
+	      resourcesCenter: coords,
 	    },
 	  })
 	  .then(r => {
 	    
-	    console.log("Cities resource result", r);
+	    // console.log("Cities resource result", r);
 
 	    return r;
 
@@ -178,7 +194,40 @@ export default class CitiesPage extends Page {
 			resources: cities,
 		} = this.state;
 
-		console.log('CitiesPage cities', cities);
+		// console.log('CitiesPage cities', cities);
+
+		let citiesList = cities && cities.map(city => {
+
+			const {
+				id,
+				name,
+				longtitle,
+				uri,
+				coords,
+			} = city;
+
+			let title = longtitle || name;
+
+			const link = `/${uri}`;
+
+			return <Grid
+				item
+				xs={12}
+				sm={6}
+				md={4}
+				lg={3}
+				xl={2}
+			>
+				<Link
+					to={link}
+					href={link}
+					title={title}
+				>
+					{title}
+				</Link>
+			</Grid>
+
+		});
 
 		return super.render(<div
 			style={{
@@ -188,7 +237,11 @@ export default class CitiesPage extends Page {
 			}}
 		>
 
-			Companies
+			<Grid
+				container
+			>
+				{citiesList}
+			</Grid>
 
 		</div>);
 	}

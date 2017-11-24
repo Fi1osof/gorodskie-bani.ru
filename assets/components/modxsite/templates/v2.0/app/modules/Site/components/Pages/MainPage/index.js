@@ -81,7 +81,7 @@ export default class MainPage extends Page{
 
 		// Получаем список компаний
 	  const result = await provider({
-	    operationName: "MapCompanies",
+	    operationName: "MapData",
 	    variables: {
 	      limit: limit,
 	      // withPagination: withPagination,

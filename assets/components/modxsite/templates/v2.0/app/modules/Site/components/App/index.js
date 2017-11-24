@@ -136,7 +136,7 @@ export const initData = function(apiData){
 
 
     // console.log("citiesData apiData cities", cities);
-    // console.log("citiesData apiData", apiData);
+    // console.log("initData apiData", apiData);
 
 
     // const {
@@ -355,6 +355,7 @@ export class AppMain extends Component{
 
   static childContextTypes = {
     inited: PropTypes.bool,
+    initData: PropTypes.func,
     classes: PropTypes.object,
     params: PropTypes.object,
     connector_url: PropTypes.string,
@@ -435,6 +436,7 @@ export class AppMain extends Component{
       location,
       connector_url,
       params,
+      initData: this.initData,
       request: this.request,
       apiRequest: this.apiRequest,
       wsRequest: this.wsRequest,

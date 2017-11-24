@@ -104,6 +104,7 @@ export default class PageGraphiQL extends Component{
     loadItems: PropTypes.func,
     apiRequest: PropTypes.func.isRequired,
     localQuery: PropTypes.func.isRequired,
+    initData: PropTypes.func.isRequired,
     // orm: PropTypes.object.isRequired,
     schema: PropTypes.object.isRequired,
     // db: PropTypes.object.isRequired,
@@ -222,7 +223,7 @@ export default class PageGraphiQL extends Component{
     return fetcher.call(this, graphQLParams, a,b,c);
   }
 
-  graphQLFetcher(graphQLParams) {
+  async graphQLFetcher(graphQLParams) {
  
     
 
@@ -242,12 +243,14 @@ export default class PageGraphiQL extends Component{
     //   // body.append(i, value);
     // };
 
+    // console.log('graphQLParams', graphQLParams);
+
     const {
       query,
       ...other
     } = graphQLParams;
 
-    return fetch('/api/?pub_action=graphql', {
+    let result = fetch('/api/?pub_action=graphql', {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
@@ -257,7 +260,39 @@ export default class PageGraphiQL extends Component{
       body: JSON.stringify({...other}),
       // body: JSON.stringify(body),
       // body: body,
-    }).then(response => response.json());
+    })
+    .then(
+      response => response.json()
+    ).
+    then(r => {
+      // console.log("graphQLFetcher", r);
+
+      const {
+        operationName,
+      } = other;
+
+      switch(operationName){
+
+        case 'apiData':
+
+          const {
+            initData,
+          } = this.context;
+
+          initData(r && r.object);
+
+          break;
+
+      }
+
+      return r;
+    })
+    .catch(e => {
+      throw(e);
+    });
+
+    return result;
+
   }
 
   graphQLFetcherLocal(graphQLParams) {

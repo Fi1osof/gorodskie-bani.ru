@@ -502,6 +502,64 @@ query Comments(
   }
 }
 
+# Список компаний для карты.Частичные данные
+query MapData (
+  $limit:Int!
+  $page:Int
+  $companyIds:[Int]
+  $withPagination:Boolean = false
+  $companiesCoords:SearchCoordsType
+  $companiesCenter:InputCoordsType
+){
+  companiesList(
+    page:$page
+    limit:$limit
+    ids:$companyIds
+    coords:$companiesCoords
+    center:$companiesCenter
+  )
+  @include(if:$withPagination)
+  {
+    count
+    total
+    limit
+    page
+    object{
+      ...MapCompany
+    }
+  }
+  companies(
+    page:$page
+    limit:$limit
+    ids:$companyIds
+    coords:$companiesCoords
+    center:$companiesCenter
+  )
+  @skip(if:$withPagination)
+  {
+    ...MapCompany
+  }
+}
+
+fragment MapCompany on Company{
+  id
+  name
+  uri
+  coords {
+    lat
+    lng
+    zoom
+  }
+  image
+  imageFormats{
+    marker_thumb
+  }
+  mapIcon
+  ratingAvg {
+    rating
+  }
+}
+
 # Список компаний для карты
 query MapCompanies (
   $limit:Int!
@@ -817,23 +875,65 @@ query Resources(
 query Cities(
   $resourcesLimit:Int = 0
   $withPagination:Boolean = false
-  $getTVs:Boolean = true
   $resourceTemplate:Int
   $resourceExcludeTemplates:[Int]
   $resourceType:ResourceTypeEnum
-  $getImageFormats:Boolean = true
-  $resourceGetAuthor:Boolean = false
-  $resourceGetComments:Boolean = false
-  $getCommentAuthor:Boolean = false
-  $userGetComments:Boolean = false
   $resourceParent:Int = 1296
   $resourceUri:String
-  $resourceGetContent:Boolean = true
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
 ){
   
-  ...ResourcesList
+  ...CitiesList
+}
+
+fragment CitiesList on RootType{
+  resourcesList(
+    limit:$resourcesLimit
+    template:$resourceTemplate
+    excludeTemplates:$resourceExcludeTemplates
+    resourceType:$resourceType
+    parent:$resourceParent
+    uri:$resourceUri
+    coords:$resourcesCoords
+    center:$resourcesCenter
+  )@include(if:$withPagination)
+  {
+    count
+    total
+    object{
+      ...City
+    }
+  }
+  resources(
+    limit:$resourcesLimit
+    template:$resourceTemplate
+    excludeTemplates:$resourceExcludeTemplates
+    resourceType:$resourceType
+    parent:$resourceParent
+    uri:$resourceUri
+    coords:$resourcesCoords
+    center:$resourcesCenter
+  )@skip(if:$withPagination)
+  {
+    ...City
+  }
+}
+
+fragment City on ResourceType{
+  id
+  name
+  uri
+  coords {
+    lat
+    lng
+    zoom
+  }
+  image
+  imageFormats{
+    marker_thumb
+  }
+  parent
 }
 
 # Типы рейтингов

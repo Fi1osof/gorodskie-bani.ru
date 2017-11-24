@@ -987,9 +987,12 @@ export default class Router {
         // console.log('appExports.outputState', appExports.outputState);
 
 
-        let style = '<style>';
+        // let style = '<style>';
+        // style += stylesGenerated;
+        // style += '</style>';
+
+        let style = '';
         style += stylesGenerated;
-        style += '</style>';
 
         // const stylesGenerated = exports.theme.sheetsToString();
 
@@ -1057,6 +1060,11 @@ export default class Router {
 
       if(css_match){
         css_src = css_match[1];
+
+        style = `
+          @import url('${css_src}');
+          ${style}
+        `;
 
         // console.log('css_src', css_src);
 
@@ -1191,7 +1199,7 @@ export default class Router {
           <noscript><div><img src="https://mc.yandex.ru/watch/26848689" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
           <!-- /Yandex.Metrika counter -->
         
-          ${style || ""}
+          ${style && `<style>${style}</style>` || ""}
           
           ${css_src ? `<link rel="stylesheet" href="${css_src}">` : ""}
 

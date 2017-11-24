@@ -88,48 +88,27 @@ export default class Router {
     this.response = new Response(this, null, null, knex, config, this.clients, this.SendMessage, ::this.SendMODXRequest);
 
 
-    this.response.remoteQuery({
-      operationName: "Redirects",
-      variables: {
-        redirectsLimit: 0,
-      },
-    })
-    .then(r => {
+    // this.response.localQuery({
+    //   operationName: "Resources",
+    //   variables: {
+    //     resourceExcludeTemplates: 0,
+    //   },
+    //   req: {},
+    // })
+    // .then(r => {
 
-      // console.log('Redirects result', r);
+    //   // console.log('resources result', r);
 
-      const {
-        redirects,
-      } = r.data;
+    //   const {
+    //     resources,
+    //   } = r.data;
 
-      this.redirects = redirects;
+    //   this.resources = resources;
 
-    })
-    .catch(e => {
-      console.error(e);
-    });
-
-    this.response.localQuery({
-      operationName: "Resources",
-      variables: {
-        resourceExcludeTemplates: 0,
-      },
-      req: {},
-    })
-    .then(r => {
-
-      // console.log('resources result', r);
-
-      const {
-        resources,
-      } = r.data;
-
-      this.resources = resources;
-
-    })
-    .catch(e => {
-      console.error(e);
-    });
+    // })
+    // .catch(e => {
+    //   console.error(e);
+    // });
 
 
     this.router = this.createRouter(options);
@@ -151,6 +130,8 @@ export default class Router {
     // this.loadMapData();
 
     this.loadCitiesData();
+
+    this.loadRedirects();
 
     return true;
   }
@@ -183,35 +164,6 @@ export default class Router {
   }
 
 
-  // loadMapData(){
-
-  //   // Подгружаем данные без рейтингов, так как они все равно не точные
-  //   // (да и нагрузка на сервер лишняя)
-  //   this.response.localQuery({
-  //     operationName: "MapCompanies",
-  //     variables: {
-  //       limit: 0,
-  //       getCompanyGallery: false,
-  //       // getImageFormats: true,
-  //       getTVs: false,
-  //       // getRatingsAvg: false,
-  //     },
-  //     req: {},
-  //   })
-  //   .then(r => {
-
-  //     // console.log('mapData result', r);
-
-  //     mapData = r.data;
-
-  //   })
-  //   .catch(e => {
-  //     console.error(e);
-  //   });
-
-  // }
-
-
   loadCitiesData(){
 
     // this.response.localQuery({
@@ -234,6 +186,33 @@ export default class Router {
     // .catch(e => {
     //   console.error(e);
     // });
+
+  }
+
+
+  loadRedirects(){
+
+
+    this.response.remoteQuery({
+      operationName: "Redirects",
+      variables: {
+        redirectsLimit: 0,
+      },
+    })
+    .then(r => {
+
+      // console.log('Redirects result', r);
+
+      const {
+        redirects,
+      } = r.data;
+
+      this.redirects = redirects;
+
+    })
+    .catch(e => {
+      console.error(e);
+    });
 
   }
 
@@ -756,25 +735,26 @@ export default class Router {
 
       const redurectUri = decodedURI.replace(/^\/+/, '');
 
-      const resource = this.resources && this.resources.find(n => n.uri === redurectUri);
+      // const resource = this.resources && this.resources.find(n => n.uri === redurectUri);
 
-      if(redurectUri && !resource){
+      // if(redurectUri && !resource){
 
-        const redirect = redirects && redirects.find(n => n.uri === redurectUri || `${n.uri}/` === redurectUri);
+      //   const redirect = redirects && redirects.find(n => n.uri === redurectUri || `${n.uri}/` === redurectUri);
 
-        if (redirect) { // Если необходимо сделать redirect
+      //   if (redirect) { // Если необходимо сделать redirect
 
-          const link = '/' + redirect.redirect_uri;
+      //     const link = '/' + redirect.redirect_uri;
 
-          if(decodedURI !== link){
+      //     if(decodedURI !== link){
 
-            return res.redirect(301, link);
+      //       return res.redirect(301, link);
             
-          }
+      //     }
 
-        }
+      //   }
         
-      }
+      // }
+
 
       if (redirectLocation) { // Если необходимо сделать redirect
         return res.redirect(301, redirectLocation.pathname + redirectLocation.search);
@@ -932,6 +912,30 @@ export default class Router {
           state: resourceState,
         } = siteContent || {};
 
+        
+        /*
+          Если статус 404, то смотрим редиректы
+        */
+        if(status === 404 && redurectUri){
+
+          const redirect = redirects && redirects.find(n => n.uri === redurectUri || `${n.uri}/` === redurectUri);
+
+          if (redirect) { // Если необходимо сделать redirect
+
+            const link = '/' + redirect.redirect_uri;
+
+            if(decodedURI !== link){
+
+              return res.redirect(301, link);
+              
+            }
+
+          }
+          
+        }
+
+
+
         let {
           coords,
         } = resourceState || {};
@@ -995,7 +999,8 @@ export default class Router {
           searchable = false;
         }
 
-        html = this.renderHTML(req, componentHTML, state, resource, style, searchable, appExports);
+        // html = this.renderHTML(req, componentHTML, state, resource, style, searchable, appExports);
+        html = this.renderHTML(req, componentHTML, state, style, searchable, appExports);
 
         if(status && status !== 200){
           res.status(status);
@@ -1016,7 +1021,8 @@ export default class Router {
   };
 
 
-  renderHTML(req, componentHTML, initialState, resource, style, searchable, appExports) {
+  // renderHTML(req, componentHTML, initialState, resource, style, searchable, appExports) {
+  renderHTML(req, componentHTML, initialState, style, searchable, appExports) {
 
     let assetsUrl;
 

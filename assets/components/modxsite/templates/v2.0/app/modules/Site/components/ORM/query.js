@@ -42,6 +42,7 @@ query apiData(
   $companyGetEditVersions:Boolean = false
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
+  $resourcesPage:Int
 ){
   companies(
     limit:$limit
@@ -406,6 +407,7 @@ query MainMenuData(
   $editVersionGetCompany:Boolean = false
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
+  $resourcesPage:Int
 ){
   ...RatingsList @include(if: $menuGetRatings)
   
@@ -773,6 +775,8 @@ query CompanyTopics(
   $userGetComments:Boolean = false
   $resourceTag:String
   $resourceGetContent:Boolean = true
+  $resourcesPage:Int
+  $resourceTemplate:Int
 ){
     ...Topics
 }
@@ -861,6 +865,7 @@ query Resources(
   $resourceGetContent:Boolean = true
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
+  $resourcesPage:Int
 ){
   
   ...ResourcesList
@@ -970,6 +975,7 @@ query RatingTypes(
   $resourceGetContent:Boolean = true
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
+  $resourcesPage:Int
 ){
   
   ...ResourcesList
@@ -1014,6 +1020,7 @@ query RatingsPageData(
   $editVersionGetCompany:Boolean = false
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
+  $resourcesPage:Int
 ){
   
   ...ResourcesList
@@ -1035,6 +1042,8 @@ query Topics(
   $userGetComments:Boolean = false
   $resourceTag:String
   $resourceGetContent:Boolean = true
+  $resourcesPage:Int
+  $resourceTemplate:Int
 ){
   
   ...Topics
@@ -1052,9 +1061,12 @@ query ObzoryZavedeniy(
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
   $resourceGetContent:Boolean = true
+  $resourceTag:String
+  $resourcesPage:Int
+  $resourceTemplate:Int = 28
 ){
   
-  ...Obzory
+  ...Topics
 }
 
 fragment Topics on RootType{
@@ -1063,6 +1075,7 @@ fragment Topics on RootType{
     resourceType:topic
     limit:$resourcesLimit
     parent:$resourceParent
+    template:$resourceTemplate
     tag:$resourceTag
     sort:[{
       by:id
@@ -1076,7 +1089,9 @@ fragment Topics on RootType{
     ids:$resourceIds
     resourceType:topic
     limit:$resourcesLimit
+    page:$resourcesPage
     parent:$resourceParent
+    template:$resourceTemplate
     tag:$resourceTag
     sort:[{
       by:id
@@ -1086,46 +1101,48 @@ fragment Topics on RootType{
   {
     count
     total
+    limit
+    page
     object{
       ...Topic
     }
   }
 }
 
-fragment Obzory on RootType{
-  topics:resources(
-    ids:$resourceIds
-    resourceType:obzor
-    limit:$resourcesLimit
-    parent:$resourceParent
-    template:28
-    sort:[{
-      by:id
-      dir:desc
-    }]
-  ) @skip(if:$withPagination)
-  {
-    ...Topic
-  }
-  topicsList:resourcesList(
-    ids:$resourceIds
-    resourceType:obzor
-    limit:$resourcesLimit
-    parent:$resourceParent
-    template:28
-    sort:[{
-      by:id
-      dir:desc
-    }]
-  ) @include(if:$withPagination)
-  {
-    count
-    total
-    object{
-      ...Topic
-    }
-  }
-}
+# fragment Obzory on RootType{
+#   topics:resources(
+#     ids:$resourceIds
+#     resourceType:obzor
+#     limit:$resourcesLimit
+#     parent:$resourceParent
+#     template:28
+#     sort:[{
+#       by:id
+#       dir:desc
+#     }]
+#   ) @skip(if:$withPagination)
+#   {
+#     ...Topic
+#   }
+#   topicsList:resourcesList(
+#     ids:$resourceIds
+#     resourceType:obzor
+#     limit:$resourcesLimit
+#     parent:$resourceParent
+#     template:28
+#     sort:[{
+#       by:id
+#       dir:desc
+#     }]
+#   ) @include(if:$withPagination)
+#   {
+#     count
+#     total
+#     object{
+#       ...Topic
+#     }
+#   }
+# }
 
 
 fragment Topic on ResourceType{
@@ -1142,10 +1159,13 @@ fragment ResourcesList on RootType{
     uri:$resourceUri
     coords:$resourcesCoords
     center:$resourcesCenter
+    page:$resourcesPage
   )@include(if:$withPagination)
   {
     count
     total
+    limit
+    page
     object{
       ...Resource
     }

@@ -294,6 +294,8 @@ export default class Topic extends Component{
 			return null;
 		}
 
+		const serverMode = typeof window === "undefined";
+
 		const {
 			id,
 			name:topicName,
@@ -466,7 +468,7 @@ export default class Topic extends Component{
 								item
 							>
 
-	      				<IconButton
+	      				{!serverMode && <IconButton
 	        				onClick={event => {
 	        					// item.update({});
 
@@ -480,7 +482,7 @@ export default class Topic extends Component{
 	        				<EditIcon 
 	        					// color="red"
 	        				/>
-	        			</IconButton>
+	        			</IconButton> || null }
 	        				
 							</Grid>
 						}
@@ -544,17 +546,25 @@ export default class Topic extends Component{
 							container
 							align="center"
 							gutter={0}
-						> | <IconButton 
-									onClick={event => {
-										this.setState({
-											commentOpen: !commentOpen,
-										});
-									}}
-									accent={comments && comments.length && !commentOpen ? true : false}
-									style={{
-										height: 34,
-										width: 34,
-									}}
+						> | <Link
+							to={link}
+							href={link}
+							className="flex align-center"
+							onClick={event => {
+								event.preventDefault();
+								event.stopPropagation();
+								this.setState({
+									commentOpen: !commentOpen,
+								});
+							}}
+						>
+							<IconButton 
+								accent={comments && comments.length && !commentOpen ? true : false}
+								className="flex align-center"
+								style={{
+									height: 34,
+									width: 34,
+								}}
 							>
 								<CommentsIcon 
 									style={{
@@ -564,7 +574,14 @@ export default class Topic extends Component{
 										marginRight: 3,
 									}}
 								/>
-							</IconButton> {comments && comments.length || 0}
+							</IconButton> <span
+								style={{
+									marginLeft: -5,
+								}}
+							>
+								{comments && comments.length || 0}
+							</span>
+						</Link>
 						
 						</Grid>
 

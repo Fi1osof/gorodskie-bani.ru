@@ -12,6 +12,8 @@ import Input, { InputLabel } from 'material-ui/Input';
 
 // import FormControl, {styleSheet} from 'modules/Site/components/UI/Form/FormControl';
 
+import classNames from 'classnames';
+
 import PropTypes from 'prop-types';
 
 import moment from 'moment';
@@ -19,10 +21,12 @@ import moment from 'moment';
 import Button from 'material-ui/Button';
 // import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
 
-import { Editor } from 'react-draft-wysiwyg';
+import { 
+	Editor as EditorProto,
+} from 'react-draft-wysiwyg';
 
 import {
-	// Editor, 
+	Editor as DraftEditor, 
 	EditorState,
 	convertFromHTML,
 	ContentState,
@@ -30,9 +34,96 @@ import {
   convertFromRaw,
 } from 'draft-js';
 
+import {
+  // changeDepth,
+  // handleNewLine,
+  blockRenderMap,
+  getCustomStyleMap,
+  // extractInlineStyle,
+  // getSelectedBlocksType,
+} from 'draftjs-utils';
+
 // import customPropTypes from 'material-ui/utils/customPropTypes';
 
 // import {stateToHTML} from 'draft-js-export-html';
+
+
+export class Editor extends EditorProto{
+
+	render() {
+    const {
+      editorState,
+      editorFocused,
+      toolbar,
+    } = this.state;
+
+    const {
+      locale,
+      localization: { locale: newLocale, translations },
+      toolbarCustomButtons,
+      toolbarOnFocus,
+      toolbarClassName,
+      toolbarHidden,
+      editorClassName,
+      wrapperClassName,
+      toolbarStyle,
+      editorStyle,
+      wrapperStyle,
+      uploadCallback,
+      ariaLabel,
+			readOnly,
+			...other
+    } = this.props;
+
+
+    if(!readOnly){
+    	return super.render();
+    }
+
+    // else
+
+    return (
+      <div
+        id={this.wrapperId}
+        className={classNames(wrapperClassName, 'rdw-editor-wrapper')}
+        style={wrapperStyle}
+        aria-label="rdw-wrapper"
+      >
+        <div
+          ref={this.setWrapperReference}
+          className={classNames(editorClassName, 'rdw-editor-main')}
+          style={editorStyle}
+          // onClick={this.focusEditor}
+          // onFocus={this.onEditorFocus}
+          // onBlur={this.onEditorBlur}
+          // onKeyDown={KeyDownHandler.onKeyDown}
+          // onMouseDown={this.onEditorMouseDown}
+        >
+          <DraftEditor
+            ref={this.setEditorReference}
+            // onTab={this.onTab}
+            // onUpArrow={this.onUpDownArrow}
+            // onDownArrow={this.onUpDownArrow}
+            editorState={editorState}
+            // onChange={this.onChange}
+            // blockStyleFn={blockStyleFn}
+            customStyleMap={getCustomStyleMap()}
+            // handleReturn={this.handleReturn}
+            // handlePastedText={this.handlePastedText}
+            blockRendererFn={this.blockRendererFn}
+            // handleKeyCommand={this.handleKeyCommand}
+            ariaLabel={ariaLabel || 'rdw-editor'}
+            blockRenderMap={blockRenderMap}
+            {...this.editorProps}
+          />
+        </div>
+      </div>
+    );
+  }
+
+}
+
+
 
 
 export class TextField extends Component {

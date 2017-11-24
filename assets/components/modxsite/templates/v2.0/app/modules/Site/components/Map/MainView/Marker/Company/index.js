@@ -87,7 +87,7 @@ export default class CompanyMiniCart extends Component{
 			<div
 				style={{
 					paddingBottom: 5,
-					fontSize: 14,
+					fontSize: "14px",
 				}}
 			>
 				

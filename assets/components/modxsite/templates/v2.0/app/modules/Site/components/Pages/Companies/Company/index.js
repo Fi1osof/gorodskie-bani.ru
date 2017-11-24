@@ -1667,7 +1667,7 @@ export default class CompanyPage extends Page{
 									<span
 										style={{
 											fontWeight: 800,
-											fontSize: 12,
+											fontSize: "12px",
 											color: "rgba(0, 0, 0, 0.54)",
 											display: "inline-block",
 											marginTop: 20,
@@ -1916,7 +1916,7 @@ export default class CompanyPage extends Page{
 						}}
 					/> <span
 						style={{
-							fontSize: 16,
+							fontSize: "16px",
 						}}
 					>Размещение информации о банных заведениях на портале "Городские бани" бесплатное. Подробнее <Link
 						to="/topics/obnovlennaya-versiya-portala-gorodskix-ban-1641.html"

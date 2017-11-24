@@ -213,7 +213,7 @@ export default class Comment extends Component{
 						<Button
 							raised
 							style={{
-								fontSize: 14,
+								fontSize: "14px",
 						    textTransform: "none",
 						    padding: 0,
 						    margin: 0,

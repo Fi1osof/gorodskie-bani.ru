@@ -180,7 +180,7 @@ class YandexAutoCompleteInner extends YaAutoComplete{
 									<Grid
 										item
 										style={{
-											fontSize: 16,
+											fontSize: "16px",
 										}}
 									>
 										{name}

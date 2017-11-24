@@ -13,6 +13,8 @@ import Topic from './Topic';
 
 
 
+import Pagination from 'modules/Site/components/pagination';
+
 
 export default class TopicsPage extends Page {
 
@@ -196,7 +198,7 @@ export default class TopicsPage extends Page {
 
 				// }
 
-				this.loadData();
+				this.reloadData();
 
 			});
 
@@ -310,6 +312,22 @@ export default class TopicsPage extends Page {
 
 
 
+
+	loadData(){
+
+    const {
+      coords,
+    } = this.context;
+
+		const page = this.getPage();
+
+		return super.loadData({
+			page,
+			coords,
+		});
+
+	}
+
 	
 	async loadServerData(provider, options = {}){
 
@@ -324,7 +342,7 @@ export default class TopicsPage extends Page {
 		const {
 			coords,
 			page,
-			limit = 12,
+			limit = 10,
 			withPagination = true,
 			cities,
 			tag,
@@ -336,7 +354,9 @@ export default class TopicsPage extends Page {
 	  const result = await provider({
 			operationName,
 			variables: {
-				// resourcesLimit: 10,
+				withPagination,
+				resourcesPage: page,
+				resourcesLimit: limit,
 				resourceGetAuthor: true,
 				resourceGetComments: true,
 				getCommentAuthor: true,
@@ -385,6 +405,16 @@ export default class TopicsPage extends Page {
 	  return result;
 
 	}
+
+
+
+  onPageChange(){
+
+  	console.log("onPageChange", this.getPage());
+
+  	this.reloadData();
+    	
+  }
 
 
 
@@ -490,12 +520,24 @@ export default class TopicsPage extends Page {
 	renderTopics(){
 
 		const {
-			topics,
-			limit,
+			topicsList: result,
+			// limit,
 			limitPerPage,
 		} = this.state;
 
 		// console.log("Topic", topics);
+
+		if(!result){
+			return null;
+		}
+
+		const {
+			page,
+			limit,
+			total,
+			object: topics,
+		} = result;
+
 
 		let topicsList = [];
 
@@ -523,32 +565,46 @@ export default class TopicsPage extends Page {
 
 		let moreButton;
 
-		const total = topics && topics.length || 0;
+		// const total = topics && topics.length || 0;
 
-		if(topicsList && topics && topicsList.length < topics.length){
+		// if(topicsList && topics && topicsList.length < topics.length){
 
-			moreButton = <div
-				style={{
-					textAlign: "center",
-				}}
-			>
+		// 	moreButton = <div
+		// 		style={{
+		// 			textAlign: "center",
+		// 		}}
+		// 	>
 				
-				<Button
-					onClick={event => {
+		// 		<Button
+		// 			onClick={event => {
 
-						this.setState({
-							limit: limit + limitPerPage,
-						});
+		// 				this.setState({
+		// 					limit: limit + limitPerPage,
+		// 				});
 
-					}}
-					raised
-				>
-					{topicsList.length} из {total}. Показать еще {limitPerPage + topicsList.length > topics.length ? (topics.length - topicsList.length) : limitPerPage}
-				</Button>
+		// 			}}
+		// 			raised
+		// 		>
+		// 			{topicsList.length} из {total}. Показать еще {limitPerPage + topicsList.length > topics.length ? (topics.length - topicsList.length) : limitPerPage}
+		// 		</Button>
 
-			</div>
+		// 	</div>
 
-		}
+		// }
+
+		moreButton = <div
+    	style={{
+    		textAlign: "center",
+    	}}
+    >
+    	
+    	<Pagination
+      	page={parseInt(page) || 1}
+	      limit={limit}
+	      total={total}
+	    />
+
+    </div>;
 
 		return <div
 			style={{
@@ -558,12 +614,13 @@ export default class TopicsPage extends Page {
 			{topicsList}
 
 			{moreButton}
+
 		</div>
 
 	}
 
 	
-	renderContent(){
+	render(){
 
 		const {
 			params,
@@ -633,7 +690,7 @@ export default class TopicsPage extends Page {
 
 		// console.log('CompaniesPage 2 item', item, companyId);
 
-		return <div
+		return super.render(<div
 			style={{
 				width: "100%",
 			}}
@@ -641,7 +698,7 @@ export default class TopicsPage extends Page {
  			
  			{content}
 
-		</div>
+		</div>);
 	}
 
 }

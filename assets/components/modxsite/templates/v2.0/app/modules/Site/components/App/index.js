@@ -277,7 +277,7 @@ var styleSheet = createStyleSheet('InteractiveLayout', (theme) => {
     "& .textField": {
 
       "& [type=text]": {
-        fontSize: 13,
+        fontSize: "13px",
         backgroundColor: "rgba(255,255,255,0.8)",
         textIndent: 5,
       },

@@ -205,12 +205,12 @@ export default class CompaniesPage extends Page {
 
 		const page = this.getPage();
 
-		super.loadData({
+		this.loadCities();
+
+		return super.loadData({
 			page,
 			coords,
 		});
-
-		this.loadCities();
 
 	}
 

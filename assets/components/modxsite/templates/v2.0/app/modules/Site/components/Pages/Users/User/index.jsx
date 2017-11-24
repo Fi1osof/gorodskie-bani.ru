@@ -1303,6 +1303,9 @@ export default class User extends Component {
                     </Typography>
 
                     <ListItem
+                    style={{
+                      whiteSpace: "nowrap",
+                    }}
                     >
                       <ListItemIcon
                       > 

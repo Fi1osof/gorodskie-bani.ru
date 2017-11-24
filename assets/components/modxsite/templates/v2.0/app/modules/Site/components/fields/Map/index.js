@@ -322,7 +322,7 @@ export default class ItemMap extends Component{
     				style={{
     					color: "#fff",
 	    				textShadow: "0px 0px 5px #888",
-	    				fontSize: 16,
+	    				fontSize: "16px",
     				}}
     				target="_blank"
     			>

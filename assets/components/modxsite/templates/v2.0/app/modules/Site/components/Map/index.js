@@ -2054,7 +2054,7 @@ export default class MapMainView extends Component{
 	    				href="javascript:;"
 	    				style={{
 	    					// textShadow: "0px 0px 5px #ccc",
-						    fontSize: 15,
+						    fontSize: "15px",
     						background: "rgba(256,256,256,0.7)",
 						    display: "block",
 						    paddingRight: 10,
@@ -2131,7 +2131,7 @@ export default class MapMainView extends Component{
     				style={{
     					color: "#fff",
 	    				textShadow: "0px 0px 5px #888",
-	    				fontSize: 16,
+	    				fontSize: "16px",
     				}}
     			>
     				Yandex.Maps

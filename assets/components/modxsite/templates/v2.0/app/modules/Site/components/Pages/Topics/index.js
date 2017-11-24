@@ -10,6 +10,7 @@ import Button from 'material-ui/Button';
 import {Link, browserHistory} from 'react-router';
 
 import Topic from './Topic';
+import TopicView from './Topic/View';
 
 
 
@@ -552,14 +553,14 @@ export default class TopicsPage extends Page {
 				name,
 			} = topic;
 
-			topicsList.push(<Topic
+			topicsList.push(<TopicView
 				key={id}
 				item={topic}
 				open={false}
 				commentOpen={false}
 			>
 				{name}
-			</Topic>);
+			</TopicView>);
 
 		});
 

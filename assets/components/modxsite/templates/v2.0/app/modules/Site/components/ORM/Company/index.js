@@ -631,8 +631,9 @@ export const getList = (source, args, context, info) => {
     CompaniesStore,
   } = context.state;
 
-  const {
+  let {
     uri,
+    alias,
     search,
     coords,
     center,
@@ -641,7 +642,19 @@ export const getList = (source, args, context, info) => {
   let state = CompaniesStore.getState();
 
   if(uri !== undefined){
+
+    uri = decodeURI(uri);
+
+    uri = uri && uri.replace(/^\/+/, '');
+
     state = state.filter(n => n.uri === uri);
+  }
+
+  if(alias !== undefined){
+
+    alias = decodeURI(alias);
+
+    state = state.filter(n => n.alias === alias);
   }
 
   if(search){

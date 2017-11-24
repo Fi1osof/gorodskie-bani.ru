@@ -553,7 +553,7 @@ export const getList = (source, args, context, info) => {
     ResourcesStore,
   } = context.state;
 
-  const {
+  let {
     parent,
     template,
     tag,
@@ -561,6 +561,7 @@ export const getList = (source, args, context, info) => {
     coords,
     center,
     alias,
+    uri,
   } = args;
  
   let state
@@ -600,6 +601,15 @@ export const getList = (source, args, context, info) => {
 
     state = state.filter(n => n.alias === alias);
 
+  }
+
+  if(uri !== undefined){
+
+    uri = decodeURI(uri);
+
+    uri = uri && uri.replace(/^\/+/, '');
+
+    state = state.filter(n => n.uri === uri);
   }
 
   if(tag){

@@ -277,6 +277,10 @@ const resourcesArgs = Object.assign({
     type: GraphQLString,
     description: 'Фильтр по тегу',
   },
+  alias: {
+    type: GraphQLString,
+    description: 'Поиск по алиасу документа',
+  },
   uri: {
     type: GraphQLString,
     description: 'Поиск по URI документа',

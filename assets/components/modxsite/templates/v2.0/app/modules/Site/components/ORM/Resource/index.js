@@ -560,6 +560,7 @@ export const getList = (source, args, context, info) => {
     resourceType,
     coords,
     center,
+    alias,
   } = args;
  
   let state
@@ -592,6 +593,12 @@ export const getList = (source, args, context, info) => {
   if(template){
 
     state = state.filter(n => n.template === template);
+
+  }
+
+  if(alias){
+
+    state = state.filter(n => n.alias === alias);
 
   }
 

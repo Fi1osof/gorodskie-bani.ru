@@ -544,6 +544,8 @@ query MapData (
 fragment MapCompany on Company{
   id
   name
+  longtitle
+  alias
   uri
   coords {
     lat
@@ -882,6 +884,7 @@ query Cities(
   $resourceUri:String
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
+  $resourceAlias:String
 ){
   
   ...CitiesList
@@ -897,6 +900,7 @@ fragment CitiesList on RootType{
     uri:$resourceUri
     coords:$resourcesCoords
     center:$resourcesCenter
+    alias:$resourceAlias
   )@include(if:$withPagination)
   {
     count
@@ -914,6 +918,7 @@ fragment CitiesList on RootType{
     uri:$resourceUri
     coords:$resourcesCoords
     center:$resourcesCenter
+    alias:$resourceAlias
   )@skip(if:$withPagination)
   {
     ...City
@@ -923,6 +928,8 @@ fragment CitiesList on RootType{
 fragment City on ResourceType{
   id
   name
+  longtitle
+  alias
   uri
   coords {
     lat

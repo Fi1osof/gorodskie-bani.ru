@@ -1011,7 +1011,7 @@ export default class Router {
       }
       catch(e){
         console.error(e);
-        return res.status(500).send(e.message);
+        return res.status(500).send(e.message || e);
       };
 
       return res.end(html);

@@ -367,7 +367,13 @@ export default class Page extends Component{
 			remoteQuery,
 		} = this.context;
 
-		let result = await this.loadServerData(remoteQuery, options);
+		let {
+			provider,
+		} = options;
+
+		provider = provider || remoteQuery;
+
+		let result = await this.loadServerData(provider, options);
 
 		// console.log("Page loadData result", result);
 

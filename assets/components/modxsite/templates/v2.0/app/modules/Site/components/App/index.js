@@ -507,6 +507,7 @@ export class AppMain extends Component{
       coords: {},
       // inited: typeof window === "undefined",
       inited: false,
+      developMode: true,
       // appExports: {},
     }
 
@@ -2572,6 +2573,10 @@ export class AppMain extends Component{
     // 
 
     const {
+      developMode,
+    } = this.state;
+
+    const {
       document,
     } = this.props;
 
@@ -2591,7 +2596,45 @@ export class AppMain extends Component{
 
     // console.log("loadApiData");
 
-    if(typeof window !== "undefined"){
+    if(typeof window !== "undefined" && developMode){
+
+      // const response = await this.remoteQuery({
+      //   operationName: "apiData",
+      //   variables: {
+      //     limit: 0,
+      //   },
+      // });
+
+      await this.remoteQuery({
+        operationName: "apiData",
+        variables: {
+          limit: 0,
+          apiDataGetCurrentUser: true,
+        },
+      })
+      .then(r => {
+
+        // document.apiData = apiData = r && r.object || null;
+        apiData = r && r.object || null;
+
+        // this.initData(apiData);
+
+        // Если работа уже в браузере, надо переподгрузить данные карты,
+        // потому что с рейтингами фигня какая-то на стороне сервере 
+        // Скорее всего просто сравнение неверное по ключу
+        // this.loadMapData();
+
+      });
+
+      // console.log("ApiData response", response);
+
+      // apiData = apiData || {};
+
+      // Object.assign(apiData, {
+      //   citiesData,
+      // });
+
+      // console.log("loadApiData", apiData);
 
       // const response = await this.remoteQuery({
       //   operationName: "apiData",

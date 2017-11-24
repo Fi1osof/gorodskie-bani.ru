@@ -6,6 +6,8 @@ import GraphiQL from 'graphiql';
 
 import Switch from 'material-ui/Switch';
 
+import Page from '../layout'; 
+
 // import { graphql, buildSchema } from 'graphql';
 
 // 
@@ -98,17 +100,24 @@ import 'graphiql/graphiql.css';
 // });
 
 
-export default class PageGraphiQL extends Component{
+let {
+  ...contextTypes
+} = Page.contextTypes || {};
 
-  static contextTypes = {
-    loadItems: PropTypes.func,
-    apiRequest: PropTypes.func.isRequired,
-    localQuery: PropTypes.func.isRequired,
-    initData: PropTypes.func.isRequired,
-    // orm: PropTypes.object.isRequired,
-    schema: PropTypes.object.isRequired,
-    // db: PropTypes.object.isRequired,
-  }; 
+
+Object.assign(contextTypes, {
+  loadItems: PropTypes.func,
+  apiRequest: PropTypes.func.isRequired,
+  localQuery: PropTypes.func.isRequired,
+  initData: PropTypes.func.isRequired,
+  // orm: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
+  // db: PropTypes.object.isRequired,
+});
+
+export default class PageGraphiQL extends Page{
+
+  static contextTypes = contextTypes; 
 
   constructor(props){
 
@@ -119,14 +128,24 @@ export default class PageGraphiQL extends Component{
     }
   }
 
-  // componentDidMount(){
+  componentDidMount(){
 
 
-  //   // this.loadSchema();
-  //   // this.getSchema();
+    // this.loadSchema();
+    // this.getSchema();
 
-  //   super.componentDidMount && super.componentDidMount();
-  // }
+    // const {
+    //   remoteQuery,
+    // } = this.context;
+
+    // remoteQuery();
+
+    this.graphQLFetcher({
+      operationName: "apiData",
+    });
+
+    super.componentDidMount && super.componentDidMount();
+  }
  
 
   // getSchema(){
@@ -501,7 +520,7 @@ export default class PageGraphiQL extends Component{
       return null;
     }
 
-    return <div
+    return (<div
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -523,7 +542,7 @@ export default class PageGraphiQL extends Component{
         fetcher={::this._graphQLFetcher}
         // fetcher={::this.graphQLFetcherLocal}
       />  
-    </div>;
+    </div>);
   }
 }
 

@@ -14,6 +14,7 @@ import RatingsPage from './components/Pages/Ratings';
 import ContactsPage from './components/Pages/Static/Contacts';
 import CRMPage from './components/Pages/CRM';
 import CompaniesEditsPage from './components/Pages/EditVersions';
+import CitiesPage from './components/Pages/Cities';
 
 export {
   MainApp,
@@ -30,4 +31,5 @@ export {
   ContactsPage,
   CRMPage,
   CompaniesEditsPage,
+  CitiesPage,
 };

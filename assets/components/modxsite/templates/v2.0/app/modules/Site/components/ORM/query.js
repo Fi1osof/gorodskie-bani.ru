@@ -885,6 +885,14 @@ query Cities(
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
   $resourceAlias:String
+  $cityGetFullData:Boolean = false
+  $getImageFormats:Boolean = false
+  $getTVs:Boolean = false
+  $getCommentAuthor:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
 ){
   
   ...CitiesList
@@ -941,6 +949,7 @@ fragment City on ResourceType{
     marker_thumb
   }
   parent
+  ...Resource @include(if: $cityGetFullData)
 }
 
 # Типы рейтингов

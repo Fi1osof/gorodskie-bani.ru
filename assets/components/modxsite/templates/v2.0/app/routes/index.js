@@ -15,6 +15,7 @@ import {
   ContactsPage,
   CRMPage,
   CompaniesEditsPage,
+  CitiesPage,
 } from "modules/Site";
 
 let routes = {
@@ -40,6 +41,10 @@ let routes = {
     {
       path: "/db",
       component: DbPage,
+    },
+    {
+      path: "/city",
+      component: CitiesPage,
     },
     {
       path: "/bani-otzivy",

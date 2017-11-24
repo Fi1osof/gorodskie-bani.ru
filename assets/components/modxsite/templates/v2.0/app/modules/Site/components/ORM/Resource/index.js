@@ -546,6 +546,7 @@ const inCoords = function(center, radius, item){
 export const getList = (source, args, context, info) => {
 
 
+  // console.log("Resources getList args", args);
 
   const {
     CompaniesStore,
@@ -613,6 +614,8 @@ export const getList = (source, args, context, info) => {
   }
 
   if(tag){
+
+    tag = decodeURI(tag);
 
     const search = new RegExp(tag, 'ui');
 

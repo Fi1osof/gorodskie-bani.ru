@@ -125,6 +125,7 @@ export default class TopicPage extends Page{
 				resourceUri: pathname,
 				resourceGetComments: true,
 				getCommentAuthor: true,
+				resourceGetAuthor: true,
 			},
 	  })
 	  .then(r => {

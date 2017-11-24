@@ -316,15 +316,20 @@ export default class TopicsPage extends Page {
 
 	loadData(){
 
-    const {
-      coords,
-    } = this.context;
+  //   const {
+  //     coords,
+  //   } = this.context;
 
-		const page = this.getPage();
+		// const page = this.getPage();
+
+		const {
+			tag,
+		} = this.state;
 
 		return super.loadData({
-			page,
-			coords,
+			// page,
+			// coords,
+			tag,
 		});
 
 	}
@@ -340,7 +345,7 @@ export default class TopicsPage extends Page {
 
 
 
-		const {
+		let {
 			coords,
 			page,
 			limit = 10,
@@ -390,11 +395,11 @@ export default class TopicsPage extends Page {
 
 	  	// title = title || "Городские бани";
 
-	  	// if(page > 1){
+	  	if(tag){
 
-	  	// 	title = `${title}, страница ${page}`;
+	  		title = `Публикации с тегом ${tag}`;
 
-	  	// }
+	  	}
 
   		Object.assign(result.data, {
   			title,

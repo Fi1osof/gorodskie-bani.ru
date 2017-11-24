@@ -107,12 +107,14 @@ export const getList = (object, args, context, info) => {
       lat: paramsLat,
       lng: paramsLng,
       zoom: paramsZoom,
+      tag: paramsTag,
     } = params;
 
     paramsLat = paramsLat && parseFloat(paramsLat) || undefined;
     paramsLng = paramsLng && parseFloat(paramsLng) || undefined;
     paramsZoom = paramsZoom && parseInt(paramsZoom) || undefined;
     paramsCity = paramsCity && decodeURI(paramsCity) || undefined;
+    paramsTag = paramsTag && decodeURI(paramsTag) || undefined;
 
 
     companyId = companyId || debugCompanyId;
@@ -558,6 +560,7 @@ export const getList = (object, args, context, info) => {
         coords,
         cities,
         pathname: relativePathname,
+        tag: paramsTag,
       };
         
 

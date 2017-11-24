@@ -1063,7 +1063,7 @@ query Topic(
   $resourceId:Int
   $getCommentAuthor:Boolean = false
   $userGetComments:Boolean = false
-  # $resourceTag:String
+  $resourceTag:String
   $resourceGetContent:Boolean = true
   # $resourcesPage:Int
   # $resourceTemplate:Int
@@ -1072,6 +1072,8 @@ query Topic(
   topic:resource(
     id:$resourceId
     uri:$resourceUri
+    resourceType:topic
+    tag:$resourceTag
   ){
     ...Topic
   }

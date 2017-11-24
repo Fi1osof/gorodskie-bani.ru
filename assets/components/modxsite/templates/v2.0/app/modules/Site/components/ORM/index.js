@@ -260,6 +260,25 @@ const InputCoordsType = new GraphQLInputObjectType({
 });
 
 
+const resourcesTypes = new GraphQLEnumType({
+  name: "ResourceTypeEnum",
+  description: "Типы ресурсов",
+  values: {
+    topic: {
+      value: "topic",
+      description: "Топик",
+    },
+    obzor: {
+      value: "obzor",
+      description: "Обзор заведения",
+    },
+    company: {
+      value: "company",
+      description: "Компания",
+    },
+  },
+});
+
 const resourcesArgs = Object.assign({
   template: {
     type: GraphQLInt,
@@ -286,23 +305,7 @@ const resourcesArgs = Object.assign({
     description: 'Поиск по URI документа',
   },
   resourceType: {
-    type: new GraphQLEnumType({
-      name: "ResourceTypeEnum",
-      values: {
-        topic: {
-          value: "topic",
-          description: "Топик",
-        },
-        obzor: {
-          value: "obzor",
-          description: "Обзор заведения",
-        },
-        company: {
-          value: "company",
-          description: "Компания",
-        },
-      },
-    }),
+    type: resourcesTypes,
     description: 'Тип ресурса',
   },
   coords: {
@@ -494,6 +497,14 @@ const RootType = new GraphQLObjectType({
         uri: {
           type: GraphQLString,
           description: "УРЛ ресурса",
+        },
+        resourceType: {
+          type: resourcesTypes,
+          description: "Тип ресурса",
+        },
+        tag: {
+          type: GraphQLString,
+          description: 'Фильтр по тегу',
         },
       },
       // resolve: getCompany,

@@ -1060,23 +1060,15 @@ export default class Router {
 
         // console.log('css_src', css_src);
 
-        const css_array = css_src.split("/");
+        // const css_array = css_src.split("/");
 
-        css_src = "";
+        // css_src = "";
 
-        var filename = `${buildPath}css/${css_array[css_array.length - 1]}`;
-   
-        // var filename = template_path + css_file;
+        // var filename = `${buildPath}css/${css_array[css_array.length - 1]}`;
 
-        inline_styles = fs.readFileSync(filename, "utf-8");
-   
-        // console.log("inline_styles", inline_styles, filename);
+        // inline_styles = fs.readFileSync(filename, "utf-8");
 
-        // style = '<style>';
-        // style += styles.css_file;
-        // style += '</style>';
-
-        inline_styles = `<style>${inline_styles}</style>`;
+        // inline_styles = `<style>${inline_styles}</style>`;
       }
 
 

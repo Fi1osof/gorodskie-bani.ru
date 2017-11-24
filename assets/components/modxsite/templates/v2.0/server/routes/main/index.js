@@ -1061,10 +1061,10 @@ export default class Router {
       if(css_match){
         css_src = css_match[1];
 
-        style = `
-          @import url('${css_src}');
-          ${style}
-        `;
+        // style = `
+        //   @import url('${css_src}');
+        //   ${style}
+        // `;
 
         // console.log('css_src', css_src);
 

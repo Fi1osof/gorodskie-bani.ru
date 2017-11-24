@@ -12,6 +12,7 @@ import OtzivyPage from './components/Pages/Companies/Otzivy';
 import OtzivPage from './components/Pages/Companies/Otzivy/Topic';
 import UsersPage from './components/Pages/Users';
 import CommentsPage from './components/Pages/Comments';
+import CommentPage from './components/Pages/Comments/Comment';
 import RatingsPage from './components/Pages/Ratings';
 import ContactsPage from './components/Pages/Static/Contacts';
 import CRMPage from './components/Pages/CRM';
@@ -31,6 +32,7 @@ export {
   OtzivPage,
   UsersPage,
   CommentsPage,
+  CommentPage,
   RatingsPage,
   ContactsPage,
   CRMPage,

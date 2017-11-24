@@ -201,6 +201,7 @@ export default class TopicPage extends Page{
 		if(!topic){
 			return null;
 		}
+		
 
 		return super.render(<TopicView
 			item={topic}

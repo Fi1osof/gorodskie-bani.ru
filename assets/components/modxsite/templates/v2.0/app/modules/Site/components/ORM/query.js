@@ -508,6 +508,44 @@ query Comments(
   }
 }
 
+
+query Comment(
+  $commentId:Int
+  $getCompanyFullData:Boolean = false
+  $getImageFormats:Boolean = false
+  $getCompanyComments:Boolean = false
+  $getCommentCompany:Boolean = false
+  $getRatingsAvg:Boolean = false
+  $getCompanyGallery:Boolean = false
+  # $commentsResourceId:Int
+  # $commentParent:Int
+  $getTVs:Boolean = false
+  # $commentsSort:[SortBy]
+  $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = false
+  $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  # $commentsCreatedBy:Int
+  $userGetComments:Boolean = false
+  # $commentsPage:Int = 1
+  # $commentsIds:[Int]
+  $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
+  $commentGetResource:Boolean = false
+){
+  comment(
+    id: $commentId
+  )
+  {
+    ...Comment
+  }
+}
+
 # Список компаний для карты.Частичные данные
 query MapData (
   $limit:Int!

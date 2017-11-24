@@ -19,13 +19,13 @@ export default class OtzivyPage extends TopicsPage {
 	// }
 
 
-	getLocalData(){
+	// getLocalData(){
 
-	  let topics = super.getLocalData();
+	//   let topics = super.getLocalData();
 		
-		return topics && topics.filter(n => n.template === 28);
+	// 	return topics && topics.filter(n => n.template === 28);
 		
-	}
+	// }
 
 
   setPageTitle(title){
@@ -48,11 +48,6 @@ export default class OtzivyPage extends TopicsPage {
 			operationName,
 			title,
 		});
-
-
-
-
-
 
 	  return super.loadServerData(provider, options);
 

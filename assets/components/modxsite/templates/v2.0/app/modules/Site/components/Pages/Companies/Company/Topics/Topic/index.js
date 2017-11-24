@@ -141,7 +141,7 @@ export default class Topic extends Component{
 			uri:CompanyUri,
 		} = Parent || {};
 
-		const CompanyLink = `/${CompanyUri}`;
+		const CompanyLink = CompanyUri && `/${CompanyUri}`;
 
 
 
@@ -159,7 +159,7 @@ export default class Topic extends Component{
 						{topicName}
 					</Typography>
 				</Link>}
-        subheader={CompanyLink && <Link
+        subheader={CompanyLink && CompanyName && <Link
         	to={CompanyLink}
         	href={CompanyLink}
         	style={{

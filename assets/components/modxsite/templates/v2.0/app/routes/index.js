@@ -13,6 +13,7 @@ import {
   OtzivPage,
   UsersPage,
   CommentsPage,
+  CommentPage,
   RatingsPage,
   ContactsPage,
   CRMPage,
@@ -117,11 +118,12 @@ let routes = {
     //   component: TopicsPage,
     // },
     {
+      path: "/comments/comment-:commentId.html",
+      component: CommentPage,
+    },
+    {
       path: "/comments",
       component: CommentsPage,
-      childRoutes: [{
-        path: "/comments/comment-:commentId.html",
-      }]
     },
     {
       path: "/people",

@@ -537,6 +537,15 @@ const RootType = new GraphQLObjectType({
       description: "Список комментариев",
       args: commentsArgs,
     },
+    comment: {
+      type: CommentType,
+      description: CommentType.description,
+      args: {
+        id: {
+          type: GraphQLInt,
+        },
+      },
+    },
     usersList: new listField({
       type: UserType,
       name: "usersList",

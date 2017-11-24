@@ -402,7 +402,6 @@ export default class TopicView extends Component{
 			readOnly={!inEditMode}
 		/>
 
-
 		return <Card
 			style={{
 				margin: "30px 0",
@@ -416,7 +415,7 @@ export default class TopicView extends Component{
 					<Grid
 						container
 						gutter={0}
-						center="center"
+						align="center"
 					>
 
 						<Grid

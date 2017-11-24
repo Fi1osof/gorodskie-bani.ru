@@ -38,7 +38,7 @@ export default class Page extends Component{
 
 		super(props);
 
-		this.state = {}
+		this.state = {};
 	}
 
 	componentWillMount(){
@@ -406,6 +406,10 @@ export default class Page extends Component{
 
 
 	initState(newState, willMount){
+
+		if(!willMount && (this.mounted !== undefined && this.mounted !== true)){
+			return;
+		}
 
 		newState = newState || {};
 

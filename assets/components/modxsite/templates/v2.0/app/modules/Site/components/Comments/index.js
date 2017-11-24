@@ -94,6 +94,7 @@ export default class Comments extends Component{
 
 		const {
 			comments,
+			resource,
 			newCommentForm,
 			showResourceLink,
 			...other

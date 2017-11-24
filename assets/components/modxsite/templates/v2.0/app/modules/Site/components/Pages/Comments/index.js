@@ -101,62 +101,62 @@ export default class CommentsPage extends Page {
 	// }
 	
 
-	loadData__(){
+	// loadData__(){
 
 
-		const {
-			localQuery,
-		} = this.context;
+	// 	const {
+	// 		localQuery,
+	// 	} = this.context;
 
-		const {
-			params,
-		} = this.props;
+	// 	const {
+	// 		params,
+	// 	} = this.props;
 
-		const {
-			commentId,
-		} = params || {};
+	// 	const {
+	// 		commentId,
+	// 	} = params || {};
 
-		const {
-			page,
-		} = this.state;
+	// 	const {
+	// 		page,
+	// 	} = this.state;
 
-		let result = localQuery({
-			operationName: "Comments",
-			variables: {
-				limit: 10,
-				commentsIds: commentId && parseInt(commentId) || undefined,
-				commentsPage: page,
-				withPagination: true,
-				getCommentAuthor: true,
-				// userGetComments: true,
-				getImageFormats: true,
-				// resourcesLimit: 10,
-				// resourceGetAuthor: true,
-				// resourceGetComments: true,
-				// getCommentAuthor: true,
-			},
-		})
-		.then(r => {
+	// 	let result = localQuery({
+	// 		operationName: "Comments",
+	// 		variables: {
+	// 			limit: 10,
+	// 			commentsIds: commentId && parseInt(commentId) || undefined,
+	// 			commentsPage: page,
+	// 			withPagination: true,
+	// 			getCommentAuthor: true,
+	// 			// userGetComments: true,
+	// 			getImageFormats: true,
+	// 			// resourcesLimit: 10,
+	// 			// resourceGetAuthor: true,
+	// 			// resourceGetComments: true,
+	// 			// getCommentAuthor: true,
+	// 		},
+	// 	})
+	// 	.then(r => {
 
 
 
-			const {
-				commentsList,
-			} = r.data;
+	// 		const {
+	// 			commentsList,
+	// 		} = r.data;
 
-			const {
-				count,
-				total,
-				object: comments,
-			} = commentsList || {};
+	// 		const {
+	// 			count,
+	// 			total,
+	// 			object: comments,
+	// 		} = commentsList || {};
 
-			this.setState({
-				comments,
-				total,
-			});
-		});		
+	// 		this.setState({
+	// 			comments,
+	// 			total,
+	// 		});
+	// 	});		
 		
-	}
+	// }
 
 
 	loadData(){

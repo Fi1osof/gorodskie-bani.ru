@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import Page from '../layout'; 
 
+import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 
@@ -35,72 +36,72 @@ export default class CommentsPage extends Page {
 		});
 	}
 
-	componentDidMount(){
+	// componentDidMount(){
 
-		this.loadData();
+	// 	this.loadData();
 
-		super.componentDidMount && super.componentDidMount();
-	}
-
-
-	componentDidUpdate(prevProps, prevState, prevContext){
+	// 	super.componentDidMount && super.componentDidMount();
+	// }
 
 
-
-		const {
-			router,
-		} = this.context;
+	// componentDidUpdate(prevProps, prevState, prevContext){
 
 
-		const {
-			location: {
-				query,
-			},
-		} = router;
 
-		const {
-			page,
-		} = query || {};
+	// 	const {
+	// 		router,
+	// 	} = this.context;
 
-		if(page !== this.state.page){
-			this.setState({
-				page,
-			}, () => this.loadData());
-		}
 
-		// const {
-		// 	router: prevRouter,
-		// } = prevContext;
+	// 	const {
+	// 		location: {
+	// 			query,
+	// 		},
+	// 	} = router;
 
-		// if(router && prevRouter){
+	// 	const {
+	// 		page,
+	// 	} = query || {};
 
-		// 	const {
-		// 		location: {
-		// 			query,
-		// 		},
-		// 	} = router;
+	// 	if(page !== this.state.page){
+	// 		this.setState({
+	// 			page,
+	// 		}, () => this.reloadData());
+	// 	}
 
-		// 	const {
-		// 		location: {
-		// 			query: prevQuery,
-		// 		},
-		// 	} = prevRouter;
+	// 	// const {
+	// 	// 	router: prevRouter,
+	// 	// } = prevContext;
 
-		// 	if(query && prevQuery){
+	// 	// if(router && prevRouter){
 
-		// 		const {
-		// 			page,
-		// 		} = query;
+	// 	// 	const {
+	// 	// 		location: {
+	// 	// 			query,
+	// 	// 		},
+	// 	// 	} = router;
 
-		// 	}
+	// 	// 	const {
+	// 	// 		location: {
+	// 	// 			query: prevQuery,
+	// 	// 		},
+	// 	// 	} = prevRouter;
 
-		// }
+	// 	// 	if(query && prevQuery){
 
-		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
-	}
+	// 	// 		const {
+	// 	// 			page,
+	// 	// 		} = query;
+
+	// 	// 	}
+
+	// 	// }
+
+	// 	super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
+	// }
 	
 
-	loadData(){
+	loadData__(){
 
 
 		const {
@@ -153,34 +154,138 @@ export default class CommentsPage extends Page {
 				comments,
 				total,
 			});
-		}); 
-
-
-		
+		});		
 		
 	}
 
+
+	loadData(){
+
+    const {
+      coords,
+    } = this.context;
+
+		const page = this.getPage();
+
+		return super.loadData({
+			page,
+			coords,
+		});
+
+	}
+
 	
-	renderContent(){
+	async loadServerData(provider, options = {}){
+
+		let {
+			cities: citiesNull,
+			...debugOptions
+		} = options;
+
+
+
+		const {
+			coords,
+			page,
+			limit = 10,
+			withPagination = true,
+			cities,
+		} = options;
+
+
+		// Получаем список компаний
+	  const result = await provider({
+	    // operationName: "MapCompanies",
+	    // variables: {
+	    //   limit: limit,
+	    //   companiesCenter: coords,
+	    //   page,
+	    // },
+
+			operationName: "Comments",
+			variables: {
+				limit,
+				// commentsIds: commentId && parseInt(commentId) || undefined,
+				commentsPage: page,
+	      withPagination: withPagination,
+				getCommentAuthor: true,
+				getImageFormats: true,
+				commentGetResource: true,
+			},
+	  })
+	  .then(r => {
+	    
+	  	// console.log("CommentsPage result", r);
+
+	    return r;
+
+	  })
+	  .catch(e => {
+	    throw(e);
+	  });
+
+
+	  if(result && result.data){
+
+	  	let title;
+
+	  	// const city = cities && cities[0];
+
+	  	// if(city){
+
+	  	// 	title = city.longtitle;
+
+	  	// }
+
+	  	title = title || "Комментарии";
+
+	  	if(page > 1){
+
+	  		title = `${title}, страница ${page}`;
+
+	  	}
+
+  		Object.assign(result.data, {
+  			title,
+  		});
+
+	  }
+
+
+	  return result;
+
+	}
+
+	
+	render(){
 
 		const {
 			params,
 		} = this.props;
 
-		const {
-			commentId,
-		} = params || {};
+		// const {
+		// 	commentId,
+		// } = params || {};
 
 		// {
 		// 	TopicsStore,
 		// } = this.context;
 
 		const {
-			comments,
+			commentsList,
+		} = this.state;
+
+
+		if(!commentsList){
+			return null;
+		}
+
+		const {
 			page,
 			limit,
 			total,
-		} = this.state;
+			object: comments,
+		} = commentsList;
 
 		let rows = [];
 
@@ -191,38 +296,42 @@ export default class CommentsPage extends Page {
 
 			content = <Comments 
 				comments={comments}
+				showResourceLink={true}
 			/>
 
 		}
 
-		return <div
+		return super.render(<div
 			style={{
 				width: "100%",
+				marginTop: 30,
 			}}
 		>
+
+			<Typography 
+				type="title"
+			>
+				Комментарии
+			</Typography>
+
 			
 			{content}
 
-	    {!commentId
-	    	?
-	    	<div
-		    	style={{
-		    		textAlign: "center",
-		    	}}
-		    >
-		    	
-		    	<Pagination
-		      	page={parseInt(page) || 1}
-			      limit={limit}
-			      total={total}
-			    />
+    	<div
+	    	style={{
+	    		textAlign: "center",
+	    	}}
+	    >
+	    	
+	    	<Pagination
+	      	page={parseInt(page) || 1}
+		      limit={limit}
+		      total={total}
+		    />
 
-		    </div>
-		    :
-		    null
-		  }
+	    </div>
 
-		</div>
+		</div>);
 
 	}
 

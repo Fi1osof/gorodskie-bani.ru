@@ -15,11 +15,16 @@ export default class Comments extends Component{
 	static propTypes = {
 		comments: PropTypes.array.isRequired,
 		resource: PropTypes.object,
+		showResourceLink: PropTypes.bool.isRequired,
 	};
 
 	static contextTypes = {
 		localQuery: PropTypes.func.isRequired,
 		CommentsStore: PropTypes.object.isRequired,
+	};
+
+	static defaultProps = {
+		showResourceLink: false,
 	};
 
 
@@ -90,6 +95,8 @@ export default class Comments extends Component{
 		const {
 			comments,
 			newCommentForm,
+			showResourceLink,
+			...other
 		} = this.props;
 
 		const {
@@ -106,10 +113,13 @@ export default class Comments extends Component{
 			commentsList.push(<Comment
 				key={comment.id || `comment_${commentsList.length}`}
 				item={comment}
+				showResourceLink={showResourceLink}
 			/>);
 		});
 
-		return <div>
+		return <div
+			{...other}
+		>
 			{commentsList}
 
 			{newCommentForm

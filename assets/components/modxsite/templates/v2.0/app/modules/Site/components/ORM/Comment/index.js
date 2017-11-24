@@ -27,6 +27,10 @@ import {
 } from '../Company';
 
 import {
+  ResourceType,
+} from '../Resource';
+
+import {
   UserType,
 } from '../User';
 
@@ -216,6 +220,66 @@ export const CommentType = new GraphQLObjectType({
           //     } = r.data;
 
           //     result = user;
+
+          //   }); 
+          // }
+          
+          // return result;
+        },
+      },
+      Resource: {
+        type: ResourceType,
+        description: ResourceType.description,
+        resolve: (source, args, context, info) => {
+
+          const {
+            target_id,
+            target_class,
+          } = source;
+
+
+          if(!target_id || target_class !== "modResource"){
+            return null;
+          }
+
+          const {
+            rootResolver,
+          } = context;
+
+          Object.assign(args, {
+            id: target_id,
+          });
+
+          return rootResolver(null, args, context, info);
+
+
+          // if(!result){
+
+          //   const {
+          //     resource_id: company_id,
+          //   } = source;
+
+          //   if(!company_id){
+          //     return null;
+          //   }
+
+          //   Object.assign(args, {
+          //     company_id,
+          //   });
+   
+ 
+          //   await localQuery({
+          //     operationName: "Company",
+          //     variables: args,
+          //   })
+          //   .then(r => {
+
+
+          //     const {
+          //       company,
+          //     } = r.data;
+
+          //     result = company;
 
           //   }); 
           // }

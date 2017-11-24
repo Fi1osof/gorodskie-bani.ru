@@ -23,11 +23,16 @@ export default class Comment extends Component{
 
 	static propTypes = {
 		item: PropTypes.object.isRequired,
+		showResourceLink: PropTypes.bool.isRequired,
 	};
 
 	static contextTypes = {
 		updateCommentItem: PropTypes.func.isRequired,
 		saveCommentItem: PropTypes.func.isRequired,
+	};
+
+	static defaultProps = {
+		showResourceLink: false,
 	};
 
 	constructor(props){
@@ -130,6 +135,7 @@ export default class Comment extends Component{
 
 		const {
 			item,
+			showResourceLink,
 		} = this.props;
 
 		if(!item){
@@ -146,6 +152,7 @@ export default class Comment extends Component{
 			parent,
       createdon,
       Author,
+			Resource,
 			_errors: errors,
 			_Dirty,
 		} = item;
@@ -159,6 +166,27 @@ export default class Comment extends Component{
 		} = Author || {};
 
 
+		let footer;
+
+		if(showResourceLink && Resource){
+
+			const {
+				id: resourceId,
+				uri: resourceUri,
+				name: resourceName,
+			} = Resource;
+
+			footer = <CardContent>
+				<Link
+					to={resourceUri}
+					href={resourceUri}
+					title={resourceName}
+				>
+					{resourceName}
+				</Link>
+			</CardContent>
+
+		}
 
 
 		return <Card
@@ -233,6 +261,8 @@ export default class Comment extends Component{
 					null
 				}
 			</CardContent>
+
+			{footer}
 
 		</Card>
 	}

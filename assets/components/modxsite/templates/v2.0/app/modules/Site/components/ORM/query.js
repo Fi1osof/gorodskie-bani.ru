@@ -43,6 +43,7 @@ query apiData(
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
   $resourcesPage:Int
+  $commentGetResource:Boolean = false
 ){
   companies(
     limit:$limit
@@ -473,6 +474,7 @@ query Comments(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $commentGetResource:Boolean = false
 ){
   commentsList(
     ids: $commentsIds
@@ -486,6 +488,8 @@ query Comments(
   {
     count
     total
+    limit
+    page
     object{
       ...Comment
     }
@@ -701,6 +705,7 @@ query CompanyComments(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $commentGetResource:Boolean = false
 ){
   comments(  
     limit:$limit
@@ -1302,6 +1307,12 @@ fragment Comment on CommentType{
   {
     ...User
   }
+  Resource @include(if:$commentGetResource)
+  {
+    id
+    name
+    uri
+  }
 }
 
 fragment CommentFields on CommentType{
@@ -1895,6 +1906,7 @@ mutation addComment(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $commentGetResource:Boolean = false
 ){
   addComment(
     target_id:$commentTargetId

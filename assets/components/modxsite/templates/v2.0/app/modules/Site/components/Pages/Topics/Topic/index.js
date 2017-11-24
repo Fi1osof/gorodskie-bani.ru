@@ -25,8 +25,9 @@ import Comments from 'modules/Site/components/Comments';
 
 // import Editor from 'modules/Site/components/fields/Editor';
 
-import Editor from './Editor';
+// import Editor from './Editor';
 
+import TopicView from './View';
 
 import Page from '../../layout'; 
 
@@ -62,7 +63,7 @@ contextTypes = Object.assign(contextTypes || {}, {
 });
 
 
-export default class Topic extends Page{
+export default class TopicPage extends Page{
 
 	static propTypes = propTypes;
 
@@ -71,16 +72,140 @@ export default class Topic extends Page{
 	static contextTypes = contextTypes;
 
 
+
+
+	loadData(){
+
+		const {
+			location,
+		} = this.context;
+
+		const {
+			pathname: uri,
+		} = location || {};
+
+		return uri && super.loadData({
+			pathname: uri.replace(/^\/+/, ''),
+		});
+
+	}
+
+	
+	async loadServerData(provider, options = {}){
+
+		const {
+			cities: citiesNull,
+			...debugOptions,
+		} = options;
+
+	    
+    // console.log("TopicPage params", debugOptions);
+
+
+		const {
+			// coords,
+			// page,
+			// resourcesPage = 1,
+			// withPagination = false,
+			// cities,
+			pathname,
+		} = options;
+
+		if(!pathname){
+
+			// return null;
+			
+			throw("Не указан УРЛ объекта");
+		}
+
+		// Получаем список компаний
+	  let result = await provider({
+			operationName: "Topic",
+			variables: {
+				resourceUri: pathname,
+				resourceGetComments: true,
+				getCommentAuthor: true,
+			},
+	  })
+	  .then(r => {
+	    
+	    // console.log("TopicPage result", r);
+
+	    return r;
+
+	  })
+	  .catch(e => {
+	    throw(e);
+	  });
+
+
+	  if(result && result.data){
+
+	  	let title;
+
+	  	
+			const {
+				topic,
+			} = result.data;
+
+			// company && Object.assign(item, company);
+
+
+
+
+
+			// this.setPageTitle(company && company.name || name);
+
+
+	  	// const city = cities && cities[0];
+
+	  	// if(city){
+
+	  	// 	title = city.longtitle;
+
+	  	// }
+
+	  	title = topic && topic.name;
+
+	  	// if(page > 1){
+
+	  	// 	title = `${title}, страница ${page}`;
+
+	  	// }
+
+  		Object.assign(result.data, {
+  			title,
+  		});
+
+	  }
+	  else{
+	  	result = null
+	  }
+
+
+	  return result;
+
+	}
+
+
 	render(){
 
 		const {
 		} = this.props;
 
+		const{
+			topic,
+		} = this.state;
 
-		return <div>Topic</div>
+		if(!topic){
+			return null;
+		}
 
-
-		// return super.render();
+		return super.render(<TopicView
+			item={topic}
+			open={true}
+			commentOpen={true}
+		/>);
 
 	}
 

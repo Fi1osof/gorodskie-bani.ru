@@ -303,7 +303,7 @@ export default class PageGraphiQL extends Page{
             initData,
           } = this.context;
 
-          initData(r && r.object);
+          initData(r && r.data);
 
           break;
 

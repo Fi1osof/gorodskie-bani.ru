@@ -1354,13 +1354,26 @@ export default class Router {
     // debug("options", options);
 
 
-    return fetch(site_url + url, options)
-      .then(function(res) {
-        return res.json();
-      })
-      .catch(e => {
-        console.error(e);
-      });
+    let result = await fetch(site_url + url, options)
+    .then(function(res) {
+      return res.json();
+    })
+    .then(function(r) {
+      return r;
+    })
+    .catch(e => {
+      console.error(e);
+    });
+
+    // console.log()
+
+    if(result){
+      result.data = result.object;
+    }
+
+    // console.log('result.data', result.data);
+
+    return result;
   };
 
 }

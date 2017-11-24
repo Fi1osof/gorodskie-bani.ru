@@ -489,7 +489,11 @@ const RootType = new GraphQLObjectType({
       description: "Документ",
       args: {
         id: {
-          type: new GraphQLNonNull(GraphQLInt),
+          type: GraphQLInt,
+        },
+        uri: {
+          type: GraphQLString,
+          description: "УРЛ ресурса",
         },
       },
       // resolve: getCompany,

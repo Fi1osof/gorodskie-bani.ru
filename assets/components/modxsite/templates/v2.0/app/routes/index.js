@@ -4,11 +4,13 @@ import {
   MainApp,
   MainPage,
   TopicsPage,
+  TopicPage,
   NotFoundPage,
   DbPage,
   CompaniesPage,
   CompanyPage,
   OtzivyPage,
+  OtzivPage,
   UsersPage,
   CommentsPage,
   RatingsPage,
@@ -50,12 +52,9 @@ let routes = {
       component: DbPage,
     },
     {
-      path: "/bani-otzivy",
-      component: OtzivyPage,
+      path: "/bani-otzivy/:topicAlias",
+      component: OtzivPage,
       childRoutes: [
-        {
-          path: "/bani-otzivy/:topicAlias",
-        },
         {"path":"/moscow/:companyId/solyanyie-peshheryi-v-bannom-komplekse-sokolinaya-gora-1294.html"},
 
 
@@ -87,12 +86,16 @@ let routes = {
       ]
     },
     {
-      path: "/topics",
-      component: TopicsPage,
+      path: "/bani-otzivy",
+      component: OtzivyPage,
+    },
+    {
+      path: "/topics/:topicAlias",
+      component: TopicPage,
       childRoutes: [
-        {
-          path: "/topics/:topicAlias",
-        },
+        // {
+        //   path: "/topics/:topicAlias",
+        // },
         {"path":"/rabota-dlya-vsex"},
         {"path":"/predlozhenie-dlya-vladelcev-saun"},
         {"path":"/rimskie-bani"},
@@ -103,9 +106,16 @@ let routes = {
       ],
     },
     {
-      path: "/tag/:tag",
+      path: "/topics",
       component: TopicsPage,
+      childRoutes: [{
+        path: "/tag/:tag",
+      }],
     },
+    // {
+    //   path: "/tag/:tag",
+    //   component: TopicsPage,
+    // },
     {
       path: "/comments",
       component: CommentsPage,

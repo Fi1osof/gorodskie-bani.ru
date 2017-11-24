@@ -99,8 +99,8 @@ export default class MainPage extends Page{
 					document,
 				} = this.context || {};
 
-				if(r && r.object && document){
-					document.mapData = r.object;
+				if(r && r.data && document){
+					document.mapData = r.data;
 				}
 	  		
 	  	}

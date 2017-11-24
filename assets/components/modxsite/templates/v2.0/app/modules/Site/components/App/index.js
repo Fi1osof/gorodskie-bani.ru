@@ -1432,7 +1432,7 @@ export class AppMain extends Component{
 
       let {
         ws_connections,
-      } = r.object && r.object || {}
+      } = r.data && r.data || {}
 
       if(ws_connections && ws_connections.length){
 
@@ -2621,7 +2621,7 @@ export class AppMain extends Component{
       .then(r => {
 
         // document.apiData = apiData = r && r.object || null;
-        apiData = r && r.object || null;
+        apiData = r && r.data || null;
 
         // this.initData(apiData);
 

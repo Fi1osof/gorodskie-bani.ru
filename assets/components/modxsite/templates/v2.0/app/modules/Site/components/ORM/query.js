@@ -77,7 +77,7 @@ query apiData(
   
   ...ResourcesList
   
-  ...Topics
+  ...RootTopics
   
   ...RootEditVersions
 }
@@ -777,8 +777,9 @@ query CompanyTopics(
   $resourceGetContent:Boolean = true
   $resourcesPage:Int
   $resourceTemplate:Int
+  $resourceUri:String
 ){
-    ...Topics
+    ...RootTopics
 }
 
 query Users(
@@ -1044,9 +1045,36 @@ query Topics(
   $resourceGetContent:Boolean = true
   $resourcesPage:Int
   $resourceTemplate:Int
+  $resourceUri:String
 ){
   
-  ...Topics
+  ...RootTopics
+}
+
+
+query Topic(
+  # $resourcesLimit:Int = 0
+  # $withPagination:Boolean = false
+  $getTVs:Boolean = true
+  # $resourceParent:Int
+  $getImageFormats:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $resourceId:Int
+  $getCommentAuthor:Boolean = false
+  $userGetComments:Boolean = false
+  # $resourceTag:String
+  $resourceGetContent:Boolean = true
+  # $resourcesPage:Int
+  # $resourceTemplate:Int
+  $resourceUri:String
+){
+  topic:resource(
+    id:$resourceId
+    uri:$resourceUri
+  ){
+    ...Topic
+  }
 }
 
 query ObzoryZavedeniy(
@@ -1064,18 +1092,20 @@ query ObzoryZavedeniy(
   $resourceTag:String
   $resourcesPage:Int
   $resourceTemplate:Int = 28
+  $resourceUri:String
 ){
   
-  ...Topics
+  ...RootTopics
 }
 
-fragment Topics on RootType{
+fragment RootTopics on RootType{
   topics:resources(
     ids:$resourceIds
     resourceType:topic
     limit:$resourcesLimit
     parent:$resourceParent
     template:$resourceTemplate
+    uri:$resourceUri
     tag:$resourceTag
     sort:[{
       by:id
@@ -1092,6 +1122,7 @@ fragment Topics on RootType{
     page:$resourcesPage
     parent:$resourceParent
     template:$resourceTemplate
+    uri:$resourceUri
     tag:$resourceTag
     sort:[{
       by:id

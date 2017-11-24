@@ -379,7 +379,7 @@ export default class Page extends Component{
 
 		if(result){
 
-			this.initState(result.object);
+			this.initState(result.data);
 
 		}
 

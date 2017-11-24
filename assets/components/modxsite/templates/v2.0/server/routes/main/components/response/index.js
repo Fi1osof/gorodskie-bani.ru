@@ -2240,6 +2240,7 @@ export default class Response{
       success,
       message,
       object,
+      data: object,
     };
 
     if(typeof message === "object"){

@@ -130,7 +130,14 @@ export default class TopicPage extends Page{
 	  })
 	  .then(r => {
 	    
-	    // console.log("TopicPage result", r);
+      const {
+        topic,
+      } = r.data;
+
+
+      if(!topic){
+        return null;
+      }
 
 	    return r;
 

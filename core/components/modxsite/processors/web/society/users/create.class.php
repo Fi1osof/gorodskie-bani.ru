@@ -82,7 +82,14 @@ class modWebSocietyUsersCreateProcessor extends modUserCreateProcessor{
             'email'                 => mb_convert_case($this->getProperty('email'), MB_CASE_LOWER, 'utf-8'),
             "mail_template"         => "messages/users/registration.tpl",
         ));
-          
+        
+        
+        $username = $this.->getProperty("username");
+
+        if(isset($username)){
+            $this->setProperty("username", $username);
+        }
+
         
         $confirmpassword = $this->getProperty('specifiedpassword');
         $this->setProperty('confirmpassword', $confirmpassword);

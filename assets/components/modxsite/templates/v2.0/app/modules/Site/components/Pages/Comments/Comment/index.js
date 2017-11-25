@@ -93,6 +93,16 @@ export default class CommentPage extends Page {
 	  .then(r => {
 	    
 	  	// console.log("CommentsPage result", r);
+	    
+      const {
+        comment,
+      } = r.data;
+
+
+      if(!comment){
+        return null;
+      }
+
 
 	    return r;
 

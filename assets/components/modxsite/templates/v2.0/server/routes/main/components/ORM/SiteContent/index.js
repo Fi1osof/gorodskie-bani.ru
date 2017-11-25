@@ -607,7 +607,7 @@ export const getList = (object, args, context, info) => {
     // }
 
 
-
+    // console.log("Server SiteContent loadServerData result", result);
 
     if(result && result.data){
 

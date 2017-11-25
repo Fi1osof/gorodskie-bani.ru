@@ -417,6 +417,15 @@ export default class CompanyPage extends Page{
 	  })
 	  .then(r => {
 	    
+	    
+      const {
+        company,
+      } = r.data;
+
+
+      if(!company){
+        return null;
+      }
 
 	    return r;
 

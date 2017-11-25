@@ -313,6 +313,11 @@ export default class UserPage extends Page {
         user,
       } = r.data;
 
+
+      if(!user){
+        return null;
+      }
+
       // const {
       //  count,
       //  total,
@@ -360,7 +365,11 @@ export default class UserPage extends Page {
       });
 
     }
+    else{
+      return null;
+    }
 
+    // console.log("User page result", result);
 
     return result;
     

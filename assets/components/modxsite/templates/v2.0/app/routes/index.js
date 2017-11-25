@@ -12,6 +12,7 @@ import {
   OtzivyPage,
   OtzivPage,
   UsersPage,
+  UserPage,
   CommentsPage,
   CommentPage,
   RatingsPage,
@@ -126,14 +127,15 @@ let routes = {
       component: CommentsPage,
     },
     {
+      path: "/profile/:username",
+      component: UserPage,
+      childRoutes: [{
+        path: "/profile/:username/:action",
+      }],
+    },
+    {
       path: "/people",
       component: UsersPage,
-      childRoutes: [{
-        path: "/profile/:username",
-        childRoutes: [{
-          path: "/profile/:username/:action",
-        }],
-      }],
     },
     {
       path: "/edits",

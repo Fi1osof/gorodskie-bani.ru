@@ -172,6 +172,9 @@ export default class CommentPage extends Page {
   		});
 
 	  }
+	  else{
+	  	return null;
+	  }
 
 
 	  return result;

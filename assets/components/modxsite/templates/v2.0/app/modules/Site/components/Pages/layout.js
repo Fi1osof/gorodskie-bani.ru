@@ -340,11 +340,11 @@ export default class Page extends Component{
   setPageTitle(title){
 
 
-		const {
-			setPageTitle,
-		} = this.context;
+		// const {
+		// 	setPageTitle,
+		// } = this.context;
 
-		title && setPageTitle(title);
+		// title && setPageTitle(title);
 
   }
 

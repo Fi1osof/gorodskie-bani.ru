@@ -465,6 +465,9 @@ export default class CompanyPage extends Page{
   		});
 
 	  }
+	  else{
+	  	return null;
+	  }
 
 
 	  return result;

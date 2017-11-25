@@ -406,6 +406,9 @@ export default class TopicsPage extends Page {
   		});
 
 	  }
+	  else{
+	  	return null;
+	  }
 
 
 	  return result;

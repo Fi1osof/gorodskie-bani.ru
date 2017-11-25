@@ -83,7 +83,31 @@ import moment from 'moment';
 //   allowEdit: true,
 // }, Layout.defaultProps || {});
 
-const contextTypes = Object.assign({
+
+import Page from '../../layout'; 
+
+// const propTypes = Object.assign({
+//   username: PropTypes.string.isRequired,
+// }, {});
+
+
+let {
+  ...defaultProps
+} = Page.defaultProps;
+
+defaultProps = Object.assign(defaultProps, {
+  inEditMode: false,
+  isDirty: false,
+  allowEdit: true,
+});
+
+
+let {
+  ...contextTypes
+} = Page.contextTypes;
+
+
+contextTypes = Object.assign(contextTypes, {
   user: PropTypes.object.isRequired,
   UsersStore: PropTypes.object.isRequired,
   CommentsStore: PropTypes.object.isRequired,
@@ -101,25 +125,14 @@ const contextTypes = Object.assign({
   connector_url: PropTypes.string.isRequired,
   // setPagetitle: PropTypes.func.isRequired,
   styleManager: customPropTypes.muiRequired,
-}, {});
-
-const propTypes = Object.assign({
-  username: PropTypes.string.isRequired,
-}, {});
-
-const defaultProps = Object.assign({
-  inEditMode: false,
-  isDirty: false,
-  allowEdit: true,
-}, {});
+});
 
 
-export default class User extends Component {
-
+export default class UserPage extends Page {
 
   static contextTypes = contextTypes;
 
-  static propTypes = propTypes;
+  // static propTypes = propTypes;
 
   static defaultProps = defaultProps;
 
@@ -128,35 +141,13 @@ export default class User extends Component {
   constructor(props){
     super(props);
 
-    this.state = {};
+    const {
+      inEditMode,
+    } = props;
 
-    // if(props.document && props.document.document && props.document.document.data){
-    //   let user_data = props.document.document.data;
-    //   this.state = {
-    //     // initialized: user_data.id,
-    //     // requested_id: props.document.document.user_id,
-    //     allowEdit: props.allowEdit,
-    //     inEditMode: props.inEditMode,
-    //     id: user_data.id,
-    //     username: user_data.username,
-    //     fullname: user_data.fullname,
-    //     email: user_data.email,
-    //     photo: user_data.photo,
-    //     regdate: user_data.regdate,
-    //     // api_key: user_data.api_key,
-
-    //   }
-    // }
-
-    // let {
-      
-    //   user: current_user 
-    // } = props;
-
-
-    // Object.assign(this.state, {
-    //   current_user: current_user || {},
-    // });
+    this.state = {
+      inEditMode,
+    };
 
     return;
   }
@@ -177,65 +168,65 @@ export default class User extends Component {
 
     classes = this.context.styleManager.render(styleSheet);
 
-    return;
+    super.componentWillMount && super.componentWillMount();
   }
 
 
 
   componentDidMount(){
 
-    const {
-      UsersStore,
-      CommentsStore,
-    } = this.context;
+    // const {
+    //   UsersStore,
+    //   CommentsStore,
+    // } = this.context;
 
-    this.UsersStoreListener = UsersStore.getDispatcher().register(payload => {
+    // this.UsersStoreListener = UsersStore.getDispatcher().register(payload => {
 
-      this.loadData();
+    //   this.loadData();
 
-    });
+    // });
 
-    this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
+    // this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
 
-      this.loadData();
+    //   this.loadData();
 
-    });
+    // });
 
-    this.loadData();
+    // this.loadData();
 
     this.processAction();
 
     super.componentDidMount && super.componentDidMount();
   }
 
-  componentWillUnmount(){
+  // componentWillUnmount(){
 
-    const {
-      UsersStore,
-      CommentsStore,
-    } = this.context;
+  //   const {
+  //     UsersStore,
+  //     CommentsStore,
+  //   } = this.context;
 
 
 
-    if(this.UsersStoreListener){
+  //   if(this.UsersStoreListener){
 
-      let dispatch = UsersStore.getDispatcher();
+  //     let dispatch = UsersStore.getDispatcher();
 
-      dispatch._callbacks[this.UsersStoreListener] && dispatch.unregister(this.UsersStoreListener);
+  //     dispatch._callbacks[this.UsersStoreListener] && dispatch.unregister(this.UsersStoreListener);
 
-      this.UsersStoreListener = undefined;
-    }
+  //     this.UsersStoreListener = undefined;
+  //   }
 
-    if(this.CommentsStoreListener){
+  //   if(this.CommentsStoreListener){
 
-      let dispatch = CommentsStore.getDispatcher();
+  //     let dispatch = CommentsStore.getDispatcher();
 
-      dispatch._callbacks[this.CommentsStoreListener] && dispatch.unregister(this.CommentsStoreListener);
+  //     dispatch._callbacks[this.CommentsStoreListener] && dispatch.unregister(this.CommentsStoreListener);
 
-      this.CommentsStoreListener = undefined;
-    }
+  //     this.CommentsStoreListener = undefined;
+  //   }
 
-  }
+  // }
 
 
 
@@ -251,31 +242,55 @@ export default class User extends Component {
 
 
     if((username || prevUsername) && username !== prevUsername){
-      this.loadData();
+      this.reloadData();
     }
 
     super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
   }
 
 
+
   loadData(){
 
 
     const {
-      localQuery,
-    } = this.context;
+      params,
+    } = this.props;
+
+    let {
+      username,
+    } = params || {};
+
+    return super.loadData({
+      username: decodeURI(username),
+    });
+
+  }
+
+
+  async loadServerData(provider, options = {}){
+
+    let {
+      cities: citiesNull,
+      ...debugOptions
+    } = options;
+
+    // const {
+    //   localQuery,
+    // } = this.context;
 
     const {
       username,
-    } = this.props;
+    } = options;
 
 
+    // console.log("UserPage loadServerData options", debugOptions);
 
     if(!username){
-      return;
+      return null;
     }
 
-    let result = localQuery({
+    const result = await provider({
       operationName: "User",
       variables: {
         username,
@@ -291,7 +306,7 @@ export default class User extends Component {
     })
     .then(r => {
 
-
+      // console.log("User page result", r);
 
       const {
         user,
@@ -303,13 +318,50 @@ export default class User extends Component {
       //  object: users,
       // } = usersList || {};
 
-      this.setState({
-        user,
-      });
+      // this.setState({
+      //   user,
+      // });
+
+      return r;
+    })
+    .catch(e => {
+      // console.error(e);
+      throw(e);
     }); 
 
 
-    
+
+    if(result && result.data){
+
+      const {
+        user,
+      } = result.data;
+
+      let title = [];
+
+      if(user){
+
+        const {
+          username,
+          fullname,
+        } = user;
+
+        fullname && title.push(fullname);
+
+        title.push(username);
+
+        title = title.join(", ");
+
+      }
+
+      Object.assign(result.data, {
+        title,
+      });
+
+    }
+
+
+    return result;
     
   }
 
@@ -620,14 +672,14 @@ export default class User extends Component {
   //   this.setState(newState);
   // }
 
-  shouldComponentUpdate(nextProps, nextState){
+  // shouldComponentUpdate(nextProps, nextState){
 
-    if(typeof window != "object"){
-      return false;
-    }
+  //   if(typeof window !== "object"){
+  //     return false;
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 
   // Save(){
 
@@ -1441,7 +1493,7 @@ export default class User extends Component {
       card = <h3>Пользователь не найден</h3>;
     }
 
-    return (
+    return super.render(
       <Grid
         container
         gutter={0}

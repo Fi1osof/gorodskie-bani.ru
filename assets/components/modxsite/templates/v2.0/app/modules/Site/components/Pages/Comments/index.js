@@ -250,6 +250,9 @@ export default class CommentsPage extends Page {
   		});
 
 	  }
+	  else{
+	  	return null;
+	  }
 
 
 	  return result;

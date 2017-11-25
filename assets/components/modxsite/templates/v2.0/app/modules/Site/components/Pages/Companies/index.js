@@ -314,6 +314,9 @@ export default class CompaniesPage extends Page {
   		});
 
 	  }
+	  else{
+	  	return null;
+	  }
 
 
 	  return result;

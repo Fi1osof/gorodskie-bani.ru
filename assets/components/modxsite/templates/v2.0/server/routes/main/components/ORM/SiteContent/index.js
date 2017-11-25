@@ -109,6 +109,7 @@ export const getList = (object, args, context, info) => {
       zoom: paramsZoom,
       tag: paramsTag,
       commentId: paramsCommentId,
+      username: paramsUsername,
     } = params;
 
     paramsLat = paramsLat && parseFloat(paramsLat) || undefined;
@@ -117,6 +118,7 @@ export const getList = (object, args, context, info) => {
     paramsCity = paramsCity && decodeURI(paramsCity) || undefined;
     paramsTag = paramsTag && decodeURI(paramsTag) || undefined;
     paramsCommentId = paramsCommentId && parseInt(paramsCommentId) || undefined;
+    paramsUsername = paramsUsername && decodeURI(paramsUsername) || undefined;
 
 
     companyId = companyId || debugCompanyId;
@@ -564,6 +566,7 @@ export const getList = (object, args, context, info) => {
         pathname: relativePathname,
         tag: paramsTag,
         commentId: paramsCommentId,
+        username: paramsUsername,
       };
         
 

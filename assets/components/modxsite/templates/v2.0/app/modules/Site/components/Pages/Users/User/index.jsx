@@ -270,11 +270,13 @@ export default class UserPage extends Page {
 
   async loadServerData(provider, options = {}){
 
-    let {
-      cities: citiesNull,
-      ...debugOptions
-    } = options;
+    // let {
+    //   cities: citiesNull,
+    //   ...debugOptions
+    // } = options;
+    // console.log("UserPage loadServerData options", debugOptions);
 
+    
     // const {
     //   localQuery,
     // } = this.context;
@@ -284,7 +286,6 @@ export default class UserPage extends Page {
     } = options;
 
 
-    // console.log("UserPage loadServerData options", debugOptions);
 
     if(!username){
       return null;

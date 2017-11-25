@@ -847,6 +847,8 @@ query Users(
   {
     count
     total
+    limit
+    page
     object{
       ...User
     }

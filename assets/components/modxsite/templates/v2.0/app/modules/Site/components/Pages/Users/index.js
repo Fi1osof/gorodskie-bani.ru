@@ -48,93 +48,117 @@ export default class UsersPage extends Page {
 		});
 	}
 
-	componentDidMount(){
+	// componentDidMount(){
 
-		// const {
-		// 	TopicsStore,
-		// } = this.context;
+	// 	// const {
+	// 	// 	TopicsStore,
+	// 	// } = this.context;
 
-		// this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
+	// 	// this.TopicsStoreListener = TopicsStore.getDispatcher().register(payload => {
 
-		// 	this.loadData();
+	// 	// 	this.loadData();
 
-		// });
+	// 	// });
 
-		this.loadData();
+	// 	this.loadData();
 
-		super.componentDidMount && super.componentDidMount();
-	}
-
-
-	componentDidUpdate(prevProps, prevState, prevContext){
-
-		const {
-			router,
-		} = this.context;
+	// 	super.componentDidMount && super.componentDidMount();
+	// }
 
 
-		const {
-			location: {
-				query,
-			},
-		} = router;
+	// componentDidUpdate(prevProps, prevState, prevContext){
 
-		const {
-			page,
-		} = query || {};
+	// 	const {
+	// 		router,
+	// 	} = this.context;
 
-		if(page !== this.state.page){
-			this.setState({
-				page,
-			}, () => this.loadData());
-		}
 
-		// const {
-		// 	router: prevRouter,
-		// } = prevContext;
+	// 	const {
+	// 		location: {
+	// 			query,
+	// 		},
+	// 	} = router;
 
-		// if(router && prevRouter){
+	// 	const {
+	// 		page,
+	// 	} = query || {};
 
-		// 	const {
-		// 		location: {
-		// 			query,
-		// 		},
-		// 	} = router;
+	// 	if(page !== this.state.page){
+	// 		this.setState({
+	// 			page,
+	// 		}, () => this.loadData());
+	// 	}
 
-		// 	const {
-		// 		location: {
-		// 			query: prevQuery,
-		// 		},
-		// 	} = prevRouter;
+	// 	// const {
+	// 	// 	router: prevRouter,
+	// 	// } = prevContext;
 
-		// 	if(query && prevQuery){
+	// 	// if(router && prevRouter){
 
-		// 		const {
-		// 			page,
-		// 		} = query;
+	// 	// 	const {
+	// 	// 		location: {
+	// 	// 			query,
+	// 	// 		},
+	// 	// 	} = router;
 
-		// 	}
+	// 	// 	const {
+	// 	// 		location: {
+	// 	// 			query: prevQuery,
+	// 	// 		},
+	// 	// 	} = prevRouter;
 
-		// }
+	// 	// 	if(query && prevQuery){
 
-		super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
-	}
+	// 	// 		const {
+	// 	// 			page,
+	// 	// 		} = query;
+
+	// 	// 	}
+
+	// 	// }
+
+	// 	super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
+	// }
 	
 
 	loadData(){
-
+ 
 
 		const {
-			localQuery,
-		} = this.context;
+			delegatesOnly,
+			myOnly,
+		} = this.state;
+
+		const page = this.getPage();
+
+		return super.loadData({
+			page,
+			delegatesOnly,
+			myOnly,
+		});
+		
+	}
+
+  async loadServerData(provider, options = {}){
+
+
+    // let {
+    //   cities: citiesNull,
+    //   ...debugOptions
+    // } = options;
+    // console.log("UsersPage loadServerData options", debugOptions);
+
+		// const {
+		// 	localQuery,
+		// } = this.context;
 
 		const {
 			page,
 			delegatesOnly,
 			myOnly,
-		} = this.state;
+		} = options;
 
-		let result = localQuery({
+		const result = await provider({
 			operationName: "Users",
 			variables: {
 				limit: 10,
@@ -152,29 +176,55 @@ export default class UsersPage extends Page {
 		})
 		.then(r => {
 
+			// console.log("UsersPage result", r);
 
+			// const {
+			// 	usersList,
+			// } = r.data;
 
-			const {
-				usersList,
-			} = r.data;
+			// const {
+			// 	count,
+			// 	total,
+			// 	object: users,
+			// } = usersList || {};
 
-			const {
-				count,
-				total,
-				object: users,
-			} = usersList || {};
+			// this.setState({
+			// 	users,
+			// 	total,
+			// });
 
-			this.setState({
-				users,
-				total,
-			});
+			return r;
+
 		})
 		.catch(e => {
-			console.error(e);
+			// console.error(e);
+			throw(e);
 		}); 
 
 
-		
+	  if(result && result.data){
+
+	  	let title;
+
+	  	title = title || "Список пользователей";
+
+	  	if(page > 1){
+
+	  		title = `${title}, страница ${page}`;
+
+	  	}
+
+  		Object.assign(result.data, {
+  			title,
+  		});
+
+	  }
+	  else{
+	  	return null;
+	  }
+
+
+		return result;
 		
 	}
 
@@ -254,7 +304,7 @@ export default class UsersPage extends Page {
 		this.setState({
 			delegatesOnly: checked,
 		}, () => {
-			this.loadData();
+			this.reloadData();
 		});
 
 	}
@@ -266,18 +316,18 @@ export default class UsersPage extends Page {
 		this.setState({
 			myOnly: checked,
 		}, () => {
-			this.loadData();
+			this.reloadData();
 		});
 
 	}
 	
-	renderUser(username){
+	// renderUser(username){
 
-		return <User 
-			username={username}
-		/>;
+	// 	return <User 
+	// 		username={username}
+	// 	/>;
 
-	}
+	// }
 	
 	// renderAction(action){
 
@@ -393,14 +443,22 @@ export default class UsersPage extends Page {
 		} = this.context;
 
 		const {
-			users,
-			page,
-			limit,
-			total,
+			usersList,
 			delegatesOnly,
 			myOnly,
 			compredOpen,
 		} = this.state;
+
+		// if(!usersList){
+		// 	return null;
+		// }
+
+		const {
+			page,
+			limit,
+			total,
+			object: users,
+		} = usersList || {};
 
 		let content;
 
@@ -582,9 +640,9 @@ export default class UsersPage extends Page {
 
 		});
 
-		if(!rows || !rows.length){
-			return null;
-		}
+		// if(!rows || !rows.length){
+		// 	return null;
+		// }
 
 
 
@@ -767,7 +825,7 @@ export default class UsersPage extends Page {
 
 	}
 
-	renderContent(){
+	render(){
 
 		let {
 			params,
@@ -787,21 +845,22 @@ export default class UsersPage extends Page {
 		// }
 		// else 
 		
-		if(username){
+		// if(username){
 			
-			content = this.renderUser(username);
+		// 	content = this.renderUser(username);
 
-		}
-		else{
+		// }
+		// else{
 
-			content = this.renderUsers();
+		// 	content = this.renderUsers();
 
-		}
+		// }
+
+		content = this.renderUsers();
 
 
 
-
-		return <div
+		return super.render(<div
 			style={{
 				width: "100%",
 			}}
@@ -810,7 +869,7 @@ export default class UsersPage extends Page {
  			{content}
 
 
-		</div>
+		</div>);
 	}
 
 }

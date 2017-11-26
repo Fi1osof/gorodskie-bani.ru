@@ -340,6 +340,7 @@ export default class RatingsPage extends Page {
 
 		this.setState({
 			groupByType: checked,
+			ratings: [],
 		}, () => {
 			this.reloadData();
 		});

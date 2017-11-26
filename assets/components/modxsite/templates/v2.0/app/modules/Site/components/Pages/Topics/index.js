@@ -320,14 +320,14 @@ export default class TopicsPage extends Page {
   //     coords,
   //   } = this.context;
 
-		// const page = this.getPage();
+		const page = this.getPage();
 
 		const {
 			tag,
 		} = this.state;
 
 		return super.loadData({
-			// page,
+			page,
 			// coords,
 			tag,
 		});

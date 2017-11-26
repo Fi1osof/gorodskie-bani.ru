@@ -11,6 +11,16 @@ import {
 } from 'graphql';
 
 
+import {
+  ObjectsListType,
+} from 'react-cms/src/app/components/ORM/fields';
+
+
+export {
+  ObjectsListType,
+};
+
+
 export const order = {
   type: new GraphQLEnumType({
     name: "SortType",
@@ -81,51 +91,51 @@ export const listArgs = {
 };
 
 
-export class ObjectsListType extends GraphQLObjectType{
+// export class ObjectsListType extends GraphQLObjectType{
 
-  constructor(props){
+//   constructor(props){
 
-    props = props || {};
+//     props = props || {};
 
-    let {
-      type,
-      args,
-      fields,
-      ...other
-    } = props;
+//     let {
+//       type,
+//       args,
+//       fields,
+//       ...other
+//     } = props;
 
-    fields = Object.assign(fields || {}, {
-      success: {
-        type: GraphQLBoolean,
-      },
-      message: {
-        type: GraphQLString,
-      },
-      count: {
-        type: GraphQLInt,
-      },
-      total: {
-        type: GraphQLInt,
-      },
-      limit: {
-        type: GraphQLInt,
-      },
-      page: {
-        type: GraphQLInt,
-      },
-      object: {
-        type: new GraphQLList(type),
-      },
-    });
+//     fields = Object.assign(fields || {}, {
+//       success: {
+//         type: GraphQLBoolean,
+//       },
+//       message: {
+//         type: GraphQLString,
+//       },
+//       count: {
+//         type: GraphQLInt,
+//       },
+//       total: {
+//         type: GraphQLInt,
+//       },
+//       limit: {
+//         type: GraphQLInt,
+//       },
+//       page: {
+//         type: GraphQLInt,
+//       },
+//       object: {
+//         type: new GraphQLList(type),
+//       },
+//     });
 
-    Object.assign(props, {
-      fields,
-    });
+//     Object.assign(props, {
+//       fields,
+//     });
 
-    super(props);
+//     super(props);
 
-  }
-}
+//   }
+// }
 
 
 export class listField {

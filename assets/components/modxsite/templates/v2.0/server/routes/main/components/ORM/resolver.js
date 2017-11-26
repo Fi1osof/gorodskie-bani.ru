@@ -14,6 +14,8 @@ import {
 	ObjectsListType,
 } from 'modules/Site/components/ORM/fields';
 
+// console.log("ObjectsListType", ObjectsListType);
+
 
 import {
   Company,
@@ -90,11 +92,18 @@ import {
 } from './SearchStat';
 
 
-import SiteContentType from 'modules/Site/components/ORM/SiteContent';
+// import SiteContentType from 'modules/Site/components/ORM/SiteContent';
+
+// import {
+//   getList as getSiteContentList,
+// } from './SiteContent';
+
+
+import SiteContentType from 'react-cms/src/app/components/ORM/SiteContent';
 
 import {
   getList as getSiteContentList,
-} from './SiteContent';
+} from 'react-cms/src/server/components/ORM/SiteContent';
 
 
 import EditVersionType from 'modules/Site/components/ORM/EditVersion';

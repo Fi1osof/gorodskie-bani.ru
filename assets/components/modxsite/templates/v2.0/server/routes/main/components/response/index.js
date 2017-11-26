@@ -90,7 +90,20 @@ import rootResolver from '../ORM/resolver';
 // import Company from 'modules/Site/components/ORM/Company';
 // import User from 'modules/Site/components/ORM/User';
 
-import defaultQuery from 'modules/Site/components/ORM/query';
+// import defaultQuery from 'modules/Site/components/ORM/query';
+
+
+import ReactCmsQuery from 'react-cms/src/app/components/ORM/query';
+
+import OrmQuery from 'modules/Site/components/ORM/query';
+
+const defaultQuery = `
+${OrmQuery}
+
+#ReactCmsQuery
+${ReactCmsQuery}
+
+`;
 
 var knex;
 

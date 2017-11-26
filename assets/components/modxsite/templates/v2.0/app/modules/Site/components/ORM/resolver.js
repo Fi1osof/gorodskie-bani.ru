@@ -15,6 +15,12 @@ import {
 } from './fields';
 
 
+
+import SiteContentType, {
+  getList as getSiteContentTypeList,
+} from 'react-cms/src/app/components/ORM/SiteContent';
+
+
 import {
 	CompanyType,
 	getList as getCompanyList,
@@ -53,14 +59,40 @@ import {
 } from './Search';
 
 
-import SiteContentType, {
-  getList as getSiteContentTypeList,
-} from './SiteContent';
+// import SiteContentType, {
+//   getList as getSiteContentTypeList,
+// } from './SiteContent';
 
 
 import EditVersionType, {
   getList as getEditVersionsList,
 } from './EditVersion';
+
+import {
+  getObjectsList as ReactCmsGetObjectsList,
+  getObjects as ReactCmsGetObjects,
+  getObject as ReactCmsGetObject,
+  objectResolver as ReactCmsObjectResolver,
+  // processObjectState,
+} from 'react-cms/src/app/components/ORM/resolver';
+
+
+const getObjectsList = function(ofType, source, args, context, info){
+  return ReactCmsGetObjectsList(ofType, source, args, context, info, getResolverByType);
+}
+
+const getObjects = function(ofType, source, args, context, info){
+  return ReactCmsGetObjects(ofType, source, args, context, info, getResolverByType);
+}
+
+const getObject = function(ofType, source, args, context, info){
+  return ReactCmsGetObject(ofType, source, args, context, info, getResolverByType);
+}
+
+
+const objectResolver = function(ofType, source, args, context, info){
+  return ReactCmsObjectResolver(ofType, source, args, context, info, getResolverByType);
+}
 
 
 const rootResolver = function(source, args, context, info){
@@ -277,241 +309,241 @@ const rootResolver = function(source, args, context, info){
 
 }
 
-const objectResolver = (returnType, source, args, context, info) => {
+// const objectResolver = (returnType, source, args, context, info) => {
 
-  let {
-    fieldName,
-    operation,
-  } = info;
+//   let {
+//     fieldName,
+//     operation,
+//   } = info;
 
 
-  // Если это не корневой вызов, сбрасываем операцию, чтобы сквозной вызов не выполнялся
-  if(source){
-    operation = undefined;
-  }
+//   // Если это не корневой вызов, сбрасываем операцию, чтобы сквозной вызов не выполнялся
+//   if(source){
+//     operation = undefined;
+//   }
 
-  let result = getObject(returnType, source, args, context, info);
+//   let result = getObject(returnType, source, args, context, info);
 
-  // if(operation && operation.name){
+//   // if(operation && operation.name){
 
-  //   switch(operation.name.value){
-  //   }
+//   //   switch(operation.name.value){
+//   //   }
 
-  // }
+//   // }
 
-  return result;
+//   return result;
 
-}
+// }
 
-export const ObjectsListResolver = (resolver, object, args, context, info) => {
+// export const ObjectsListResolver = (resolver, object, args, context, info) => {
 
-  if(!resolver){
-    console.error("resolver is undefined", info);
-    // return reject("resolver is undefined");
-    throw(new Error("resolver is undefined"));
-  }
+//   if(!resolver){
+//     console.error("resolver is undefined", info);
+//     // return reject("resolver is undefined");
+//     throw(new Error("resolver is undefined"));
+//   }
 
-  let state = resolver(object, args, context, info);
+//   let state = resolver(object, args, context, info);
 
-  if(state){
+//   if(state){
     
-    let {
-      ids,
-      parent,
-      offset,
-      limit,
-      sort,
-      page,
-    } = args; 
+//     let {
+//       ids,
+//       parent,
+//       offset,
+//       limit,
+//       sort,
+//       page,
+//     } = args; 
 
-    page = page || 1;
+//     page = page || 1;
 
-    const total = state.size;
+//     const total = state.size;
 
-    state = storeResolver(state, args, context, info);
+//     state = storeResolver(state, args, context, info);
 
     
 
-    return state && {
-      success: true,
-      message: '',
-      count: state.size,
-      total,
-      limit,
-      page,
-      object: state,
-    } || null;
+//     return state && {
+//       success: true,
+//       message: '',
+//       count: state.size,
+//       total,
+//       limit,
+//       page,
+//       object: state,
+//     } || null;
 
-  }
+//   }
 
-  return state;
-}
+//   return state;
+// }
 
-export const sortBy = function(state, by, dir){
+// export const sortBy = function(state, by, dir){
   
-  dir = dir || 'asc';
+//   dir = dir || 'asc';
 
-  return state.sortBy(by, (a, b) => {
+//   return state.sortBy(by, (a, b) => {
 
-    a = a && a.toLocaleUpperCase && a.toLocaleUpperCase() || a;
-    b = b && b.toLocaleUpperCase && b.toLocaleUpperCase() || b;
+//     a = a && a.toLocaleUpperCase && a.toLocaleUpperCase() || a;
+//     b = b && b.toLocaleUpperCase && b.toLocaleUpperCase() || b;
 
-    if(dir == 'asc'){
-      if ( a > b ) return 1;
-      if (a < b ) return -1;
-      return 0;
-    }
-    else{
-      if ( a < b ) return 1;
-      if (a > b ) return -1;
-      return 0;
-    }
+//     if(dir == 'asc'){
+//       if ( a > b ) return 1;
+//       if (a < b ) return -1;
+//       return 0;
+//     }
+//     else{
+//       if ( a < b ) return 1;
+//       if (a > b ) return -1;
+//       return 0;
+//     }
 
-  });
-}
+//   });
+// }
 
-export const storeResolver = function(state, args, context, info){
+// export const storeResolver = function(state, args, context, info){
 
-  if(state){
+//   if(state){
 
-    if(state instanceof Promise){
+//     if(state instanceof Promise){
 
       
 
-      return new Promise((resolve, reject) => {
+//       return new Promise((resolve, reject) => {
 
-        state.then(r => {
+//         state.then(r => {
 
-          if(r){
+//           if(r){
 
-            r = processState(r, args, context, info);
+//             r = processState(r, args, context, info);
 
-          }
+//           }
 
-          resolve(r);
-        })
-        .catch(e => reject(e));
+//           resolve(r);
+//         })
+//         .catch(e => reject(e));
 
-      });
+//       });
       
-    }
-    else{
+//     }
+//     else{
 
-      state = processState(state, args, context, info);
-    }
+//       state = processState(state, args, context, info);
+//     }
 
     
-  }
+//   }
 
-  return state;
-}
+//   return state;
+// }
 
 
-const processState = function(state, args, context, info){
+// const processState = function(state, args, context, info){
 
-    let {
-      id,
-      ids,
-      parent,
-      offset,
-      limit,
-      sort,
-      page,
-    } = args;
+//     let {
+//       id,
+//       ids,
+//       parent,
+//       offset,
+//       limit,
+//       sort,
+//       page,
+//     } = args;
 
-    page = page || 1;
+//     page = page || 1;
 
-    if(id){
+//     if(id){
 
-      state = state.filter(n => n.id === id);
+//       state = state.filter(n => n.id === id);
 
-    }
+//     }
 
-    if(ids){
+//     if(ids){
 
-      state = state.filter(n => ids.indexOf(n.id) !== -1);
+//       state = state.filter(n => ids.indexOf(n.id) !== -1);
 
-    }
+//     }
 
-    if(parent){
+//     if(parent){
 
-      state = state.filter(n => n.parent === parent);
+//       state = state.filter(n => n.parent === parent);
 
-    }
+//     }
 
-    if(sort){
+//     if(sort){
 
-      sort.map(rule => {
+//       sort.map(rule => {
 
-        const {
-          by,
-          dir,
-        } = rule;
+//         const {
+//           by,
+//           dir,
+//         } = rule;
 
-        if(!by){
-          return;
-        }
+//         if(!by){
+//           return;
+//         }
 
-        let sortByRules;
+//         let sortByRules;
 
-        switch(by){
+//         switch(by){
 
-          case 'id':
+//           case 'id':
 
-            sortByRules = n => n.id;
+//             sortByRules = n => n.id;
 
-            break;
+//             break;
 
-          case 'rand()':
+//           case 'rand()':
 
-            sortByRules = n => Math.random();
+//             sortByRules = n => Math.random();
 
-            break;
-        }
+//             break;
+//         }
 
-        if(sortByRules){
+//         if(sortByRules){
 
-          state = sortBy(state, sortByRules, dir);
+//           state = sortBy(state, sortByRules, dir);
 
-        };
+//         };
 
-      });
+//       });
 
-    }
+//     }
 
-    if(offset){
-      state = state.skip(offset);
-    }
+//     if(offset){
+//       state = state.skip(offset);
+//     }
 
-    if(limit){
+//     if(limit){
 
-      if(page > 1){
-        state = state.skip(limit * (page - 1));
-      }
+//       if(page > 1){
+//         state = state.skip(limit * (page - 1));
+//       }
 
-      state = state.take(limit);
-    }
+//       state = state.take(limit);
+//     }
 
-    return state;
-}
+//     return state;
+// }
 
-const getObjectsList = (ofType, source, args, context, info) => {
+// const getObjectsList = (ofType, source, args, context, info) => {
 
-  let result;
+//   let result;
 
-  let {
-    fieldName,
-  } = info;
+//   let {
+//     fieldName,
+//   } = info;
 
-  const resolver = getResolverByType(ofType);
+//   const resolver = getResolverByType(ofType);
 
-  if(resolver){
+//   if(resolver){
 
-    return ObjectsListResolver(resolver, source, args, context, info);
+//     return ObjectsListResolver(resolver, source, args, context, info);
 
-  }
+//   }
 
-}
+// }
 
 // const getObjects = (ofType, source, args, context, info) => {
 
@@ -525,119 +557,119 @@ const getObjectsList = (ofType, source, args, context, info) => {
 
 // }
 
-const getObjects = (ofType, source, args, context, info) => {
+// const getObjects = (ofType, source, args, context, info) => {
 
-  let result;
+//   let result;
 
 
 
-  result = getObjectsList(ofType, source, args, context, info)
-    // .then(r => {
-    //   result = r;
-    // });
+//   result = getObjectsList(ofType, source, args, context, info)
+//     // .then(r => {
+//     //   result = r;
+//     // });
   
 
-  if(result){
+//   if(result){
 
     
-    if(result instanceof Promise){
+//     if(result instanceof Promise){
 
-      return new Promise((resolve, reject) => {
+//       return new Promise((resolve, reject) => {
 
-        result
-        .then(r => {
+//         result
+//         .then(r => {
 
-          resolve(r && r.object);
+//           resolve(r && r.object);
 
-        })
-        .catch(e => {
-          reject(e);
-        });
+//         })
+//         .catch(e => {
+//           reject(e);
+//         });
 
-      });
+//       });
 
-    }
+//     }
 
-    result = result && result.object;
+//     result = result && result.object;
     
-  }
+//   }
 
 
-  return result;
-}
+//   return result;
+// }
 
-const getObject = (ofType, source, args, context, info) => {
+// const getObject = (ofType, source, args, context, info) => {
 
-  let state;
+//   let state;
 
-  // const {
-  //   id,
-  //   parent,
-  // } = args;
+//   // const {
+//   //   id,
+//   //   parent,
+//   // } = args;
 
-  state = getObjects(ofType, source, args, context, info)
+//   state = getObjects(ofType, source, args, context, info)
 
-  if(state){
+//   if(state){
 
 
 
     
-    if(state instanceof Promise){
+//     if(state instanceof Promise){
 
-      return new Promise((resolve, reject) => {
+//       return new Promise((resolve, reject) => {
 
-        state
-        .then(r => {
-
-
-
-          resolve(processObjectState(r, args));
-
-        })
-        .catch(e => {
-          reject(e);
-        });
-
-      });
-
-    }
+//         state
+//         .then(r => {
 
 
 
-    state = processObjectState(state, args);
+//           resolve(processObjectState(r, args));
+
+//         })
+//         .catch(e => {
+//           reject(e);
+//         });
+
+//       });
+
+//     }
+
+
+
+//     state = processObjectState(state, args);
     
-  }
+//   }
 
-  return state;
-}
+//   return state;
+// }
 
-const processObjectState = function (state, args){
+// const processObjectState = function (state, args){
 
-  if(state){
+//   if(state){
 
-    const {
-      id,
-      parent,
-    } = args;
+//     const {
+//       id,
+//       parent,
+//     } = args;
 
-    if(id !== undefined){
+//     if(id !== undefined){
     
-      state = state.filter(n => n.id === id);
+//       state = state.filter(n => n.id === id);
 
-    }
+//     }
 
-    if(parent !== undefined){
+//     if(parent !== undefined){
       
-      state = state.filter(n => n.parent === parent);
+//       state = state.filter(n => n.parent === parent);
 
-    }
+//     }
     
-    state = state && state.get(0);
+//     state = state && state.get(0);
 
-  }
+//   }
 
-  return state;
-}
+//   return state;
+// }
 
 
 export default rootResolver;

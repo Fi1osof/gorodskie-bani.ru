@@ -12,6 +12,12 @@ import {
 
 import GraphQLJSON from 'graphql-type-json';
 
+
+import SiteContentType, {
+  SiteContentArgs,
+} from 'react-cms/src/app/components/ORM/SiteContent';
+
+
 import { List } from 'immutable';
 
 import {
@@ -87,7 +93,7 @@ import {
   SearchResultType,
 } from './Search';
 
-import SiteContentType from './SiteContent';
+// import SiteContentType from './SiteContent';
 
 import {
   SearchStatType,
@@ -401,33 +407,7 @@ const RootType = new GraphQLObjectType({
     siteContent: {
       type: SiteContentType,
       description: SiteContentType.description,
-      args: {
-        component: {
-          // type: new GraphQLNonNull(GraphQLString),
-          type: GraphQLString,
-          description: "Исполняемый компонент",
-        },
-        request: {
-          type: new GraphQLNonNull(GraphQLJSON),
-          description: "Параметры запроса",
-        },
-        geo: {
-          type: new GraphQLNonNull(GraphQLJSON),
-          description: "Координаты",
-        },
-        pathname: {
-          type: GraphQLString,
-          description: "Запрошенный УРЛ (Для отладки)",
-        },
-        companyId: {
-          type: GraphQLString,
-          description: "Запрошенная компания (Для отладки)",
-        },
-        city: {
-          type: GraphQLString,
-          description: "Город (Для отладки)",
-        },
-      },
+      args: SiteContentArgs,
     },
     companiesList: new listField({
       type: CompanyType,

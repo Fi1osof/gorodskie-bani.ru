@@ -87,12 +87,12 @@ mutation clearCache{
   clearCache
 }
 
-query SiteContent(
+query SiteContentTest(
   $component:String
   $request:JSON!
   $geo:JSON!
 ){
-  ...RootSiteContent
+  ...RootSiteContentTest
 }
 
 query CompanyPageContent(
@@ -125,7 +125,7 @@ query CompanyPageContent(
     }
     geo:$geo
   ){
-    ...SiteContent
+    ...SiteContentTest
   }
 }
 
@@ -154,21 +154,21 @@ query CompaniesPageContent(
     }
     geo:$geo
   ){
-    ...SiteContent
+    ...SiteContentTest
   }
 }
 
-fragment RootSiteContent on RootType{
+fragment RootSiteContentTest on RootType{
   siteContent(
     component:$component
     request:$request
     geo:$geo
   ){
-    ...SiteContent
+    ...SiteContentTest
   }
 }
 
-fragment SiteContent on SiteContentType{
+fragment SiteContentTest on SiteContentType{
   id
   status
   title

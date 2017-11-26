@@ -6,40 +6,50 @@ import Grid from 'material-ui/Grid';
 
 import {Link} from 'react-router';
 
-const defaultProps = {}
+import ReactCmsPage from 'react-cms/src/app/components/Page';
 
-export default class Page extends Component{
+// const defaultProps = {}
 
-	static contextTypes = {
-		inited: PropTypes.bool.isRequired,
-		document: PropTypes.object.isRequired,
-		coords: PropTypes.object,
-		appExports: PropTypes.object.isRequired,
-		setPageTitle: PropTypes.func.isRequired,
-		user: PropTypes.object.isRequired,
-		updateItem: PropTypes.func.isRequired,
-		saveItem: PropTypes.func.isRequired,
-		CompaniesStore: PropTypes.object.isRequired,
-		TopicsStore: PropTypes.object.isRequired,
-		ResourcesStore: PropTypes.object.isRequired,
-		CommentsStore: PropTypes.object.isRequired,
-		UsersStore: PropTypes.object.isRequired,
-		RatingsStore: PropTypes.object.isRequired,
-		EditVersionsStore: PropTypes.object.isRequired,
-		getCounters: PropTypes.func.isRequired,
-		localQuery: PropTypes.func.isRequired,
-		remoteQuery: PropTypes.func.isRequired,
-    router: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
-    triggerGoal: PropTypes.func.isRequired,
-	};
 
-	constructor(props){
+let {
+	...contextTypes
+} = ReactCmsPage.contextTypes;
 
-		super(props);
 
-		this.state = {};
-	}
+Object.assign(contextTypes, {
+	inited: PropTypes.bool.isRequired,
+	document: PropTypes.object.isRequired,
+	coords: PropTypes.object,
+	appExports: PropTypes.object.isRequired,
+	setPageTitle: PropTypes.func.isRequired,
+	user: PropTypes.object.isRequired,
+	updateItem: PropTypes.func.isRequired,
+	saveItem: PropTypes.func.isRequired,
+	CompaniesStore: PropTypes.object.isRequired,
+	TopicsStore: PropTypes.object.isRequired,
+	ResourcesStore: PropTypes.object.isRequired,
+	CommentsStore: PropTypes.object.isRequired,
+	UsersStore: PropTypes.object.isRequired,
+	RatingsStore: PropTypes.object.isRequired,
+	EditVersionsStore: PropTypes.object.isRequired,
+	getCounters: PropTypes.func.isRequired,
+	localQuery: PropTypes.func.isRequired,
+	remoteQuery: PropTypes.func.isRequired,
+  router: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  triggerGoal: PropTypes.func.isRequired,
+});
+
+export default class Page extends ReactCmsPage{
+
+	static contextTypes = contextTypes;
+
+	// constructor(props){
+
+	// 	super(props);
+
+	// 	this.state = {};
+	// }
 
 	componentWillMount(){
 
@@ -92,48 +102,50 @@ export default class Page extends Component{
 
 		});
 
-		this.onWillMount();
+		// this.onWillMount();
 			
-		// super.componentDidMount && super.componentDidMount();
+		// // super.componentDidMount && super.componentDidMount();
 
-		this.setPageTitle();
+		// this.setPageTitle();
 
-	}
-
-	onWillMount(){
-
-		const {
-			document,
-		} = this.context;
-
-		const {
-			resourceState,
-		} = document;
-
-		if(resourceState){
-
-			// Object.assign(this.state, resourceState);
-
-			const {
-				state: initialState,
-			} = resourceState;
-
-
-			this.initState(initialState, true);
-
-		}
-		else {
-
-			this.loadData();
-
-		}
+		super.componentWillMount();
 
 	}
+
+	// onWillMount(){
+
+	// 	const {
+	// 		document,
+	// 	} = this.context;
+
+	// 	const {
+	// 		resourceState,
+	// 	} = document;
+
+	// 	if(resourceState){
+
+	// 		// Object.assign(this.state, resourceState);
+
+	// 		const {
+	// 			state: initialState,
+	// 		} = resourceState;
+
+
+	// 		this.initState(initialState, true);
+
+	// 	}
+	// 	else {
+
+	// 		this.loadData();
+
+	// 	}
+
+	// }
 
 
 	componentWillUnmount(){
 
-		this.mounted = false;
+		// this.mounted = false;
 
 		const {
 			CommentsStore,
@@ -205,37 +217,37 @@ export default class Page extends Component{
       this.EditVersionsListener = undefined;
     }
     
-
+    super.componentWillUnmount();
 	}
 
 
-	componentDidMount(){
+	// componentDidMount(){
 
-		this.mounted = true;
+	// 	this.mounted = true;
 
-		this.clearInitialState();
+	// 	this.clearInitialState();
 
-		// this.forceUpdate();
+	// 	// this.forceUpdate();
 
-	}
+	// }
 
 
 	// Удаляем инит-данные, чтобы при смене страницы и компонента было понятно, что данные надо подгрузить
-	clearInitialState(){
+	// clearInitialState(){
 
 
 
-		let {
-			document,
-		} = this.context;
+	// 	let {
+	// 		document,
+	// 	} = this.context;
 
-		if(document){
+	// 	if(document){
 
-			document.resourceState = null;
+	// 		document.resourceState = null;
 
-		}
+	// 	}
 
-	}
+	// }
 
 
   componentDidUpdate(prevProps, prevState, prevContext){
@@ -244,97 +256,98 @@ export default class Page extends Component{
 
     // }
 
-    const {
-    	inited,
-    } = this.context;
+  //   const {
+  //   	inited,
+  //   } = this.context;
 
-    const {
-    	inited: prevInited,
-    } = prevContext || {};
-
-
+  //   const {
+  //   	inited: prevInited,
+  //   } = prevContext || {};
 
 
-		const page = this.getPage();
-
-		const {
-			location,
-		} = prevProps;
-
-		const {
-			query: prevLocationQuery,
-		} = location || {};
-
-		const {
-			page: prevPage,
-		} = prevLocationQuery || {};
 
 
-    if(
-    	(prevContext !== undefined && !prevInited && inited)
-    ){
+		// const page = this.getPage();
+
+		// const {
+		// 	location,
+		// } = prevProps;
+
+		// const {
+		// 	query: prevLocationQuery,
+		// } = location || {};
+
+		// const {
+		// 	page: prevPage,
+		// } = prevLocationQuery || {};
+
+
+  //   if(
+  //   	(prevContext !== undefined && !prevInited && inited)
+  //   ){
     	
-    	this.onInit();
+  //   	this.onInit();
 
-    }
+  //   }
     	
 
 
-    if(
-    	(page || prevPage) && parseInt(page) !== parseInt(prevPage)
-    ){
+  //   if(
+  //   	(page || prevPage) && parseInt(page) !== parseInt(prevPage)
+  //   ){
 
-    	this.onPageChange();
+  //   	this.onPageChange();
 
 
 
-    }
+  //   }
 
+    super.componentDidUpdate(prevProps, prevState, prevContext);
   }
 
 
-  onInit(){
+  // onInit(){
 
-  	this.reloadData();
+  // 	this.reloadData();
 
-  }
+  // }
 
 
-  onPageChange(){
+  // onPageChange(){
 
-  	this.reloadData();
+  // 	this.reloadData();
     	
-  }
+  // }
 
 
-  onStoreUpdated(store, payload){
+  // onStoreUpdated(store, payload){
 
-  	this.reloadData();
+  // 	this.reloadData();
 
-  }
-
-
-  getPage(){
-
-		const {
-			router,
-		} = this.context;
+  // }
 
 
-		const {
-			location,
-		} = router;
+  // getPage(){
 
-		const {
-			query,
-		} = location || {};
+		// const {
+		// 	router,
+		// } = this.context;
 
-		const {
-			page,
-		} = query || {};
+
+		// const {
+		// 	location,
+		// } = router;
+
+		// const {
+		// 	query,
+		// } = location || {};
+
+		// const {
+		// 	page,
+		// } = query || {};
 	
-		return parseInt(page) || undefined;	
-  }
+		// return parseInt(page) || undefined;	
+  // }
 
 
   setPageTitle(title){
@@ -349,110 +362,110 @@ export default class Page extends Component{
   }
 
 	
-	async loadData(options = {}){
+	// async loadData(options = {}){
 
-		// if(!this.mounted){
-		// 	return;
-		// }
+	// 	// if(!this.mounted){
+	// 	// 	return;
+	// 	// }
 
-		if(typeof window === "undefined"){
+	// 	if(typeof window === "undefined"){
 			
-			return;
+	// 		return;
 
-		}
-
-
-
-		const {
-			remoteQuery,
-		} = this.context;
-
-		let {
-			provider,
-		} = options;
-
-		provider = provider || remoteQuery;
-
-		let result = await this.loadServerData(provider, options);
+	// 	}
 
 
 
-		if(result){
+	// 	const {
+	// 		remoteQuery,
+	// 	} = this.context;
 
-			this.initState(result.data);
+	// 	let {
+	// 		provider,
+	// 	} = options;
 
-		}
+	// 	provider = provider || remoteQuery;
 
-		return;
-
-	}
-
-
-	reloadData(options = {}){
-
-		return this.loadData(options);
-
-	}
+	// 	let result = await this.loadServerData(provider, options);
 
 
-	async loadServerData(provider, options = {}){
 
-		// Для всех страниц по умолчанию
-	  return {
-	  	data: {},
-	  };
+	// 	if(result){
 
-	}
+	// 		this.initState(result.data);
+
+	// 	}
+
+	// 	return;
+
+	// }
 
 
-	initState(newState, willMount){
+	// reloadData(options = {}){
 
-		if(!willMount && (this.mounted !== undefined && this.mounted !== true)){
-			return;
-		}
+	// 	return this.loadData(options);
 
-		newState = newState || {};
+	// }
 
-		if(willMount){
 
-			Object.assign(this.state, newState);
+	// async loadServerData(provider, options = {}){
+
+	// 	// Для всех страниц по умолчанию
+	//   return {
+	//   	data: {},
+	//   };
+
+	// }
+
+
+	// initState(newState, willMount){
+
+	// 	if(!willMount && (this.mounted !== undefined && this.mounted !== true)){
+	// 		return;
+	// 	}
+
+	// 	newState = newState || {};
+
+	// 	if(willMount){
+
+	// 		Object.assign(this.state, newState);
 			
-		}
-		else{
+	// 	}
+	// 	else{
 
-			this.setState(newState);
+	// 		this.setState(newState);
 
-		}
+	// 	}
 
-	}
-
-
-  getContent(){
-
-  	return null;
-  }
+	// }
 
 
-  findResource(resources, pathname){
-  	let resource;
+  // getContent(){
 
-  	resources.map(r => {
-  		if(resource){
-  			return;
-  		}
+  // 	return null;
+  // }
 
-  		if(r.link == pathname){
-  			resource = r;
-  		}
-  		else if(r.childs){
-  			resource = this.findResource(r.childs, pathname);
-  		}
 
-			// return resource.link == pathname || (resource.childs && resource.childs.find(c => c.link == pathname));
-		})
+  // findResource(resources, pathname){
+  // 	let resource;
 
-  	return resource;
-  }
+  // 	resources.map(r => {
+  // 		if(resource){
+  // 			return;
+  // 		}
+
+  // 		if(r.link == pathname){
+  // 			resource = r;
+  // 		}
+  // 		else if(r.childs){
+  // 			resource = this.findResource(r.childs, pathname);
+  // 		}
+
+		// 	// return resource.link == pathname || (resource.childs && resource.childs.find(c => c.link == pathname));
+		// })
+
+  // 	return resource;
+  // }
 
 	render(childContent){
 
@@ -504,7 +517,7 @@ export default class Page extends Component{
 	}
 }
 
-Page.defaultProps = defaultProps;
+// Page.defaultProps = defaultProps;
 
-Page.propTypes = {
-}
+// Page.propTypes = {
+// }

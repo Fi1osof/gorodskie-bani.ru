@@ -349,7 +349,7 @@ export default class TopicsPage extends Page {
 			coords,
 			page,
 			limit = 10,
-			withPagination = true,
+			// withPagination = true,
 			cities,
 			tag,
 			title = "Новости",
@@ -360,7 +360,7 @@ export default class TopicsPage extends Page {
 	  const result = await provider({
 			operationName,
 			variables: {
-				withPagination,
+				withPagination: true,
 				resourcesPage: page,
 				resourcesLimit: limit,
 				resourceGetAuthor: true,
@@ -370,8 +370,14 @@ export default class TopicsPage extends Page {
 			},
 	  })
 	  .then(r => {
-	    
 
+	  	const {
+	  		topicsList,
+	  	} = r.data;
+
+	  	if(!topicsList || !topicsList.object || !topicsList.object.length){
+	  		return null;
+	  	}
 
 	    return r;
 
@@ -379,7 +385,6 @@ export default class TopicsPage extends Page {
 	  .catch(e => {
 	    throw(e);
 	  });
-
 
 	  if(result && result.data){
 

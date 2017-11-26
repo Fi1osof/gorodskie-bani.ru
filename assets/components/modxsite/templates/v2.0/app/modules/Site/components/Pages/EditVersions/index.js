@@ -55,43 +55,59 @@ export default class EditVersionsPage extends Page{
 
 	}
 
-  // setPageTitle(title){
 
-		// return super.setPageTitle(title || "Контакты");
-
-  // }
-
-
-  // componentWillMount(){
+  // loadData(){
 
 		// const {
-		// 	EditVersionsStore,
+		// 	localQuery,
 		// } = this.context;
 
+		// const {
+		// 	companyId,
+		// } = this.props;
+
+		// const {
+		// 	activeOnly,
+		// } = this.state;
 
 
-		// // EditVersionsStore.getState().map(n => {
+		// localQuery({
+		// 	operationName: "editVersions",
+		// 	variables: {
+		// 		editVersionLimit: 0,
+		// 		editVersionGetEditor: true,
+		// 		editVersionGetCreator: true,
+		// 		editVersionGetCompany: true,
+		// 		getImageFormats: true,
+		// 		editVersionCompanyId: companyId,
+		// 		editVersionStatus: activeOnly ? ["0"] : undefined,
+		// 	},
+		// })
+		// .then(r => {
 
-		// // 	// tbody.push();
+		// 	const {
+		// 		editVersions,
+		// 	} = r.data;
 
-		// // });
+		// 	this.setState({
+		// 		items: editVersions || [],
+		// 	});
 
-		// // this.setState({
-		// // 	items: EditVersionsStore.getState(),
-		// // 	// items: EditVersionsStore.getState().toArray(),
-		// // });
+		// })
+		// .catch(e => {
+		// 	console.error(e);
+		// });
 
 
-  // 	super.componentWillMount && super.componentWillMount();
-
+  // 	super.loadData && super.loadData();
   // }
 
 
   loadData(){
 
-		const {
-			localQuery,
-		} = this.context;
+		// const {
+		// 	localQuery,
+		// } = this.context;
 
 		const {
 			companyId,
@@ -102,7 +118,55 @@ export default class EditVersionsPage extends Page{
 		} = this.state;
 
 
-		localQuery({
+		// localQuery({
+		// })
+		// .then(r => {
+
+		// 	const {
+		// 		editVersions,
+		// 	} = r.data;
+
+		// 	this.setState({
+		// 		items: editVersions || [],
+		// 	});
+
+		// })
+		// .catch(e => {
+		// 	console.error(e);
+		// });
+
+
+  	super.loadData && super.loadData({
+  		companyId,
+  		activeOnly,
+  	});
+  }
+
+
+
+	
+	async loadServerData(provider, options = {}){
+
+		let {
+			cities: citiesNull,
+			...debugOptions
+		} = options;
+
+
+
+		const {
+			coords,
+			page,
+			limit = 12,
+			withPagination = true,
+			cities,
+			companyId,
+			activeOnly = defaultProps.activeOnly,
+		} = options;
+
+
+		// Получаем список компаний
+	  const result = await provider({
 			operationName: "editVersions",
 			variables: {
 				editVersionLimit: 0,
@@ -113,48 +177,52 @@ export default class EditVersionsPage extends Page{
 				editVersionCompanyId: companyId,
 				editVersionStatus: activeOnly ? ["0"] : undefined,
 			},
-		})
-		.then(r => {
-
-			const {
-				editVersions,
-			} = r.data;
-
-			this.setState({
-				items: editVersions || [],
-			});
-
-		})
-		.catch(e => {
-			console.error(e);
-		});
+	  })
+	  .then(r => {
+	    
 
 
-		// // EditVersionsStore.getState().map(n => {
+	    return r;
 
-		// // 	// tbody.push();
-
-		// // });
-
-		// this.setState({
-		// 	items: EditVersionsStore.getState(),
-		// 	// items: EditVersionsStore.getState().toArray(),
-		// });
-
-		// this.state.items = EditVersionsStore.getState();
-
-		// try{
+	  })
+	  .catch(e => {
+	    throw(e);
+	  });
 
 
+	  if(result && result.data){
 
-		// }
-		// catch(e){
-		// 	console.error(e);
-		// }
+	  	let title;
+
+	  	const city = cities && cities[0];
+
+	  	if(city){
+
+	  		title = city.longtitle;
+
+	  	}
+
+	  	title = title || "Городские бани";
+
+	  	if(page > 1){
+
+	  		title = `${title}, страница ${page}`;
+
+	  	}
+
+  		Object.assign(result.data, {
+  			title,
+  		});
+
+	  }
+	  else{
+	  	return null;
+	  }
 
 
-  	super.loadData && super.loadData();
-  }
+	  return result;
+
+	}
 
 
   triggerGoal(goal){
@@ -168,7 +236,7 @@ export default class EditVersionsPage extends Page{
   }
 
 
-	renderContent(){
+	render(){
 
 		const {
 			user: {
@@ -192,30 +260,11 @@ export default class EditVersionsPage extends Page{
 		const sudo = hasPermission("sudo");
 
 
-
 		const companyView = companyId ? true : false;
 
-		// try{
-
-
-
-		// 	EditVersionsStore.getState().map(n => {
-
-		// 	});
-
-
-
-		// 	// RatingsStore.getState().map(n => {
-
-		// 	// });
-
-		// }
-		// catch(e){
-		// 	console.error(e);
-		// }
 
 		const {
-			items,
+			editVersions: items,
 		} = this.state;
 
 
@@ -472,7 +521,7 @@ export default class EditVersionsPage extends Page{
 		});
 
 
-		return <div
+		return super.render(<div
 			style={{
 				width: "100%",
 			}}
@@ -537,6 +586,6 @@ export default class EditVersionsPage extends Page{
 				</Table>
 			</Paper>
 
-		</div>
+		</div>);
 	}
 }

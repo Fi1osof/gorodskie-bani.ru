@@ -927,7 +927,7 @@ export default class CompanyPage extends Page{
 		let content;
 
 		// const canEdit = !createdby || (currentUser && currentUser.id === createdby || user.hasPermission("editAllCompanies"));
-		const canEdit = true;
+		const canEdit = typeof window !== "undefined";
 
 		const {
 			metro,
@@ -1294,13 +1294,18 @@ export default class CompanyPage extends Page{
 					null
 				}
 
-				<EditVersions 
-					companyId={companyId}
-					previewDiffs={::this.previewDiffs}
-					acceptDiffs={::this.acceptDiffs}
-					diffs={diffs}
-					activeOnly={true}
-				/>
+				{typeof window !== "undefined" 
+					? 
+					<EditVersions 
+						companyId={companyId}
+						previewDiffs={::this.previewDiffs}
+						acceptDiffs={::this.acceptDiffs}
+						diffs={diffs}
+						activeOnly={true}
+					/>
+					: null
+				}
+
 			</div>
 
 		}

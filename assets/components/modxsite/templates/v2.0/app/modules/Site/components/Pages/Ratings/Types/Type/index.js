@@ -86,6 +86,7 @@ export default class RatingTypesType extends Component{
 			id,
 			name,
 			alias: type_alias,
+			uri,
 		} = item;
 
 		let ratingsByType = ratings && ratings.filter(n => n.type === id);
@@ -127,16 +128,25 @@ export default class RatingTypesType extends Component{
 				}}
 			>
 				
-				<Button 
-					raised
+				<Link
+					to={`/${uri}`}
+					href={`/${uri}`}
 					onClick={event => {
+
+						event.stopPropagation();
+						event.preventDefault();
+
 						this.setState({
 							limit: 0,
 						});
 					}}
 				>
-					Показать все {ratingsByType.length}
-				</Button>
+					<Button 
+						raised
+					>
+						Показать все {ratingsByType.length}
+					</Button>
+				</Link>
 
 			</div>
 

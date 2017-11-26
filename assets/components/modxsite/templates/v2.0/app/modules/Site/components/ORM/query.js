@@ -44,6 +44,8 @@ query apiData(
   $resourcesCenter:InputCoordsType
   $resourcesPage:Int
   $commentGetResource:Boolean = false
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
 ){
   companies(
     limit:$limit
@@ -209,6 +211,8 @@ query Companies (
   $editVersionGetCompany:Boolean = false
   $companiesCoords:SearchCoordsType
   $companiesCenter:InputCoordsType
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
 ){
   companies(
     limit:$limit
@@ -260,6 +264,8 @@ query Company(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
 ){
   ...RootCompany
 }
@@ -286,6 +292,8 @@ query CompanyById(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
 ){
   ...RootCompany
 }
@@ -312,6 +320,8 @@ query CompanyByUri(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
 ){
   ...RootCompany
 }
@@ -363,6 +373,8 @@ query Ratings(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = false
 ){
   ...RatingsList
 }
@@ -409,6 +421,8 @@ query MainMenuData(
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
   $resourcesPage:Int
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = false
 ){
   ...RatingsList @include(if: $menuGetRatings)
   
@@ -475,6 +489,8 @@ query Comments(
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
   $commentGetResource:Boolean = false
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = false
 ){
   commentsList(
     ids: $commentsIds
@@ -537,6 +553,8 @@ query Comment(
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
   $commentGetResource:Boolean = false
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = false
 ){
   comment(
     id: $commentId
@@ -633,6 +651,8 @@ query MapCompanies (
   $editVersionGetCompany:Boolean = false
   $companiesCoords:SearchCoordsType
   $companiesCenter:InputCoordsType
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = false
 ){
   companiesList(
     page:$page
@@ -695,6 +715,8 @@ query CompanyRatings(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = false
 ){
   ratings(  
     limit:$limit
@@ -744,6 +766,8 @@ query CompanyComments(
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
   $commentGetResource:Boolean = false
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = false
 ){
   comments(  
     limit:$limit
@@ -794,6 +818,8 @@ query CompanyAvgRatings(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = false
 ){
   ratings(  
     limit:1
@@ -1067,6 +1093,8 @@ query RatingsPageData(
   $resourcesCoords:SearchCoordsType
   $resourcesCenter:InputCoordsType
   $resourcesPage:Int
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = false
 ){
   
   ...ResourcesList
@@ -1519,19 +1547,23 @@ fragment CompanyFields on Company{
     metro
     approved
   }
-  schedule{
+  schedule @include(if:$companyGetSchedules)
+  {
     ...ScheduleDay
   }
-  schedule_men{
+  schedule_men @include(if:$companyGetSchedules)
+  {
     ...ScheduleDay
   }
-  schedule_women{
+  schedule_women @include(if:$companyGetSchedules)
+  {
     ...ScheduleDay
   }
-  schedule_family{
+  schedule_family @include(if:$companyGetSchedules)
+  {
     ...ScheduleDay
   }
-  prices
+  prices @include(if:$companyGetPrices)
   errors
   _isDirty
 }
@@ -1686,6 +1718,8 @@ mutation addCompany(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
 ){
   addCompany{
     ...Company
@@ -1828,6 +1862,8 @@ mutation addCompanyGalleryImage(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
 ){
   addCompanyGalleryImage(
     id: $companyId
@@ -1859,6 +1895,8 @@ query Search(
   $editVersionGetCreator:Boolean = false
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = true
 ){
   search(
     limit:$searchLimit
@@ -1947,6 +1985,8 @@ mutation addComment(
   $editVersionGetEditor:Boolean = false
   $editVersionGetCompany:Boolean = false
   $commentGetResource:Boolean = false
+  $companyGetSchedules:Boolean = false
+  $companyGetPrices:Boolean = false
 ){
   addComment(
     target_id:$commentTargetId
@@ -1973,6 +2013,8 @@ query editVersions(
   $getImageFormats:Boolean = false
   $getCompanyGallery:Boolean = false
   $getTVs:Boolean = false
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
 ){
   ...RootEditVersions
 }
@@ -2045,6 +2087,8 @@ mutation updateCompany(
   $editVersionGetCompany:Boolean = false
   $getCompanyGallery:Boolean = false
   $getTVs:Boolean = false
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
 ){
   updateCompany(
     target_id: $updateCompanyId

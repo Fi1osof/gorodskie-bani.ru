@@ -222,12 +222,12 @@ export default class RatingsPage extends Page {
 	
 	async loadServerData(provider, options = {}){
 
-		let {
-			cities: citiesNull,
-			...debugOptions
-		} = options;
-
+		// let {
+		// 	cities: citiesNull,
+		// 	...debugOptions
+		// } = options;
 		// console.log("RatingsPage debugOptions", debugOptions);
+
 
 		const {
 			coords,
@@ -241,9 +241,12 @@ export default class RatingsPage extends Page {
 
 		/*
 			Если указан тип рейтинга, то в любом случае группируем по типам.
-			Иначе смотрим от стейта
+			Иначе смотрим от стейта.
+
+			Важно! На сервере нельзя группировать данные при выборке, иначе придут ограниченные данные
 		*/
-		let groupBy = groupByType || ratingType ? "company_and_rating_type" : "company";
+		// let groupBy = groupByType || ratingType ? "company_and_rating_type" : "company";
+		let groupBy = groupByType || typeof window === "undefined" || ratingType ? "company_and_rating_type" : "company";
 
 		let ratingTypeResource;
 

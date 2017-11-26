@@ -39,18 +39,18 @@ export default class RatingsPage extends Page {
 			limit: 10,
 			total: 0,
 			ratings: [],
-			ratingTypes: [],
-			groupByType: false,
+			// ratingTypes: [],
+			groupByType: true,
 		});
 	}
 
-	componentDidMount(){
+	// componentDidMount(){
 
-		this.loadData();
+	// 	this.loadData();
 
 
-		super.componentDidMount && super.componentDidMount();
-	}
+	// 	super.componentDidMount && super.componentDidMount();
+	// }
 
 
 	componentDidUpdate(prevProps, prevState, prevContext){
@@ -72,7 +72,7 @@ export default class RatingsPage extends Page {
 
 		if((ratingType || prevRatingType) && ratingType !== prevRatingType){
 
-			this.loadData();
+			this.reloadData();
 
 			if(prevRatingType && !ratingType){
 
@@ -105,6 +105,61 @@ export default class RatingsPage extends Page {
   }
 	
 
+	// loadData(){
+
+
+	// 	const {
+	// 		localQuery,
+	// 	} = this.context;
+
+	// 	const {
+	// 		page,
+	// 		groupByType
+	// 	} = this.state;
+
+
+	// 	const {
+	// 		params,
+	// 	} = this.props;
+
+	// 	const {
+	// 		ratingType,
+	// 	} = params || {};
+
+
+	// 	/*
+	// 		Если указан тип рейтинга, то в любом случае группируем по типам.
+	// 		Иначе смотрим от стейта
+	// 	*/
+	// 	let groupBy = groupByType || ratingType ? "company_and_rating_type" : "company";
+
+	// 	let result = localQuery({
+	// 		operationName: "RatingsPageData",
+	// 		variables: {
+	// 			limit: 0,
+	// 			ratingsGroupBy: groupBy,
+	// 			getRatingCompany: true,
+	// 			getImageFormats: true,
+	// 			getRatingsAvg: false,
+	// 			ratingGetType: true,
+	// 		},
+	// 	})
+	// 	.then(r => {
+
+	// 		const {
+	// 			ratings,
+	// 			resources: ratingTypes,
+	// 		} = r.data;
+
+	// 		this.setState({
+	// 			ratings,
+	// 			ratingTypes,
+	// 		});
+	// 	}); 
+		
+		
+	// }
+
 	loadData(){
 
 
@@ -113,7 +168,7 @@ export default class RatingsPage extends Page {
 		} = this.context;
 
 		const {
-			page,
+			// page,
 			groupByType
 		} = this.state;
 
@@ -131,52 +186,141 @@ export default class RatingsPage extends Page {
 			Если указан тип рейтинга, то в любом случае группируем по типам.
 			Иначе смотрим от стейта
 		*/
+		// let groupBy = groupByType || ratingType ? "company_and_rating_type" : "company";
+
+		// let result = localQuery({
+		// 	operationName: "RatingsPageData",
+		// 	variables: {
+		// 		limit: 0,
+		// 		ratingsGroupBy: groupBy,
+		// 		getRatingCompany: true,
+		// 		getImageFormats: true,
+		// 		getRatingsAvg: false,
+		// 		ratingGetType: true,
+		// 	},
+		// })
+		// .then(r => {
+
+		// 	const {
+		// 		ratings,
+		// 		resources: ratingTypes,
+		// 	} = r.data;
+
+		// 	this.setState({
+		// 		ratings,
+		// 		ratingTypes,
+		// 	});
+		// }); 
+		
+		return super.loadData({
+			page: this.getPage(),
+			ratingType,
+			groupByType,
+		});
+	}
+		
+	
+	async loadServerData(provider, options = {}){
+
+		let {
+			cities: citiesNull,
+			...debugOptions
+		} = options;
+
+		// console.log("RatingsPage debugOptions", debugOptions);
+
+		const {
+			coords,
+			page,
+			limit = 12,
+			withPagination = true,
+			cities,
+			ratingType,
+			groupByType,
+		} = options;
+
+		/*
+			Если указан тип рейтинга, то в любом случае группируем по типам.
+			Иначе смотрим от стейта
+		*/
 		let groupBy = groupByType || ratingType ? "company_and_rating_type" : "company";
 
-		let result = localQuery({
-			operationName: "RatingsPageData",
-			variables: {
+
+		// Получаем список компаний
+	  const result = await provider({
+	    operationName: "RatingsPageData",
+	    variables: {
 				limit: 0,
 				ratingsGroupBy: groupBy,
 				getRatingCompany: true,
 				getImageFormats: true,
 				getRatingsAvg: false,
 				ratingGetType: true,
+	    },
+	  })
+	  .then(r => {
+	    
 
-				// usersPage: page,
-				// withPagination: true,
-				// userGetComments: true,
-				// getImageFormats: true,
-				// resourcesLimit: 10,
-				// resourceGetAuthor: true,
-				// resourceGetComments: true,
-				// getCommentAuthor: true,
-			},
-		})
-		.then(r => {
+	  	// console.log("RatingsPageData result", r);
+
+	  	const {
+	  		ratings,
+	  		resources,
+	  	} = r.data;
+
+	  	if(!ratings && !ratings.length){
+	  		return null;
+	  	}
+
+	  	// Определяем запрошенный тип рейтинга
+	  	if(ratingType){
+
+	  		if(!resources || !resources.find(n => n.alias === ratingType)){
+	  			return null;
+	  		}
+
+	  	}
+
+	    return r;
+
+	  })
+	  .catch(e => {
+	    throw(e);
+	  });
 
 
+	  if(result && result.data){
 
-			const {
-				ratings,
-				resources: ratingTypes,
-			} = r.data;
+	  	let title;
 
-			// const {
-			// 	count,
-			// 	total,
-			// 	object: users,
-			// } = usersList || {};
+	  	// const city = cities && cities[0];
 
-			this.setState({
-				ratings,
-				ratingTypes,
-			});
-		}); 
+	  	// if(city){
+
+	  	// 	title = city.longtitle;
+
+	  	// }
+
+	  	title = title || "Рейтинги бань";
+
+	  	// if(page > 1){
+
+	  	// 	title = `${title}, страница ${page}`;
+
+	  	// }
+
+  		Object.assign(result.data, {
+  			title,
+  		});
+
+	  }
+	  else{
+	  	return null;
+	  }
 
 
-		
-		
+	  return result;
+
 	}
 
 
@@ -185,7 +329,7 @@ export default class RatingsPage extends Page {
 		this.setState({
 			groupByType: checked,
 		}, () => {
-			this.loadData();
+			this.reloadData();
 		});
 
 	};
@@ -200,7 +344,7 @@ export default class RatingsPage extends Page {
 	}
 
 
-	renderContent(){
+	render(){
 
 		const {
 			groupByType,
@@ -208,7 +352,7 @@ export default class RatingsPage extends Page {
 
 		let {
 			ratings,
-			ratingTypes,
+			resources: ratingTypes,
 		} = this.state;
 
 		const {
@@ -230,16 +374,20 @@ export default class RatingsPage extends Page {
 
 			if(ratingType){
 
+				if(!ratingTypes){
+					return null;
+				}
+
 				// ratings = ratingTypes && ratingTypes.filter(n => n.Type && n.Type.alias === ratingTypes);
 				ratingTypes = ratingTypes && ratingTypes.filter(n => n.alias === ratingType);
 
 				const currentRating = ratingTypes[0];
 
-				if(currentRating){
+				// if(currentRating){
 
-					this.setPageTitle(`Рейтинг бань ${currentRating.name}`);
+				// 	this.setPageTitle(`Рейтинг бань ${currentRating.name}`);
 
-				}
+				// }
 
 			}
 
@@ -287,7 +435,7 @@ export default class RatingsPage extends Page {
 		}
 
 
-		return <Grid
+		return super.render(<Grid
 			container
       gutter={0}
 		>
@@ -343,7 +491,7 @@ export default class RatingsPage extends Page {
 				
 			</Grid>
 
-		</Grid>
+		</Grid>)
 
 	}
 

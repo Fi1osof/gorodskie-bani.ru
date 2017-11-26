@@ -73,9 +73,12 @@ import {
   getObjects as ReactCmsGetObjects,
   getObject as ReactCmsGetObject,
   objectResolver as ReactCmsObjectResolver,
-  // processObjectState,
+  sortBy,
 } from 'react-cms/src/app/components/ORM/resolver';
 
+export {
+  sortBy,
+};
 
 const getObjectsList = function(ofType, source, args, context, info){
   return ReactCmsGetObjectsList(ofType, source, args, context, info, getResolverByType);

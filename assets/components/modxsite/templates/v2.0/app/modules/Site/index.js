@@ -2,6 +2,7 @@
 
 import MainApp from './components/App';
 import MainPage from './components/Pages/MainPage';
+import MapPage from './components/Pages/MapPage';
 import TopicsPage from './components/Pages/Topics';
 import TopicPage from './components/Pages/Topics/Topic';
 import NotFoundPage from './components/Pages/NotFound';
@@ -23,6 +24,7 @@ import CitiesPage from './components/Pages/Cities';
 export {
   MainApp,
   MainPage,
+  MapPage,
   TopicsPage,
   TopicPage,
   NotFoundPage,

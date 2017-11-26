@@ -3,6 +3,7 @@
 import {
   MainApp,
   MainPage,
+  MapPage,
   TopicsPage,
   TopicPage,
   NotFoundPage,
@@ -32,22 +33,31 @@ let routes = {
     {
       path: "/city",
       component: CitiesPage,
-      childRoutes: [{
-        path: "/city/@:lat,:lng,:zoom",
-      },],
+      // childRoutes: [{
+      //   path: "/city/@:lat,:lng,:zoom",
+      // },],
     },
     {
       path: "/",
       component: MainPage,
-      childRoutes: [{
-        path: "/index",
-      },{
-        path: "/index/@:lat,:lng,:zoom",
-      },{
-        path: "/@:lat,:lng,:zoom",
-      },{
-        path: "/:city/@:lat,:lng,:zoom",
-      },],
+      childRoutes: [
+        {
+          path: "/index",
+        },
+      ],
+    },
+    {
+      path: "/@:lat,:lng,:zoom",
+      component: MapPage,
+      childRoutes: [
+        {
+          path: "/index/@:lat,:lng,:zoom",
+        },{
+          path: "/:city/@:lat,:lng,:zoom",
+        },{
+          path: "/city/:city/@:lat,:lng,:zoom",
+        },
+      ],
     },
     {
       path: "/db",
@@ -160,11 +170,11 @@ let routes = {
       path: "/st-petersburg/:companyId",
       component: CompanyPage,
     },
-    {
-      path: "/city/:city/@:lat,:lng,:zoom",
-      component: MainPage,
-      // component: CompaniesPage,
-    },
+    // {
+    //   path: "/city/:city/@:lat,:lng,:zoom",
+    //   component: MainPage,
+    //   // component: CompaniesPage,
+    // },
     {
       path: "/city/:city",
       // component: MainPage,

@@ -28,6 +28,8 @@ import {DataStore, Dispatcher} from 'react-cms-data-view';
 
 import {request, saveItem} from 'react-cms-data-view/src/Utils';
 
+import ReactCmsApp from 'react-cms/src/app/components/App';
+
 import Informer from 'structor-templates/components/Informer';
 
 import MainMenu from './MainMenu';
@@ -244,9 +246,9 @@ const customStyles = createMuiTheme({
   }),
 });
 
-const defaultProps = {
-  connector_url: '/assets/components/modxsite/connectors/connector.php',
-};
+// const defaultProps = {
+//   connector_url: '/assets/components/modxsite/connectors/connector.php',
+// };
 
 
 let classes;
@@ -353,11 +355,35 @@ export class MainApp extends Component{
 /*
   Инициируется один раз
 */
-export class AppMain extends Component{
 
-  static contextTypes = {
-    // styleManager: customPropTypes.muiRequired,
-  };
+
+let {
+  ...defaultProps
+} = ReactCmsApp.defaultProps || {};
+
+Object.assign(defaultProps, {
+  connector_url: '/assets/components/modxsite/connectors/connector.php',
+});
+
+
+let {
+  ...propTypes
+} = ReactCmsApp.propTypes || {};
+
+Object.assign(propTypes, {
+  document: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+});
+
+export class AppMain extends ReactCmsApp{
+
+  static propTypes = propTypes;
+
+  static defaultProps = defaultProps;
+
+  // static contextTypes = {
+  //   // styleManager: customPropTypes.muiRequired,
+  // };
 
   static childContextTypes = {
     inited: PropTypes.bool,
@@ -513,7 +539,7 @@ export class AppMain extends Component{
       coords: {},
       // inited: typeof window === "undefined",
       inited: false,
-      developMode: true,
+      developMode: false,
       // appExports: {},
     }
 
@@ -1703,208 +1729,208 @@ export class AppMain extends Component{
     return item;
   }
 
-  saveItem = async (store, item, connector_path, callback) => {
+  // saveItem = async (store, item, connector_path, callback) => {
 
     
     
     
 
-    let {
-      connector_url,
-      documentActions: {
-        addInformerMessage,
-      },
-    } = this.props;
+  //   let {
+  //     connector_url,
+  //     documentActions: {
+  //       addInformerMessage,
+  //     },
+  //   } = this.props;
 
-    // 
+  //   // 
 
-    // if(!store){
+  //   // if(!store){
 
-    //   console.error("Не было получено хранилище");
-    //   return;
-    // }
+  //   //   console.error("Не было получено хранилище");
+  //   //   return;
+  //   // }
 
-    if(
-      !item
-      || item._sending === true
-    ){
-      return;
-    }
+  //   if(
+  //     !item
+  //     || item._sending === true
+  //   ){
+  //     return;
+  //   }
 
-    let {
-      id,
-      _isDirty,
-    } = item;
+  //   let {
+  //     id,
+  //     _isDirty,
+  //   } = item;
 
-    if(!_isDirty){
+  //   if(!_isDirty){
 
-      addInformerMessage({
-        text: "Нечего сохранять",
-        autohide: 4000,
-      });
-      return;
-    }
+  //     addInformerMessage({
+  //       text: "Нечего сохранять",
+  //       autohide: 4000,
+  //     });
+  //     return;
+  //   }
 
-    item._sending = true;
+  //   item._sending = true;
 
 
       
-    var action = id && id > 0 ? 'update' : 'create';
+  //   var action = id && id > 0 ? 'update' : 'create';
 
-    var options = options || {};
+  //   var options = options || {};
 
-    var body = {};
+  //   var body = {};
 
-    body['id'] = id;;
+  //   body['id'] = id;;
  
 
-    for(var i in _isDirty){
-      var value = _isDirty[i];
+  //   for(var i in _isDirty){
+  //     var value = _isDirty[i];
 
-      if(value === undefined){
-        continue;
-      }
+  //     if(value === undefined){
+  //       continue;
+  //     }
 
-      // Пропускаем свойства-объекты
-      // if(
-      //   typeof value === "object" 
-      //   && !Array.isArray(value)
-      //   && value !== null
-      // ){
-      //   continue;
-      // }
+  //     // Пропускаем свойства-объекты
+  //     // if(
+  //     //   typeof value === "object" 
+  //     //   && !Array.isArray(value)
+  //     //   && value !== null
+  //     // ){
+  //     //   continue;
+  //     // }
 
-      // Пропускаем временные свойства
-      if(/^\_/.test(i)){
-        continue;
-      }
+  //     // Пропускаем временные свойства
+  //     if(/^\_/.test(i)){
+  //       continue;
+  //     }
 
-      // 
+  //     // 
 
-      body[i] = value;
-    };
+  //     body[i] = value;
+  //   };
 
-    let result = await this.request(connector_path, false, `${connector_path}${action}`, body, {
-      callback: (data, errors) => {
-        // 
-        // self.setState({items: data.object});
+  //   let result = await this.request(connector_path, false, `${connector_path}${action}`, body, {
+  //     callback: (data, errors) => {
+  //       // 
+  //       // self.setState({items: data.object});
 
-        let newObject = data.object || {};
+  //       let newObject = data.object || {};
 
-        var errors = {};
+  //       var errors = {};
 
-        if(data.success === true){
+  //       if(data.success === true){
 
    
 
-          Object.assign(newObject, {
-            _isDirty: undefined,
-          });
+  //         Object.assign(newObject, {
+  //           _isDirty: undefined,
+  //         });
 
 
-          addInformerMessage({
-            type: "success",
-            text: data.message || "Объект успешно сохранен",
-            autohide: 4000,
-          });
-        }
-        else{
+  //         addInformerMessage({
+  //           type: "success",
+  //           text: data.message || "Объект успешно сохранен",
+  //           autohide: 4000,
+  //         });
+  //       }
+  //       else{
 
-          if(data.data && data.data.length){
-            data.data.map(function(error){
-              var value = error.msg;
-              if(value && value != ''){
-                errors[error.id] = value;
-              }
-            });
-          }
+  //         if(data.data && data.data.length){
+  //           data.data.map(function(error){
+  //             var value = error.msg;
+  //             if(value && value != ''){
+  //               errors[error.id] = value;
+  //             }
+  //           });
+  //         }
 
-          errors.error_message = data.message;
+  //         errors.error_message = data.message;
 
-          // addInformerMessage && 
+  //         // addInformerMessage && 
 
-          //   addInformerMessage({
-          //     text: data.message || "Ошибка выполнения запроса",
-          //     autohide: 4000,
-          //   });
+  //         //   addInformerMessage({
+  //         //     text: data.message || "Ошибка выполнения запроса",
+  //         //     autohide: 4000,
+  //         //   });
 
-          // this.forceUpdate();
-        }
+  //         // this.forceUpdate();
+  //       }
 
-        // newState.errors = this.state.errors || {};
+  //       // newState.errors = this.state.errors || {};
 
-        // newState.errors[item.id || 0] = errors;
+  //       // newState.errors[item.id || 0] = errors;
 
-        // item._errors = errors;
+  //       // item._errors = errors;
 
-        callback && callback(data, errors);
+  //       callback && callback(data, errors);
         
-        // if(callback){
-        // }
+  //       // if(callback){
+  //       // }
         
-        // this.forceUpdate();
+  //       // this.forceUpdate();
     
 
-        // item._sending = false;
+  //       // item._sending = false;
 
-        // 
+  //       // 
 
-        // this.forceUpdate();
+  //       // this.forceUpdate();
 
-        // TODO store.commit
+  //       // TODO store.commit
 
-        Object.assign(newObject, {
-          _errors: errors,
-          _sending: false,
-        });
+  //       Object.assign(newObject, {
+  //         _errors: errors,
+  //         _sending: false,
+  //       });
 
-        if(store){
+  //       if(store){
 
-          let dispatcher = store.getDispatcher();
+  //         let dispatcher = store.getDispatcher();
           
-          dispatcher.dispatch(store.actions["SAVE"], item, newObject); 
+  //         dispatcher.dispatch(store.actions["SAVE"], item, newObject); 
 
-        }
-        else{
+  //       }
+  //       else{
           
-          Object.assign(item, newObject);
+  //         Object.assign(item, newObject);
 
-        }
+  //       }
 
-        this.forceUpdate();
-      }
-    });
+  //       this.forceUpdate();
+  //     }
+  //   });
 
-    // return;
+  //   // return;
 
-    // fetch(this.props.connector_url + '?pub_action='+ connector_path + action,{
-    //   credentials: 'same-origin',
-    //   method: options.method || "POST",
-    //   body: body,
-    // })
-    //   .then(function (response) {
+  //   // fetch(this.props.connector_url + '?pub_action='+ connector_path + action,{
+  //   //   credentials: 'same-origin',
+  //   //   method: options.method || "POST",
+  //   //   body: body,
+  //   // })
+  //   //   .then(function (response) {
 
-    //     return response.json()
-    //   })
-    //   .then((data) => {
+  //   //     return response.json()
+  //   //   })
+  //   //   .then((data) => {
 
-    //   })
-    //   .catch((error) => {
-    //       console.error('Request failed', error, this); 
+  //   //   })
+  //   //   .catch((error) => {
+  //   //       console.error('Request failed', error, this); 
 
-    //       item && (item._sending = false);
+  //   //       item && (item._sending = false);
 
-    //       addInformerMessage && addInformerMessage({
-    //         text: "Ошибка выполнения запроса",
-    //         autohide: 4000,
-    //       });
-    //     }
-    //   );
+  //   //       addInformerMessage && addInformerMessage({
+  //   //         text: "Ошибка выполнения запроса",
+  //   //         autohide: 4000,
+  //   //       });
+  //   //     }
+  //   //   );
 
-    this.forceUpdate();
+  //   this.forceUpdate();
 
-    return result;
-  }
+  //   return result;
+  // }
 
   
   saveVersionObject = async (store, item, graphQLParams) => {
@@ -2292,60 +2318,86 @@ export class AppMain extends Component{
 
   updateTopicItem = (item, data, silent) => {
 
-    let {
-      TopicsStore,
-    } = this.state;
+    // let {
+    //   TopicsStore,
+    // } = this.state;
 
-    item = item && TopicsStore.getState().find(n => n.id === item.id);
+    // item = item && TopicsStore.getState().find(n => n.id === item.id);
 
-    if(!item){
-      throw(new Error("Не был получен объект топика"));
-    }
+    // if(!item){
+    //   throw(new Error("Не был получен объект топика"));
+    // }
 
-    this.updateItem(item, data, TopicsStore, silent);
+    // return this.updateItem(item, data, TopicsStore, silent);
+    return this.updateItem(item, data, null, silent);
   }
 
 
-  saveTopicItem = (item) => {
+  saveTopicItem = async (item) => {
     // 
 
     let {
-      TopicsStore: store,
+      // TopicsStore: store,
     } = this.state;
 
-    item = item && store.getState().find(n => n.id === item.id);
+    // item = item && store.getState().find(n => n.id === item.id);
 
-    if(!item){
-      throw(new Error("Не был получен объект топика"));
-    }
+    // if(!item){
+    //   throw(new Error("Не был получен объект топика"));
+    // }
 
     let {
       id: itemId,
     } = item;
 
-    const callback = (data, errors) => { 
+    // const callback = (data, errors) => { 
 
-      if(data.success && data.object){
+    //   if(data.success && data.object){
 
-        const {
-          id,
-          uri,
-        } = data.object;
+    //     const {
+    //       id,
+    //       uri,
+    //     } = data.object;
 
-        if(id !== itemId){
+    //     if(id !== itemId){
 
-          // const uri = `/topics/${id}/`;
+    //       // const uri = `/topics/${id}/`;
           
-          browserHistory.replace(uri);
-        }
+    //       browserHistory.replace(uri);
+    //     }
 
-        this.reloadApiData();
+    //     this.reloadApiData();
 
-        return;
+    //     return;
+    //   }
+    // }
+
+    // return this.saveItem(store, item, 'topic/', callback);
+    const result = await this.saveItem(null, item, 'topic/');
+
+    // console.log("saveTopicItem result", result);
+
+    await this.reloadApiData();
+
+
+    if(result.success && result.object){
+
+      const {
+        id,
+        uri,
+      } = result.object;
+
+      if(id !== itemId){
+
+        // const uri = `/topics/${id}/`;
+        
+        browserHistory.replace(uri);
       }
+
     }
 
-    return this.saveItem(store, item, 'topic/', callback);
+    return result;
+    
   }
 
 
@@ -2575,159 +2627,164 @@ export class AppMain extends Component{
   // }
 
 
-  loadApiData = async () => {
+  // loadApiData = async () => {
 
-    // 
+  //   // 
 
-    const {
-      developMode,
-    } = this.state;
+  //   const {
+  //     developMode,
+  //   } = this.state;
 
-    const {
-      document,
-    } = this.props;
+  //   const {
+  //     document,
+  //   } = this.props;
 
-    let {
-      apiData,
-      // citiesData,
-      resourceState,
-    } = document;
+  //   let {
+  //     apiData,
+  //     // citiesData,
+  //     resourceState,
+  //   } = document;
 
-    const {
-      state: initialState,
-    } = resourceState || {};
+  //   const {
+  //     state: initialState,
+  //   } = resourceState || {};
 
-    const {
-      cities,
-    } = initialState || {};
-
-
-
-    if(typeof window !== "undefined" && developMode){
-
-      // const response = await this.remoteQuery({
-      //   operationName: "apiData",
-      //   variables: {
-      //     limit: 0,
-      //   },
-      // });
-
-      await this.remoteQuery({
-        operationName: "apiData",
-        variables: {
-          limit: 0,
-          apiDataGetCurrentUser: true,
-        },
-      })
-      .then(r => {
-
-        // document.apiData = apiData = r && r.object || null;
-        apiData = r && r.data || null;
-
-        // this.initData(apiData);
-
-        // Если работа уже в браузере, надо переподгрузить данные карты,
-        // потому что с рейтингами фигня какая-то на стороне сервере 
-        // Скорее всего просто сравнение неверное по ключу
-        // this.loadMapData();
-
-      });
+  //   const {
+  //     cities,
+  //   } = initialState || {};
 
 
 
-      // apiData = apiData || {};
+  //   if(typeof window !== "undefined" && developMode){
 
-      // Object.assign(apiData, {
-      //   citiesData,
-      // });
+  //     // const response = await this.remoteQuery({
+  //     //   operationName: "apiData",
+  //     //   variables: {
+  //     //     limit: 0,
+  //     //   },
+  //     // });
 
+  //     await this.remoteQuery({
+  //       operationName: "apiData",
+  //       variables: {
+  //         limit: 0,
+  //         apiDataGetCurrentUser: true,
+  //       },
+  //     })
+  //     .then(r => {
 
+  //       // document.apiData = apiData = r && r.object || null;
+  //       apiData = r && r.data || null;
 
-      // const response = await this.remoteQuery({
-      //   operationName: "apiData",
-      //   variables: {
-      //     limit: 0,
-      //   },
-      // });
+  //       // this.initData(apiData);
 
-      // await this.remoteQuery({
-      //   operationName: "apiData",
-      //   variables: {
-      //     limit: 0,
-      //     apiDataGetCurrentUser: true,
-      //   },
-      // })
-      // .then(r => {
+  //       // Если работа уже в браузере, надо переподгрузить данные карты,
+  //       // потому что с рейтингами фигня какая-то на стороне сервере 
+  //       // Скорее всего просто сравнение неверное по ключу
+  //       // this.loadMapData();
 
-      //   document.apiData = apiData = r && r.object || null;
-
-      //   this.initData(apiData);
-
-      //   // Если работа уже в браузере, надо переподгрузить данные карты,
-      //   // потому что с рейтингами фигня какая-то на стороне сервере 
-      //   // Скорее всего просто сравнение неверное по ключу
-      //   // this.loadMapData();
-
-      // });
+  //     });
 
 
 
-      // apiData = apiData || {};
+  //     // apiData = apiData || {};
 
-      // Object.assign(apiData, {
-      //   citiesData,
-      // });
-
-
-
-      // this.initData(apiData);
-
-    }
-    else{
-
-      // apiData = apiData || {};
-
-      // Object.assign(apiData, {
-      //   citiesData,
-      // });
+  //     // Object.assign(apiData, {
+  //     //   citiesData,
+  //     // });
 
 
 
-      // this.initData(apiData);
+  //     // const response = await this.remoteQuery({
+  //     //   operationName: "apiData",
+  //     //   variables: {
+  //     //     limit: 0,
+  //     //   },
+  //     // });
 
-    }
+  //     // await this.remoteQuery({
+  //     //   operationName: "apiData",
+  //     //   variables: {
+  //     //     limit: 0,
+  //     //     apiDataGetCurrentUser: true,
+  //     //   },
+  //     // })
+  //     // .then(r => {
+
+  //     //   document.apiData = apiData = r && r.object || null;
+
+  //     //   this.initData(apiData);
+
+  //     //   // Если работа уже в браузере, надо переподгрузить данные карты,
+  //     //   // потому что с рейтингами фигня какая-то на стороне сервере 
+  //     //   // Скорее всего просто сравнение неверное по ключу
+  //     //   // this.loadMapData();
+
+  //     // });
 
 
 
-    apiData = apiData || {};
+  //     // apiData = apiData || {};
 
-    Object.assign(apiData, {
-      cities,
-    });
-
-
-
-    this.initData(apiData);
+  //     // Object.assign(apiData, {
+  //     //   citiesData,
+  //     // });
 
 
-    let user; 
 
-    let {
-      user: currentUser,
-    } = apiData || {};
+  //     // this.initData(apiData);
+
+  //   }
+  //   else{
+
+  //     // apiData = apiData || {};
+
+  //     // Object.assign(apiData, {
+  //     //   citiesData,
+  //     // });
+
+
+
+  //     // this.initData(apiData);
+
+  //   }
+
+
+  //   // console.log("apiData", apiData);
+
+  //   if(!apiData){
+  //     return;
+  //   }
+
+  //   apiData = apiData || {};
+
+  //   Object.assign(apiData, {
+  //     cities,
+  //   });
+
+
+
+  //   this.initData(apiData);
+
+
+  //   let user; 
+
+  //   let {
+  //     user: currentUser,
+  //   } = apiData || {};
     
 
-    if(currentUser){
-      this.props.userActions.GetOwnDataSuccess(currentUser);
+  //   if(currentUser){
+  //     this.props.userActions.GetOwnDataSuccess(currentUser);
 
-      user = currentUser;
-    }
+  //     user = currentUser;
+  //   }
 
 
-    this.initUser(user);
+  //   this.initUser(user);
 
-    return;
-  }
+  //   return;
+  // }
 
 
   // initData(apiData){
@@ -3650,11 +3707,11 @@ class Renderer extends Component{
   }
 }
 
-AppMain.defaultProps = defaultProps;
-AppMain.propTypes = {
-  document: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
-};
+// AppMain.defaultProps = defaultProps;
+// AppMain.propTypes = {
+//   document: PropTypes.object.isRequired,
+//   user: PropTypes.object.isRequired,
+// };
 
 
 function mapDispatchToProps(dispatch) {

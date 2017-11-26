@@ -188,11 +188,15 @@ export default class TopicView extends Component{
 			updateTopicItem,
 		} = this.context;
 
-		return updateTopicItem(item, data, silent);
+		const result = updateTopicItem(item, data, silent);
+
+		// console.log("TopicView updateItem", item, result);
+
+		this.forceUpdate();
 
 	}
 
-	saveItem(){
+	async saveItem(){
 
 		const {
 			saveTopicItem,
@@ -202,7 +206,15 @@ export default class TopicView extends Component{
 			item,
 		} = this.props;
 
-		return saveTopicItem(item);
+		const result = await saveTopicItem(item);
+
+		// console.log("TopicView saveItem result", result);
+
+		// const {
+		// 	success
+		// } = result || {};
+
+		this.forceUpdate();
 
 	}
 
@@ -298,7 +310,7 @@ export default class TopicView extends Component{
 		const {
 			id,
 			name:topicName,
-			pagetitle,
+			// pagetitle,
 			uri,
 			short_text,
 			summary,
@@ -428,8 +440,8 @@ export default class TopicView extends Component{
 										label="Название публикации"
 										error={errors && errors.pagetitle ? true : false}
 										helperText={errors && errors.pagetitle || ""}
-										name="pagetitle"
-										value={pagetitle || ""}
+										name="name"
+										value={topicName || ""}
 										onChange={this.onChange}
 										onFocus={() => this.onFocus('pagetitle')}
 									/>

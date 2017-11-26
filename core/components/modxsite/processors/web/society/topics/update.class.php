@@ -51,6 +51,15 @@ class modWebSocietyTopicsUpdateProcessor extends modSocietyWebTopicsUpdateProces
             }
         }
 
+
+        $name = $this->getProperty("name");
+
+        if(isset($name)){
+            $this->setDefaultProperties(array(
+                "pagetitle"  => trim($name),
+            ));
+        }
+
         
         // if(!$id = (int)$this->getProperty('topic_id')){
         if(!$id = (int)$this->getProperty('id')){

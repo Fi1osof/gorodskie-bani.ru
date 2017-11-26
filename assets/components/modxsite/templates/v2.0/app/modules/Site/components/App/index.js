@@ -134,7 +134,7 @@ export const initData = function(apiData){
       cities,
     } = apiData || {};
 
-    resources = resources || [];
+    // resources = resources || [];
 
 
 
@@ -146,6 +146,8 @@ export const initData = function(apiData){
     // } = citiesData || {};
 
     cities && cities.map(n => {
+
+      resources = resources || [];
 
       if(resources.findIndex(i => i.id === n.id) === -1){
 
@@ -159,15 +161,15 @@ export const initData = function(apiData){
 
     // let companies = object && object.map(n => new Company(n)) || [];
 
-    users = users && users.map(n => this.createStoreObject(User, n)) || [];
+    users = users && users.map(n => this.createStoreObject(User, n));
 
     // companies = companies || [];
     // users = users || [];
 
-    ratings = ratings || [];
-    comments = comments || [];
+    // ratings = ratings || [];
+    // comments = comments || [];
 
-    EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], editVersions || []);
+    editVersions !== undefined && EditVersionsStore.getDispatcher().dispatch(EditVersionsStore.actions['SET_DATA'], editVersions || []);
 
     
 
@@ -197,19 +199,21 @@ export const initData = function(apiData){
     }
     else{
 
-      companies = companies &&  companies.map(n => this.createStoreObject(Company, n)) || [];
-      CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies);
+      companies = companies &&  companies.map(n => this.createStoreObject(Company, n));
+      companies !== undefined && CompaniesStore.getDispatcher().dispatch(CompaniesStore.actions['SET_DATA'], companies || []);
 
     }
 
 
+    // console.log("cities", cities);
+    // console.log("resources", resources);
+    // console.log("apiData", apiData);
 
-
-    UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
-    RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
-    CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
-    ResourcesStore.getDispatcher().dispatch(ResourcesStore.actions['SET_DATA'], resources || []);
-    TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
+    users !== undefined && UsersStore.getDispatcher().dispatch(UsersStore.actions['SET_DATA'], users);
+    ratings !== undefined && RatingsStore.getDispatcher().dispatch(RatingsStore.actions['SET_DATA'], ratings || []);
+    comments !== undefined && CommentsStore.getDispatcher().dispatch(CommentsStore.actions['SET_DATA'], comments || []);
+    resources !== undefined && ResourcesStore.getDispatcher().dispatch(ResourcesStore.actions['SET_DATA'], resources || []);
+    topics !== undefined && TopicsStore.getDispatcher().dispatch(TopicsStore.actions['SET_DATA'], topics || []);
 
 
 

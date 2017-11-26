@@ -294,7 +294,7 @@ export default class MainMenu extends Component{
 
       // const link = `/city/${city_alias}/@` + [lat,lng,12].join(",");
 
-      const link = `${uri}@` + [lat,lng,12].join(",");
+      const link = `/${uri}@` + [lat,lng,12].join(",");
 
       // const link = uri;
 
@@ -534,7 +534,7 @@ export default class MainMenu extends Component{
                           Новости
                         </Link>
                       </li>
-                      {user 
+                      {/*user 
                         ?
                         <li className="">
                           <a 
@@ -572,7 +572,7 @@ export default class MainMenu extends Component{
                         </li>
                         :
                         null
-                      }
+                      */}
                     </ul>
                   </li>
               }

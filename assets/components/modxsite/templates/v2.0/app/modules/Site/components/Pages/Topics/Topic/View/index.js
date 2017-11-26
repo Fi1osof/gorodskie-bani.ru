@@ -462,7 +462,8 @@ export default class TopicView extends Component{
 
 	      			</Grid>
 							:
-							<Grid
+							null
+							/*<Grid
 								item
 							>
 
@@ -482,7 +483,7 @@ export default class TopicView extends Component{
 	        				/>
 	        			</IconButton> || null }
 	        				
-							</Grid>
+							</Grid>*/
 						}
 
 						

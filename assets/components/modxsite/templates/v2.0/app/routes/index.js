@@ -2,8 +2,8 @@
 
 import {
   MainApp,
-  MainPage,
   MapPage,
+  // MapPage,
   TopicsPage,
   TopicPage,
   NotFoundPage,
@@ -27,19 +27,21 @@ let routes = {
   path: "/",
   component: MainApp,
   indexRoute: { 
-    component: MainPage 
+    component: MapPage 
   },
   childRoutes: [
     {
       path: "/city",
       component: CitiesPage,
-      // childRoutes: [{
-      //   path: "/city/@:lat,:lng,:zoom",
-      // },],
+      childRoutes: [
+        {
+          path: "/city/@:lat,:lng,:zoom",
+        },
+      ],
     },
     {
       path: "/",
-      component: MainPage,
+      component: MapPage,
       childRoutes: [
         {
           path: "/index",
@@ -52,8 +54,8 @@ let routes = {
       childRoutes: [
         {
           path: "/index/@:lat,:lng,:zoom",
-        },{
-          path: "/:city/@:lat,:lng,:zoom",
+        // },{
+        //   path: "/:city/@:lat,:lng,:zoom",
         },{
           path: "/city/:city/@:lat,:lng,:zoom",
         },
@@ -172,12 +174,12 @@ let routes = {
     },
     // {
     //   path: "/city/:city/@:lat,:lng,:zoom",
-    //   component: MainPage,
+    //   component: MapPage,
     //   // component: CompaniesPage,
     // },
     {
       path: "/city/:city",
-      // component: MainPage,
+      // component: MapPage,
       component: CompaniesPage,
       // childRoutes: [{
       //   // path: "/city/:city/:companyId",
@@ -206,7 +208,7 @@ let routes = {
     },
     {
       // "path":"/moscow",
-      // "component":MainPage,
+      // "component":MapPage,
       component: CompaniesPage,
       childRoutes: [
         {

@@ -1973,7 +1973,7 @@ export default class CompanyPage extends Page{
     			</Grid>
 
 
-        	{_isDirty
+        	{/*_isDirty
         		?
         			<Grid
         				item
@@ -2016,7 +2016,7 @@ export default class CompanyPage extends Page{
         			</Grid>	
         			:
 
-        		null}
+        		null*/}
 
         </Grid>}
         subheader={<RatingField 

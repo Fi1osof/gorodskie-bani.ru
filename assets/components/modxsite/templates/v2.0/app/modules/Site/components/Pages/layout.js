@@ -484,13 +484,45 @@ export default class Page extends ReactCmsPage{
 			
 			{childContent || this.renderContent() || null}
 
-			<div
+			<Grid
+				container
 				style={{
 					paddingTop: 30,
 				}}
 			>
-				{getCounters()}
-			</div>
+				
+				<Grid
+					item
+					xs
+				>
+					{getCounters()}	
+				</Grid>
+
+				<Grid
+					item
+				>
+					<Link
+						to="/ratings/"
+						href="/ratings/"
+						title="Рейтинги бань"
+					>
+						Рейтинги бань
+					</Link>
+				</Grid>
+
+				<Grid
+					item
+				>
+					<Link
+						to="/contacts.html"
+						href="/contacts.html"
+						title="Разместить информацию о бане"
+					>
+						Добавить баню или сауну
+					</Link>
+				</Grid>
+
+			</Grid>
 
 		</div>;
 

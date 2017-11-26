@@ -245,6 +245,7 @@ export default class RatingsPage extends Page {
 		*/
 		let groupBy = groupByType || ratingType ? "company_and_rating_type" : "company";
 
+		let ratingTypeResource;
 
 		// Получаем список компаний
 	  const result = await provider({
@@ -275,11 +276,15 @@ export default class RatingsPage extends Page {
 	  	// Определяем запрошенный тип рейтинга
 	  	if(ratingType){
 
-	  		if(!resources || !resources.find(n => n.alias === ratingType)){
+	  		ratingTypeResource = resources && resources.find(n => n.alias === ratingType);
+
+	  		if(!ratingTypeResource){
 	  			return null;
 	  		}
 
 	  	}
+
+	  	// console.log("ratingTypeResource", ratingTypeResource);
 
 	    return r;
 
@@ -300,6 +305,10 @@ export default class RatingsPage extends Page {
 	  	// 	title = city.longtitle;
 
 	  	// }
+
+	  	if(ratingTypeResource && ratingTypeResource.name){
+	  		title = `Бани в рейтинге ${ratingTypeResource.name}`;
+	  	}
 
 	  	title = title || "Рейтинги бань";
 

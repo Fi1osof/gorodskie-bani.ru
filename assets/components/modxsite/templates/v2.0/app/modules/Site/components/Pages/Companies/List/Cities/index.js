@@ -230,8 +230,8 @@ export default class CitiesList extends Component{
 
 				citiesList.push(<Link
 					key={id}
-					to={uri}
-					href={uri}
+					to={`/${uri}`}
+					href={`/${uri}`}
 					onClick={() => {
 						// this.changeCity(city);
 				  	this.setState({

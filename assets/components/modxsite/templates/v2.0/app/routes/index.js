@@ -3,7 +3,7 @@
 import {
   MainApp,
   MapPage,
-  // MapPage,
+  // MainPage,
   TopicsPage,
   TopicPage,
   NotFoundPage,
@@ -58,6 +58,9 @@ let routes = {
         //   path: "/:city/@:lat,:lng,:zoom",
         },{
           path: "/city/:city/@:lat,:lng,:zoom",
+        },
+        {
+          path: "/*/@:lat,:lng,:zoom",
         },
       ],
     },

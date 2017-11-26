@@ -2186,16 +2186,14 @@ export class AppMain extends Component{
 
     if(itemId > 0){
 
-      return await this.saveVersionObject(store, item, {
+      let result = await this.saveVersionObject(store, item, {
         operationName: "updateCompany",
         variables: {
           updateCompanyId: itemId,
           updateCompanyData: _isDirty,
         },
       })
-      .then(r => {
-
-
+      .then(async r => {
 
         const {
           updateCompany,
@@ -2216,10 +2214,11 @@ export class AppMain extends Component{
 
           item._isDirty = null;
 
-          this.reloadApiData();
+          await this.reloadApiData();
 
         }
         
+        return r;
       })
       .catch(e => {
         console.error(e);
@@ -2254,6 +2253,8 @@ export class AppMain extends Component{
 
         throw(e);
       });
+
+      return result;
 
     }
     else{

@@ -28,6 +28,8 @@ export const create = async (source, args, context, info) => {
   //   message: "DSfsdfd",
   // }));
 
+  // console.log("EditVersions args", args);
+
   let {
     target_id,
     data: argsData,
@@ -66,6 +68,7 @@ export const create = async (source, args, context, info) => {
   .then((data) => {
   
 
+    // console.log("EditVersions result", data);
 
     if(!data.success){
 
@@ -143,6 +146,9 @@ export const create = async (source, args, context, info) => {
     return data;
   })
   .catch((e) => {
+  
+    // console.log("EditVersions error", e);
+
     throw(new Error(e));
   });
 
@@ -217,7 +223,7 @@ export const create = async (source, args, context, info) => {
   .returning('*')
   .then(async r => {
 
-
+    // console.log("EditVersions insert result", r);
 
     await q
     .select("*")
@@ -227,6 +233,7 @@ export const create = async (source, args, context, info) => {
     .whereIn("id", r)
     .then(r => {
       
+      // console.log("EditVersions select result", r);
 
 
       result = r && r[0] || null;
@@ -260,8 +267,10 @@ export const create = async (source, args, context, info) => {
   });
 
 
+  // console.log("EditVersions responseMessage", responseMessage);
+
   if(result){
-    result.message = responseMessage;
+    result.message = responseMessage || "Данные успешно обновлены";
   }
 
 

@@ -72,6 +72,27 @@ import Site from 'modules/Site/components/fields/Site';
 
 import Page from '../../layout'; 
 
+
+let {
+	...contextTypes
+} = Page.contextTypes;
+
+Object.assign(contextTypes, {
+	// loadCompanyFullData: PropTypes.func.isRequired,
+	document: PropTypes.object.isRequired,
+	setPageTitle: PropTypes.func.isRequired,
+	updateContactItem: PropTypes.func.isRequired,
+	saveContactItem: PropTypes.func.isRequired,
+	localQuery: PropTypes.func.isRequired,
+	CompaniesStore: PropTypes.object.isRequired,
+	RatingsStore: PropTypes.object.isRequired,
+	TopicsStore: PropTypes.object.isRequired,
+	CommentsStore: PropTypes.object.isRequired,
+	ResourcesStore: PropTypes.object.isRequired,
+	documentActions: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired,
+});
+
 export default class CompanyPage extends Page{
 
 	// static propTypes = {
@@ -79,21 +100,7 @@ export default class CompanyPage extends Page{
 	// 	// companyId: PropTypes.string.isRequired,
 	// };
 
-	// static contextTypes = {
-	// 	// loadCompanyFullData: PropTypes.func.isRequired,
-	// 	document: PropTypes.object.isRequired,
-	// 	setPageTitle: PropTypes.func.isRequired,
-	// 	updateContactItem: PropTypes.func.isRequired,
-	// 	saveContactItem: PropTypes.func.isRequired,
-	// 	localQuery: PropTypes.func.isRequired,
-	// 	CompaniesStore: PropTypes.object.isRequired,
-	// 	RatingsStore: PropTypes.object.isRequired,
-	// 	TopicsStore: PropTypes.object.isRequired,
-	// 	CommentsStore: PropTypes.object.isRequired,
-	// 	ResourcesStore: PropTypes.object.isRequired,
-	// 	documentActions: PropTypes.object.isRequired,
-	// 	user: PropTypes.object.isRequired,
-	// };
+	static contextTypes = contextTypes;
 
 	constructor(props){
 
@@ -486,18 +493,21 @@ export default class CompanyPage extends Page{
 	updateItem = (item, data) => {
 
 		const {
-			updateContactItem,
+			// updateContactItem,
+			updateItem,
 		} = this.context;
 
-		updateContactItem(item, data);
+		// updateContactItem(item, data);
+		updateItem(item, data);
 
+		this.forceUpdate();
 
 	}
 
 	saveItem = async () => {
 
 		const {
-			item,
+			company: item,
 		} = this.state;
 
 		const {
@@ -511,6 +521,20 @@ export default class CompanyPage extends Page{
 
 		await saveContactItem(item)
 			.then(r => {
+
+				// console.log("saveContactItem result", r);
+
+				const {
+					success,
+					deta,
+				} = r;
+
+
+				if(success){
+
+					this.reloadData();
+
+				}
 
 			})
 			.catch(e => {
@@ -546,9 +570,6 @@ export default class CompanyPage extends Page{
 		this.setState({
 			sending: false,
 		});
-
-		// this.loadCompanyFullData();
-		this.loadData();
 		
 	}
 
@@ -556,7 +577,7 @@ export default class CompanyPage extends Page{
 	clearErrors(name){
 		
 		const {
-			item,
+			company: item,
 		} = this.state;
 
 		let {
@@ -584,7 +605,7 @@ export default class CompanyPage extends Page{
 	onChange = event => {
 
 		const {
-			item,
+			company: item,
 		} = this.state;
 
 		let data = {};
@@ -644,7 +665,7 @@ export default class CompanyPage extends Page{
 	acceptDiffs(diffs){
 
 		const {
-			item,
+			company: item,
 		} = this.state;
 
 
@@ -1973,7 +1994,7 @@ export default class CompanyPage extends Page{
     			</Grid>
 
 
-        	{/*_isDirty
+        	{_isDirty
         		?
         			<Grid
         				item
@@ -2016,7 +2037,7 @@ export default class CompanyPage extends Page{
         			</Grid>	
         			:
 
-        		null*/}
+        		null}
 
         </Grid>}
         subheader={<RatingField 

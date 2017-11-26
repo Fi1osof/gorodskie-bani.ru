@@ -18,6 +18,7 @@ require('babel-core/register')({
         || /\/react-progress-button\//.test(file)
         || /\/react-coin-hive\//.test(file)
         || /\/react-schedule\//.test(file)
+        || /\/react-cms\//.test(file)
         || /\/moment\//.test(file)
       ){
         return;

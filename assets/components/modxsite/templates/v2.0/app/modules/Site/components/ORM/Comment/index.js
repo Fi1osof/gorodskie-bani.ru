@@ -13,6 +13,10 @@ import GraphQLJSON from 'graphql-type-json';
 
 import moment from 'moment';
 
+import {
+  CommentEditorStateType,
+} from 'react-cms/src/app/components/ORM/Comment';
+
 // import {
 //   SchemaObject,
 //   order,
@@ -107,7 +111,7 @@ export const CommentType = new GraphQLObjectType({
         description: "Класс целевого объекта",
       },
       text: {
-        type: GraphQLJSON,
+        type: CommentEditorStateType,
         description: "Текст комментария",
       },
       author_username: {

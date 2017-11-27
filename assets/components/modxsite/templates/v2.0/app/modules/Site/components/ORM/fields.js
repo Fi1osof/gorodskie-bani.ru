@@ -13,11 +13,13 @@ import {
 
 import {
   ObjectsListType,
+  imageType,
 } from 'react-cms/src/app/components/ORM/fields';
 
 
 export {
   ObjectsListType,
+  imageType,
 };
 
 
@@ -300,70 +302,70 @@ const imageFields = {
   },
 };
 
-export const imageType = {
-  type: new GraphQLObjectType({
-    name: 'Images',
-    fields: {
-      original: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return image;
-        },
-      },
-      thumb: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/thumb/${image}`;
-        },
-      },
-      marker_thumb: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/marker_thumb/${image}`;
-        },
-      },
-      slider_thumb: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/slider_thumb/${image}`;
-        },
-      },
-      slider_dot_thumb: {
-        type: GraphQLString,
-        description: "Для навигации в слайдере",
-        resolve: (image) => {
-          return `images/resized/slider_dot_thumb/${image}`;
-        },
-      },
-      small: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/small/${image}`;
-        },
-      },
-      middle: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/middle/${image}`;
-        },
-      },
-      big: {
-        type: GraphQLString,
-        resolve: (image) => {
-          return `images/resized/big/${image}`;
-        },
-      },
-    },
-  }),
-  resolve: (object) => {
+// export const imageType = {
+//   type: new GraphQLObjectType({
+//     name: 'Images',
+//     fields: {
+//       original: {
+//         type: GraphQLString,
+//         resolve: (image) => {
+//           return image;
+//         },
+//       },
+//       thumb: {
+//         type: GraphQLString,
+//         resolve: (image) => {
+//           return `images/resized/thumb/${image}`;
+//         },
+//       },
+//       marker_thumb: {
+//         type: GraphQLString,
+//         resolve: (image) => {
+//           return `images/resized/marker_thumb/${image}`;
+//         },
+//       },
+//       slider_thumb: {
+//         type: GraphQLString,
+//         resolve: (image) => {
+//           return `images/resized/slider_thumb/${image}`;
+//         },
+//       },
+//       slider_dot_thumb: {
+//         type: GraphQLString,
+//         description: "Для навигации в слайдере",
+//         resolve: (image) => {
+//           return `images/resized/slider_dot_thumb/${image}`;
+//         },
+//       },
+//       small: {
+//         type: GraphQLString,
+//         resolve: (image) => {
+//           return `images/resized/small/${image}`;
+//         },
+//       },
+//       middle: {
+//         type: GraphQLString,
+//         resolve: (image) => {
+//           return `images/resized/middle/${image}`;
+//         },
+//       },
+//       big: {
+//         type: GraphQLString,
+//         resolve: (image) => {
+//           return `images/resized/big/${image}`;
+//         },
+//       },
+//     },
+//   }),
+//   resolve: (object) => {
 
-    const {
-      image,
-    } = object;
+//     const {
+//       image,
+//     } = object;
 
-    return image && image.replace(/^\//g, '') || null;
-  },
-};
+//     return image && image.replace(/^\//g, '') || null;
+//   },
+// };
 
 
 export const coordsFields = {

@@ -279,7 +279,7 @@ export const getList = (object, args, context, info) => {
       // with_coors_only: false,       // Только с координатами
       // company_id: id,
       id,
-      limit,
+      limit: 0,
       page,
       start,
       count: count === undefined ? 1 : count,
@@ -313,6 +313,8 @@ export const getList = (object, args, context, info) => {
         } = context;
 
         object.map(comment => {
+
+          // comment.text = null;
 
           let {
             id,
@@ -377,6 +379,18 @@ export const getList = (object, args, context, info) => {
 
               };
 
+              if(text_content && text_content.entityMap){
+
+                let textArray = [];
+
+                for(var i in text_content.entityMap){
+                  textArray[i] = text_content.entityMap[i] || null;
+                }
+
+                text_content.entityMap = textArray;
+
+              }
+
               contentCache[id] = {
                 text,
                 text_content,
@@ -399,6 +413,8 @@ export const getList = (object, args, context, info) => {
         });
 
       }
+
+      // console.log("comments list resolver data", data);
 
       return resolve(data);
     })

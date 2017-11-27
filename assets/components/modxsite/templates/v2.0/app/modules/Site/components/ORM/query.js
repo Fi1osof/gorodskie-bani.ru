@@ -1,6 +1,7 @@
 
 const defaultQuery = `
 
+
 query apiData(
   $limit:Int = 0
   $apiDataGetCurrentUser:Boolean = false
@@ -1389,7 +1390,9 @@ fragment CommentFields on CommentType{
   resource_id  
   target_id
   target_class
-  text
+  text {
+    ...CommentState
+  }
   parent
   published
   deleted
@@ -1398,6 +1401,82 @@ fragment CommentFields on CommentType{
   createdby
   _errors
   _Dirty
+}
+
+fragment CommentState on CommentEditorStateType{
+  blocks{
+    data
+    depth
+    entityRanges
+    inlineStyleRanges
+    key
+    text
+    type
+  }
+  entityMap{
+    __typename
+    
+    ... on EditorEntityDefaultType{
+      type
+      mutability
+      ...EditorEntity
+    }
+    
+    ... on EditorEntityGalleryType{
+      ...EditorEntityGallery
+      type
+      mutability
+    }
+    
+    ... on EditorEntityLinkType{
+      type
+      data{
+        target
+        title
+        url
+        _map
+      }
+    }
+    
+    ... on EditorEntityImageType{
+      type
+      mutability
+      data{
+        src
+      }
+    }
+    
+  }
+}
+
+fragment EditorEntity on EditorEntityDefaultType{
+  type
+  mutability
+  data{
+    gallery{
+      image
+    }
+    target
+    title
+    url
+    _map
+  }
+}
+
+fragment EditorEntityGallery on EditorEntityGalleryType{
+  type
+  mutability
+  data{
+    gallery{
+      image
+      imageFormats{
+        thumb
+        slider_thumb
+        middle
+        big
+      }
+    }
+  }
 }
 
 fragment Rating on RatingType{
@@ -1449,7 +1528,9 @@ fragment Company on Company{
   {
     id
     thread_id
-    text
+    text{
+      ...CommentState
+    }
     author_username
     author_fullname
     author_avatar
@@ -1676,7 +1757,9 @@ query test(
       id
       published
       deleted
-      text
+      text{
+        ...CommentState
+      }
     }
     # ratingAvg {
     #   id
@@ -2098,6 +2181,7 @@ mutation updateCompany(
     ...editVersion
   }
 }
+
 
 `;
 

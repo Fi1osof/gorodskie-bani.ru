@@ -320,11 +320,15 @@ export default class TopicsPage extends Page {
   //     coords,
   //   } = this.context;
 
+  	const {
+  		params,
+  	} = this.props;
+
 		const page = this.getPage();
 
 		const {
 			tag,
-		} = this.state;
+		} = params || {};
 
 		return super.loadData({
 			page,
@@ -343,7 +347,7 @@ export default class TopicsPage extends Page {
 			...debugOptions
 		} = options;
 
-
+		// console.log("TopicsPage loadServerData options", debugOptions);
 
 		let {
 			coords,

@@ -179,6 +179,7 @@ fragment SiteContentTest on SiteContentType{
   robots
   content
   state
+  user
   _errors
   _isDirty
 }
@@ -908,7 +909,7 @@ query User(
 }
 
 query CurrentUser(
-  $getImageFormats:Boolean = false
+  $getImageFormats:Boolean = true
   $userGetComments:Boolean = false
   $getCommentAuthor:Boolean = false
 ) {

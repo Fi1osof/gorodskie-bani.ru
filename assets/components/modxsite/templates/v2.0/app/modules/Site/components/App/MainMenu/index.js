@@ -10,6 +10,8 @@ import LoginIcon from 'material-ui-icons/PermIdentity';
 import AddIcon from 'material-ui-icons/Add';
 import AtentionIcon from 'material-ui-icons/ErrorOutline';
 
+import Avatar from 'modules/Site/components/fields/User/avatar.js';
+
 import WsProxy from 'modules/Site/components/WsProxy';
 
 import cookies from 'js-cookie';
@@ -388,7 +390,12 @@ export default class MainMenu extends Component{
         </div> 
         
         <div id="navbar-main" className="collapse navbar-collapse navbar-right">
-          <ul className="nav navbar-nav">
+          <ul 
+            className="nav navbar-nav flex align-center"
+            style={{
+              display: "flex",
+            }}
+          >
 
               {/*<li>
                 <a 
@@ -534,7 +541,7 @@ export default class MainMenu extends Component{
                           Новости
                         </Link>
                       </li>
-                      {/*user 
+                      {user 
                         ?
                         <li className="">
                           <a 
@@ -572,7 +579,7 @@ export default class MainMenu extends Component{
                         </li>
                         :
                         null
-                      */}
+                      }
                     </ul>
                   </li>
               }
@@ -594,7 +601,25 @@ export default class MainMenu extends Component{
               {user
                 ?
                 <li className="dropdown">
-                  <a id="office" href="javascript:;" data-toggle="dropdown" className="dropdown-toggle"><i className="glyphicon glyphicon-user"></i><span className="caret"></span></a>
+                  {/*<a id="office" href="javascript:;" data-toggle="dropdown" className="dropdown-toggle"><i className="glyphicon glyphicon-user"></i><span className="caret"></span></a>*/}
+                  <a id="office" href="javascript:;" data-toggle="dropdown" 
+                    className="dropdown-toggle flex align-center"
+                    style={{
+                      display: "flex",
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                    }}
+                  >
+                    <Avatar 
+                      user={user}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        fontSize: "18px",
+                      }}
+                    />
+                    <span className="caret"></span>
+                  </a>
                   <ul aria-labelledby="office" className="dropdown-menu">
                     <li>
                       <Link 

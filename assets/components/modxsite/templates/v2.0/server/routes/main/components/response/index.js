@@ -2081,6 +2081,7 @@ export default class Response{
           },
           rootResolver: this.localResolver,
           remoteResolver: rootResolver,
+          req,
         }),
         fieldResolver: localResolver,
         // directives: rootDirectives,

@@ -26,14 +26,23 @@ export default class UserAvatar extends Component{
 
 	render(){
 
-		const {
+		let {
 			user,
+			style,
+			background = '#2fa4e7',
 			...other
 		} = this.props;
 
 		if(!user){
 			return null;
 		}
+
+		style = style || {};
+
+		Object.assign(style, {
+			background,
+		});
+
 
 		const {
 			
@@ -50,9 +59,7 @@ export default class UserAvatar extends Component{
     	aria-label={author_fullname || author_username || undefined}
     	className=""
   		src={author_avatar}
-    	style={{
-    		background: '#2fa4e7',
-    	}}
+    	style={style}
     	{...other}
     >
       {author_avatar ? undefined : (author_fullname || author_username || '').substr(0,1).toLocaleUpperCase() }

@@ -2,469 +2,475 @@ import React, {Component} from 'react';
 
 import PropTypes from 'prop-types';
 
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 
-import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import AddIcon from 'material-ui-icons/Add';
+import { Editor as Gallery } from 'react-cms/src/app/components/Gallery';
 
-import Uploader from './Component';
-
-import './styles/styles.less';
-import GalleryImageWrapper from './Image/wrapper';
-
-class Gallery extends Component{
+export default Gallery;
 
 
-  static propTypes = {
-    onSelectContactImage: PropTypes.func.isRequired,
-    updateItem: PropTypes.func.isRequired,
-    item: PropTypes.object.isRequired,
-  };
+// import { DragDropContext } from 'react-dnd';
+// import HTML5Backend from 'react-dnd-html5-backend';
 
-  static contextTypes = {
-    connector_url: PropTypes.string.isRequired,
-    localQuery: PropTypes.func.isRequired,
-  };
+// import Button from 'material-ui/Button';
+// import Grid from 'material-ui/Grid';
+// import AddIcon from 'material-ui-icons/Add';
 
-	constructor(props){
+// import Uploader from './Component';
 
-		super(props);
+// import './styles/styles.less';
+// import GalleryImageWrapper from './Image/wrapper';
 
-		this.state = {
-			expanded: false,
-		}
-	}
-
-	componentWillMount(){
-
-	}
-
-	componentDidMount(){
-
-	}
-
-  componentDidUpdate(){
-
-    if(this.props.debug){
-
-    }
-  }
+// class Gallery extends Component{
 
 
-  updateItem(data){
+//   static propTypes = {
+//     onSelectContactImage: PropTypes.func.isRequired,
+//     updateItem: PropTypes.func.isRequired,
+//     item: PropTypes.object.isRequired,
+//   };
 
-    const {
-      item,
-      updateItem,
-    } = this.props;
+//   static contextTypes = {
+//     connector_url: PropTypes.string.isRequired,
+//     localQuery: PropTypes.func.isRequired,
+//   };
 
-    updateItem(item, data);
+// 	constructor(props){
 
-  }
+// 		super(props);
+
+// 		this.state = {
+// 			expanded: false,
+// 		}
+// 	}
+
+// 	componentWillMount(){
+
+// 	}
+
+// 	componentDidMount(){
+
+// 	}
+
+//   componentDidUpdate(){
+
+//     if(this.props.debug){
+
+//     }
+//   }
+
+
+//   updateItem(data){
+
+//     const {
+//       item,
+//       updateItem,
+//     } = this.props;
+
+//     updateItem(item, data);
+
+//   }
 
  
-  uploadImageCallBack = (file) => { 
+//   uploadImageCallBack = (file) => { 
 
-  	let {
-      // store,
-  		item,
-  	} = this.props;
+//   	let {
+//       // store,
+//   		item,
+//   	} = this.props;
 
-    let {
-      connector_url,
-      localQuery,
-    } = this.context;
+//     let {
+//       connector_url,
+//       localQuery,
+//     } = this.context;
 
-    const {
-      id,
-    } = item;
+//     const {
+//       id,
+//     } = item;
 
-    return new Promise(
-      (resolve, reject) => { 
+//     return new Promise(
+//       (resolve, reject) => { 
 
-        var body = new FormData(); 
+//         var body = new FormData(); 
 
-        body.append('file', file);
+//         body.append('file', file);
 
-        fetch(connector_url +'?pub_action=images/upload',{
-          credentials: 'same-origin',
-          method: "POST",
-          body: body,
-        })
-          .then(function (response) {
-            return response.json()
-          })
-          .then(function (data) { ;
+//         fetch(connector_url +'?pub_action=images/upload',{
+//           credentials: 'same-origin',
+//           method: "POST",
+//           body: body,
+//         })
+//           .then(function (response) {
+//             return response.json()
+//           })
+//           .then(function (data) { ;
 
-            if(data.success){ 
+//             if(data.success){ 
 
-              if(data.object && data.object.url){
+//               if(data.object && data.object.url){
 
-                let link = data.object.url;
+//                 let link = data.object.url;
 
-                resolve({
-                  data: { 
-                    link: link,
-                  } 
-                }); 
+//                 resolve({
+//                   data: { 
+//                     link: link,
+//                   } 
+//                 }); 
 
-                // this.setState({
-                //   url: data.object.url,
-                // })
+//                 // this.setState({
+//                 //   url: data.object.url,
+//                 // })
 
-                // store.getDispatcher().dispatch(store.actions['CREATE'], {
-                // 	src: data.object.url,
-                // });
+//                 // store.getDispatcher().dispatch(store.actions['CREATE'], {
+//                 // 	src: data.object.url,
+//                 // });
 
-                // const {
-                //   item,
-                // } = this.props;
+//                 // const {
+//                 //   item,
+//                 // } = this.props;
 
 
 
-                localQuery({
-                  operationName: "addCompanyGalleryImage",
-                  variables: {
-                    companyId: id,
-                    image: link,
-                  },
-                });
+//                 localQuery({
+//                   operationName: "addCompanyGalleryImage",
+//                   variables: {
+//                     companyId: id,
+//                     image: link,
+//                   },
+//                 });
 
-                this.setState({
-                	expanded: false,
-                });
-              }
-            } 
-          }.bind(this))
-          .catch(function (error) {
-              console.error('Request failed', error);
-              // alert("Ошибка выполнения запроса");
-            }
-          );
-      }
-    );
-  }
+//                 this.setState({
+//                 	expanded: false,
+//                 });
+//               }
+//             } 
+//           }.bind(this))
+//           .catch(function (error) {
+//               console.error('Request failed', error);
+//               // alert("Ошибка выполнения запроса");
+//             }
+//           );
+//       }
+//     );
+//   }
 
 
-  onSelectImage = (event, checked, image) => {
+//   onSelectImage = (event, checked, image) => {
 
 
 
-    let {
-      onSelectContactImage,
-      item,
-    } = this.props;
+//     let {
+//       onSelectContactImage,
+//       item,
+//     } = this.props;
 
-    let {
-      _selectedImages,
-    } = item;
+//     let {
+//       _selectedImages,
+//     } = item;
 
-    _selectedImages = _selectedImages || [];
+//     _selectedImages = _selectedImages || [];
 
 
 
-    if(checked){
-      _selectedImages.push(image.src);
-    }
-    else{
-      // let selectedImage = _selectedImages.indexOf(i => {return i === image});
-      let selectedImage = _selectedImages.indexOf(image);
+//     if(checked){
+//       _selectedImages.push(image.src);
+//     }
+//     else{
+//       // let selectedImage = _selectedImages.indexOf(i => {return i === image});
+//       let selectedImage = _selectedImages.indexOf(image);
 
 
 
-      if(selectedImage != -1){
-        _selectedImages.splice(selectedImage, 1);
-      }
-    }
+//       if(selectedImage != -1){
+//         _selectedImages.splice(selectedImage, 1);
+//       }
+//     }
 
 
 
-    // onSelectContactImage(image);
+//     // onSelectContactImage(image);
 
-    this.updateItem({
-      _selectedImages,
-    }, true);
+//     this.updateItem({
+//       _selectedImages,
+//     }, true);
 
-    this.forceUpdate();
-  }
+//     this.forceUpdate();
+//   }
 
 
-  handleDelete(event, index){
+//   handleDelete(event, index){
 
 
 
-    const {
-      item,
-    } = this.props;
+//     const {
+//       item,
+//     } = this.props;
 
-    if(!item){
-      return false;
-    }
+//     if(!item){
+//       return false;
+//     }
 
-    let {
-      gallery,
-    } = item;
+//     let {
+//       gallery,
+//     } = item;
 
-    if(!gallery){
-      return;
-    }
+//     if(!gallery){
+//       return;
+//     }
 
-    // const index = gallery.indexOf(image);
+//     // const index = gallery.indexOf(image);
 
 
 
-    if(index !== -1){
-      gallery.splice(index, 1);
+//     if(index !== -1){
+//       gallery.splice(index, 1);
 
-      this.updateItem({
-        gallery,
-      });
-    }
+//       this.updateItem({
+//         gallery,
+//       });
+//     }
 
-  }
+//   }
 
 
-	render(){
+// 	render(){
 
-		let {
-			classes,
-      // store,
-			item,
-      onSelectContactImage,
-      ...other
-		} = this.props;
+// 		let {
+// 			classes,
+//       // store,
+// 			item,
+//       onSelectContactImage,
+//       ...other
+// 		} = this.props;
 
-    if(!item){
-      return null;
-    }
+//     if(!item){
+//       return null;
+//     }
 
-    // return <div>sdfsdf</div>;
+//     // return <div>sdfsdf</div>;
 
-		let {
-      expanded,
-      draggableImage,
-      hoveredImage,
-			positionIndex,
-		} = this.state;
+// 		let {
+//       expanded,
+//       draggableImage,
+//       hoveredImage,
+// 			positionIndex,
+// 		} = this.state;
 
-    let newIndex;
+//     let newIndex;
 
-    if(positionIndex !== undefined && positionIndex != -1){
-      newIndex = positionIndex;
-    }
+//     if(positionIndex !== undefined && positionIndex != -1){
+//       newIndex = positionIndex;
+//     }
 
-		let images = [];
+// 		let images = [];
 
-    // if(!item._selectedImages){
-    //   item._selectedImages = [];
-    // }
+//     // if(!item._selectedImages){
+//     //   item._selectedImages = [];
+//     // }
 
-    // let {_selectedImages} = item;
+//     // let {_selectedImages} = item;
 
-    let {
-      // extended,
-      gallery,
-      _selectedImages,
-    } = item;
+//     let {
+//       // extended,
+//       gallery,
+//       _selectedImages,
+//     } = item;
 
-    _selectedImages = _selectedImages || [];
+//     _selectedImages = _selectedImages || [];
 
-    // let {
-    //   gallery,
-    // } = extended || {};
+//     // let {
+//     //   gallery,
+//     // } = extended || {};
 
-    let imagesArray = [];
+//     let imagesArray = [];
 
-    gallery && gallery.map(n => {
+//     gallery && gallery.map(n => {
       
-      const {
-        imageFormats,
-      } = n;
+//       const {
+//         imageFormats,
+//       } = n;
 
-      const {
-        slider_thumb: image,
-      } = imageFormats || {};
+//       const {
+//         slider_thumb: image,
+//       } = imageFormats || {};
 
-      imagesArray.push({
-        src: image,
-      });
+//       imagesArray.push({
+//         src: image,
+//       });
 
-    });
+//     });
 
-    /*
-      Если элемент двигается, то перемещаем его в массиве
-    */
-    if(newIndex !== undefined && imagesArray && imagesArray.length){
-      let oldIndex = imagesArray.findIndex(n => n.src == draggableImage);
-      // let newIndex = imagesArray.indexOf(hoveredImage);
-
-
-
-      if(oldIndex != -1){
-        let movedItem = imagesArray.splice(oldIndex, 1)[0];
-
-        imagesArray.splice(newIndex, 0, movedItem);
-      }
-    }
-
-		imagesArray.map((image, index) => {
-			images.push(<GalleryImageWrapper 
-        // key={image.src || images.length}
-				key={index}
-        image={image}
-        onSelectImage={this.onSelectImage}
-        checked={_selectedImages.find(i => {return i == image.src}) ? true : false}
-        draggableImage={draggableImage}
-        onStartDrag={(image) => {
-
-          this.setState({
-            draggableImage: image.src,
-          });
-        }}
-        handleDelete={event => {
-          this.handleDelete(event, index);
-        }}
-        onEndDrag={(image) => {
+//     /*
+//       Если элемент двигается, то перемещаем его в массиве
+//     */
+//     if(newIndex !== undefined && imagesArray && imagesArray.length){
+//       let oldIndex = imagesArray.findIndex(n => n.src == draggableImage);
+//       // let newIndex = imagesArray.indexOf(hoveredImage);
 
 
 
-          /*
-            Если новый индекс отличается от реального, сохраняем состояние
-          */
-          if(newIndex !== undefined){
+//       if(oldIndex != -1){
+//         let movedItem = imagesArray.splice(oldIndex, 1)[0];
 
-            // Определяем оригинальный индекс перемещаемой картинки
-            // let originalIndex = store.getState().indexOf(draggableImage);
-            let originalIndex = gallery.indexOf(n => n === draggableImage);
+//         imagesArray.splice(newIndex, 0, movedItem);
+//       }
+//     }
 
-            if(newIndex != originalIndex){
+// 		imagesArray.map((image, index) => {
+// 			images.push(<GalleryImageWrapper 
+//         // key={image.src || images.length}
+// 				key={index}
+//         image={image}
+//         onSelectImage={this.onSelectImage}
+//         checked={_selectedImages.find(i => {return i == image.src}) ? true : false}
+//         draggableImage={draggableImage}
+//         onStartDrag={(image) => {
 
-              gallery.splice(newIndex, 0, gallery.splice(index, 1)[0]);
-
-              this.updateItem({
-                gallery,
-              });
-
-            }
-
-
-
-
-          }
-
-          this.setState({
-            draggableImage: null,
-            hoveredImage: null,
-            positionIndex: undefined,
-          });
-        }}
-        onDdHover={(image) => {
-
-          if(draggableImage != image.src){
+//           this.setState({
+//             draggableImage: image.src,
+//           });
+//         }}
+//         handleDelete={event => {
+//           this.handleDelete(event, index);
+//         }}
+//         onEndDrag={(image) => {
 
 
 
-            // let positionIndex = store.getState().indexOf(image);
-            let positionIndex = imagesArray.indexOf(image);
+//           /*
+//             Если новый индекс отличается от реального, сохраняем состояние
+//           */
+//           if(newIndex !== undefined){
+
+//             // Определяем оригинальный индекс перемещаемой картинки
+//             // let originalIndex = store.getState().indexOf(draggableImage);
+//             let originalIndex = gallery.indexOf(n => n === draggableImage);
+
+//             if(newIndex != originalIndex){
+
+//               gallery.splice(newIndex, 0, gallery.splice(index, 1)[0]);
+
+//               this.updateItem({
+//                 gallery,
+//               });
+
+//             }
 
 
 
-            this.setState({
-              // hoveredImage: image,
-              positionIndex
-            });
-          }
-            // this.setState({
-            //   hoveredImage: image,
-            // });
 
-          // this.forceUpdate();
-        }}
-        isDragging2={draggableImage && draggableImage == image.src}
-			>
-			</GalleryImageWrapper>);
-		});
+//           }
 
-    // item && item.extends && item.extends.gallery && item.extends.gallery.map(image => {
-    //   images.push(<div 
-    //     key={images.length}
-    //   >
-    //     <img 
-    //       src={image}
-    //     />
-    //   </div>);
-    // });
+//           this.setState({
+//             draggableImage: null,
+//             hoveredImage: null,
+//             positionIndex: undefined,
+//           });
+//         }}
+//         onDdHover={(image) => {
 
-		return <div
-      {...other}
-    > 
+//           if(draggableImage != image.src){
 
-      <Uploader 
-      	expanded={expanded}
-      	config={{
-	    		uploadEnabled: true,
-	    		urlEnabled: false,
-      		defaultSize: {
-      			height: 'auto',
-      			width: 'auto',
-      		},
-        	uploadCallback: this.uploadImageCallBack,
-      	}}
-      	onExpandEvent={() => {
 
-      	}}
-      	doCollapse={() => {
-      		this.setState({
-      			expanded: !this.state.expanded,
-      		});
-      	}}
-      	translations = {{
-				  'generic.add': 'Добавить',
-				  'generic.cancel': 'Отменить',
-				  'components.controls.image.fileUpload': 'Файлы',
-				  'components.controls.image.byURL': 'URL',
-				  'components.controls.image.dropFileText': 'Переместите в эту область файлы или кликните для загрузки',
-      	}}
-      >
-        <Button
-          fab
-          accent
-          raised
-          className={classes.createButton}
-          style={{
-            height: 30,
-            width: 30,
-            marginRight: 5,
-          }}
-          onClick={() => this.setState({
-            expanded: true,
-          })}
-        >
-          <AddIcon 
-          />
-        </Button>  <span
-          style={{
-            cursor: "pointer",
-          }}
-          onClick={() => this.setState({
-          	expanded: true,
-          })}
-        >Добавить изображение</span>
-      </Uploader>
 
-      <Grid
-        container
-      	className="gallery-wrapper"
-      >
+//             // let positionIndex = store.getState().indexOf(image);
+//             let positionIndex = imagesArray.indexOf(image);
+
+
+
+//             this.setState({
+//               // hoveredImage: image,
+//               positionIndex
+//             });
+//           }
+//             // this.setState({
+//             //   hoveredImage: image,
+//             // });
+
+//           // this.forceUpdate();
+//         }}
+//         isDragging2={draggableImage && draggableImage == image.src}
+// 			>
+// 			</GalleryImageWrapper>);
+// 		});
+
+//     // item && item.extends && item.extends.gallery && item.extends.gallery.map(image => {
+//     //   images.push(<div 
+//     //     key={images.length}
+//     //   >
+//     //     <img 
+//     //       src={image}
+//     //     />
+//     //   </div>);
+//     // });
+
+// 		return <div
+//       {...other}
+//     > 
+
+//       <Uploader 
+//       	expanded={expanded}
+//       	config={{
+// 	    		uploadEnabled: true,
+// 	    		urlEnabled: false,
+//       		defaultSize: {
+//       			height: 'auto',
+//       			width: 'auto',
+//       		},
+//         	uploadCallback: this.uploadImageCallBack,
+//       	}}
+//       	onExpandEvent={() => {
+
+//       	}}
+//       	doCollapse={() => {
+//       		this.setState({
+//       			expanded: !this.state.expanded,
+//       		});
+//       	}}
+//       	translations = {{
+// 				  'generic.add': 'Добавить',
+// 				  'generic.cancel': 'Отменить',
+// 				  'components.controls.image.fileUpload': 'Файлы',
+// 				  'components.controls.image.byURL': 'URL',
+// 				  'components.controls.image.dropFileText': 'Переместите в эту область файлы или кликните для загрузки',
+//       	}}
+//       >
+//         <Button
+//           fab
+//           accent
+//           raised
+//           className={classes.createButton}
+//           style={{
+//             height: 30,
+//             width: 30,
+//             marginRight: 5,
+//           }}
+//           onClick={() => this.setState({
+//             expanded: true,
+//           })}
+//         >
+//           <AddIcon 
+//           />
+//         </Button>  <span
+//           style={{
+//             cursor: "pointer",
+//           }}
+//           onClick={() => this.setState({
+//           	expanded: true,
+//           })}
+//         >Добавить изображение</span>
+//       </Uploader>
+
+//       <Grid
+//         container
+//       	className="gallery-wrapper"
+//       >
       	
-        {images}
+//         {images}
 
-      </Grid>
-		</div>;
-	}
-}
+//       </Grid>
+// 		</div>;
+// 	}
+// }
 
 
-export default DragDropContext(HTML5Backend)(Gallery);
+// export default DragDropContext(HTML5Backend)(Gallery);

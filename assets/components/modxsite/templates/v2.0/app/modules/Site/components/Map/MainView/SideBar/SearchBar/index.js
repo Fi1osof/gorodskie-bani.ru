@@ -104,7 +104,7 @@ export default class SearchBar extends Component{
 
 		let content = null;
 
-		content = <Control
+		return <Control
 			map={map}
 			maps={maps}
 			position="LEFT_TOP"

@@ -30,7 +30,7 @@ import {Link, browserHistory} from 'react-router';
 import Marker from './MainView/Marker';
 // import SideBar from './SideBar';
 
-import Control from 'google-map-react-control';
+import Control from 'google-map-react-control/';
 
 // import YandexSearch from 'modules/Site/components/YandexMap/Search';
 
@@ -107,6 +107,7 @@ export default class MapMainView extends Component{
 
 		// updateItem: PropTypes.func.isRequired,
 		// savePlaceItem: PropTypes.func.isRequired,
+		// classes: PropTypes.object.isRequired,
 		appExports: PropTypes.object.isRequired,
 		document: PropTypes.object.isRequired,
 		openCompanyPage: PropTypes.func.isRequired,
@@ -1622,6 +1623,7 @@ export default class MapMainView extends Component{
 		const {
 			getCounters,
 			CoordsStore,
+			// classes,
 		} = this.context;
 
 
@@ -1795,6 +1797,7 @@ export default class MapMainView extends Component{
   		container
   		style={{
   			height: '100%',
+  			width: "100%",
   		}}
   		gutter={0}
   	>
@@ -1852,12 +1855,10 @@ export default class MapMainView extends Component{
 
 			{map && maps
     		?
-
     		<SearchBar 
 					map={map}
 					maps={maps}
 				/>
-    		
     		:
     		null
     	}

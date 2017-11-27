@@ -19,6 +19,7 @@ require('babel-core/register')({
         || /\/react-coin-hive\//.test(file)
         || /\/react-schedule\//.test(file)
         || /\/react-cms\//.test(file)
+        // || /\/google-map-react-control\//.test(file)
         || /\/moment\//.test(file)
       ){
         return;

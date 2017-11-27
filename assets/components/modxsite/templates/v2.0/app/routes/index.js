@@ -11,6 +11,7 @@ import {
   DbPage,
   CompaniesPage,
   CompanyPage,
+  CompanyCreatePage,
   OtzivyPage,
   OtzivPage,
   UsersPage,
@@ -23,6 +24,8 @@ import {
   CompaniesEditsPage,
   CitiesPage,
 } from "modules/Site";
+
+// console.log("CompanyCreatePage", CompanyCreatePage);
 
 let routes = {
   path: "/",
@@ -164,6 +167,10 @@ let routes = {
     },
     {
       path: "/profile",
+    },
+    {
+      path: "/bani/create",
+      component: CompanyCreatePage,
     },
     {
       path: "/bani/:companyId",

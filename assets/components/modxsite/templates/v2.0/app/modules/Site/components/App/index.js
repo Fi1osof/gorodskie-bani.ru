@@ -2300,43 +2300,68 @@ export class AppMain extends ReactCmsApp{
     }
     else{
 
-      const callback = (data, errors) => { 
+      // const callback = (data, errors) => { 
 
 
 
-        if(data.success && data.object){
+      //   if(data.success && data.object){
 
-          const {
-            id,
-            uri,
-          } = data.object;
+      //     const {
+      //       id,
+      //       uri,
+      //     } = data.object;
 
-          if(id !== itemId){
+      //     if(id !== itemId){
 
-            // const uri = `/bani/${id}/`;
+      //       // const uri = `/bani/${id}/`;
             
-            browserHistory.replace(uri);
-          }
+      //       browserHistory.replace(uri);
+      //     }
 
-          // this.reloadApiData();
+      //     // this.reloadApiData();
 
-          // return;
-        }
-      }
+      //     // return;
+      //   }
+      // }
 
-      result = await this.saveItem(store, item, 'companies/', callback);
+      result = await this.saveItem(store, item, 'companies/')
+      .then(r => {
+        return r;
+      })
+      .catch(e => {
+        throw(e);
+      });
 
-      console.log("Create company result", result);      
+      // console.log("Create company result", result);      
 
     }
 
 
 
-    console.log("SaveCompany result", result);
+    // console.log("SaveCompany result", result);
 
     if(result && result.success){
 
       await this.reloadApiData();
+
+      if(result.object){
+
+        const {
+          id,
+          uri,
+        } = result.object;
+
+        if(id !== itemId){
+
+          // const uri = `/bani/${id}/`;
+          
+          browserHistory.replace(uri);
+        }
+
+        // this.reloadApiData();
+
+        // return;
+      }
 
     }
 

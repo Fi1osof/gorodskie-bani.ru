@@ -10,6 +10,7 @@ import NotFoundPage from './components/Pages/NotFound';
 import DbPage from './components/Pages/DB';
 import CompaniesPage from './components/Pages/Companies';
 import CompanyPage from './components/Pages/Companies/Company';
+import CompanyCreatePage from './components/Pages/Companies/Company/Create';
 import OtzivyPage from './components/Pages/Companies/Otzivy';
 import OtzivPage from './components/Pages/Companies/Otzivy/Topic';
 import UsersPage from './components/Pages/Users';
@@ -33,6 +34,7 @@ export {
   DbPage,
   CompaniesPage,
   CompanyPage,
+  CompanyCreatePage,
   OtzivyPage,
   OtzivPage,
   UsersPage,

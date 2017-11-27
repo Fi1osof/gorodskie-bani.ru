@@ -65,7 +65,7 @@ import {
 
 import Site from 'modules/Site/components/fields/Site';
 
-export default class MyComponent extends Component{
+export default class CompanyView extends Component{
 
 	static propTypes = {
 		item: PropTypes.object.isRequired,
@@ -117,7 +117,7 @@ export default class MyComponent extends Component{
 
 	saveItem = async () => {
 
-		const {
+		let {
 			item,
 		} = this.props;
 
@@ -134,47 +134,58 @@ export default class MyComponent extends Component{
 			sending: true,
 		});
 
-		await saveContactItem(item)
-			.then(r => {
+		let result = await saveContactItem(item)
+		.then(r => {
 
 
-				const {
-					success,
-					deta,
-				} = r;
+			const {
+				success,
+				deta,
+			} = r || {};
 
 
-				if(success){
+			if(success){
 
-					this.reloadData();
+				this.reloadData();
+
+			}
+
+			// console.log("saveContactItem r", r);
+
+			return r;
+
+		})
+		.catch(e => {
+
+			const {
+				message,
+				data,
+				errors,
+			} = e;
+
+
+
+			if(errors){
+
+				for(var i in errors){
+
+					const error = errors[i];
+
+					error && documentActions.addInformerMessage(error);
 
 				}
 
-			})
-			.catch(e => {
+				Object.assign(item, {
+					_errors: errors,
+				});
 
-				const {
-					message,
-					data,
-					errors,
-				} = e;
+			}
 
+			// console.log("saveContactItem e", e);
+			console.error(e);
+		});
 
-
-				if(errors){
-
-					for(var i in errors){
-
-						const error = errors[i];
-
-						error && documentActions.addInformerMessage(error);
-
-					}
-
-				}
-
-				console.error(e);
-			});
+		// console.log("saveContactItem result", result);
 
 		this.setState({
 			sending: false,
@@ -327,6 +338,82 @@ export default class MyComponent extends Component{
   	} = this.props;
 
   	return reloadData();
+
+  }
+
+
+  onUpload(data){
+    // console.log("GalleryRenderer onUpload this", this);
+
+
+    const {
+      // block,
+      item,
+    } = this.props;
+
+    // let {
+    //   item,
+    //   onChange,
+    //   getEditorState,
+    // } = this.state;
+
+    // const editorState = getEditorState();
+
+
+    // const contentState = editorState.getCurrentContent();
+ 
+    // const entityKey = block.getEntityAt(0); 
+
+    // console.log("GalleryRenderer onUpload getEditorState", editorState);
+
+    if(!item || !data){
+      return;
+    }
+
+    const {
+      image,
+    } = data;
+
+    Object.assign(data, {
+      imageFormats: {
+        slider_thumb: image,
+      }
+    });
+
+
+    let {
+      gallery,
+    } = item;
+
+    gallery = gallery || [];
+
+    gallery.push(data);
+
+    // item.gallery = gallery;
+
+    // const updatedContentState = contentState.mergeEntityData(
+    //   entityKey,
+    //   {
+    //     // sdf: "DSfsdf",
+    //     gallery,
+    //     // gallery: JSON.stringify(convertToRaw(contentState_1)),
+    //   },
+    // );
+
+    // const newEditorState = EditorState.set(editorState, {
+    //     currentContent: updatedContentState
+    // });
+
+    // console.log('updatedContentState', updatedContentState);
+    // console.log('newEditorState', newEditorState);
+
+    // onChange(newEditorState);
+
+    // this.forceUpdate();
+
+    this.updateItem(item, {
+    	gallery,
+    });
 
   }
 
@@ -536,7 +623,7 @@ export default class MyComponent extends Component{
 
 		let itemMap;
 
-		if(typeof window !== "undefined" && coords){
+		if(typeof window !== "undefined" && (coords || inEditMode)){
 
 			itemMap = <CardContent>
 				<Paper
@@ -732,6 +819,9 @@ export default class MyComponent extends Component{
 		                      
 		                      this.updateItem(item, {
 		                      	image: image.url,
+		                      	imageFormats: {
+		                      		thumb: "/images/resized/thumb/" + image.url,
+		                      	},
 		                      });
 
 		                      this.clearErrors("image");
@@ -1100,6 +1190,10 @@ export default class MyComponent extends Component{
 		        style={{
 		        	marginBottom: gallery && gallery.length ? 0 : 250,
 		        }}
+		        onUpload={::this.onUpload}
+            updateItem={(a,b,c) => {
+              // console.log("updateItem", a,b,c);
+            }}
 		      />;
 
       		break;

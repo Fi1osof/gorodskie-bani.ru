@@ -118,8 +118,12 @@ export default class TopicPage extends Page{
 			throw("Не указан УРЛ объекта");
 		}
 
+		let result;
+
+
+
 		// Получаем список компаний
-	  let result = await provider({
+	  result = await provider({
 			operationName: "Topic",
 			variables: {
 				resourceUri: pathname,
@@ -214,6 +218,7 @@ export default class TopicPage extends Page{
 			item={topic}
 			open={true}
 			commentOpen={true}
+			reloadData={::this.reloadData}
 		/>);
 
 	}

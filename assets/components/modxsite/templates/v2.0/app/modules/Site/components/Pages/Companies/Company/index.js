@@ -213,68 +213,68 @@ export default class CompanyPage extends Page{
 	// 	super.componentWillMount && super.componentWillMount();
 	// }
 
-	componentWillUnmount(){
+	// componentWillUnmount(){
 
- 		let {
-			CompaniesStore,
-			RatingsStore,
-			TopicsStore,
-			CommentsStore,
-			ResourcesStore,
- 		} = this.context;
-
-
-    if(this.CompaniesStoreListener){
-
-      let dispatch = CompaniesStore.getDispatcher();
-
-      dispatch._callbacks[this.CompaniesStoreListener] && dispatch.unregister(this.CompaniesStoreListener);
-
-      this.CompaniesStoreListener = undefined;
-    }
+ // 		let {
+	// 		CompaniesStore,
+	// 		RatingsStore,
+	// 		TopicsStore,
+	// 		CommentsStore,
+	// 		ResourcesStore,
+ // 		} = this.context;
 
 
-    if(this.RatingsStoreListener){
+ //    if(this.CompaniesStoreListener){
 
-      let dispatch = RatingsStore.getDispatcher();
+ //      let dispatch = CompaniesStore.getDispatcher();
 
-      dispatch._callbacks[this.RatingsStoreListener] && dispatch.unregister(this.RatingsStoreListener);
+ //      dispatch._callbacks[this.CompaniesStoreListener] && dispatch.unregister(this.CompaniesStoreListener);
 
-      this.RatingsStoreListener = undefined;
-    }
-
-
-    if(this.TopicsStoreListener){
-
-      let dispatch = TopicsStore.getDispatcher();
-
-      dispatch._callbacks[this.TopicsStoreListener] && dispatch.unregister(this.TopicsStoreListener);
-
-      this.TopicsStoreListener = undefined;
-    }
-
-    if(this.CommentsStoreListener){
-
-      let dispatch = CommentsStore.getDispatcher();
-
-      dispatch._callbacks[this.CommentsStoreListener] && dispatch.unregister(this.CommentsStoreListener);
-
-      this.CommentsStoreListener = undefined;
-    }
+ //      this.CompaniesStoreListener = undefined;
+ //    }
 
 
-    if(this.ResourcesStoreListener){
+ //    if(this.RatingsStoreListener){
 
-      let dispatch = ResourcesStore.getDispatcher();
+ //      let dispatch = RatingsStore.getDispatcher();
 
-      dispatch._callbacks[this.ResourcesStoreListener] && dispatch.unregister(this.ResourcesStoreListener);
+ //      dispatch._callbacks[this.RatingsStoreListener] && dispatch.unregister(this.RatingsStoreListener);
 
-      this.ResourcesStoreListener = undefined;
-    }
+ //      this.RatingsStoreListener = undefined;
+ //    }
 
 
- 		return super.componentWillUnmount && super.componentWillUnmount();
-	}
+ //    if(this.TopicsStoreListener){
+
+ //      let dispatch = TopicsStore.getDispatcher();
+
+ //      dispatch._callbacks[this.TopicsStoreListener] && dispatch.unregister(this.TopicsStoreListener);
+
+ //      this.TopicsStoreListener = undefined;
+ //    }
+
+ //    if(this.CommentsStoreListener){
+
+ //      let dispatch = CommentsStore.getDispatcher();
+
+ //      dispatch._callbacks[this.CommentsStoreListener] && dispatch.unregister(this.CommentsStoreListener);
+
+ //      this.CommentsStoreListener = undefined;
+ //    }
+
+
+ //    if(this.ResourcesStoreListener){
+
+ //      let dispatch = ResourcesStore.getDispatcher();
+
+ //      dispatch._callbacks[this.ResourcesStoreListener] && dispatch.unregister(this.ResourcesStoreListener);
+
+ //      this.ResourcesStoreListener = undefined;
+ //    }
+
+
+ // 		return super.componentWillUnmount && super.componentWillUnmount();
+	// }
 
 
 	// componentDidUpdate(prevProps, prevState, prevContext){
@@ -710,6 +710,11 @@ export default class CompanyPage extends Page{
     this.setState({ tabIndex });
   }
 
+
+  onStoreUpdated(){
+  	
+  }
+
 	
 	render(){
 
@@ -737,14 +742,14 @@ export default class CompanyPage extends Page{
 
 		let itemData = {...item};
 
-
-
 		const {
 			galleryItem,
 			galleryExpanded,
 			sending,
 			diffs,
 		} = this.state;
+
+		const newCommentForm = currentUser ? true : false;
 
 
 		// let item = Object.assign({}, itemData);
@@ -2097,6 +2102,8 @@ export default class CompanyPage extends Page{
 						<Comments 
 							comments={comments}
 							resource={item}
+							newCommentForm={newCommentForm}
+							onSuccess={::this.reloadData}
 						/>
 
 					</Paper>

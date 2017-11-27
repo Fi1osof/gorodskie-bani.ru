@@ -54,6 +54,15 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
                 unset($this->properties[$field]);
             }
         }
+
+
+        $name = $this->getProperty("name");
+
+        if(isset($name)){
+            $this->setDefaultProperties(array(
+                "pagetitle"  => trim($name),
+            ));
+        }
         
         $this->setDefaultProperties(array(
             'no_send_emails'    => 0,       // Не отсылать емейл-рассылку пользователям о новом топике  
@@ -67,6 +76,7 @@ class modWebSocietyTopicsCreateProcessor extends SocietyTopicCreateProcessor{
             "tv24"       => $this->modx->hasPermission('society.approve_topics') ? '1' : '',
             "show_in_tree"  => 1,
             "links_follow"  => 0,   // Индексируемые ссылки
+            "richtext"      => 0,
         ));
         
         if(

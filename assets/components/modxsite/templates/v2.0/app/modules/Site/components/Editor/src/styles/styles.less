@@ -9,6 +9,8 @@
 	&[contenteditable=true]{
 
 		min-height: 200px;
+	    max-height: 70vh;
+	    overflow: auto;
 
 	}
 
@@ -18,11 +20,11 @@
 
 	&.readonly{
 
-		.rdw-editor-toolbar{
+		// .rdw-editor-toolbar{
 
-			display: none;
+		// 	display: none;
 
-		}
+		// }
 
 		.DraftEditor-root{
 			padding: 0;
@@ -31,4 +33,12 @@
 
 	}
 
+}
+
+.rdw-editor-toolbar{
+
+	.rdw-link-modal{
+		height: auto;
+	}
+	
 }

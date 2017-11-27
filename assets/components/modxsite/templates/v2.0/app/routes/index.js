@@ -5,6 +5,7 @@ import {
   MapPage,
   // MainPage,
   TopicsPage,
+  TopicCreatePage,
   TopicPage,
   NotFoundPage,
   DbPage,
@@ -105,6 +106,10 @@ let routes = {
     {
       path: "/bani-otzivy",
       component: OtzivyPage,
+    },
+    {
+      path: "/topics/create",
+      component: TopicCreatePage,
     },
     {
       path: "/topics/:topicAlias",

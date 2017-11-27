@@ -2421,47 +2421,47 @@ export class AppMain extends ReactCmsApp{
   }
 
 
-  saveCommentItem = (item) => {
-    // 
+  // saveCommentItem = (item) => {
+  //   // 
 
-    let {
-      CommentsStore: store,
-    } = this.state;
+  //   let {
+  //     CommentsStore: store,
+  //   } = this.state;
 
-    item = item && store.getState().find(n => n.id === item.id);
+  //   item = item && store.getState().find(n => n.id === item.id);
 
-    if(!item){
-      throw(new Error("Не был получен объект комментария"));
-    }
+  //   if(!item){
+  //     throw(new Error("Не был получен объект комментария"));
+  //   }
 
-    let {
-      id: itemId,
-    } = item;
+  //   let {
+  //     id: itemId,
+  //   } = item;
 
-    const callback = (data, errors) => { 
+  //   const callback = (data, errors) => { 
 
-      if(data.success && data.object){
+  //     if(data.success && data.object){
 
-        // const {
-        //   id,
-        //   uri,
-        // } = data.object;
+  //       // const {
+  //       //   id,
+  //       //   uri,
+  //       // } = data.object;
 
-        // if(id !== itemId){
+  //       // if(id !== itemId){
 
-        //   // const uri = `/topics/${id}/`;
+  //       //   // const uri = `/topics/${id}/`;
           
-        //   browserHistory.replace(uri);
-        // }
+  //       //   browserHistory.replace(uri);
+  //       // }
 
-        this.reloadApiData();
+  //       this.reloadApiData();
 
-        return;
-      }
-    }
+  //       return;
+  //     }
+  //   }
 
-    return this.saveItem(store, item, 'comment/', callback);
-  }
+  //   return this.saveItem(store, item, 'comment/', callback);
+  // }
 
 
   // updateCurrentUser = (data, silent) => {

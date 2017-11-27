@@ -544,15 +544,16 @@ export default class MainMenu extends Component{
                       {user 
                         ?
                         <li className="">
-                          <a 
+                          <Link
                             // to={`/profile/${username}/add-topic`} 
                             // href={`/profile/${username}/add-topic`}
-                            href="javascript:;"
+                            to="/topics/create/"
+                            href="/topics/create/"
                             title="Добавить публикацию"
                             rel="nofollow"
                             onClick={event => {
                               this.closeMenu();
-                              this.addTopic();
+                              // this.addTopic();
                             }}
                             style={{
                               display: "flex",
@@ -575,7 +576,7 @@ export default class MainMenu extends Component{
                               /> 
                             </IconButton>
                             Добавить публикацию
-                          </a>
+                          </Link>
                         </li>
                         :
                         null
@@ -602,19 +603,22 @@ export default class MainMenu extends Component{
                 ?
                 <li className="dropdown">
                   {/*<a id="office" href="javascript:;" data-toggle="dropdown" className="dropdown-toggle"><i className="glyphicon glyphicon-user"></i><span className="caret"></span></a>*/}
-                  <a id="office" href="javascript:;" data-toggle="dropdown" 
+                  <a 
+                    id="office" 
+                    href="javascript:;" 
+                    data-toggle="dropdown" 
                     className="dropdown-toggle flex align-center"
                     style={{
                       display: "flex",
-                      paddingTop: 0,
-                      paddingBottom: 0,
+                      // paddingTop: 0,
+                      // paddingBottom: 0,
                     }}
                   >
                     <Avatar 
                       user={user}
                       style={{
-                        width: 24,
-                        height: 24,
+                        width: 20,
+                        height: 20,
                         fontSize: "18px",
                       }}
                     />

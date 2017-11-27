@@ -4,9 +4,10 @@ import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
 
-import Editor from './src';
+// import Editor from './src';
+import Editor from 'react-cms/src/app/components/Editor';
 
-export class TextField extends Component {
+export default class TextField extends Component {
 
 
   static contextTypes = {
@@ -37,10 +38,10 @@ export class TextField extends Component {
 
 }
 
-TextField.defaultProps = {
-  required: false,
-};
+// TextField.defaultProps = {
+//   required: false,
+// };
 
-export default TextField;
+// export default TextField;
 
 

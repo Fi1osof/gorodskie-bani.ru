@@ -32,6 +32,7 @@ export default class TopicView extends Component{
 	static propTypes = {
 		item: PropTypes.object.isRequired,
 		open: PropTypes.bool.isRequired,		// Флаг, что это полная статья, раскрытая
+		reloadData: PropTypes.func.isRequired,	// При сохранении комментария необходима перезагрузка данных
 	};
 
 	static defaultProps = {
@@ -206,9 +207,9 @@ export default class TopicView extends Component{
 			item,
 		} = this.props;
 
-		const result = await saveTopicItem(item);
-
-		// console.log("TopicView saveItem result", result);
+		const result = await saveTopicItem(item)
+		.then(r => r)
+		.catch(e => e);
 
 		// const {
 		// 	success
@@ -247,7 +248,7 @@ export default class TopicView extends Component{
 
 	}
 
-	onChange = event => {
+	onChange = (event, plainText) => {
 
 		const {
 			item,
@@ -261,7 +262,17 @@ export default class TopicView extends Component{
 			value,
 		} = event.target;
 
+		switch(name){
 
+			case "editor_content":
+
+				Object.assign(data, {
+					plainText,
+				});
+
+				break;
+
+		}
 
 		this.clearErrors(name);
 
@@ -357,6 +368,8 @@ export default class TopicView extends Component{
 		let content;
 
 
+		const canEdit = true;
+
 		// if(inEditMode){
 
 		// 	content =	<Editor 
@@ -413,6 +426,98 @@ export default class TopicView extends Component{
 			onChange={::this.onChange}
 			readOnly={!inEditMode}
 		/>
+
+		let topicData = [];
+
+		Author && topicData.push(<Grid
+			key="userlink"
+			item
+			style={{
+				paddingRight: 6,
+			}}
+		>
+
+			<UserLink 
+				user={Author}
+			/> 
+			
+		</Grid>);
+
+
+		pubdate && topicData.push(<Grid
+			key="pubdate"
+			item
+		><span
+				style={{
+					paddingLeft: 6,
+					paddingRight: 6,
+				}}
+			>{pubdate}</span>
+			
+		</Grid>);
+
+
+		// topicData.push(<Grid
+		// 	key={topicData.length}
+		// 	item
+		// ><span
+		// 		style={{
+		// 			// paddingLeft: 10,
+		// 			paddingRight:6,
+		// 		}}
+		// 	>{pubdate}</span>
+			
+		// </Grid>);
+
+		!inEditMode && topicData.push(<Grid
+			key="comments"
+			item
+		>
+
+			<Grid
+				container
+				align="center"
+				gutter={0}
+			><Link
+				to={link}
+				href={link}
+				className="flex align-center"
+				onClick={event => {
+					event.preventDefault();
+					event.stopPropagation();
+					this.setState({
+						commentOpen: !commentOpen,
+					});
+				}}
+			>
+				<IconButton 
+					accent={comments && comments.length && !commentOpen ? true : false}
+					className="flex align-center"
+					style={{
+						height: 34,
+						width: 34,
+					}}
+				>
+					<CommentsIcon 
+						style={{
+							height: 18,
+							width: 18,
+							// marginLeft: 10,
+							marginRight: 3,
+						}}
+					/>
+				</IconButton> <span
+					style={{
+						marginLeft: -5,
+					}}
+				>
+					{comments && comments.length || 0}
+				</span>
+			</Link>
+			
+			</Grid>
+
+		</Grid>);
 
 		return <Card
 			style={{
@@ -524,78 +629,11 @@ export default class TopicView extends Component{
 					align="center"
 				>
 
-					<Grid
-						item
-						style={{
-							paddingRight: 6,
-						}}
-					>
+					
 
-						<UserLink 
-							user={Author}
-						/> 
-						
-					</Grid>
-
-					<Grid
-						item
-					> | <span
-							style={{
-								// paddingLeft: 10,
-								paddingRight:6,
-							}}
-						>{pubdate}</span>
-						
-					</Grid>
-
-					<Grid
-						item
-					>
-
-						<Grid
-							container
-							align="center"
-							gutter={0}
-						> | <Link
-							to={link}
-							href={link}
-							className="flex align-center"
-							onClick={event => {
-								event.preventDefault();
-								event.stopPropagation();
-								this.setState({
-									commentOpen: !commentOpen,
-								});
-							}}
-						>
-							<IconButton 
-								accent={comments && comments.length && !commentOpen ? true : false}
-								className="flex align-center"
-								style={{
-									height: 34,
-									width: 34,
-								}}
-							>
-								<CommentsIcon 
-									style={{
-										height: 18,
-										width: 18,
-										// marginLeft: 10,
-										marginRight: 3,
-									}}
-								/>
-							</IconButton> <span
-								style={{
-									marginLeft: -5,
-								}}
-							>
-								{comments && comments.length || 0}
-							</span>
-						</Link>
-						
-						</Grid>
-
-					</Grid>
+					
+					{topicData.length && topicData.reduce((prev, current) => [prev, " | ", current]) || null}
+					
 
 
 					{tags && tags.length
@@ -638,12 +676,21 @@ export default class TopicView extends Component{
 
 				</Grid>
 
-			{commentOpen 
+			{!inEditMode && commentOpen 
 				?
 				<Comments 
-					comments={comments}
+					comments={comments || []}
 					resource={item}
 					newCommentForm={true}
+					onSuccess={() => {
+
+						const {
+							reloadData,
+						} = this.props;
+
+						reloadData && reloadData();
+
+					}}
 				/>
 				:
 				null

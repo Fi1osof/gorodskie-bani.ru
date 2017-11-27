@@ -24,6 +24,7 @@ export default class Comment extends Component{
 	static propTypes = {
 		item: PropTypes.object.isRequired,
 		showResourceLink: PropTypes.bool.isRequired,
+		onSuccess: PropTypes.func,
 	};
 
 	static contextTypes = {
@@ -89,6 +90,7 @@ export default class Comment extends Component{
 
 		const {
 			item,
+			onSuccess,
 		} = this.props;
 
 		this.setState({
@@ -97,20 +99,18 @@ export default class Comment extends Component{
 
 
 
-		await saveCommentItem(item)
-			.then(r => {
-				
-				const {
-					onSuccess,
-				} = this.props;
+		const result = await saveCommentItem(item)
+		.then(r => {
+			return r;
+		})
+		.catch(e => {
+			console.error(e);
+		});
 
-				onSuccess && onSuccess(r);
 
-			})
-			.catch(e => {
-				console.error(e);
-			});
+    // console.log("Comment save result", result);
 
+		onSuccess && onSuccess(result);
 
 
 		this.setState({
@@ -197,7 +197,7 @@ export default class Comment extends Component{
 		>
 			
 			<CardHeader
-        avatar={
+        avatar={Author && 
           <Link
           	to={`/profile/${username}`}
           	href={`/profile/${username}`}
@@ -205,14 +205,14 @@ export default class Comment extends Component{
           	<UserAvatar 
 	          	user={Author}
 	          />
-          </Link>
+          </Link> || undefined
         }
-        title={<Link
+        title={Author && <Link
         	to={`/profile/${username}`}
         	href={`/profile/${username}`}
         >
         	{fullname || username || undefined}
-        </Link>}
+        </Link> || undefined}
         subheader={createdon && id && <Link
         	to={`/comments/comment-${id}.html`}
         	href={`/comments/comment-${id}.html`}

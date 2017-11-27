@@ -571,6 +571,7 @@ export default class TopicsPage extends Page {
 				item={topic}
 				open={false}
 				commentOpen={false}
+				reloadData={::this.reloadData}
 			>
 				{name}
 			</TopicView>);

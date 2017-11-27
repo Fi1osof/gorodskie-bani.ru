@@ -4,6 +4,7 @@ import MainApp from './components/App';
 import MainPage from './components/Pages/MainPage';
 import MapPage from './components/Pages/MapPage';
 import TopicsPage from './components/Pages/Topics';
+import TopicCreatePage from './components/Pages/Topics/Topic/Create';
 import TopicPage from './components/Pages/Topics/Topic';
 import NotFoundPage from './components/Pages/NotFound';
 import DbPage from './components/Pages/DB';
@@ -26,6 +27,7 @@ export {
   MainPage,
   MapPage,
   TopicsPage,
+  TopicCreatePage,
   TopicPage,
   NotFoundPage,
   DbPage,

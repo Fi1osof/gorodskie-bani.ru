@@ -16,6 +16,8 @@ export default class Comments extends Component{
 		comments: PropTypes.array.isRequired,
 		resource: PropTypes.object,
 		showResourceLink: PropTypes.bool.isRequired,
+		onSuccess: PropTypes.func,
+		newCommentForm: PropTypes.bool.isRequired,
 	};
 
 	static contextTypes = {
@@ -25,6 +27,7 @@ export default class Comments extends Component{
 
 	static defaultProps = {
 		showResourceLink: false,
+		newCommentForm: false,
 	};
 
 
@@ -97,6 +100,7 @@ export default class Comments extends Component{
 			resource,
 			newCommentForm,
 			showResourceLink,
+			onSuccess,
 			...other
 		} = this.props;
 
@@ -136,9 +140,15 @@ export default class Comments extends Component{
 						<Comment 
 							item={newComment}
 							onSuccess={r => {
+
 								this.setState({
 									newComment: null,
 								});
+
+								// console.log("Comments onSuccess", r);
+
+								onSuccess && onSuccess();
+
 							}}
 						/>
 						:

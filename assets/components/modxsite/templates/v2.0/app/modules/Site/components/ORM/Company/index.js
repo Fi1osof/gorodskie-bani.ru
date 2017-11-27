@@ -17,6 +17,10 @@ import {
 import GraphQLJSON from 'graphql-type-json';
 
 
+import {
+  CommentEditorStateType,
+} from 'react-cms/src/app/components/ORM/Comment';
+
 import EditVersionType from '../EditVersion';
 
 import ModelObject from '../object';
@@ -118,7 +122,7 @@ export const CompanyType = new GraphQLObjectType({
         },
       },
       prices: {
-        type: GraphQLJSON,
+        type: CommentEditorStateType,
         description: "Цены",
       },
       uri: {

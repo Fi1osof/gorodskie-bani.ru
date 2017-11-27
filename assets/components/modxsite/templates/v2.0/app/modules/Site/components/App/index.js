@@ -543,7 +543,7 @@ export class AppMain extends ReactCmsApp{
       coords: {},
       // inited: typeof window === "undefined",
       inited: false,
-      developMode: true,
+      developMode: false,
       // appExports: {},
     }
 
@@ -1409,11 +1409,11 @@ export class AppMain extends ReactCmsApp{
     
     // // Если пользователь авторизовался, то перезагружаем данные зависимые
     
-    // if(
-    //   inited && user && (!prevUser || user.id != prevUser.id)
-    // ){
-    //   this.loadApiData();
-    // }
+    if(
+      inited && user && (!prevUser || user.id != prevUser.id)
+    ){
+      this.loadApiData();
+    }
   }
 
 

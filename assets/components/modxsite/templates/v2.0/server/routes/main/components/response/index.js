@@ -2253,7 +2253,7 @@ export default class Response{
     let output = {
       success,
       message,
-      object,
+      // object,
       data: object,
     };
 

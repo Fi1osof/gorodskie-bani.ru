@@ -377,6 +377,19 @@ export const getList = (object, args, context, info) => {
                   console.error(e);
 
                 }
+                
+
+                if(editor_content && editor_content.entityMap){
+
+                  let textArray = [];
+
+                  for(var i in editor_content.entityMap){
+                    textArray[i] = editor_content.entityMap[i] || null;
+                  }
+
+                  editor_content.entityMap = textArray;
+
+                }
 
               };
 

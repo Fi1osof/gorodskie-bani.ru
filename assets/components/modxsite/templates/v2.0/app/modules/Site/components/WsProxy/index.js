@@ -616,11 +616,11 @@ class WsProxy extends Component {
       })
       .then(r => {
 
-
+        // console.log("WsProxy result", r);
 
         const {
           user,
-        } = r.object || {};
+        } = r.data || {};
 
 
         if(user){

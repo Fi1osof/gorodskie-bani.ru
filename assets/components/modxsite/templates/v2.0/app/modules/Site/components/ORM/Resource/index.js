@@ -17,6 +17,11 @@ import GraphQLJSON from 'graphql-type-json';
 //   // ModelObject,
 // } from '../';
 
+
+import {
+  CommentEditorStateType,
+} from 'react-cms/src/app/components/ORM/Comment';
+
 import moment from 'moment';
 
 import {browserHistory} from 'react-router';
@@ -84,7 +89,7 @@ export const ResourceType = new GraphQLObjectType({
         type: GraphQLString
       },
       editor_content: {
-        type: GraphQLJSON,
+        type: CommentEditorStateType,
         description: "Содержимое редактора",
       },
       plainText: {

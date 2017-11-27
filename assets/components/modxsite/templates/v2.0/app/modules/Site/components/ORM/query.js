@@ -1,7 +1,6 @@
 
 const defaultQuery = `
 
-
 query apiData(
   $limit:Int = 0
   $apiDataGetCurrentUser:Boolean = false
@@ -1299,6 +1298,10 @@ fragment Resource on ResourceType{
   
   content @include(if:$resourceGetContent)
   editor_content @include(if:$resourceGetContent)
+  {
+    ...CommentState
+  }
+  
   plainText @include(if:$resourceGetContent)
   
   Author @include(if:$resourceGetAuthor)
@@ -1472,6 +1475,7 @@ fragment EditorEntityGallery on EditorEntityGalleryType{
       imageFormats{
         thumb
         slider_thumb
+        slider_dot_thumb
         middle
         big
       }
@@ -1645,7 +1649,9 @@ fragment CompanyFields on Company{
   {
     ...ScheduleDay
   }
-  prices @include(if:$companyGetPrices)
+  prices @include(if:$companyGetPrices){
+    ...CommentState
+  }
   errors
   _isDirty
 }
@@ -2181,6 +2187,7 @@ mutation updateCompany(
     ...editVersion
   }
 }
+
 
 
 `;

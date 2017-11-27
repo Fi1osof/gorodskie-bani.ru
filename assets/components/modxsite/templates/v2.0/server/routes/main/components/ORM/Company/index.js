@@ -578,6 +578,19 @@ export const getList = (object, args, context, info) => {
                     console.error(e);
 
                   }
+                  
+
+                  if(prices_content && prices_content.entityMap){
+
+                    let textArray = [];
+
+                    for(var i in prices_content.entityMap){
+                      textArray[i] = prices_content.entityMap[i] || null;
+                    }
+
+                    prices_content.entityMap = textArray;
+
+                  }
 
                 };
 

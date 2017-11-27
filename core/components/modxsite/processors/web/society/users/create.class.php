@@ -84,10 +84,10 @@ class modWebSocietyUsersCreateProcessor extends modUserCreateProcessor{
         ));
         
         
-        $username = $this.->getProperty("username");
+        $username = $this->getProperty("username");
 
         if(isset($username)){
-            $this->setProperty("username", $username);
+            $this->setProperty("username", trim($username));
         }
 
         

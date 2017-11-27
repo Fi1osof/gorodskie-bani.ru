@@ -32,7 +32,9 @@ import GalleryEditor from 'modules/Site/components/Gallery';
 
 import CompanyTopics from './Topics';
 
-import Slider from 'react-slick';
+// import Slider from 'react-slick';
+
+import GallerySlider from 'react-cms/src/app/components/Gallery/Slider';
 
 import Editor from 'modules/Site/components/fields/Editor';
 
@@ -1063,12 +1065,12 @@ export default class CompanyPage extends Page{
 			>{address}</span>);
 		}
 
-		let galleryItems = [];
+		// let galleryItems = [];
 
 
 		let Gallery;
-		let galleryList = [];
-		let galleryThumbs = [];
+		// let galleryList = [];
+		// let galleryThumbs = [];
 
 
 		// if(galleryItem){
@@ -1093,71 +1095,71 @@ export default class CompanyPage extends Page{
 		// }
 
 
-		if(gallery && gallery.length){
+		// if(gallery && gallery.length){
 
-			gallery.map((n, index) => {
+		// 	gallery.map((n, index) => {
 
-				// if(index === 0){
-				// 	return;
-				// }
+		// 		// if(index === 0){
+		// 		// 	return;
+		// 		// }
 
-				const {
-					imageFormats: image,
-				} = n;
+		// 		const {
+		// 			imageFormats: image,
+		// 		} = n;
 
-				if(!image){
-					return;
-				}
+		// 		if(!image){
+		// 			return;
+		// 		}
 
-				const {
-					original,
-					thumb,
-					slider_thumb,
-					slider_dot_thumb,
-					big,
+		// 		const {
+		// 			original,
+		// 			thumb,
+		// 			slider_thumb,
+		// 			slider_dot_thumb,
+		// 			big,
 
-				} = image;
+		// 		} = image;
 
-				galleryThumbs.push(slider_dot_thumb);
+		// 		galleryThumbs.push(slider_dot_thumb);
 
-				// if(galleryItem && galleryItem === n.image){
+		// 		// if(galleryItem && galleryItem === n.image){
 
 					
 
-				// 	return;
-				// }
+		// 		// 	return;
+		// 		// }
 
-				galleryItems.push(<img 
-					key={index}
-					// key={original}
-					src={galleryExpanded ? big : slider_thumb}
-					// src={original}
-					style={{
-						// cursor: !galleryExpanded ? 'pointer' : undefined,
-						cursor: 'pointer',
-						// height: "auto",
-					}}
-					onClick={event => {
-						this.setState({
-							galleryExpanded: !galleryExpanded,
-						});
-					}}
-					// onClick={event => {
-					// 	this.setState({
-					// 		galleryItem: big,
-					// 	});
-					// }}
-				/>);
-			});
+		// 		galleryItems.push(<img 
+		// 			key={index}
+		// 			// key={original}
+		// 			src={galleryExpanded ? big : slider_thumb}
+		// 			// src={original}
+		// 			style={{
+		// 				// cursor: !galleryExpanded ? 'pointer' : undefined,
+		// 				cursor: 'pointer',
+		// 				// height: "auto",
+		// 			}}
+		// 			onClick={event => {
+		// 				this.setState({
+		// 					galleryExpanded: !galleryExpanded,
+		// 				});
+		// 			}}
+		// 			// onClick={event => {
+		// 			// 	this.setState({
+		// 			// 		galleryItem: big,
+		// 			// 	});
+		// 			// }}
+		// 		/>);
+		// 	});
 
-		}
+		// }
 
 
 		Gallery = inEditMode 
 			?
 			null
       :
-      galleryItems && galleryItems.length && 
+      gallery && gallery.length && 
       <CardContent
 				style={{
 						paddingBottom: 40,
@@ -1173,7 +1175,11 @@ export default class CompanyPage extends Page{
 
 					</Grid>*/}
 			
-					<div
+					<GallerySlider 
+						gallery={gallery}
+					/>
+
+					{/*<div
 						className={typeof window === "undefined" ? "no-js" : ""}
 					>
 						<Slider {
@@ -1210,7 +1216,7 @@ export default class CompanyPage extends Page{
 			      >
 			        {galleryItems}
 			      </Slider> 
-					</div>
+					</div>*/}
 
 			</CardContent>
 		|| "";
@@ -1729,9 +1735,9 @@ export default class CompanyPage extends Page{
 
 
 
-											let {
-												item,
-											} = this.props;
+											// let {
+											// 	item,
+											// } = this.props;
 
 											const {
 												target,
@@ -1894,7 +1900,7 @@ export default class CompanyPage extends Page{
 		        onSelectContactImage={() => {}}
 		        updateItem={::this.updateItem}
 		        style={{
-		        	marginBottom: galleryItems && galleryItems.length ? 0 : 250,
+		        	marginBottom: gallery && gallery.length ? 0 : 250,
 		        }}
 		      />;
 

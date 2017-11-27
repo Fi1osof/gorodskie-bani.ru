@@ -508,7 +508,7 @@ export const add = (source, args, context, info) => {
 
   const id = Math.round(Math.random() * 10000000) * -1;
 
-  const uri = `bani/${id}/`;
+  const uri = `bani/create/`;
 
   let data = {
   };

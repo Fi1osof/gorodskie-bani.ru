@@ -2214,9 +2214,11 @@ export class AppMain extends ReactCmsApp{
       return;
     }
 
+    let result;
+
     if(itemId > 0){
 
-      let result = await this.saveVersionObject(store, item, {
+      result = await this.saveVersionObject(store, item, {
         operationName: "updateCompany",
         variables: {
           updateCompanyId: itemId,
@@ -2227,7 +2229,7 @@ export class AppMain extends ReactCmsApp{
 
         const {
           updateCompany,
-        } = r && r.object || {};
+        } = r && r.data || {};
 
         if(updateCompany){
 
@@ -2244,7 +2246,7 @@ export class AppMain extends ReactCmsApp{
 
           item._isDirty = null;
 
-          await this.reloadApiData();
+          // await this.reloadApiData();
 
         }
         
@@ -2284,7 +2286,16 @@ export class AppMain extends ReactCmsApp{
         throw(e);
       });
 
-      return result;
+      // console.log("SaveCompany result", result);
+
+      // if(result && result.success){
+
+      //   await this.reloadApiData();
+
+      // }
+
+
+      // return result;
 
     }
     else{
@@ -2307,15 +2318,30 @@ export class AppMain extends ReactCmsApp{
             browserHistory.replace(uri);
           }
 
-          this.reloadApiData();
+          // this.reloadApiData();
 
-          return;
+          // return;
         }
       }
 
-      return this.saveItem(store, item, 'companies/', callback);
+      result = await this.saveItem(store, item, 'companies/', callback);
+
+      console.log("Create company result", result);      
 
     }
+
+
+
+    console.log("SaveCompany result", result);
+
+    if(result && result.success){
+
+      await this.reloadApiData();
+
+    }
+
+    return result;
+
   }
 
 

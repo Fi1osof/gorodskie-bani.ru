@@ -249,6 +249,10 @@ abstract class modWebCompaniesObjectProcessor extends modWebObjectProcessor{
 		// 	$this->addFieldError("address", "Необходимо указать адрес заведения");
 		// }
 
+  //       $this->modx->log(1, "SUDO: " . (int)$this->modx->hasPermission("SUDO"), "FILE");
+
+  //       print (int)$this->modx->hasPermission("SUDO");
+
 		// return "Debug";
 
 		if(!$this->modx->hasPermission("SUDO") && !$this->hasErrors()){

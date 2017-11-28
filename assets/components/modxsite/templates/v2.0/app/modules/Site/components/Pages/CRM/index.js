@@ -14,11 +14,11 @@ import UsersPage from '../Users';
 
 export default class CRMPage extends UsersPage {
 
-	render(){
+	// render(){
 
-		return this.renderContent();
+	// 	return this.renderContent();
 		
-	}
+	// }
 
 }
 

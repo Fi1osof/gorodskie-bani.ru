@@ -185,6 +185,169 @@ fragment SiteContentTest on SiteContentType{
 }
 
 
+query MainPage(
+  
+  # Comments
+  $commentsResourceId:Int
+  $commentParent:Int
+  $commentsSort:[SortBy]
+  $commentsCreatedBy:Int
+  $commentsPage:Int = 1
+  $commentsIds:[Int]
+  $commentGetResource:Boolean = true
+  
+  #Topics
+  $resourceIds:[Int]
+  $resourceTag:String
+  $topicsLimit:Int = 1
+  
+  # Cities
+  $companiesList:Int = 12
+  $companiesSearchQuery:String
+  $getRatingsAvg:Boolean = false
+  $getImageFormats:Boolean = true
+  $getCompanyComments:Boolean = false
+  $getCommentCompany:Boolean = false
+  $getCompanyFullData:Boolean = false
+  $companyIds:[Int]
+  $getCompanyGallery:Boolean = false
+  $getTVs:Boolean = false
+  $withPagination:Boolean = true
+  $companyCommentsSort:[SortBy]
+  $getCommentAuthor:Boolean = true
+  $getCompanyTopics:Boolean = false
+  $getRatingVoters:Boolean = false
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceUri:String
+  $resourceGetContent:Boolean = false
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
+  $companiesCoords:SearchCoordsType
+  $companiesCenter:InputCoordsType
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = false
+  
+  # Cities
+  $resourcesLimit:Int = 0
+  $resourceTemplate:Int
+  $resourceExcludeTemplates:[Int]
+  $resourceType:ResourceTypeEnum
+  $resourceParent:Int = 1296
+  $resourcesCoords:SearchCoordsType
+  $resourcesCenter:InputCoordsType
+  $resourceAlias:String
+  $cityGetFullData:Boolean = false
+  
+){   
+  commentsList(
+    ids: $commentsIds
+    limit: 4
+    page:$commentsPage
+    resource_id:$commentsResourceId
+    parent:$commentParent
+    sort:$commentsSort
+    createdby:$commentsCreatedBy
+  )@skip(if:false)
+  {
+    total
+    limit
+    count
+    page
+    object{
+      ...Comment
+    }
+  }
+  
+  topics:resources(
+    ids:$resourceIds
+    resourceType:topic
+    limit:$topicsLimit
+    parent:null
+    template:$resourceTemplate
+    uri:$resourceUri
+    tag:$resourceTag
+    sort:[{
+      by:id
+      dir:desc
+    }]
+  )
+  {
+    ...ResourceFields
+
+    content @include(if:$resourceGetContent)
+    editor_content
+    {
+      ...CommentState
+    }
+
+    plainText @include(if:$resourceGetContent)
+
+    Author
+    {
+      ...User
+    }
+    comments(
+      sort:{by: id, dir:asc}
+    )
+    {
+      ...CommentFields
+      Author
+      {
+        ...User
+      }
+    }
+  }
+  
+  cities: resources(
+    limit:$resourcesLimit
+    template:$resourceTemplate
+    excludeTemplates:$resourceExcludeTemplates
+    resourceType:$resourceType
+    parent:$resourceParent
+    uri:$resourceUri
+    coords:$resourcesCoords
+    center:$resourcesCenter
+    alias:$resourceAlias
+  )
+  {
+    ...City
+  }
+  
+  companies(
+    limit:$companiesList
+    ids:$companyIds
+    uri:$resourceUri
+    search:$companiesSearchQuery
+    coords:$companiesCoords
+    center:$companiesCenter
+  ) @skip(if:$withPagination)
+  {
+    ...Company
+  }
+  companiesList(
+    limit:$companiesList
+    ids:$companyIds
+    uri:$resourceUri
+    search:$companiesSearchQuery
+    coords:$companiesCoords
+    center:$companiesCenter
+  ) @include(if:$withPagination)
+  {
+    count
+    total
+    limit
+    page
+    object{
+      ...Company
+    }
+  }
+  
+}
+
 query Companies (
   $limit:Int!
   $companiesSearchQuery:String
@@ -237,6 +400,8 @@ query Companies (
   {
     count
     total
+    limit
+    page
     object{
       ...Company
     }
@@ -995,6 +1160,7 @@ fragment CitiesList on RootType{
       ...City
     }
   }
+  
   resources(
     limit:$resourcesLimit
     template:$resourceTemplate

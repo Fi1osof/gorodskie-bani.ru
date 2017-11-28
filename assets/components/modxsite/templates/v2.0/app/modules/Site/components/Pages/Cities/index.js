@@ -206,7 +206,8 @@ export default class CitiesPage extends Page {
 				coords,
 			} = city;
 
-			let title = longtitle || name;
+			// let title = longtitle || name;
+			let title = name;
 
 			const link = `/${uri}`;
 
@@ -221,7 +222,7 @@ export default class CitiesPage extends Page {
 				<Link
 					to={link}
 					href={link}
-					title={title}
+					title={longtitle}
 				>
 					{title}
 				</Link>

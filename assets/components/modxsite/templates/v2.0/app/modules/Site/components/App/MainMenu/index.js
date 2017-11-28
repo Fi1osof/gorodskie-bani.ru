@@ -375,7 +375,10 @@ export default class MainMenu extends Component{
           <Link 
             href={base_url}
             to={base_url}
+            // href={"/"}
+            // to={"/"}
             className="navbar-brand"
+            title="Городские бани, главная страница"
           >
             <div className="logo">
               <i className="str leaf leaf-l"></i>

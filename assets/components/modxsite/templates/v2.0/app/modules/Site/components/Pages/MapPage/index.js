@@ -41,6 +41,30 @@ export default class MapPage extends Page{
 	}
 
 
+	loadData(options){
+
+		const {
+			document,
+		} = this.context;
+
+		const {
+			mapData,
+		} = document || {};
+
+
+		if(mapData && mapData.companies && mapData.companies.length){
+
+			this.setState({
+				mapData,
+			});
+
+			return null;
+		}
+
+		return super.loadData(options);
+	}
+
+
 	async loadServerData(provider, options = {}){
 
 
@@ -144,30 +168,6 @@ export default class MapPage extends Page{
 
 	  return result;
 
-	}
-
-
-	loadData(options){
-
-		const {
-			document,
-		} = this.context;
-
-		const {
-			mapData,
-		} = document || {};
-
-
-		if(mapData && mapData.companies && mapData.companies.length){
-
-			this.setState({
-				mapData,
-			});
-
-			return null;
-		}
-
-		return super.loadData(options);
 	}
 
 

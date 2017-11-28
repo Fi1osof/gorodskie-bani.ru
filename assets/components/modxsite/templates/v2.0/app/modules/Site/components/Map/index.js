@@ -108,6 +108,7 @@ export default class MapMainView extends Component{
 		// updateItem: PropTypes.func.isRequired,
 		// savePlaceItem: PropTypes.func.isRequired,
 		// classes: PropTypes.object.isRequired,
+		user: PropTypes.object.isRequired,
 		appExports: PropTypes.object.isRequired,
 		document: PropTypes.object.isRequired,
 		openCompanyPage: PropTypes.func.isRequired,
@@ -1624,7 +1625,13 @@ export default class MapMainView extends Component{
 			getCounters,
 			CoordsStore,
 			// classes,
+			user,
 		} = this.context;
+
+
+		const {
+			user: currentUser,
+		} = user || {};
 
 
 		const {
@@ -1997,53 +2004,8 @@ export default class MapMainView extends Component{
     	}
  
 
-			{map && maps
+			{map && maps && currentUser && currentUser.sudo === true
     		?
-    	// 	<Control
-    	// 		map={map}
-    	// 		maps={maps}
-    	// 		position="LEFT_TOP"
-    	// 	>  
-					// <IconButton
-    	// 			// accent
-    	// 			// style={{
-    	// 			// 	height: 40,
-    	// 			// 	width: 40,
-    	// 			// }}
-					// 	style={{
-					// 		borderRadius: "50%",
-					//     backgroundColor: "rgba(255,255,255,0.5)",
-					//     width: 35,
-					//     height: 35,
-					//     marginRight: 5,
-					//     marginTop: 5,
-					//     marginLeft: 10,
-					// 	}}
-					// 	accent
-    	// 			onClick={e => {
-
-    	// 				const {
-    	// 					localQuery,
-    	// 				} = this.context;
-
-    	// 				localQuery({
-    	// 					operationName: "addCompany",
-    	// 				});
-
-    	// 				this.triggerGoal('addCompanyClick');
-
-    	// 			}}
-  			// 	>
-    	// 			<AddIcon 
-	    // 				// style={{
-	    // 				// 	height: 40,
-	    // 				// 	width: 40,
-	    // 				// }}
-    	// 			/>
-  			// 	</IconButton> 
-
-    	// 	</Control>
-
 
 	    		<Control
 	    			map={map}

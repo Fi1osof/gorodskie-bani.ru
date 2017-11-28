@@ -428,9 +428,11 @@ export const ResourceType = new GraphQLObjectType({
             rootResolver,
           } = context;
 
-          const {
+          let {
             createdby: userId,
           } = source;
+
+          userId = parseInt(userId);
 
           if(!userId){
             return null;

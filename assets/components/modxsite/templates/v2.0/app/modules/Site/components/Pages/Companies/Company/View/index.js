@@ -524,7 +524,9 @@ export default class CompanyView extends Component{
 					padding: 15,
 				}}
 			>
-				<div>
+				 
+
+				{/*<div>
 					Размещать информацию о своем заведении у нас можно бесплатно. 
 					Платно стоят некоторые отдельные функции (если хотите знать какие, свяжитесь с нами по почте <a href="mailto:info@gorodskie-bani.ru">info@gorodskie-bani.ru</a>). <a
 						href="javascript:;"
@@ -560,7 +562,7 @@ export default class CompanyView extends Component{
 						</IconButton>
 						Добавить заведение
 					</a>
-				</div>
+				</div>*/}
 				
 
 				<p>

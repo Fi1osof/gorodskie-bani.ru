@@ -172,7 +172,7 @@ export default class CompaniesList extends Component{
 
 			{itemsList}
 
-			<Grid
+			{itemsList && total && <Grid
 				item
 				xs={12}
 			>
@@ -191,7 +191,7 @@ export default class CompaniesList extends Component{
 
 		    </div>
 				
-			</Grid>
+			</Grid> || null}
 
 		</Grid>
 	}

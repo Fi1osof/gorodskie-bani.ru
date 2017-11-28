@@ -3,7 +3,7 @@
 import {
   MainApp,
   MapPage,
-  // MainPage,
+  MainPage,
   TopicsPage,
   TopicCreatePage,
   TopicPage,
@@ -31,9 +31,24 @@ let routes = {
   path: "/",
   component: MainApp,
   indexRoute: { 
-    component: MapPage 
+    component: MainPage 
   },
   childRoutes: [
+    {
+      path: "/",
+      component: MainPage,
+      childRoutes: [
+        {
+          path: "/index",
+        },
+        {
+          path: "/@:lat,:lng,:zoom",
+        },
+        {
+          path: "/index/@:lat,:lng,:zoom",
+        },
+      ],
+    },
     {
       path: "/city",
       component: CitiesPage,
@@ -44,28 +59,17 @@ let routes = {
       ],
     },
     {
-      path: "/",
+      path: "/*/@:lat,:lng,:zoom",
       component: MapPage,
       childRoutes: [
         {
-          path: "/index",
-        },
-      ],
-    },
-    {
-      path: "/@:lat,:lng,:zoom",
-      component: MapPage,
-      childRoutes: [
-        {
-          path: "/index/@:lat,:lng,:zoom",
         // },{
         //   path: "/:city/@:lat,:lng,:zoom",
         },{
           path: "/city/:city/@:lat,:lng,:zoom",
         },
-        {
-          path: "/*/@:lat,:lng,:zoom",
-        },
+        // {
+        // },
       ],
     },
     {

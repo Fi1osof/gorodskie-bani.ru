@@ -28,22 +28,55 @@ export default class ContactsPage extends Page{
 		>
 			<h4>
 				
-				Представителям организаций
+				Уважаемые посетители,
 				
 			</h4>
 
 			<p
 				className="text default"
 			>
-				Уважаемые партнеры, Вы можете самостоятельно и совершенно бесплатно разместить информацию о своей организации на страницах нашего портала.
+				Если Вы обнаружили на сайте ошибку, пожалуйста, сообщине нам на <a href="mailto:info@gorodskie-bani.ru">support@gorodskie-bani.ru</a>
 			</p>
 
 			<p
 				className="text default"
 			>
-				По всем вопросам обращайтесь на почту <a href="mailto:info@gorodskie-bani.ru">info@gorodskie-bani.ru</a>
+				По вопросам размещения информации о Ваших заведениях и рекламы, обращайтесь на <a href="mailto:sales@gorodskie-bani.ru">sales@gorodskie-bani.ru</a>
+			</p>
+
+			<p
+				className="text default"
+			>
+				По всем другим вопросам обращайтесь на <a href="mailto:info@gorodskie-bani.ru">info@gorodskie-bani.ru</a>
 			</p>
 
 		</Paper>
+		
+	// return <Paper
+	// 		style={{
+	// 			margin: "30px 0",
+	// 			padding: 15,
+	// 			width: "100%",
+	// 		}}
+	// 	>
+	// 		<h4>
+				
+	// 			Представителям организаций
+				
+	// 		</h4>
+
+	// 		<p
+	// 			className="text default"
+	// 		>
+	// 			Уважаемые партнеры, Вы можете самостоятельно и совершенно бесплатно разместить информацию о своей организации на страницах нашего портала.
+	// 		</p>
+
+	// 		<p
+	// 			className="text default"
+	// 		>
+	// 			По всем вопросам обращайтесь на почту <a href="mailto:info@gorodskie-bani.ru">info@gorodskie-bani.ru</a>
+	// 		</p>
+
+	// 	</Paper>
 	}
 }

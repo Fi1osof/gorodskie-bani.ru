@@ -1692,46 +1692,46 @@ export class AppMain extends ReactCmsApp{
   // }
 
   // silent - Тихое обновление, без указания изменнных колонок
-  updateItem = (item, data, store, silent) => {
+  // updateItem = (item, data, store, silent) => {
 
-    if(!item){
-      console.error("Не указан объект");
-      return false;
-    }
+  //   if(!item){
+  //     console.error("Не указан объект");
+  //     return false;
+  //   }
 
-    // if(!store){
-    //   console.error("Не указано хранилище");
-    //   return false;
-    // }
+  //   // if(!store){
+  //   //   console.error("Не указано хранилище");
+  //   //   return false;
+  //   // }
 
-    let newState = {};
+  //   let newState = {};
 
-    Object.assign(newState, data);
+  //   Object.assign(newState, data);
 
-    if(!silent){
+  //   if(!silent){
       
-      let _isDirty = {};
+  //     let _isDirty = {};
 
-      item._isDirty && Object.assign(_isDirty, item._isDirty);
+  //     item._isDirty && Object.assign(_isDirty, item._isDirty);
 
-      Object.assign(_isDirty, newState);
+  //     Object.assign(_isDirty, newState);
 
-      newState._isDirty = _isDirty;
+  //     newState._isDirty = _isDirty;
 
-    }
+  //   }
 
-    if(store){
+  //   if(store){
 
-      store.getDispatcher().dispatch(store.actions['UPDATE'], item, newState);
+  //     store.getDispatcher().dispatch(store.actions['UPDATE'], item, newState);
 
-    }
-    else{
-      Object.assign(item, newState);
-    }
+  //   }
+  //   else{
+  //     Object.assign(item, newState);
+  //   }
 
 
-    return item;
-  }
+  //   return item;
+  // }
 
   // saveItem = async (store, item, connector_path, callback) => {
 
@@ -2537,74 +2537,76 @@ export class AppMain extends ReactCmsApp{
   // }
 
 
-  updateCurrentUser = (item, data, silent) => {
+  // updateCurrentUser = (item, data, silent) => {
 
-    let {
-      UsersStore,
-    } = this.state;
+  //   let {
+  //     UsersStore,
+  //   } = this.state;
 
-    item = item && UsersStore.getState().find(n => n.id === item.id);
+  //   item = item && UsersStore.getState().find(n => n.id === item.id);
 
-    // let {
-    //   user: {
-    //     user: item,
-    //   },
-    // } = this.props;
+  //   // let {
+  //   //   user: {
+  //   //     user: item,
+  //   //   },
+  //   // } = this.props;
 
-    if(!item){
-      throw(new Error("Не был получен объект пользователя"));
-    }
+  //   if(!item){
+  //     throw(new Error("Не был получен объект пользователя"));
+  //   }
 
-    this.updateItem(item, data, UsersStore, silent);
-  }
+  //   this.updateItem(item, data, UsersStore, silent);
+  // }
 
 
-  saveCurrentUser = (item) => {
-    // 
-    // let {
-    //   user: {
-    //     user: item,
-    //   },
-    // } = this.props;
+  
 
-    let {
-      UsersStore,
-    } = this.state;
+  // saveCurrentUser = (item) => {
+  //   // 
+  //   // let {
+  //   //   user: {
+  //   //     user: item,
+  //   //   },
+  //   // } = this.props;
 
-    item = item && UsersStore.getState().find(n => n.id === item.id);
+  //   let {
+  //     UsersStore,
+  //   } = this.state;
 
-    if(!item){
-      throw(new Error("Не был получен объект пользователя"));
-    }
+  //   item = item && UsersStore.getState().find(n => n.id === item.id);
 
-    // let {
-    //   id: itemId,
-    // } = item;
+  //   if(!item){
+  //     throw(new Error("Не был получен объект пользователя"));
+  //   }
 
-    // const callback = (data, errors) => { 
+  //   // let {
+  //   //   id: itemId,
+  //   // } = item;
 
-    //   if(data.success && data.object){
+  //   // const callback = (data, errors) => { 
 
-    //     // const {
-    //     //   id,
-    //     //   uri,
-    //     // } = data.object;
+  //   //   if(data.success && data.object){
 
-    //     // if(id !== itemId){
+  //   //     // const {
+  //   //     //   id,
+  //   //     //   uri,
+  //   //     // } = data.object;
 
-    //     //   // const uri = `/topics/${id}/`;
+  //   //     // if(id !== itemId){
+
+  //   //     //   // const uri = `/topics/${id}/`;
           
-    //     //   browserHistory.replace(uri);
-    //     // }
+  //   //     //   browserHistory.replace(uri);
+  //   //     // }
 
-    //     this.reloadApiData();
+  //   //     this.reloadApiData();
 
-    //     return;
-    //   }
-    // }
+  //   //     return;
+  //   //   }
+  //   // }
 
-    return this.saveItem(null, item, 'user/own_profile/');
-  }
+  //   return this.saveItem(null, item, 'user/own_profile/');
+  // }
 
 
   // loadApiData = async () => {

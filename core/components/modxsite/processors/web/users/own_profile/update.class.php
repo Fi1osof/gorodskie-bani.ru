@@ -225,69 +225,24 @@ class modWebUsersOwnprofileUpdateProcessor extends modObjectUpdateProcessor{
         
         if($notices = (array)$this->getProperty('notices')){
 
-            // if(!is_array($notices)){
-            //     $notices = array_map("trim", explode(",", $notices));
-            // }
-
-            // $notices = array_flip($notices);
-            
-            // if(!$notices){
-            //     $notices = array();
-            // }
-            
             // print_r($notices);
 
+            // return;
+
+            // Это текущие настройки пользователя, могут не содержать все переданные настройки
             $userNotices = (array)$user->Notices;
 
-            // $newUserNotices = array();
             
-            // foreach($userNotices as & $userNotice){
-                
-            //     // if(array_key_exists($userNotice->notice_id, $notices)){
-            //     //     $userNotice->active = 1;
-            //     //     unset($notices[$userNotice->notice_id]);
-            //     // }
-            //     // else{
-            //     //     $userNotice->active = 0;
-            //     // }
-                
-            //     // print_r($userNotice->toArray());
+            $newUserNotices = array();
 
-            //     // $notice = array_filter($array, function($n){
-            //     //     return $n['id'] === $userNotice->notice_id;
-            //     // });
-
-            //     // $userNotice->active = $notice && $notice['active'] ? true : false;
-            // }
-             
-            
-            # print_r($notices);
-            
-            // foreach($notices as $notice_id => $val){
-            //     if($notice = $this->modx->getObject('SocietyNoticeType', $notice_id)){
-            //         $newUserNotice = $this->modx->newObject('SocietyNoticeUser', array(
-            //             "active"    => 1,
-            //         ));
-            //         $newUserNotice->User = $user;
-            //         $newUserNotice->NoticeType = $notice;
-            //         $userNotices[] = $newUserNotice;
-                    
-            //         # print_r($newUserNotice->NoticeType->toArray());
-            //         # 
-            //         # return;
-            //     }
-            //     # else{
-            //     #     print "Error";
-            //     #     exit;
-            //     # }
-            // }
-            
             foreach($notices as $n){
 
                 if($notice = $this->modx->getObject('SocietyNoticeType', $n['id'])){
 
                     
-                    # print_r($newUserNotice->NoticeType->toArray());
+                    // print "\nnotice";
+
+                    // print_r($notice->toArray());
                     # 
                     # return;
 
@@ -307,6 +262,9 @@ class modWebUsersOwnprofileUpdateProcessor extends modObjectUpdateProcessor{
 
                     $userNotice = $userNotice ? current($userNotice) : null;
 
+                    // print "\nuserNotice";
+
+
                     if($userNotice){
 
                         // var_dump($userNotice);
@@ -315,15 +273,21 @@ class modWebUsersOwnprofileUpdateProcessor extends modObjectUpdateProcessor{
                         $userNotice->active = $n['active'];
 
                     }
-                    else{
+                    else if($n['active']){
 
-                        $newUserNotice = $this->modx->newObject('SocietyNoticeUser', array(
+                        $userNotice = $this->modx->newObject('SocietyNoticeUser', array(
                             "active"    => 1,
                         ));
-                        $newUserNotice->User = $user;
-                        $newUserNotice->NoticeType = $notice;
+                        $userNotice->User = $user;
+                        $userNotice->NoticeType = $notice;
 
-                        $userNotices[] = $newUserNotice;
+                        // $userNotices[] = $userNotice;
+
+                    }
+
+                    if($userNotice){
+
+                        $newUserNotices[] = $userNotice;
 
                     }
 
@@ -335,11 +299,14 @@ class modWebUsersOwnprofileUpdateProcessor extends modObjectUpdateProcessor{
                 # }
             }
             
-            $user->Notices = $userNotices;
+            // $user->Notices = $userNotices;
+            $user->Notices = $newUserNotices;
             
             # exit;
 
-            // foreach($userNotices as $userNotice2){
+            // print "\n new notices";
+
+            // foreach($newUserNotices as $userNotice2){
             //     print_r($userNotice2->toArray());
             // }
             

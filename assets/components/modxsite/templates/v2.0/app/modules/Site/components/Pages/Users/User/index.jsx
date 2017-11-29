@@ -798,13 +798,14 @@ export default class UserPage extends Page {
       user,
     } = this.state;
 
-    await saveCurrentUser(user)
+    let result = await saveCurrentUser(user)
     .then(r => {
-
 
       this.setState({
         inEditMode: false,
       });
+
+      return r;
 
     })
     .catch(e => {
@@ -813,6 +814,7 @@ export default class UserPage extends Page {
 
     this.forceUpdate();
 
+    return result;
   }
 
   onDrop (files) { 
@@ -974,13 +976,17 @@ export default class UserPage extends Page {
       notice.active = checked;
     }
 
-    await this.updateCurrentUser({
+    const newUser = await this.updateCurrentUser({
       notices,
     });
 
-    await this.Save();
+    console.log("newUser", newUser);
 
-    this.forceUpdate();
+    let result = await this.Save();
+
+    console.log("saveUser result", result);
+
+    this.reloadData();
 
 
     // if(notices && notices.length){
@@ -1024,7 +1030,7 @@ export default class UserPage extends Page {
       user,
     } = this.state;
 
-    updateCurrentUser(user, data, silent);
+    return updateCurrentUser(user, data, silent);
 
   }
 

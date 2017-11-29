@@ -408,6 +408,7 @@ query Companies (
   }
 }
 
+
 query Company(
   $id:Int!
   $resourceUri:String
@@ -1607,6 +1608,12 @@ fragment CommentState on CommentEditorStateType{
       }
     }
     
+    ... on CustomEditorEntityCompanyType{
+      mutability
+      type
+      ...EditorEntityCompany
+    }
+    
     ... on EditorEntityImageType{
       type
       mutability
@@ -1628,6 +1635,7 @@ fragment EditorEntity on EditorEntityDefaultType{
     target
     title
     url
+    company_id
     _map
   }
 }
@@ -1647,6 +1655,50 @@ fragment EditorEntityGallery on EditorEntityGalleryType{
       }
     }
   }
+}
+
+fragment EditorEntityCompany on CustomEditorEntityCompanyType{
+    data{
+      target
+      title
+      url
+      company_id
+      Company{
+        id
+        name
+        longtitle
+        description
+        alias
+        uri
+        image
+        imageFormats @include(if: $getImageFormats)
+        {
+          thumb
+          marker_thumb
+          slider_thumb
+          slider_dot_thumb
+          small
+          middle
+          big
+        }
+        schedule
+        {
+          ...ScheduleDay
+        }
+        schedule_men
+        {
+          ...ScheduleDay
+        }
+        schedule_women
+        {
+          ...ScheduleDay
+        }
+        schedule_family
+        {
+          ...ScheduleDay
+        }
+      }
+    }
 }
 
 fragment Rating on RatingType{
@@ -1900,58 +1952,6 @@ fragment UserNoticeFields on UserNoticeType{
   type
   comment
   active
-}
-
-query test(
-  $limit:Int = 10
-){
-  companies(
-    limit:$limit
-    ids:[1275]
-  ){
-    id
-    name
-    # topics{
-    #   id
-    #   name
-    # }
-    # ratingsByType{
-    #   id
-    #   rating
-    #   max_vote
-    #   min_vote
-    #   type
-    #   target_id
-    #   quantity
-    #   voted_users
-    # }
-    comments{
-      id
-      published
-      deleted
-      text{
-        ...CommentState
-      }
-    }
-    # ratingAvg {
-    #   id
-    #   rating
-    #   max_vote
-    #   min_vote
-    #   type
-    #   quantity
-    #   companies{
-    #     id
-    #     name
-    #     pagetitle
-    #     ratings {
-    #       id
-    #       target_id
-    #       target_class
-    #     }
-    #   }
-    # }
-  }
 }
 
 mutation addCompany(

@@ -522,6 +522,7 @@ export default class TopicView extends Component{
 		return <Card
 			style={{
 				margin: "30px 0",
+				overflow: "visible",
 			}}
 		>
 

@@ -18,9 +18,14 @@ import GraphQLJSON from 'graphql-type-json';
 // } from '../';
 
 
+// import {
+//   CommentEditorStateType,
+// } from 'react-cms/src/app/components/ORM/Comment';
+
+
 import {
   CommentEditorStateType,
-} from 'react-cms/src/app/components/ORM/Comment';
+} from '../EditorState';
 
 import moment from 'moment';
 

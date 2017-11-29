@@ -193,6 +193,9 @@ export default class Comment extends Component{
 			style={{
 				marginTop: 15,
 				marginBottom: 15,
+				height: "100%",
+				display: "flex",
+				flexDirection: "column",
 			}}
 		>
 			

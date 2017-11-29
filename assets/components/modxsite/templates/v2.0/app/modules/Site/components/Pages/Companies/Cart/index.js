@@ -44,6 +44,7 @@ export default class CompanyListCart extends Component{
 		const {
 			item,
 			mode,
+			...other
 		} = this.props;
 
 		if(!item){
@@ -82,6 +83,7 @@ export default class CompanyListCart extends Component{
 				md={4}
 				lg={3}
 				// xl={2}
+				{...other}
 			>
 
 				<Link

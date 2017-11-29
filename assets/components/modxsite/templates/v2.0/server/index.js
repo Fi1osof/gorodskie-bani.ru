@@ -20,6 +20,7 @@ require('babel-core/register')({
         || /\/react-schedule\//.test(file)
         || /\/react-cms\//.test(file)
         || /\/react-image-crop\//.test(file)
+        || /\/react-draft-wysiwyg\//.test(file)
         // || /\/google-map-react-control\//.test(file)
         || /\/moment\//.test(file)
       ){

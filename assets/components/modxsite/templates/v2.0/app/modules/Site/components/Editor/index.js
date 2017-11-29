@@ -30,7 +30,7 @@ export default class TextField extends Component {
 	    ...other
 	  } = this.props;
 
-	  return <Editor 
+	  return <Editor
   		{...other}
   	/>;
 

@@ -17,9 +17,13 @@ import {
 import GraphQLJSON from 'graphql-type-json';
 
 
+// import {
+//   CommentEditorStateType,
+// } from 'react-cms/src/app/components/ORM/Comment';
+
 import {
   CommentEditorStateType,
-} from 'react-cms/src/app/components/ORM/Comment';
+} from '../EditorState';
 
 import EditVersionType from '../EditVersion';
 

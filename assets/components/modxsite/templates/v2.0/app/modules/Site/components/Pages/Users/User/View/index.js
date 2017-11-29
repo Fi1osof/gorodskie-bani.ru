@@ -24,17 +24,17 @@ export default class UserView extends Component{
 	}
 
 
-	componentDidMount(){
+	// componentDidMount(){
 	
-		const {
-			loadData,
-		} = this.props;
+	// 	const {
+	// 		loadData,
+	// 	} = this.props;
 
-		// console.log("UserView componentWillMount");
+	// 	// console.log("UserView componentWillMount");
 
-		loadData && loadData();
+	// 	loadData && loadData();
 
-	}
+	// }
 
 
 	// componentDidMount(){

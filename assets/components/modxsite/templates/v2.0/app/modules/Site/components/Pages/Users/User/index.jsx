@@ -240,6 +240,7 @@ export default class UserPage extends Page {
       username: prevUsername,
     } = prevProps;
 
+    console.log("componentDidUpdate", username, prevUsername);
 
     if((username || prevUsername) && username !== prevUsername){
       this.reloadData();
@@ -788,7 +789,7 @@ export default class UserPage extends Page {
   //     );
   // }
 
-  async Save(){
+  async Save(clearCache = false){
 
     const {
       saveCurrentUser,
@@ -801,10 +802,6 @@ export default class UserPage extends Page {
     let result = await saveCurrentUser(user)
     .then(r => {
 
-      this.setState({
-        inEditMode: false,
-      });
-
       return r;
 
     })
@@ -812,10 +809,36 @@ export default class UserPage extends Page {
       console.error(r);
     });
 
-    this.forceUpdate();
+    console.log("clearCache", clearCache);
+
+    if(clearCache === true){
+
+      await this.clearCache();
+
+    }
+
+    // this.forceUpdate();
+    await this.reloadData();
+
+    this.setState({
+      inEditMode: false,
+    });
 
     return result;
   }
+
+
+  clearCache(){
+
+    const {
+      remoteQuery,
+    } = this.context;
+
+    return remoteQuery({
+      operationName: "clearCache",
+    });
+  }
+
 
   onDrop (files) { 
 
@@ -923,9 +946,15 @@ export default class UserPage extends Page {
                 //   expanded: false,
                 // });
 
-                this.updateCurrentUser({
+                const newUser = this.updateCurrentUser({
                   image: link,
+                  imageFormats: {
+                    thumb: `/images/resized/thumb${link}`,
+                  },
                 });
+
+                console.log("newUser", newUser);
+
               }
             }
             else{
@@ -980,13 +1009,12 @@ export default class UserPage extends Page {
       notices,
     });
 
-    console.log("newUser", newUser);
+    // console.log("newUser", newUser);
 
     let result = await this.Save();
 
-    console.log("saveUser result", result);
+    // console.log("saveUser result", result);
 
-    this.reloadData();
 
 
     // if(notices && notices.length){
@@ -1026,11 +1054,19 @@ export default class UserPage extends Page {
       updateCurrentUser,
     } = this.context;
 
-    const {
+    let {
       user,
     } = this.state;
 
-    return updateCurrentUser(user, data, silent);
+    const newUser = updateCurrentUser(user, data, silent);
+
+    Object.assign(user, newUser);
+
+    this.setState({
+      user,
+    });
+
+    return newUser;
 
   }
 
@@ -1137,8 +1173,9 @@ export default class UserPage extends Page {
         edit_buttons.push(<Button
           key="save"
           accent
-          onTouchTap={this.Save.bind(this)}
+          onTouchTap={event => this.Save(true)}
         >Сохранить</Button>);
+
         edit_buttons.push(<Button
           key="cancel"
           onTouchTap={this.CancelEditProfile.bind(this)}

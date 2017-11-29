@@ -5,7 +5,7 @@ node_modules
 /templates
 /ui-components
 /.sublime-project*
-/package-lock.json
+# /package-lock.json
 npm-debug.log
 # /_*
 /react-cms

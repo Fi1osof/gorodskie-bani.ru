@@ -110,6 +110,7 @@
     "cheerio": "^0.22.0",
     "cookie-parser": "^1.4.3",
     "css-loader": "0.25.0",
+    "draft-js-export-html": "^1.2.0",
     "eventsource-polyfill": "0.9.6",
     "exports-loader": "0.6.3",
     "express": "4.14.0",

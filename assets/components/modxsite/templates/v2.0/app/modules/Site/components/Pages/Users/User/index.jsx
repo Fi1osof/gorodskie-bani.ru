@@ -914,7 +914,7 @@ export default class UserPage extends Page {
 
         <Grid
           item
-          sx={12}
+          xs={12}
         >
 
           <Grid
@@ -949,7 +949,7 @@ export default class UserPage extends Page {
         
         <Grid
           item
-          sx={12}
+          xs={12}
         >
 
           <Grid

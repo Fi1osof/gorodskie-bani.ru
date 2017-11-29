@@ -24,7 +24,7 @@ export default class UserView extends Component{
 	}
 
 
-	componentWillMount(){
+	componentDidMount(){
 	
 		const {
 			loadData,
@@ -37,9 +37,9 @@ export default class UserView extends Component{
 	}
 
 
-	componentDidMount(){
+	// componentDidMount(){
 
-	}
+	// }
 
 	
 	render(){

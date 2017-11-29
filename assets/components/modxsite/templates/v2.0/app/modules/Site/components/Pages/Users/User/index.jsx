@@ -67,7 +67,7 @@ import moment from 'moment';
 
 import Page from '../../layout'; 
 
-import View from './View';
+// import View from './View';
 
 
 let {
@@ -1156,10 +1156,10 @@ export default class UserPage extends Page {
         }}
       >
 
-        <View 
+        {/*<View 
           key={locationUserName}
           loadData={::this.reloadData}
-        />
+        />*/}
 
         <Grid
           item

@@ -64,31 +64,10 @@ var classes;
 import moment from 'moment';
 // moment.locale('ru');
 
-// import Layout from '../../layout';
-
-// const contextTypes = Object.assign({
-//   request: PropTypes.func.isRequired,
-//   // setPagetitle: PropTypes.func.isRequired,
-//   styleManager: customPropTypes.muiRequired,
-// }, Layout.contextTypes || {});
-
-// const propTypes = Object.assign({
-//   // user: PropTypes.object.isRequired,
-//   username: PropTypes.string.isRequired,
-// }, Layout.propTypes || {});
-
-// const defaultProps = Object.assign({
-//   inEditMode: false,
-//   isDirty: false,
-//   allowEdit: true,
-// }, Layout.defaultProps || {});
-
 
 import Page from '../../layout'; 
 
-// const propTypes = Object.assign({
-//   username: PropTypes.string.isRequired,
-// }, {});
+import View from './View';
 
 
 let {
@@ -158,13 +137,6 @@ export default class UserPage extends Page {
     * Если нет данных пользователя, но известен ID,
     * запрашиваем данные с сервера
     * */
-    // if(
-    //   !this.state.initialized
-    //   && !this.state.id
-    //   && this.state.requested_id
-    // ){
-    //   this.initialize();
-    // }
 
     classes = this.context.styleManager.render(styleSheet);
 
@@ -175,79 +147,31 @@ export default class UserPage extends Page {
 
   componentDidMount(){
 
-    // const {
-    //   UsersStore,
-    //   CommentsStore,
-    // } = this.context;
-
-    // this.UsersStoreListener = UsersStore.getDispatcher().register(payload => {
-
-    //   this.loadData();
-
-    // });
-
-    // this.CommentsStoreListener = CommentsStore.getDispatcher().register(payload => {
-
-    //   this.loadData();
-
-    // });
-
-    // this.loadData();
-
     this.processAction();
 
     super.componentDidMount && super.componentDidMount();
   }
 
-  // componentWillUnmount(){
+
+
+  // componentDidUpdate(prevProps, prevState, prevContext){
 
   //   const {
-  //     UsersStore,
-  //     CommentsStore,
-  //   } = this.context;
+  //     username,
+  //   } = this.props;
 
+  //   const {
+  //     username: prevUsername,
+  //   } = prevProps;
 
+  //   console.log("componentDidUpdate", username, prevUsername);
 
-  //   if(this.UsersStoreListener){
-
-  //     let dispatch = UsersStore.getDispatcher();
-
-  //     dispatch._callbacks[this.UsersStoreListener] && dispatch.unregister(this.UsersStoreListener);
-
-  //     this.UsersStoreListener = undefined;
+  //   if((username || prevUsername) && username !== prevUsername){
+  //     this.reloadData();
   //   }
 
-  //   if(this.CommentsStoreListener){
-
-  //     let dispatch = CommentsStore.getDispatcher();
-
-  //     dispatch._callbacks[this.CommentsStoreListener] && dispatch.unregister(this.CommentsStoreListener);
-
-  //     this.CommentsStoreListener = undefined;
-  //   }
-
+  //   super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
   // }
-
-
-
-  componentDidUpdate(prevProps, prevState, prevContext){
-
-    const {
-      username,
-    } = this.props;
-
-    const {
-      username: prevUsername,
-    } = prevProps;
-
-    console.log("componentDidUpdate", username, prevUsername);
-
-    if((username || prevUsername) && username !== prevUsername){
-      this.reloadData();
-    }
-
-    super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
-  }
 
 
 
@@ -271,16 +195,6 @@ export default class UserPage extends Page {
 
   async loadServerData(provider, options = {}){
 
-    // let {
-    //   cities: citiesNull,
-    //   ...debugOptions
-    // } = options;
-    // console.log("UserPage loadServerData options", debugOptions);
-
-    
-    // const {
-    //   localQuery,
-    // } = this.context;
 
     const {
       username,
@@ -308,8 +222,6 @@ export default class UserPage extends Page {
     })
     .then(r => {
 
-      // console.log("User page result", r);
-
       const {
         user,
       } = r.data;
@@ -319,15 +231,6 @@ export default class UserPage extends Page {
         return null;
       }
 
-      // const {
-      //  count,
-      //  total,
-      //  object: users,
-      // } = usersList || {};
-
-      // this.setState({
-      //   user,
-      // });
 
       return r;
     })
@@ -464,156 +367,6 @@ export default class UserPage extends Page {
     });
 
   }
- 
-
-  // setPagetitle(){
-    
-    
-  //   let {
-  //     setPagetitle,
-  //   } = this.context;
-
-  //   let {
-  //     fullname,
-  //     username,
-  //   } = this.state; 
-
-  //   setPagetitle( fullname || username || "Профиль пользователя");
-  // }
-
-
-  // initialize(){
-  //   var body = new FormData();
-
-  //   body.append("id", this.state.requested_id);
-
-  //   let action = 'users/getdata';
-
-  //   var headers = new Headers();
-
-  //   let CONNECTOR_URL = 'assets/components/modxsite/connectors/connector.php';
-
-  //   fetch(CONNECTOR_URL +'?pub_action=' + action,{
-  //     credentials: 'same-origin',
-  //     headers: headers,
-  //     method: "POST",
-  //     body: body,
-  //   })
-  //     .then(function (response) {
-  //       return response.json()
-  //     })
-  //     .then(function (data) {
-
-  //       if(data.success && data.object){
-
-  //         var newState = {
-  //           initialized: true,
-  //           id: data.object.id,
-  //           username: data.object.username,
-  //           fullname: data.object.fullname,
-  //           email: data.object.email,
-  //           photo: data.object.photo,
-  //           regdate: data.object.regdate,
-  //           api_key: data.object.api_key,
-  //         };
-
-  //         // if(data.object){
-  //         //   for(var i in data.object){
-  //         //     newState[i] = data.object[i];
-  //         //   }
-  //         // }
-
-  //         // this.clearEditedData(newState);
-
-  //         this.setState(newState);
-  //       }
-  //       else{
-
-  //         var newState = {
-  //           initialized: true,
-  //           ShowStatusMessage: true,
-  //           StatusMessage: data.message || "Ошибка выполнения запроса",
-  //           StatusMessageDuration: 7000,
-  //         };
-
-  //         var errors = [];
-
-  //         if(data.data){
-  //           data.data.map(function(item){
-  //             errors.push(item.msg);
-  //           });
-
-  //           newState.StatusMessage += "; " + errors.join(", ");
-  //         }
-
-  //         this.setState(newState);
-  //       }
-  //     }.bind(this))
-  //     .catch(function (error) {
-
-  //       }
-  //     );
-  // }
-
-  // componentWillReceiveProps(nextProps){
-
-  //   var newState;
-
-  //   let {
-  //     user,
-  //   } = nextProps;
-
-
-
-  //   if(
-  //     (user && user !== this.props.user)
-  //     ||
-  //     (!user && this.props.user)
-  //   ){
-  //     this.setState({
-  //       current_user: user && user.id > 0 && user || {},
-  //     });
-  //     return false;
-  //   }
-
-  //   // if(nextProps.document.document.user_id && nextProps.document.document.user_id != this.state.requested_id){
-  //   //   this.state.requested_id = nextProps.document.document.user_id;
-  //   //   this.initialize();
-  //   // }
-  //   // else if(nextProps.document.document.data && nextProps.document.document.data.id != this.state.id){
-  //   //   newState = nextProps.document.document.data;
-  //   //   Object.assign(newState, {
-  //   //     inEditMode: false,
-  //   //     email: newState.email,
-  //   //     api_key: newState.api_key,
-  //   //     photo: newState.photo,
-  //   //   });
-  //   // }
-  //   // else if(nextProps.user.id && nextProps.user.id != this.state.id){
-  //   /*
-  //   Если пользователь авторизовался, и это его карточка,
-  //   то накладываем свойства
-  //   * */
-  //   // else if(
-  //   //   nextProps.user.id
-  //   //   && nextProps.user.id != this.props.user.id
-  //   //   && nextProps.user.id == this.state.id
-  //   // ){
-  //   //   newState = {};
-  //   //   Object.assign(newState, nextProps.user);
-  //   // }
-
-  //   if(newState){
-  //     this.clearEditedData(newState);
-  //   }
-
-  //   return true;
-  // }
-
-  // shouldComponentUpdate(nextProps, nextState){
-  //
-  //   return true;
-  // }
 
   onHandleEmail(email){
     window.location.href = 'mailto:'+ email;
@@ -660,134 +413,12 @@ export default class UserPage extends Page {
       default: value = state.getCurrentContent().getFirstBlock().text;
     }
 
-    // newState["new_" + field] = value;
-    // newState["new_" + field] = value;
     newUserState[field] = value;
 
-    // Обновляем текущего пользователя
-    // let{
-    //   data: user,
-    // } = this.props.document.document;
-
-    // Object.assign(user, newUserState);
-
-    // this.updateState(newState);
 
     this.updateCurrentUser(newUserState);
   }
 
-  // updateState(newState){
-
-  //   newState.isDirty = true;
-
-  //   this.setState(newState);
-  // }
-
-  // shouldComponentUpdate(nextProps, nextState){
-
-  //   if(typeof window !== "object"){
-  //     return false;
-  //   }
-
-  //   return true;
-  // }
-
-  // Save(){
-
-  //   var body = new FormData();
-
-  //   for(var i in this.state){
-  //     if(/^new_/.test(i)){
-  //       var value = this.state[i];
-
-  //       if(typeof value == "undefined"){
-  //         continue;
-  //       }
-
-  //       if(value == null){
-  //         value = "";
-  //       }
-
-  //       body.append(i.replace(/^new_/, ''), value);
-  //     }
-  //   }
-
-  //   let action = 'user/own_profile/update';
-
-  //   var headers = new Headers();
-
-  //   let CONNECTOR_URL = 'assets/components/modxsite/connectors/connector.php';
-
-  //   fetch(CONNECTOR_URL +'?pub_action=' + action,{
-  //     credentials: 'same-origin',
-  //     headers: headers,
-  //     method: "POST",
-  //     body: body,
-  //   })
-  //     .then(function (response) {
-  //       return response.json()
-  //     })
-  //     .then(function (data) {
-
-  //       if(data.success){
-
-
-
-  //         // Обновляем текущего пользователя
-  //         let{
-  //           data: user,
-  //         } = this.props.document.document;
-
-  //         Object.assign(user, data.object);
-
-
-  //         var newState = {
-  //           isDirty: false,
-  //           inEditMode: false,
-  //           ShowStatusMessage: true,
-  //           StatusMessage: data.message || "Профиль успешно обновлен",
-  //           StatusMessageDuration: 3000,
-  //         };
-
-  //         if(data.object){
-  //           for(var i in data.object){
-  //             newState[i] = data.object[i];
-  //           }
-  //         }
-
-  //         this.clearEditedData(newState);
-
-  //         this.props.userActions.GetOwnData();
-
-
-
-  //       }
-  //       else{
-
-  //         var newState = {
-  //           ShowStatusMessage: true,
-  //           StatusMessage: data.message || "Ошибка выполнения запроса",
-  //           StatusMessageDuration: 7000,
-  //         };
-
-  //         var errors = [];
-
-  //         if(data.data){
-  //           data.data.map(function(item){
-  //             errors.push(item.msg);
-  //           });
-
-  //           newState.StatusMessage += "; " + errors.join(", ");
-  //         }
-
-  //         this.setState(newState);
-  //       }
-  //     }.bind(this))
-  //     .catch(function (error) {
-
-  //       }
-  //     );
-  // }
 
   async Save(clearCache = false){
 
@@ -1013,36 +644,6 @@ export default class UserPage extends Page {
 
     let result = await this.Save();
 
-    // console.log("saveUser result", result);
-
-
-
-    // if(notices && notices.length){
-
-    //   this.setState((prevState) => {
-
-    //     var notices = prevState.current_user.notices;
-
-    //     var new_notices = [];
-
-    //     notices.map(function(item){
-    //       if(item.id === notice_id){ 
-    //         item.active = (checked === true ? "1" : "0");
-    //       }
-
-    //       if(item.active === "1"){
-    //         new_notices.push(item.id);
-    //       }
-    //     });
-
-    //     return {
-    //       notices: notices,
-    //       new_notices: new_notices,
-    //     };
-    //   }, () => { 
-    //     this.Save();
-    //   });
-    // }
 
     return;
   }
@@ -1119,7 +720,7 @@ export default class UserPage extends Page {
     // // } = this.props || {};
     // } = this.props.document.document || {};
 
-    const {
+    let {
       user,
     } = this.state;
 
@@ -1127,6 +728,12 @@ export default class UserPage extends Page {
       return null;
     }
 
+    /*
+      Если текущий пользователь совпадает с карточкой, то мержим объекты чтобы получить полные данные профиля
+    */
+    if(current_user && current_user.id === user.id){
+      Object.assign(user, current_user);
+    }
 
 
     let{
@@ -1389,87 +996,77 @@ export default class UserPage extends Page {
 
 
 
-                {createdon
-                  ?
-                  <Grid 
-                    item
-                    xs={12}
-                    sm
-                    // sm={6}
-                    // lg={3}
-                  > 
-                    <Typography 
-                      type="subheading"
-                      style={{
-                        marginLeft: 17,
-                      }}
-                    >
-                      Зарегистрирован
-                    </Typography>
-
-                    <ListItem
+                <Grid 
+                  item
+                  xs={12}
+                  sm
+                  // sm={6}
+                  // lg={3}
+                > 
+                  <Typography 
+                    type="subheading"
                     style={{
-                      whiteSpace: "nowrap",
+                      marginLeft: 17,
                     }}
-                    >
-                      <ListItemIcon
-                      > 
-                        <CalendarIcon 
-                        /> 
+                  >
+                    Зарегистрирован
+                  </Typography>
 
-                      </ListItemIcon>
-                        
-                      {moment(createdon * 1000).format("DD MMMM YYYY")}
+                  <ListItem
+                  style={{
+                    whiteSpace: "nowrap",
+                  }}
+                  >
+                    <ListItemIcon
+                    > 
+                      <CalendarIcon 
+                      /> 
 
-                      {/*<div
-                                              className="flex align-center"
-                                            >
-                                              <CalendarIcon /> {moment(createdon * 1000).format("DD MMMM YYYY")}
-                                            </div>*/}
+                    </ListItemIcon>
                       
-                    </ListItem> 
+                    {moment(createdon * 1000).format("DD MMMM YYYY")}
 
-                    {email
-                      ?
-                      <div>
-                        <Typography 
-                          type="subheading"
-                          style={{
-                            marginLeft: 17,
-                            marginTop: 25,
-                          }}
+                    
+                  </ListItem> 
+
+                  {email
+                    ?
+                    <div>
+                      <Typography 
+                        type="subheading"
+                        style={{
+                          marginLeft: 17,
+                          marginTop: 25,
+                        }}
+                      >
+                        Емейл
+                      </Typography>
+
+                      <ListItem
+                        button
+                        onTouchTap={event => {
+                          event.stopPropagation();
+                          event.preventDefault();
+                          this.onHandleEmail(email);
+                        }}
+                      >
+                        <ListItemIcon
                         >
-                          Емейл
-                        </Typography>
-
-                        <ListItem
-                          button
-                          onTouchTap={event => {
-                            event.stopPropagation();
-                            event.preventDefault();
-                            this.onHandleEmail(this.state.email);
-                          }}
-                        >
-                          <ListItemIcon
-                          >
-                            <CommunicationEmail />
-                          </ListItemIcon>
-                          {email}
-                        </ListItem> 
-                      </div>
-                      :
-                      null
-                    }
+                          <CommunicationEmail />
+                        </ListItemIcon>
+                        {email}
+                      </ListItem> 
+                    </div>
+                    :
+                    null
+                  }
 
 
-                     
+                   
 
 
 
-                  </Grid>
-                  :
-                  null
-                } 
+                </Grid>
                 
 
               </Grid>
@@ -1546,6 +1143,10 @@ export default class UserPage extends Page {
       card = <h3>Пользователь не найден</h3>;
     }
 
+    const {
+      username: locationUserName,
+    } = this.props.params || {};
+
     return super.render(
       <Grid
         container
@@ -1555,6 +1156,10 @@ export default class UserPage extends Page {
         }}
       >
 
+        <View 
+          key={locationUserName}
+          loadData={::this.reloadData}
+        />
 
         <Grid
           item
@@ -1580,90 +1185,10 @@ export default class UserPage extends Page {
 
         </Grid> 
 
-        {/*works && works.length
-          ?
-            <Grid
-              item
-              xs={12}
-            >
-
-              <Typography 
-                type="title"
-                style={{
-                  // marginLeft: 17,
-                  marginBottom: 5,
-                }}
-              >
-                Портфолио
-              </Typography>
-              
-              <WorksList
-                works={works}
-                page={0}
-                limit={0}
-                total={works.length}
-              />
-
- 
-
-              {works_total > 4 
-                ?
-                  <Link
-                    to={`katalog-sajtov/?owner=${user.id}`}
-                    href={`katalog-sajtov/?owner=${user.id}`}
-                    className="underline-none"
-                  >
-                    <Button>
-                      Смотреть все работы пользователя
-                    </Button>
-                  </Link>
-                :
-                null
-              }
-
-            </Grid>
-          :
-          null
-        */}
-
-
-        {/*
-          <Snackbar
-            open={this.state.ShowPhotoMessage || false}
-            message={this.state.PhotoMessageText || ""}
-            action="Отмена"
-            autoHideDuration={3000}
-            onActionTouchTap={this.handleActionTouchTap.bind(this)}
-            onRequestClose={this.handleRequestClose.bind(this)}
-          />
-
-          <Snackbar
-            open={this.state.ShowStatusMessage || false}
-            message={this.state.StatusMessage || ""}
-            autoHideDuration={this.state.StatusMessageDuration || 5000}
-          />
-        */}
       </Grid>
     );
 
     return null;
   }
 
-
 }
-
-// function mapStateToProps(state){
-//   return {
-//     user: state.user && state.user.user,
-//   }
-// }
-
-// function mapDispatchToProps(dispatch){
-//   return {
-//     userActions: bindActionCreators(userActions, dispatch)
-//   }
-// }
-
-// ProfileView.defaultProps = defaultProps;
-
-// export default connect(mapStateToProps, mapDispatchToProps)(ProfileView);

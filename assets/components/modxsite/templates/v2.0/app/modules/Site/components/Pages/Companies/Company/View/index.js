@@ -29,9 +29,9 @@ import Comments from 'modules/Site/components/Comments';
 
 import ImagesUploader from 'modules/Site/components/fields/ImageUploader';
 
-import GalleryEditor from 'modules/Site/components/Gallery';
-
 import CompanyTopics from '../Topics';
+
+import GalleryEditor from 'modules/Site/components/Gallery';
 
 import GallerySlider from 'react-cms/src/app/components/Gallery/Slider';
 
@@ -100,9 +100,16 @@ export default class CompanyView extends Component{
 	}
 
 
-	componentDidMount(){
+	// componentDidMount(){
+	
+	// 	const {
+	// 		reloadData,
+	// 	} = this.props;
 
-	}
+	// 	console.log("CompanyView componentDidMount");
+
+	// 	reloadData && reloadData();
+	// }
 
 
 	updateItem = (item, data) => {
@@ -1193,9 +1200,7 @@ export default class CompanyView extends Component{
 		        	marginBottom: gallery && gallery.length ? 0 : 250,
 		        }}
 		        onUpload={::this.onUpload}
-            updateItem={(a,b,c) => {
-              // console.log("updateItem", a,b,c);
-            }}
+            updateItem={::this.updateItem}
 		      />;
 
       		break;

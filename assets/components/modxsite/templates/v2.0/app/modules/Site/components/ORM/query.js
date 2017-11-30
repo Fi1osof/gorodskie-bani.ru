@@ -273,22 +273,7 @@ query MainPage(
     }
   }
   
-  recentCompaniesList:companiesList(
-    limit:4
-    sort:{
-      by:createdon
-      dir:desc
-    }
-  )
-  {
-    count
-    total
-    limit
-    page
-    object{
-      ...Company
-    }
-  }
+  ...RecentCompanies
   
   commentsList(
     ids: $commentsIds
@@ -364,6 +349,43 @@ query MainPage(
     ...City
   }
   
+}
+
+
+fragment RecentCompanies on RootType{
+  recentCompaniesList:companiesList(
+    limit:4
+    sort:{
+      by:createdon
+      dir:desc
+    }
+  )
+  {
+    count
+    total
+    limit
+    page
+    object{
+      ...Company
+    }
+  }
+}
+
+fragment NearestCompanies on RootType{
+  nearestCompaniesList:companiesList(
+    limit:4
+    center: $companiesCenter
+    excludeIds: $companiesExcludeIds
+  )
+  {
+    count
+    total
+    limit
+    page
+    object{
+      ...Company
+    }
+  }
 }
 
 query Companies (
@@ -510,6 +532,71 @@ query CompanyByUri(
 ){
   ...RootCompany
 }
+
+query CompanyPage(
+  $id:Int
+  $resourceUri:String!
+  $getRatingsAvg:Boolean = true
+  $getImageFormats:Boolean = true
+  $getCompanyComments:Boolean = true
+  $getCommentCompany:Boolean = false
+  $getCompanyFullData:Boolean = true
+  $getCompanyGallery:Boolean = true
+  $getTVs:Boolean = true
+  $companyCommentsSort:[SortBy] = {by: id, dir:asc}
+  $getCommentAuthor:Boolean = true
+  $getCompanyTopics:Boolean = true
+  $getRatingVoters:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
+){
+  
+  ...RootCompany
+  
+}
+
+
+query NearestCompanies(
+  $getRatingsAvg:Boolean = true
+  $getImageFormats:Boolean = true
+  $getCompanyComments:Boolean = true
+  $getCommentCompany:Boolean = false
+  $getCompanyFullData:Boolean = true
+  $getCompanyGallery:Boolean = true
+  $getTVs:Boolean = true
+  $companyCommentsSort:[SortBy] = {by: id, dir:asc}
+  $getCommentAuthor:Boolean = true
+  $getCompanyTopics:Boolean = true
+  $getRatingVoters:Boolean = true
+  $resourceGetAuthor:Boolean = false
+  $resourceGetComments:Boolean = false
+  $userGetComments:Boolean = false
+  $resourceGetContent:Boolean = true
+  $companyGetEditVersions:Boolean = false
+  $editVersionGetCreator:Boolean = false
+  $editVersionGetEditor:Boolean = false
+  $editVersionGetCompany:Boolean = false
+  $companyGetSchedules:Boolean = true
+  $companyGetPrices:Boolean = true
+  $companiesCenter:InputCoordsType = {
+      lat: 37,
+      lng: 100
+    }
+  $companiesExcludeIds:[Int]
+){
+  
+  ...NearestCompanies
+  
+}
+
 
 fragment RootCompany on RootType{
   company(

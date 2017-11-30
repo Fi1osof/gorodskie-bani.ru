@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 export default class UserView extends Component{
 
 	static propTypes = {
-
+		reloadData: PropTypes.func,
 	};
 	
 	static contextTypes = {
@@ -27,12 +27,12 @@ export default class UserView extends Component{
 	// componentDidMount(){
 	
 	// 	const {
-	// 		loadData,
+	// 		reloadData,
 	// 	} = this.props;
 
 	// 	// console.log("UserView componentWillMount");
 
-	// 	loadData && loadData();
+	// 	reloadData && reloadData();
 
 	// }
 

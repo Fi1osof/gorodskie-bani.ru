@@ -8,7 +8,12 @@ import {Link, browserHistory} from 'react-router';
 // import Avatar from 'material-ui/Avatar';
 // import TextField from 'material-ui/TextField';
 // import Grid from 'material-ui/Grid';
-// import Paper from 'material-ui/Paper';
+
+import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
+
+import CompaniesList from 'modules/Site/components/Pages/Companies/List';
+
+import Typography from 'material-ui/Typography';
 // import Typography from 'material-ui/Typography';
 // import Button from 'material-ui/Button';
 // import IconButton from 'material-ui/IconButton';
@@ -130,6 +135,7 @@ export default class CompanyPage extends Page{
 
 		const {
 			location,
+      // coords,
 		} = this.context;
 
 		const {
@@ -138,6 +144,7 @@ export default class CompanyPage extends Page{
 
 		return uri && super.loadData({
 			pathname: uri.replace(/^\/+/, ''),
+			// coords,
 		});
 
 	}
@@ -153,7 +160,7 @@ export default class CompanyPage extends Page{
 
 
 		const {
-			coords,
+			// coords,
 			page,
 			limit = 12,
 			withPagination = true,
@@ -167,14 +174,17 @@ export default class CompanyPage extends Page{
 			throw("Не указан УРЛ объекта");
 		}
 
+		let result;
+
 		// Получаем список компаний
-	  const result = await provider({
-			operationName: "CompanyByUri",
+	  result = await provider({
+			operationName: "CompanyPage",
 			variables: {
 				resourceUri: pathname,
 				companyGetEditVersions: true,
 				editVersionGetCreator: true,
 				editVersionGetEditor: true,
+				// companiesCenter: coords,
 			},
 	  })
 	  .then(r => {
@@ -227,6 +237,60 @@ export default class CompanyPage extends Page{
   			title,
   		});
 
+      // console.log("NearestCompanies company", company, coords);
+
+  		// Если компания была получена, получаем ближайшие компании
+  		if(company){
+
+  			const {
+  				id,
+  				coords,
+  			} = company;
+
+  			if(id && coords){
+
+	  			await provider({
+						operationName: "NearestCompanies",
+						variables: {
+							// resourceUri: pathname,
+							companyGetEditVersions: true,
+							editVersionGetCreator: true,
+							editVersionGetEditor: true,
+							companiesCenter: coords,
+							companiesExcludeIds: id,
+						},
+				  })
+				  .then(r => {
+				    
+				    
+			      const {
+			        nearestCompaniesList,
+			      } = r.data;
+
+
+			      // if(!company){
+			      //   return null;
+			      // }
+
+			      // console.log("NearestCompanies result", coords, nearestCompaniesList, r);
+
+			      if(nearestCompaniesList){
+			      	Object.assign(result.data, {
+			      		nearestCompaniesList,
+			      	});
+			      }
+
+				    return r;
+
+				  })
+				  .catch(e => {
+				    throw(e);
+				  });
+
+  			}
+
+  		}
+
 	  }
 	  else{
 	  	return null;
@@ -251,213 +315,85 @@ export default class CompanyPage extends Page{
 
 	}
 
-	// saveItem = async () => {
 
-	// 	const {
-	// 		company: item,
-	// 	} = this.state;
 
-	// 	const {
-	// 		saveContactItem,
-	// 		documentActions,
-	// 	} = this.context;
+  // componentDidUpdate(prevProps, prevState, prevContext){
 
-	// 	this.setState({
-	// 		sending: true,
-	// 	});
+  //   const {
+  //     location,
+  //   } = this.props;
 
-	// 	await saveContactItem(item)
-	// 		.then(r => {
+  //   const {
+  //     location: prevLocation,
+  //   } = prevProps;
 
+  //   console.log("componentDidUpdate", location, prevLocation, location === prevLocation);
 
-	// 			const {
-	// 				success,
-	// 				deta,
-	// 			} = r;
+  //   // if((username || prevUsername) && username !== prevUsername){
+  //   //   this.reloadData();
+  //   // }
 
+  //   super.componentDidUpdate && super.componentDidUpdate(prevProps, prevState, prevContext);
+  // }
 
-	// 			if(success){
-
-	// 				this.reloadData();
-
-	// 			}
-
-	// 		})
-	// 		.catch(e => {
-
-	// 			const {
-	// 				message,
-	// 				data,
-	// 				errors,
-	// 			} = e;
-
-
-
-	// 			if(errors){
-
-	// 				for(var i in errors){
-
-	// 					const error = errors[i];
-
-	// 					error && documentActions.addInformerMessage(error);
-
-	// 				}
-
-	// 			}
-
-	// 			console.error(e);
-	// 		});
-
-	// 	this.setState({
-	// 		sending: false,
-	// 	});
-		
-	// }
-
-
-	// clearErrors(name){
-		
-	// 	const {
-	// 		company: item,
-	// 	} = this.state;
-
-	// 	let {
-	// 		_errors: errors,
-	// 	} = item;
-
-	// 	if(errors && errors[name]){
-	// 		errors[name] = "";
-	// 		this.forceUpdate();
-	// 	}
-
-	// }
-
-	// // Почему-то не приходит объект события
-	// onFocus = (name) => {
-
-
-
-	// 	this.clearErrors(name);
-
-	// 	return;
-
-	// }
-
-	// onChange = event => {
-
-	// 	const {
-	// 		company: item,
-	// 	} = this.state;
-
-	// 	let data = {};
-
-
-
-	// 	const {
-	// 		name,
-	// 		value,
-	// 	} = event.target;
-
-	// 	this.clearErrors(name);
-
-	// 	data[name] = value;
-
-	// 	switch(name){
-
-	// 		case 'address':
-	// 		case 'metro':
-	// 		case 'phones':
-	// 		case 'site':
-	// 		case 'work_time':
-	// 		// case 'prices':
-
-	// 			let tvs = item.tvs || {};
-
-	// 			tvs[name] = value;
-
-	// 			data.tvs = tvs;
-
-	// 			break;
-
-	// 	}
-
-	// 	this.updateItem(item, data);
-
-	// }
-
-
-	// previewDiffs(diffs){
-
-
-
-	// 	const {
-	// 		diffs: currentDiffs,
-	// 	} = this.state;
-
-	// 	this.setState({
-	// 		diffs: currentDiffs && currentDiffs === diffs ? null : diffs,
-	// 	});
-
-	// }
-
-
-	// acceptDiffs(diffs){
-
-	// 	const {
-	// 		company: item,
-	// 	} = this.state;
-
-
-
-
-
-	// 	if(!item || !diffs || !diffs.data ){
-	// 		return;
-	// 	}
-
-	// 	this.setState({
-	// 		diffs: null,
-	// 	}, () => {
-
-	// 		const {
-	// 			id: diffsId,
-	// 			data: {
-	// 				id,
-	// 				...newData,
-	// 			},
-	// 		} = diffs;
-
-	// 		this.updateItem(item, Object.assign(newData || {}, {
-	// 			diffsId,
-	// 		}));
-			
-	// 	});
-
-	// }
-
-
- //  handleTabIndexChange = (event, tabIndex) => {
- //    this.setState({ tabIndex });
- //  }
-
-
- //  onStoreUpdated(){
-  	
- //  }
-
+	
 
   render(){
 
 
 		let {
 			company: item,
+			nearestCompaniesList,
 		} = this.state;
 
-  	return super.render(<CompanyView
-  		item={item}
-  		updateItem={::this.updateItem}
-  		reloadData={::this.reloadData}
-  	/>);
+		if(!item){
+			return null;
+		}
+
+		const {
+			id,
+		} = item;
+
+		const {
+			total: nearesCompaniesTotal,
+			...nearestCompanies
+		} = nearestCompaniesList || {};
+
+
+  	return super.render(<div>
+  		
+  		<CompanyView
+	  		key={id}
+	  		item={item}
+	  		updateItem={::this.updateItem}
+	  		reloadData={::this.reloadData}
+	  	/>
+
+	  	{nearestCompanies && nearestCompanies.count 
+	  		?
+	  		<CardContent
+					key="recentCompaniesList"
+				>
+					<Typography
+						type="title"
+						style={{
+							marginTop: 30,
+							marginBottom: 20,
+						}}
+					>
+						Другие заведения поблизости
+					</Typography>
+
+					<CompaniesList
+						data={nearestCompanies}
+						showCities={false}
+					/>
+				</CardContent>
+				:
+				null
+			}
+
+		</div>);
 
   }
 

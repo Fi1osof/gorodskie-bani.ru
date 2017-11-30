@@ -543,7 +543,7 @@ export class AppMain extends ReactCmsApp{
       coords: {},
       // inited: typeof window === "undefined",
       inited: false,
-      developMode: true,
+      developMode: false,
       // appExports: {},
     }
 

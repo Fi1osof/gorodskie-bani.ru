@@ -8,6 +8,8 @@ import {Link} from 'react-router';
 
 import ReactCmsPage from 'react-cms/src/app/components/Page';
 
+import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
+
 // const defaultProps = {}
 
 
@@ -473,6 +475,22 @@ export default class Page extends ReactCmsPage{
 			getCounters,
 		} = this.context;
 
+		const {
+			pageReloading,
+		} = this.state;
+
+		// if(companies === undefined){
+		// 	content = <div
+		// 		style={{
+		// 			height: "100vh",
+		// 		}}
+		// 	>
+		// 		<div 
+  //         className="preloader"
+  //       />
+  //      </div>
+		// } 
+
 		return <div
 			style={{
 				maxWidth: 1260,
@@ -481,48 +499,72 @@ export default class Page extends ReactCmsPage{
 				padding: "0 16px",
 			}}
 		>
+
+			{pageReloading
+				?
+				<div
+					style={{
+						position: "absolute",
+						top: 0,
+						bottom: 0,
+						left: 0,
+						right: 0,
+						zIndex: 1000,
+					}}
+				>
+					<div 
+	          className="preloader"
+	        />
+	       </div>
+				:
+				null
+			}
 			
 			{childContent || this.renderContent() || null}
 
-			<Grid
-				container
-				style={{
-					paddingTop: 30,
-				}}
-			>
-				
-				<Grid
-					item
-					xs
-				>
-					{getCounters()}	
-				</Grid>
+			<CardContent>
 
 				<Grid
-					item
+					container
+					style={{
+						paddingTop: 30,
+					}}
 				>
-					<Link
-						to="/ratings/"
-						href="/ratings/"
-						title="Рейтинги бань"
+					
+					<Grid
+						item
+						xs
 					>
-						Рейтинги бань
-					</Link>
-				</Grid>
+						{getCounters()}	
+					</Grid>
 
-				<Grid
-					item
-				>
-					<Link
-						to="/contacts.html"
-						href="/contacts.html"
-						title="Разместить информацию о бане"
+					<Grid
+						item
 					>
-						Добавить баню или сауну
-					</Link>
+						<Link
+							to="/ratings/"
+							href="/ratings/"
+							title="Рейтинги бань"
+						>
+							Рейтинги бань
+						</Link>
+					</Grid>
+
+					<Grid
+						item
+					>
+						<Link
+							to="/contacts.html"
+							href="/contacts.html"
+							title="Разместить информацию о бане"
+						>
+							Добавить баню или сауну
+						</Link>
+					</Grid>
+
 				</Grid>
 
-			</Grid>
+			</CardContent>
 
 		</div>;
 

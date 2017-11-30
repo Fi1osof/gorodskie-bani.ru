@@ -73,6 +73,10 @@ export default class Rating extends Component{
 			ratingAvg,
 		} = item;
 
+		if(!ratingAvg){
+			return null;
+		}
+
 		const {
       rating,
       max_vote,

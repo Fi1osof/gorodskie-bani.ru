@@ -416,27 +416,33 @@ export default class CompaniesPage extends Page {
 		let content;
 
 
-		if(companies === undefined){
-			content = <div
-				style={{
-					height: "100vh",
-				}}
-			>
-				<div 
-          className="preloader"
-        />
-       </div>
-		}
-		else{
+		// if(companies === undefined){
+		// 	content = <div
+		// 		style={{
+		// 			height: "100vh",
+		// 		}}
+		// 	>
+		// 		<div 
+  //         className="preloader"
+  //       />
+  //      </div>
+		// }
+		// else{
 
-			content = <CompaniesList 
-				data={companies}
-				cities={cities}
-				{...other}
-			/>
+		// 	content = <CompaniesList 
+		// 		data={companies}
+		// 		cities={cities}
+		// 		{...other}
+		// 	/>
 
-		}
 
+		// }
+
+		content = <CompaniesList 
+			data={companies}
+			cities={cities}
+			{...other}
+		/>
 
 
 		return super.render(<div

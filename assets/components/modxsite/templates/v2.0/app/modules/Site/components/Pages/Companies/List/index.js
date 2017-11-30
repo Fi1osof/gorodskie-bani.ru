@@ -21,10 +21,15 @@ export default class CompaniesList extends Component{
 
 	static propTypes = {
 		data: PropTypes.object.isRequired,
+		showCities: PropTypes.bool.isRequired,
 	};
 
 	static contextTypes = {
 		router: PropTypes.object.isRequired,
+	};
+
+	static defaultProps = {
+		showCities: true,
 	};
 
 	constructor(props){
@@ -74,6 +79,7 @@ export default class CompaniesList extends Component{
 		const {
 			data,
 			cities,
+			showCities,
 			...other
 		} = this.props;
 
@@ -117,7 +123,7 @@ export default class CompaniesList extends Component{
 			}}
 		>
 
-			{cities && <Grid
+			{showCities && cities && <Grid
 				item
 				xs={12}
 			>

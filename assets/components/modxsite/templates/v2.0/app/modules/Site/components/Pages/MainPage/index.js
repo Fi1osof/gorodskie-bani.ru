@@ -177,6 +177,9 @@ export default class MainPage extends Page{
 	      // withPagination: withPagination,
 	      resourcesCenter: coords,
 	      companiesCenter: coords,
+	      getTVs: true,
+	      getRatingsAvg: true,
+	      companiesLimit: 8,
 	      // page,
 	    },
 	  })
@@ -249,6 +252,7 @@ export default class MainPage extends Page{
 			// inputState,
 			cities,
 			companiesList,
+			recentCompaniesList,
 			topics,
 			commentsList,
 		} = this.state;
@@ -263,6 +267,11 @@ export default class MainPage extends Page{
 			total,
 			...companies
 		} = companiesList || {};
+
+		const {
+			total: recentCompaniesTotal,
+			...recentCompanies
+		} = recentCompaniesList || {};
 
 		// const cities = ResourcesStore.getState().toArray();
 
@@ -294,6 +303,25 @@ export default class MainPage extends Page{
 				cities={cities}
 			/>);
 
+			recentCompanies && recentCompanies.count && content.push(<div
+				key="recentCompaniesList"
+			>
+				<Typography
+					type="title"
+					style={{
+						marginTop: 30,
+						marginBottom: 20,
+					}}
+				>
+					Новые заведения
+				</Typography>
+
+				<CompaniesList
+					data={recentCompanies}
+					showCities={false}
+				/>
+			</div>);
+
 
 			if(topic){
 				content.push(<div
@@ -305,6 +333,9 @@ export default class MainPage extends Page{
 
 					<Typography
 						type="title"
+						style={{
+							marginBottom: -10,
+						}}
 					>
 						Последняя публикация <small><Link
 							to="/topics/"

@@ -275,6 +275,8 @@ export default class CompaniesPage extends Page {
 	      withPagination: withPagination,
 	      companiesCenter: coords,
 	      page,
+	      getTVs: true,
+	      companyGetSchedules: true,
 	    },
 	  })
 	  .then(r => {
@@ -399,6 +401,10 @@ export default class CompaniesPage extends Page {
 			cities,
 		} = this.state;
 
+		const {
+			...other
+		} = this.props;
+
 		// const cities = ResourcesStore.getState().toArray();
 
 
@@ -426,6 +432,7 @@ export default class CompaniesPage extends Page {
 			content = <CompaniesList 
 				data={companies}
 				cities={cities}
+				{...other}
 			/>
 
 		}

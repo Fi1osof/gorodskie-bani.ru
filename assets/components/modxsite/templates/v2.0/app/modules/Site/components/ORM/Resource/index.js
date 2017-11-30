@@ -33,6 +33,12 @@ import {browserHistory} from 'react-router';
 
 // moment.locale('ru');
 
+
+import {
+  sortBy,
+} from '../resolver';
+
+
 import ModelObject from '../object';
 
 import {
@@ -575,6 +581,7 @@ export const getList = (source, args, context, info) => {
     center,
     alias,
     uri,
+    sort,
   } = args;
  
   let state
@@ -721,6 +728,42 @@ export const getList = (source, args, context, info) => {
       // }
 
       return 0;
+
+    });
+
+  }
+
+
+
+  if(sort){
+
+    sort.map(rule => {
+
+      const {
+        by,
+        dir,
+      } = rule;
+
+      if(!by){
+        return;
+      }
+
+      let sortByRules;
+
+      switch(by){
+
+        case 'name':
+
+          sortByRules = n => n.name;
+
+          break;
+      }
+
+      if(sortByRules){
+
+        state = sortBy(state, sortByRules, dir);
+
+      };
 
     });
 

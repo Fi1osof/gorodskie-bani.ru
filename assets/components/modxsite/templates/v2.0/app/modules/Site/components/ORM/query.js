@@ -201,8 +201,8 @@ query MainPage(
   $resourceTag:String
   $topicsLimit:Int = 1
   
-  # Cities
-  $companiesList:Int = 12
+  # Companies
+  $companiesLimit:Int = 8
   $companiesSearchQuery:String
   $getRatingsAvg:Boolean = false
   $getImageFormats:Boolean = true
@@ -243,6 +243,53 @@ query MainPage(
   $cityGetFullData:Boolean = false
   
 ){   
+  
+  companies(
+    limit:$companiesLimit
+    ids:$companyIds
+    uri:$resourceUri
+    search:$companiesSearchQuery
+    coords:$companiesCoords
+    center:$companiesCenter
+  ) @skip(if:$withPagination)
+  {
+    ...Company
+  }
+  companiesList(
+    limit:$companiesLimit
+    ids:$companyIds
+    uri:$resourceUri
+    search:$companiesSearchQuery
+    coords:$companiesCoords
+    center:$companiesCenter
+  ) @include(if:$withPagination)
+  {
+    count
+    total
+    limit
+    page
+    object{
+      ...Company
+    }
+  }
+  
+  recentCompaniesList:companiesList(
+    limit:4
+    sort:{
+      by:createdon
+      dir:desc
+    }
+  )
+  {
+    count
+    total
+    limit
+    page
+    object{
+      ...Company
+    }
+  }
+  
   commentsList(
     ids: $commentsIds
     limit: 4
@@ -315,35 +362,6 @@ query MainPage(
   )
   {
     ...City
-  }
-  
-  companies(
-    limit:$companiesList
-    ids:$companyIds
-    uri:$resourceUri
-    search:$companiesSearchQuery
-    coords:$companiesCoords
-    center:$companiesCenter
-  ) @skip(if:$withPagination)
-  {
-    ...Company
-  }
-  companiesList(
-    limit:$companiesList
-    ids:$companyIds
-    uri:$resourceUri
-    search:$companiesSearchQuery
-    coords:$companiesCoords
-    center:$companiesCenter
-  ) @include(if:$withPagination)
-  {
-    count
-    total
-    limit
-    page
-    object{
-      ...Company
-    }
   }
   
 }
@@ -1120,6 +1138,7 @@ query Resources(
 
 query Cities(
   $resourcesLimit:Int = 0
+  $citiesSort:[ResourcesSortBy]
   $withPagination:Boolean = false
   $resourceTemplate:Int
   $resourceExcludeTemplates:[Int]
@@ -1153,6 +1172,7 @@ fragment CitiesList on RootType{
     coords:$resourcesCoords
     center:$resourcesCenter
     alias:$resourceAlias
+    sort:$citiesSort
   )@include(if:$withPagination)
   {
     count
@@ -1172,6 +1192,7 @@ fragment CitiesList on RootType{
     coords:$resourcesCoords
     center:$resourcesCenter
     alias:$resourceAlias
+    sort:$citiesSort
   )@skip(if:$withPagination)
   {
     ...City
@@ -2353,8 +2374,6 @@ mutation updateCompany(
     ...editVersion
   }
 }
-
-
 
 `;
 

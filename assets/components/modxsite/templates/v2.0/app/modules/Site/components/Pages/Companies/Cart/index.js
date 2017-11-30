@@ -85,67 +85,74 @@ export default class CompanyListCart extends Component{
 				// xl={2}
 				{...other}
 			>
-
-				<Link
-					to={uri}
-					href={uri}
-					title={name}
+				<Paper
+					style={{
+						height: "100%",
+					}}
 				>
 
-					<div
-						style={{
-							position: "relative",
-						}}
-					>
-						
-						<img 
-							src={image}
-							style={{
-								width: "100%",
-							}}
-						/>
-
-						{rating && <Stars 
-							value={parseFloat(rating) || 0}
-							style={{
-								position: "absolute",
-								top: 3,
-								right: 3,
-							}}
-						/> || null}
-
-					</div>
-
-					<div
-						style={{
-							padding: 15,
-						}}
+					<Link
+						to={uri}
+						href={uri}
+						title={name}
 					>
 
-						<Typography
-							type="title"
-						>
-							{name}
-						</Typography>
-						
-						<p
-							className="text default"
-						>
-							{address}
-						</p>
-									
-						<SchedulesList 
-							item={item}
-							className="text default"
-							scheduleBlockProps={{
-								item: true,
-								xs: 12
+						<div
+							style={{
+								position: "relative",
 							}}
-						/>
+						>
+							
+							<img 
+								src={image}
+								style={{
+									width: "100%",
+								}}
+							/>
 
-					</div>
+							{rating && <Stars 
+								value={parseFloat(rating) || 0}
+								style={{
+									position: "absolute",
+									top: 3,
+									right: 3,
+								}}
+							/> || null}
 
-				</Link>
+						</div>
+
+						<div
+							style={{
+								padding: 15,
+							}}
+						>
+
+							<Typography
+								type="title"
+							>
+								{name}
+							</Typography>
+							
+							<p
+								className="text default"
+							>
+								{address}
+							</p>
+										
+							<SchedulesList 
+								item={item}
+								className="text default"
+								scheduleBlockProps={{
+									item: true,
+									xs: 12
+								}}
+							/>
+
+						</div>
+
+					</Link>
+					
+				</Paper>
 				
 
 			</Grid>

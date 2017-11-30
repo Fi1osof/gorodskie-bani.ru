@@ -334,7 +334,40 @@ const resourcesArgs = Object.assign({
     type: InputCoordsType,
     description: "Сортировать по расстоянию от заданного центра",
   },
-}, listArgs);
+}, listArgs, {
+  sort: {
+    type: new GraphQLList(new GraphQLInputObjectType({
+      name: "ResourcesSortBy",
+      fields: {
+        by: {
+          type: new GraphQLEnumType({
+            name: 'ResourcesSortByValues',
+            values: {
+              id: {
+                value: 'id',
+                description: 'По ID',
+              },
+              name: {
+                value: 'name',
+                description: 'По наименованию',
+              },
+              createdon: {
+                value: 'createdon',
+                description: 'По дате создания',
+              },
+              rand: {
+                value: 'rand()',
+                description: 'В случайном порядке',
+              },
+            },
+          }),
+          description: 'Способ сортировки',
+        },
+        dir: order,
+      },
+    })),
+  },
+});
 
 
 const editVersionArgs = Object.assign({

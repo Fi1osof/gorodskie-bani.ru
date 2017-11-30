@@ -17,6 +17,10 @@ import {
 import GraphQLJSON from 'graphql-type-json';
 
 
+import {
+  sortBy,
+} from '../resolver';
+
 // import {
 //   CommentEditorStateType,
 // } from 'react-cms/src/app/components/ORM/Comment';
@@ -645,6 +649,7 @@ export const getList = (source, args, context, info) => {
     search,
     coords,
     center,
+    sort,
   } = args;
 
   let state = CompaniesStore.getState();
@@ -746,6 +751,43 @@ export const getList = (source, args, context, info) => {
       }
 
       return 0;
+
+    });
+
+  }
+
+
+
+
+  if(sort){
+
+    sort.map(rule => {
+
+      const {
+        by,
+        dir,
+      } = rule;
+
+      if(!by){
+        return;
+      }
+
+      let sortByRules;
+
+      switch(by){
+
+        case 'createdon':
+
+          sortByRules = n => n.createdon;
+
+          break;
+      }
+
+      if(sortByRules){
+
+        state = sortBy(state, sortByRules, dir);
+
+      };
 
     });
 

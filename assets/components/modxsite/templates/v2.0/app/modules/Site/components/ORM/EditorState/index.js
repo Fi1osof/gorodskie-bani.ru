@@ -57,7 +57,7 @@ export const EditorEntityCompanyType = new GraphQLObjectType({
 						description: CompanyType.description,
 						resolve: (source, args, context, info) => {
 
-							return null;
+							// return null;
 
 		          const {
 		            fieldName,
@@ -95,9 +95,16 @@ export const EditorEntityCompanyType = new GraphQLObjectType({
 
 		            Object.assign(args, {
 		              id: company_id,
+		              getCompanyFullData: false,
+		              getCompanyComments: false,
+		              getRatingsAvg: false,
+		              getCompanyTopics: false,
+		              companyGetEditVersions: false,
 		            });
 		   
 		 
+		            // console.log("Comment Company args", args);
+
 		            return localQuery({
 		              operationName: "Company",
 		              variables: args,

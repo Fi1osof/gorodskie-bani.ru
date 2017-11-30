@@ -57,7 +57,7 @@ export const EditorEntityCompanyType = new GraphQLObjectType({
 						description: CompanyType.description,
 						resolve: (source, args, context, info) => {
 
-							// return null;
+							return null;
 
 		          const {
 		            fieldName,

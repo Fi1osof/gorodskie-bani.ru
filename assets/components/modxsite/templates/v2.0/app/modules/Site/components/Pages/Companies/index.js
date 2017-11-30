@@ -197,7 +197,7 @@ export default class CompaniesPage extends Page {
   }
 
 
-	loadData(){
+	async loadData(){
 
     const {
       coords,
@@ -205,7 +205,7 @@ export default class CompaniesPage extends Page {
 
 		const page = this.getPage();
 
-		this.loadCities();
+		await this.loadCities();
 
 		return super.loadData({
 			page,
@@ -214,7 +214,7 @@ export default class CompaniesPage extends Page {
 
 	}
 
-	loadCities(){
+	async loadCities(){
 
 
     const {
@@ -222,30 +222,47 @@ export default class CompaniesPage extends Page {
       coords,
     } = this.context;
 
-    localQuery({
+    let variables = {
+      limit: 0,
+      resourcesCenter: coords,
+    };
+
+    // console.log("Cities variables", variables);
+
+    const result = await localQuery({
       operationName: "MainMenuData",
-      variables: {
-        limit: 0,
-        resourcesCenter: coords,
-      },
+      variables,
     })
     .then(r => {
 
-      const {
-        resources: cities,
-      } = r.data;
+      // const {
+      //   resources: cities,
+      // } = r.data;
 
+      // console.log("Cities result", r);
 
+      // this.setState({
+      //   cities,
+      // });
 
-      this.setState({
-        cities,
-      });
+      return r;
 
     })
     .catch(e => {
       console.error(e);
     });
 
+    const {
+      resources: cities,
+    } = result && result.data || {};
+
+    // console.log("Cities result", result);
+
+    cities && this.setState({
+      cities,
+    });
+
+    return result;
 	}
 
 	
@@ -439,7 +456,7 @@ export default class CompaniesPage extends Page {
 		// }
 
 		content = <CompaniesList 
-			data={companies}
+			data={companies || {}}
 			cities={cities}
 			{...other}
 		/>

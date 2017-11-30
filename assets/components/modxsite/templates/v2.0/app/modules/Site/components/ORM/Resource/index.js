@@ -74,9 +74,9 @@ export const ResourceType = new GraphQLObjectType({
       },
       name: {
         type: GraphQLString,
-        resolve: (source) => {
-          return source.pagetitle;
-        },
+        // resolve: (source) => {
+        //   return source.pagetitle;
+        // },
       },
       pagetitle: {
         type: GraphQLString

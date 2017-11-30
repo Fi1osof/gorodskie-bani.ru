@@ -231,6 +231,7 @@ export const getList = (object, args, context, info) => {
 
           const {
             id,
+            pagetitle,
             deleted,
             hidemenu,
             searchable,
@@ -407,6 +408,11 @@ export const getList = (object, args, context, info) => {
             });
 
           }
+
+
+          Object.assign(object, {
+            name: pagetitle,
+          });
           
         });
 

@@ -1600,7 +1600,7 @@ export default class MapMainView extends Component{
 
 	render(){
 
-		const key = "AIzaSyDrAAFNMwCrJRoF_D_JlCZ34AK30X-nha0-ZPUvU";
+		const key = "AIzaSyDrAAFNMwCrJRoF_D_JlCZ34AK30X-nha0";
 
 		let {
 			children,

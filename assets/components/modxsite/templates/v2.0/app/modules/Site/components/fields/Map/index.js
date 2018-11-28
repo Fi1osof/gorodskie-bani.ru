@@ -182,7 +182,7 @@ export default class ItemMap extends Component{
 		>
 			<GoogleMapReact
 				ref="GoogleMapReact"
-	      apiKey="AIzaSyBdNZDE_QadLccHx5yDc96VL0M19-ZPUvU"
+	      apiKey="AIzaSyDrAAFNMwCrJRoF_D_JlCZ34AK30X-nha0-ZPUvU"
 	      defaultCenter={{
 	      	lat: lat,
 	      	lng: lng,

@@ -79,6 +79,7 @@
     "react-router-scroll": "0.3.3",
     "react-schedule": "^1.2.2",
     "react-slick": "^0.15.4",
+    "react-static-google-map": "^0.5.2",
     "react-tap-event-plugin": "^2.0.1",
     "react-yandex-maps": "^2.1.2",
     "rebass": "0.3.4",

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
 
@@ -14,7 +14,7 @@ import Helper from 'modules/Site/components/Helper';
 
 // import Control from './Controls';
 // import Control from 'modules/Sportpoisk/components/GoogleMap/Controls/layout'; 
-import Control from 'google-map-react-control'; 
+import Control from 'google-map-react-control';
 
 // const Control = require('google-map-react-control');
 
@@ -22,124 +22,147 @@ import Control from 'google-map-react-control';
 import YandexSearch from 'modules/Site/components/YandexMap/Search';
 
 const defaultProps = {}
- 
+
 // import SearchControl from 'modules/Sportpoisk/components/GoogleMap/Controls/UserMenu/index.js';
 
 // export {Control};
 
-export default class ItemMap extends Component{
+
+import {
+	StaticGoogleMap,
+	Marker,
+	Path,
+} from 'react-static-google-map';
+
+
+export default class ItemMap extends Component {
 
 	static propTypes = {
 		item: PropTypes.object.isRequired,
 		updateItem: PropTypes.func.isRequired,
+		fullMap: PropTypes.bool.isRequired,
 	};
+
+
+	static defaultProps = {
+		fullMap: false,
+	}
 
 	static contextTypes = {
 		// connector_url: PropTypes.string.isRequired,
 	};
 
-	constructor(props){
+	constructor(props) {
 
 		super(props);
 
+		const {
+			fullMap = false,
+		} = props;
+
 		this.state = {
 			draggable: true,
+			fullMap,
 		}
 	}
- 
 
- 	inEditMode(){
 
- 		const {
- 			item: {
- 				_isDirty,
- 			},
- 		} = this.props;
+	inEditMode() {
+
+		const {
+			item: {
+				_isDirty,
+			},
+		} = this.props;
 
 		return _isDirty ? true : false;
- 	}
+	}
 
 
- 	onChildMouseDown(key, props, coords){ 
+	onChildMouseDown = (key, props, coords) => {
 
- 		if(!this.inEditMode()){
- 			return;
- 		}
- 
- 		this.setState({
- 			draggable: false,
- 		});
+		if (!this.inEditMode()) {
+			return;
+		}
 
- 		return;
- 	}
+		this.setState({
+			draggable: false,
+		});
 
-
- 	onChildMouseUp(){
+		return;
+	}
 
 
- 		if(!this.inEditMode()){
- 			return;
- 		}
+	onChildMouseUp = () => {
 
- 		this.setState({
- 			draggable: true,
- 		});
- 	}
 
- 	onChildMouseMove(key, marker, newCoords){
+		if (!this.inEditMode()) {
+			return;
+		}
 
- 		// let {
- 		// } = marker;
+		this.setState({
+			draggable: true,
+		});
+	}
 
- 		if(!this.inEditMode()){
- 			return;
- 		}
+	onChildMouseMove = (key, marker, newCoords) => {
 
- 		let {
+		// let {
+		// } = marker;
+
+		if (!this.inEditMode()) {
+			return;
+		}
+
+		let {
 
 			// PlacesStore
- 			item,
- 			updateItem,
- 			onChange,
- 		} = this.props;
+			item,
+			updateItem,
+			onChange,
+		} = this.props;
 
- 		// let {
- 		// } = this.context;
+		// let {
+		// } = this.context;
 
 
- 		// // PlacesStore.getDispatcher().dispatch(PlacesStore.actions['UPDATE'], item, newCoords);
+		// // PlacesStore.getDispatcher().dispatch(PlacesStore.actions['UPDATE'], item, newCoords);
 
- 		// updateItem(item, newCoords, PlacesStore);
+		// updateItem(item, newCoords, PlacesStore);
 
- 		const data = {
- 			coords: newCoords,
- 			...newCoords,
- 		};
+		const data = {
+			coords: newCoords,
+			...newCoords,
+		};
 
- 		updateItem(item, data);
+		updateItem(item, data);
 
-  	onChange && onChange(item, data);
+		onChange && onChange(item, data);
 
- 		this.forceUpdate();
- 	}
+		this.forceUpdate();
+	}
 
- 	onGoogleApiLoaded(api){
+	onGoogleApiLoaded = (api) => {
 
- 		let {
- 			map,
- 			maps,
- 		} = api;
+		let {
+			map,
+			maps,
+		} = api;
 
- 
 
- 		this.setState(api);
- 	}
 
-	render(){
+		this.setState(api);
+	}
 
-		if(typeof window === "undefined"){
-			return null;
-		}
+	render() {
+
+
+		const {
+			fullMap,
+		} = this.state;
+
+		let output = null;
+
 
 		let {
 			item,
@@ -156,8 +179,8 @@ export default class ItemMap extends Component{
 		let {
 			mapTilesLoaded,
 			draggable,
- 			map,
- 			maps,
+			map,
+			maps,
 		} = this.state;
 
 		let {
@@ -170,172 +193,205 @@ export default class ItemMap extends Component{
 			lng,
 		} = coords || {};
 
-		if(!lat || !lng){
+		if (!lat || !lng) {
 			return null;
 		}
 
 
-		return <div
-      style={{
-      	height: 400,
-      }}
-		>
-			<GoogleMapReact
-				ref="GoogleMapReact"
-	      apiKey="AIzaSyDrAAFNMwCrJRoF_D_JlCZ34AK30X-nha0"
-	      defaultCenter={{
-	      	lat: lat,
-	      	lng: lng,
-	      }}
-	      center={draggable && {
-	      	lat: lat,
-	      	lng: lng,
-	      } || undefined}
-	      defaultZoom={15}
-				draggable={draggable}
-			  onChildMouseDown={::this.onChildMouseDown}
-			  onChildMouseUp={::this.onChildMouseUp}
-			  onChildMouseMove={::this.onChildMouseMove}
-			  onGoogleApiLoaded={::this.onGoogleApiLoaded}
-				options={{
-			    fullscreenControl: false,
-			    overviewMapControl: false,
-			    streetViewControl: true,
-			    rotateControl: true,
-			    mapTypeControl: true,
-			    // disable poi
-			    styles: [
-			      {
-			        featureType: 'poi',
-			        elementType: 'labels',
-			        stylers: [{ visibility: 'off' }],
-			      },
-			    ],
-			  }}
-	    >
-				
 
-	    	<SimpleMarker 
-	    		lat={lat}
-	    		lng={lng}
-	    		map={map}
-	    	>
+		if (!fullMap || typeof window === "undefined") {
+			// return null;
 
-	    	</SimpleMarker>
+			output = <div
+				style={{
+					cursor: "pointer",
+					textAlign: "center",
+				}}
+				onClick={event => {
+					this.setState({
+						fullMap: true,
+					});
+				}}
+			>
+				<StaticGoogleMap
+					apiKey="AIzaSyDrAAFNMwCrJRoF_D_JlCZ34AK30X-nha0"
+					size="600x400"
+				>
+					<Marker
+						// color="blue"
+						label={name && name.substr(0, 1) || undefined}
+						location={{ lat, lng }}
+					/>
+				</StaticGoogleMap>
+			</div>;
+		}
+		else {
 
-			</GoogleMapReact>
+			output = <div
+				style={{
+					height: 400,
+				}}
+			>
+				<GoogleMapReact
+					ref="GoogleMapReact"
+					apiKey="AIzaSyDrAAFNMwCrJRoF_D_JlCZ34AK30X-nha0"
+					defaultCenter={{
+						lat: lat,
+						lng: lng,
+					}}
+					center={draggable && {
+						lat: lat,
+						lng: lng,
+					} || undefined}
+					defaultZoom={15}
+					draggable={draggable}
+					onChildMouseDown={this.onChildMouseDown}
+					onChildMouseUp={this.onChildMouseUp}
+					onChildMouseMove={this.onChildMouseMove}
+					onGoogleApiLoaded={this.onGoogleApiLoaded}
+					options={{
+						fullscreenControl: false,
+						overviewMapControl: false,
+						streetViewControl: true,
+						rotateControl: true,
+						mapTypeControl: true,
+						// disable poi
+						styles: [
+							{
+								featureType: 'poi',
+								elementType: 'labels',
+								stylers: [{ visibility: 'off' }],
+							},
+						],
+					}}
+				>
 
-			{map && maps
-    		?
-    		<Control
-    			map={map}
-    			maps={maps}
-    			position="TOP_CENTER"
-    		>
 
-    			<Grid
-    				container
-    				gutter={0}
-    				align="center"
-    			>
+					<SimpleMarker
+						lat={lat}
+						lng={lng}
+						map={map}
+					>
 
-    				<Grid
-    					item
-    					xs
-    				>
+					</SimpleMarker>
 
-		    			<YandexSearch 
-			    			map={map}
-			    			maps={maps}
-			    			style={{
-			    				minWidth: 300
-			    			}}
-			    			error={error || false}
-			    			textFieldProps={{
-			    				helperText: helperText || undefined,
-			    				onFocus,
-			    			}}
-			    			onNewRequest={(event, value, mapItem) => {
-							  	let {
-							  		coordinates: {
-							  			0: lat,
-							  			1: lng,
-							  		},
-							  	} = mapItem;
+				</GoogleMapReact>
 
-							  	const data = {
-							  		lat,
-							  		lng,
-							  		coords: {
-								  		lat,
-								  		lng,
-								  	},
-							  	};
+				{
+					map && maps
+						?
+						<Control
+							map={map}
+							maps={maps}
+							position="TOP_CENTER"
+						>
 
-							  	updateItem(item, data);
+							<Grid
+								container
+								gutter={0}
+								align="center"
+							>
 
+								<Grid
+									item
+									xs
+								>
+
+									<YandexSearch
+										map={map}
+										maps={maps}
+										style={{
+											minWidth: 300
+										}}
+										error={error || false}
+										textFieldProps={{
+											helperText: helperText || undefined,
+											onFocus,
+										}}
+										onNewRequest={(event, value, mapItem) => {
+											let {
+												coordinates: {
+													0: lat,
+													1: lng,
+												},
+											} = mapItem;
+
+											const data = {
+												lat,
+												lng,
+												coords: {
+													lat,
+													lng,
+												},
+											};
+
+											updateItem(item, data);
+
+										}}
+									/>
+
+								</Grid>
+
+								{helper
+									?
+									<Grid
+										item
+									>
+										<Helper
+											contrastIcons={false}
+										>
+											{helper}
+										</Helper>
+									</Grid>
+									:
+									null
+								}
+
+							</Grid>
+
+
+
+						</Control>
+
+						:
+						null
+				}
+
+
+				{
+					map && maps
+						?
+						<Control
+							map={map}
+							maps={maps}
+							position="BOTTOM_LEFT"
+							style={{
+								padding: 4,
+							}}
+						>
+
+							<a
+								href="https://maps.yandex.ru"
+								rel="nofollow"
+								style={{
+									color: "#fff",
+									textShadow: "0px 0px 5px #888",
+									fontSize: "16px",
 								}}
-		    			/>
-    					
-    				</Grid>
-    				
-	    			{helper 
-	    				?
-	    					<Grid
-		    					item
-		    				>
-			    				<Helper
-										contrastIcons={false}
-			            >
-			              {helper}
-			            </Helper>
-		            </Grid>
-	    				:
-	    				null
-	    			}
-
-    			</Grid>
-
-
-
-    		</Control>
-    		
-    		:
-    		null
-    	}
-
-
-			{map && maps
-    		?
-    		<Control
-    			map={map}
-    			maps={maps}
-    			position="BOTTOM_LEFT"
-    			style={{
-    				padding: 4,
-    			}}
-    		> 
-
-    			<a 
-    				href="https://maps.yandex.ru" 
-    				rel="nofollow"
-    				style={{
-    					color: "#fff",
-	    				textShadow: "0px 0px 5px #888",
-	    				fontSize: "16px",
-    				}}
-    				target="_blank"
-    			>
-    				Yandex.Maps
+								target="_blank"
+							>
+								Yandex.Maps
     			</a>
 
-    		</Control>
-    		
-    		:
-    		null
-    	}
+						</Control>
 
-		</div>;
+						:
+						null
+				}
+
+			</div >;
+		}
+
+		return output;
 	}
 }
- 

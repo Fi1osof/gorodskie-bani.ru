@@ -1648,6 +1648,12 @@ export class AppMain extends ReactCmsApp{
 
   setPageTitle = (title) => {
 
+    // console.log('App setPageTitle', title);
+
+    if(title === undefined ){
+      return;
+    }
+
     title = title || "Городские бани";
 
     if(title && !/Городские бани/u.test(title)){

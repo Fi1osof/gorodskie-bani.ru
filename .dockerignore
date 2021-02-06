@@ -1,0 +1,8 @@
+/*/node_modules
+/*/build
+/*/shared
+/*/uploads
+/*/packages
+/*/yarn.lock
+/*/.git
+/*/.env

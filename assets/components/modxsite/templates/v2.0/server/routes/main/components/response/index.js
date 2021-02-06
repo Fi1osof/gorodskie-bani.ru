@@ -113,6 +113,9 @@ var knex;
 
 let schema;
 
+/**
+ * Используется в node_modules/react-cms/src/server/components/Router/index.js
+ */
 export default class Response{
 
   // constructor (req, res, params, knexdb, config, ws_clients, SendWebSocketMessage, SendMODXRequest) {

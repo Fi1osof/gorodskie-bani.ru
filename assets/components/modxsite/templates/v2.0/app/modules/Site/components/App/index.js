@@ -26,7 +26,7 @@ import createPalette from 'material-ui/styles/palette';
 
 import {DataStore, Dispatcher} from 'react-cms-data-view';
 
-import {request, saveItem} from 'react-cms-data-view/src/Utils';
+// import {request, saveItem} from 'react-cms-data-view/src/Utils';
 
 import ReactCmsApp from 'react-cms/src/app/components/App';
 
@@ -40,12 +40,13 @@ import Auth from '../Auth';
 
 // import CoinHive from 'react-coin-hive/src';
 
-import locale from 'moment/src/locale/ru';
-import 'moment';
+// import locale from 'moment/src/locale/ru';
+import moment from 'moment';
+moment.locale("ru");
 
 import RootType, {
   Mutation,
-  rootDirectives,
+  // rootDirectives,
 } from '../ORM';
 
 import Company from '../ORM/Company';
@@ -589,7 +590,8 @@ export class AppMain extends ReactCmsApp{
         item
       >
 
-        {typeof window !== "undefined" && <div dangerouslySetInnerHTML={{__html: metrika}}></div>}  
+        {/* {typeof window !== "undefined" && <div dangerouslySetInnerHTML={{__html: metrika}}></div>}   */}
+        <div dangerouslySetInnerHTML={{__html: metrika}}></div>
         
       </Grid>
 

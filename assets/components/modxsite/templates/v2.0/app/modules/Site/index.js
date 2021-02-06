@@ -7,7 +7,7 @@ import TopicsPage from './components/Pages/Topics';
 import TopicCreatePage from './components/Pages/Topics/Topic/Create';
 import TopicPage from './components/Pages/Topics/Topic';
 import NotFoundPage from './components/Pages/NotFound';
-import DbPage from './components/Pages/DB';
+// import DbPage from './components/Pages/DB';
 import CompaniesPage from './components/Pages/Companies';
 import CompanyPage from './components/Pages/Companies/Company';
 import CompanyCreatePage from './components/Pages/Companies/Company/Create';
@@ -31,7 +31,7 @@ export {
   TopicCreatePage,
   TopicPage,
   NotFoundPage,
-  DbPage,
+  // DbPage,
   CompaniesPage,
   CompanyPage,
   CompanyCreatePage,

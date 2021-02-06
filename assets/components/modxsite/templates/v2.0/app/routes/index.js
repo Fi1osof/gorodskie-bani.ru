@@ -8,7 +8,7 @@ import {
   TopicCreatePage,
   TopicPage,
   NotFoundPage,
-  DbPage,
+  // DbPage,
   CompaniesPage,
   CompanyPage,
   CompanyCreatePage,
@@ -72,10 +72,10 @@ let routes = {
         // },
       ],
     },
-    {
-      path: "/db",
-      component: DbPage,
-    },
+    // {
+    //   path: "/db",
+    //   component: DbPage,
+    // },
     {
       path: "/bani-otzivy/:topicAlias",
       component: OtzivPage,

@@ -16,7 +16,7 @@ import {
 } from "modules/Site/components/App/";
 
 // var Model = require('objection').Model;
- 
+
 import Response from './components/response';
 
 var debug = require('debug')("server:router/main");
@@ -34,7 +34,7 @@ import config, {
   db as db_config,
   host,
   site_url,
-} from '../../config/config'; 
+} from '../../config/config';
 
 
 let {
@@ -44,10 +44,10 @@ let {
 } = db_config;
 
 // const knex = require('knex')(db_config);
- 
+
 // let styles = {};
 
- 
+
 
 // let apiData;
 // let mapData;
@@ -60,10 +60,10 @@ let {
 
 import ReactCmsRouter from 'react-cms/src/server/components/Router';
 
-export default class Router extends ReactCmsRouter{
+export default class Router extends ReactCmsRouter {
 
 
-  constructor(options = {}){
+  constructor(options = {}) {
 
     Object.assign(options, {
       config,
@@ -82,9 +82,9 @@ export default class Router extends ReactCmsRouter{
     // console.log("this.router", this.router);
   }
 
-  processMainRequest(req, res){
-    
-    const url = req.url;
+  processMainRequest(req, res) {
+
+    // const url = req.url;
 
     let rewrite_rule;
 
@@ -98,7 +98,7 @@ export default class Router extends ReactCmsRouter{
 
     // console.log("decodedURI", decodedURI);
 
-    
+
     // rewrite_rule = /(\/tag\/.+?\/)(.+)$/;
 
     // console.log("decodedURI match", decodedURI.match(rewrite_rule));
@@ -108,33 +108,33 @@ export default class Router extends ReactCmsRouter{
     // }
 
 
-    if(decodedURI){
+    if (decodedURI) {
 
-      if(/.+\/bani-otzivy\/$/.test(decodedURI)){
+      if (/.+\/bani-otzivy\/$/.test(decodedURI)) {
         return res.redirect(301, '/bani-otzivy/');
       }
-      
+
       redirectMatch = decodedURI.match(/.+(\/(topics|city|ratings|bani|cherepovecz)\/.*)/);
 
-      if(redirectMatch && redirectMatch[1]){
+      if (redirectMatch && redirectMatch[1]) {
         return res.redirect(301, redirectMatch[1]);
       }
 
 
-      if(/.+\/contacts.html$/.test(decodedURI)){
+      if (/.+\/contacts.html$/.test(decodedURI)) {
         return res.redirect(301, '/contacts.html');
       }
 
       rewrite_rule = /(\/.+?\/.+?)(\/.*\@.*)$/;
 
-      if(rewrite_rule.test(decodedURI)){
-          return res.redirect(301, decodedURI.replace(rewrite_rule, "$2"));
+      if (rewrite_rule.test(decodedURI)) {
+        return res.redirect(301, decodedURI.replace(rewrite_rule, "$2"));
       }
 
       rewrite_rule = /(\/tag\/.+?\/)(.+)$/;
 
-      if(rewrite_rule.test(decodedURI)){
-          return res.redirect(301, decodedURI.replace(rewrite_rule, "$1"));
+      if (rewrite_rule.test(decodedURI)) {
+        return res.redirect(301, decodedURI.replace(rewrite_rule, "$1"));
       }
 
 

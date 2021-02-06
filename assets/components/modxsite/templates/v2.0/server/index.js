@@ -1,14 +1,14 @@
 /* eslint consistent-return:0 */
 
-const path = require('path');
+// const path = require('path');
 
-const fs = require('fs');
+// const fs = require('fs');
 
 require('babel-core/register')({
 
-  ignore: function(file){
-    if(/\/node_modules\//.test(file)){
-      if(
+  ignore: function (file) {
+    if (/\/node_modules\//.test(file)) {
+      if (
         /\/material-ui-components\//.test(file)
         || /\/material-ui\//.test(file)
         || /\/react-cms-data-view\//.test(file)
@@ -23,17 +23,20 @@ require('babel-core/register')({
         || /\/react-draft-wysiwyg\//.test(file)
         // || /\/google-map-react-control\//.test(file)
         || /\/moment\//.test(file)
-      ){
+      ) {
         return;
       }
 
       return true;
     }
   },
-	
+
 });
 
-['.css', '.less', '.sass', '.ttf', '.woff', '.woff2'].forEach((ext) => require.extensions[ext] = () => {});
+
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+['.css', '.less', '.sass', '.scss', '.ttf', '.woff', '.woff2'].forEach((ext) => require.extensions[ext] = () => { });
 require('babel-polyfill');
 
 const express = require('express');
@@ -41,23 +44,91 @@ const logger = require('./logger');
 
 const argv = require('minimist')(process.argv.slice(2));
 const setup = require('./middlewares/frontendMiddleware');
-const isDev = process.env.NODE_ENV !== 'production';
+// const isDev = process.env.NODE_ENV !== 'production';
 const resolve = require('path').resolve;
 const app = express();
+
+// const createProxy = (props: Record<string, any>) => {
+//   return createProxyMiddleware({
+//     target: endpoint,
+//     changeOrigin: true,
+//     onError: (err, _req, res) => {
+//       console.error('apiPropxy onError err', err)
+
+//       try {
+//         res.writeHead(500, {
+//           'Content-Type': 'text/plain',
+//         })
+//       } catch (error) {
+//         console.error(error)
+//       }
+
+//       res.end(
+//         'Something went wrong. And we are reporting a custom error message.'
+//       )
+//     },
+//     ...props,
+//   })
+// }
+
+// const apiProxy = createProxy({
+//   ws: true,
+//   pathRewrite: {
+//     '^/api(/|$)': '/',
+//   },
+// })
+
+
+// server.use('/api/', apiProxy)
+
+const endpoint = 'http://nginx';
+
+app.use('/assets/components/modxsite/connectors/connector.php', createProxyMiddleware({
+
+  target: endpoint,
+  changeOrigin: true,
+  // router: (req) => {
+
+  //   // req.headers
+
+  //   // req.headers.host = 'gorodskie-bani.local';
+
+  //   console.log('router req.headers', req.headers);
+
+  //   return endpoint;
+  // },
+  onError: (err, _req, res) => {
+    console.error('apiPropxy onError err', err)
+
+    try {
+      res.writeHead(500, {
+        'Content-Type': 'text/plain',
+      })
+    } catch (error) {
+      console.error(error)
+    }
+
+    res.end(
+      'Something went wrong. And we are reporting a custom error message.'
+    )
+  },
+}))
 
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
-})); 
+}));
 app.use(bodyParser.json());       // to support JSON-encoded bodies
 
 // In production we need to pass these values in instead of relying on webpack
 // var s = 
 setup(app, {
-	outputPath: resolve(process.cwd(), 'build'),
-	publicPath: '/build/',
+  outputPath: resolve(process.cwd(), 'build'),
+  publicPath: '/build/',
 });
+
+
 
 
 // Create your HiveProxy proxy
@@ -112,8 +183,8 @@ const port = argv.port || process.env.PORT || 3000;
 
 // Start your app.
 app.listen(port, (err) => {
-	if (err) {
-		return logger.error(err.message);
-	}
-	logger.appStarted(port);
+  if (err) {
+    return logger.error(err.message);
+  }
+  logger.appStarted(port);
 });

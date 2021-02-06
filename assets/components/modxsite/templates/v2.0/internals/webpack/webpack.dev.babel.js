@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const cheerio = require('cheerio');
+// const cheerio = require('cheerio');
 
 module.exports = require('./webpack.base.babel')({
 	// Add hot reloading in development
@@ -22,7 +22,7 @@ module.exports = require('./webpack.base.babel')({
 		filename: '[name].js',
 		// filename: '[name].[hash].js',
 		chunkFilename: '[name].chunk.js',
-		publicPath: '/build/',
+		// publicPath: '/build/',
 	},
 
 	babelQuery: {

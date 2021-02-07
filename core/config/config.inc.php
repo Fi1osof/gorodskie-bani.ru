@@ -11,6 +11,7 @@ $dbase = $_SERVER["MYSQL_DATABASE"];
 $table_prefix = $_SERVER["MYSQL_TABLE_PREFIX"];
 $database_dsn = "mysql:host={$database_server};dbname={$dbase};charset=utf8";
 $config_options = array (
+  'cache_handler' => 'xPDOFileCache',
   // 'cache_handler' => 'cache.xPDOMemCached',
   'cache_prefix' => $_SERVER["CACHE_PREFIX"],
 );

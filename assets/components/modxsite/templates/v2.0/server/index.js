@@ -81,7 +81,8 @@ const app = express();
 
 // server.use('/api/', apiProxy)
 
-const endpoint = 'http://nginx';
+// const endpoint = 'http://nginx';
+const endpoint = process.env.SITE_URL;
 
 app.use('/assets/components/modxsite/connectors/connector.php', createProxyMiddleware({
 
